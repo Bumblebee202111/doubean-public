@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">doubean</string>
+    <string name="title_home">Home</string>
+    <string name="title_groups">Groups</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="favorites">Favorites</string>
+</resources>
