@@ -42,3 +42,12 @@ doubean
 [35]: https://developer.android.com/guide/topics/ui/declaring-layout
 [90]: https://bumptech.github.io/glide/
 
+参考的资料
+---------
+* [Android Sunflower][91]
+* [Developer Guides][92]
+* [Github Browser Sample with Android Architecture Components][93]
+[91]: https://github.com/android/sunflower
+[92]: https://developer.android.google.cn/guide
+[93]: https://github.com/android/architecture-components-samples/tree/master/GithubBrowserSample
+[92]: https://developer.android.google.cn/guide
