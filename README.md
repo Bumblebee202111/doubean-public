@@ -47,6 +47,7 @@ doubean
 * [Android Sunflower][91]
 * [Developer Guides][92]
 * [Github Browser Sample with Android Architecture Components][93]
+
 [91]: https://github.com/android/sunflower
 [92]: https://developer.android.google.cn/guide
 [93]: https://github.com/android/architecture-components-samples/tree/master/GithubBrowserSample
