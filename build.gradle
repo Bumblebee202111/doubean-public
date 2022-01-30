@@ -31,6 +31,7 @@ buildscript {
         uiAutomatorVersion = '2.2.0'
         viewPagerVersion = '1.0.0'
         workVersion = '2.5.0'
+        commonsCodecVersion="1.15"
     }
     repositories {
         google()
