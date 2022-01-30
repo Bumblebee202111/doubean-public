@@ -15,16 +15,16 @@ doubean
   * [AppCompat][appcompat]
   * [Test][test]\(待使用\)
 * [Architecture][architecture]
-  * [Data Binding][11]
-  * [Lifecycles][12]
-  * [LiveData][13]
-  * [Navigation][14]
-  * [Room][16]
-  * [ViewModel][17]
+  * [Data Binding][data-binding]
+  * [Lifecycles][lifecycle]
+  * [LiveData][livedata]
+  * [Navigation][navigation]
+  * [Room][room]
+  * [ViewModel][viewmodel]
 * [UI][ui]
-  * [Animations & Transitions][31]\(待使用\)
-  * [Fragment][34]
-  * [Layout][35]
+  * [Animations & Transitions][animation]\(待使用\)
+  * [Fragment][fragment]
+  * [Layout][layout]
 * Third party and miscellaneous libraries
   * [Glide][glide]\(待使用\)
 
@@ -36,25 +36,25 @@ doubean
 
 [arch]: https://developer.android.com/jetpack/arch/
 
-[11]: https://developer.android.com/topic/libraries/data-binding/
+[data-binding]: https://developer.android.com/topic/libraries/data-binding/
 
-[12]: https://developer.android.com/topic/libraries/architecture/lifecycle
+[lifecycle]: https://developer.android.com/topic/libraries/architecture/lifecycle
 
-[13]: https://developer.android.com/topic/libraries/architecture/livedata
+[livedata]: https://developer.android.com/topic/libraries/architecture/livedata
 
-[14]: https://developer.android.com/topic/libraries/architecture/navigation/
+[navigation]: https://developer.android.com/topic/libraries/architecture/navigation/
 
-[16]: https://developer.android.com/topic/libraries/architecture/room
+[room]: https://developer.android.com/topic/libraries/architecture/room
 
-[17]: https://developer.android.com/topic/libraries/architecture/viewmodel
+[viewmodel]: https://developer.android.com/topic/libraries/architecture/viewmodel
 
 [ui]: https://developer.android.com/guide/topics/ui
 
-[31]: https://developer.android.com/training/animation/
+[animation]: https://developer.android.com/training/animation/
 
-[34]: https://developer.android.com/guide/components/fragments
+[fragment]: https://developer.android.com/guide/components/fragments
 
-[35]: https://developer.android.com/guide/topics/ui/declaring-layout
+[layout]: https://developer.android.com/guide/topics/ui/declaring-layout
 
 [glide]: https://bumptech.github.io/glide/
 
@@ -64,10 +64,12 @@ doubean
 * [Android Sunflower][sunflower]
 * [Developer Guides][guides]
 * [Github Browser Sample with Android Architecture Components][github-browser-sample]
-
-[sunflower]: https://github.com/android/sunflower
+* [Android Architecture Blueprints v1 (todo-mvvm-live)][todo-mvvm-live]
+  [sunflower]: https://github.com/android/sunflower
 
 [guides]: https://developer.android.google.cn/guide
 
 [github-browser-sample]: https://github.com/android/architecture-components-samples/tree/master/GithubBrowserSample
+
+[todo-mvvm-live]: https://github.com/android/architecture-samples/tree/todo-mvvm-live
 
