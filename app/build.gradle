@@ -56,6 +56,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
     implementation "androidx.viewpager2:viewpager2:$rootProject.viewPagerVersion"
+    implementation "commons-codec:commons-codec:$rootProject.commonsCodecVersion"
     androidTestImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
     androidTestImplementation "androidx.test.ext:junit:$rootProject.testExtJunit"
     testImplementation "junit:junit:$rootProject.junitVersion"
