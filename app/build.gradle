@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'androidx.navigation.safeargs'
 }
 
 android {
@@ -40,6 +41,9 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
     annotationProcessor "androidx.room:room-compiler:$rootProject.roomVersion"
     annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
 
@@ -57,6 +61,8 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
     implementation "androidx.viewpager2:viewpager2:$rootProject.viewPagerVersion"
     implementation "commons-codec:commons-codec:$rootProject.commonsCodecVersion"
+    implementation "com.github.zjupure:webpdecoder:2.0.$rootProject.glideVersion"
+    annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
     androidTestImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
     androidTestImplementation "androidx.test.ext:junit:$rootProject.testExtJunit"
     testImplementation "junit:junit:$rootProject.junitVersion"

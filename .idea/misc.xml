@@ -5,8 +5,9 @@
       <map>
         <entry key="..\:/Projects/doubean/app/src/main/res/layout/activity_main.xml" value="0.2563405797101449" />
         <entry key="..\:/Projects/doubean/app/src/main/res/layout/fragment_dashboard.xml" value="0.2563405797101449" />
-        <entry key="..\:/Projects/doubean/app/src/main/res/layout/fragment_groups.xml" value="0.1" />
-        <entry key="..\:/Projects/doubean/app/src/main/res/layout/list_item_group.xml" value="0.12158054711246201" />
+        <entry key="..\:/Projects/doubean/app/src/main/res/layout/fragment_groups.xml" value="0.2" />
+        <entry key="..\:/Projects/doubean/app/src/main/res/layout/group_detail_fragment.xml" value="0.1375" />
+        <entry key="..\:/Projects/doubean/app/src/main/res/layout/list_item_group.xml" value="0.264" />
       </map>
     </option>
   </component>

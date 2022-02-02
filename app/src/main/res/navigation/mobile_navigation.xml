@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_groups">
 
     <fragment
         android:id="@+id/navigation_home"
@@ -15,11 +15,24 @@
         android:id="@+id/navigation_groups"
         android:name="com.doubean.ford.ui.groups.GroupsFragment"
         android:label="@string/title_groups"
-        tools:layout="@layout/fragment_groups" />
+        tools:layout="@layout/fragment_groups">
+        <action
+            android:id="@+id/action_navigation_groups_to_navigation_group_detail"
+            app:destination="@id/navigation_group_detail" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.doubean.ford.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/navigation_group_detail"
+        android:name="com.doubean.ford.ui.groupDetail.GroupDetailFragment"
+        android:label="Group"
+        tools:layout="@layout/group_detail_fragment">
+        <argument
+            android:name="groupId"
+            app:argType="string" />
+    </fragment>
 </navigation>
