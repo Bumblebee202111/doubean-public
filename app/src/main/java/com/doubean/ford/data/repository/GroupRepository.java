@@ -1,40 +1,164 @@
 package com.doubean.ford.data.repository;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.Transformations;
 
+import com.doubean.ford.api.DoubanService;
+import com.doubean.ford.api.GroupSearchResponse;
+import com.doubean.ford.data.FavGroup;
 import com.doubean.ford.data.Group;
-import com.doubean.ford.data.GroupRemoteDataSource;
+import com.doubean.ford.data.GroupSearchResult;
+import com.doubean.ford.data.db.AppDatabase;
 import com.doubean.ford.data.db.GroupDao;
+import com.doubean.ford.util.AppExecutors;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GroupRepository {
-
+    private final AppExecutors appExecutors;
+    private final GroupDao groupDao;
+    private final DoubanService doubanService;
     private static GroupRepository instance;
-    private GroupDao groupDao;
-    private GroupRemoteDataSource groupRemoteDataSource;
+    private final AppDatabase appDatabase;
 
-    private GroupRepository(GroupDao gardenPlantingDao) {
-        this.groupDao = gardenPlantingDao;
+    private GroupRepository(AppExecutors appExecutors, AppDatabase appDatabase, DoubanService doubanService) {
+        this.appExecutors = appExecutors;
+        this.groupDao = appDatabase.getGroupDao();
+        this.doubanService = doubanService;
+        this.appDatabase = appDatabase;
+
     }
 
-    public static GroupRepository getInstance(GroupDao gardenPlantingDao) {
+    public static GroupRepository getInstance(AppExecutors appExecutors, AppDatabase appDatabase, DoubanService doubanService) {
         if (instance == null) {
             synchronized (GroupRepository.class) {
                 if (instance == null) {
-                    instance = new GroupRepository(gardenPlantingDao);
+                    instance = new GroupRepository(appExecutors, appDatabase, doubanService);
                 }
             }
         }
         return instance;
     }
 
-    public LiveData<List<Group>> getGroups() {
-        return this.groupDao.getGroups();
+    public void addFavGroup(@NonNull FavGroup favGroup) {
+        appExecutors.diskIO().execute(() ->
+                groupDao.addFavGroup(favGroup));
     }
 
-    public LiveData<Group> getGroup(int groupId) {
-        return this.groupDao.getGroup(groupId);
-        //return this.groupRemoteDataSource.getGroup(groupId);
+    public LiveData<List<FavGroup>> getFavGroups() {
+        return groupDao.getAllFavGroupIds();
+    }
+
+    public LiveData<List<Group>> getGroups(List<String> groupIds) {
+        MediatorLiveData<List<Group>> groupsLiveData = new MediatorLiveData<>();
+        List<Group> groups = new ArrayList<>(Arrays.asList(new Group[groupIds.size()]));
+        MutableLiveData<Boolean> fetching = new MutableLiveData<>(false);
+        final int[] i = {0};
+        groupsLiveData.addSource(fetching, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (!aBoolean) {
+                    LiveData<Group> groupLiveData = getGroup(groupIds.get(i[0]));
+                    fetching.setValue(true);
+                    groupsLiveData.addSource(groupLiveData, new Observer<Group>() {
+                        @Override
+                        public void onChanged(Group group) {
+                            if (group != null) {
+                                groups.set(i[0], group);
+                                groupsLiveData.removeSource(groupLiveData);
+                                i[0]++;
+                                if (i[0] == groups.size()) {
+                                    groupsLiveData.setValue(groups);
+                                    groupsLiveData.removeSource(fetching);
+                                } else
+                                    fetching.setValue(false);
+                            }
+
+                        }
+                    });
+                }
+
+            }
+        });
+        return groupsLiveData;
+    }
+
+    public LiveData<Group> getGroup(String groupId) {
+        return new NetworkBoundResource<Group, Group>(appExecutors) {
+            @Override
+            protected void saveCallResult(@NonNull Group group) {
+                groupDao.insertGroup(group);
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable Group data) {
+                return data == null;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<Group> loadFromDb() {
+                return groupDao.getGroup(groupId);
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<Group> createCall() {
+                return doubanService.getGroup(groupId, 1);
+            }
+        }.asLiveData();
+    }
+
+    public LiveData<List<Group>> search(String query) {
+        return new NetworkBoundResource<List<Group>, GroupSearchResponse>(appExecutors) {
+
+            @Override
+            protected void saveCallResult(@NonNull GroupSearchResponse item) {
+                List<String> repoIds = item.getGroupIds();
+                GroupSearchResult repoSearchResult = new GroupSearchResult(
+                        query, repoIds);
+                appDatabase.runInTransaction(new Runnable() {
+                    @Override
+                    public void run() {
+                        groupDao.insertGroups(item.getCards());
+                        groupDao.insert(repoSearchResult);
+                    }
+                });
+
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable List<Group> data) {
+                return data == null;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<List<Group>> loadFromDb() {
+                return Transformations.switchMap(groupDao.search(query), searchData -> {
+                    if (searchData == null) {
+                        return new LiveData<List<Group>>() {
+                        };
+                    } else {
+                        return groupDao.loadOrdered(searchData.groupIds, (g1, g2) -> g2.memberCount - g1.memberCount);
+                    }
+                });
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<GroupSearchResponse> createCall() {
+                return doubanService.searchGroups(query);
+            }
+
+
+        }.asLiveData();
     }
 }

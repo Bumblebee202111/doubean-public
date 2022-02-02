@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.doubean.ford.data.Group;
 import com.doubean.ford.databinding.ListItemGroupBinding;
+import com.doubean.ford.ui.groups.GroupsFragmentDirections;
 
 public class GroupAdapter extends ListAdapter<Group, GroupAdapter.ViewHolder> {
 
@@ -52,12 +54,13 @@ public class GroupAdapter extends ListAdapter<Group, GroupAdapter.ViewHolder> {
         public ViewHolder(@NonNull ListItemGroupBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-            binding.setClickListener(group ->
-                    navigateToGroup(group, itemView));
+            binding.setClickListener(v -> navigateToGroup(binding.getGroup(), v));
         }
 
-        private void navigateToGroup(View group, View itemView) {
-
+        private void navigateToGroup(@NonNull Group group, View itemView) {
+            GroupsFragmentDirections.ActionNavigationGroupsToNavigationGroupDetail direction =
+                    GroupsFragmentDirections.actionNavigationGroupsToNavigationGroupDetail(group.getGroupId());
+            Navigation.findNavController(itemView).navigate(direction);
         }
 
         void bind(Group item) {
