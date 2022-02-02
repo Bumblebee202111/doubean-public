@@ -65,7 +65,8 @@ doubean
 * [Developer Guides][guides]
 * [Github Browser Sample with Android Architecture Components][github-browser-sample]
 * [Android Architecture Blueprints v1 (todo-mvvm-live)][todo-mvvm-live]
-  [sunflower]: https://github.com/android/sunflower
+
+[sunflower]: https://github.com/android/sunflower
 
 [guides]: https://developer.android.google.cn/guide
 
