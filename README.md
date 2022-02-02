@@ -1,12 +1,20 @@
 doubean
 =======
-豆瓣非官方app，基于Android Jetpack实现使用关键词订阅小组话题标签（tag/tab）等功能。
+豆瓣非官方app，主要用于小组浏览，仍在起步阶段。 功能:
 
-注意：
-
-* 目前开发进度1%，尚未实现任何功能。
-* 仅用于作者小白的个人学习和轻度日常使用，参考大量Android官方资料，代码“东拼西凑”，原创性极低。
-* 第一次使用Markdown，第一次尝试Room。
+* 已实现的功能
+  * 根据收藏的小组ID（fav_group数据库表）在线或本地加载小组基本信息（不含话题）
+* 待实现的功能
+  * 支持使用关键词黑名单和白名单、小组话题标签（tag aka tab）订阅话题
+* 不会实现的功能
+  * 豆瓣除小组外其他模块和基于登录的服务 特点：
+* 基于MVVM架构和Java语言，优先选择Android Jetpack库的组件
+* 能够使用某种方式获取豆瓣实时数据
+* 使用ROOM作为豆瓣服务器数据的缓存
+* 根据多条件订阅关注的话题
+* 轻量app（既由于作者水平和精力有限，又由于官方app诸多“累赘”的特性不在开发计划之内） 注意：
+* 仅用于作者小白的个人学习和轻度日常使用，部分“非技术”细节已经.gitignore了，参考自Internet，感兴趣的可以搜一搜。
+* 参考大量Android官方资料，代码“东拼西凑”，原创性极低。
 
 使用的库
 -------
@@ -14,7 +22,7 @@ doubean
 * [Foundation][foundation]
   * [AppCompat][appcompat]
   * [Test][test]\(待使用\)
-* [Architecture][architecture]
+* [Architecture][arch]
   * [Data Binding][data-binding]
   * [Lifecycles][lifecycle]
   * [LiveData][livedata]
