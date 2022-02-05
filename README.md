@@ -31,7 +31,7 @@ doubean
 ----
 
 * 仅用于作者小白的个人学习和轻度日常使用，部分“非技术”细节已经.gitignore了，感兴趣的可以搜一搜。方法来自Internet，具体实现时采用了第三方类库。
-* 参考大量Android官方资料，代码“东拼西凑”，原创性极低。
+* 代码引用大量Android官方样例（“东拼西凑”)，原创性极低。
 
 使用的库
 -------
@@ -85,17 +85,22 @@ doubean
 
 参考的资料
 ---------
-
 * [Android Sunflower][sunflower]
 * [Developer Guides][guides]
 * [Github Browser Sample with Android Architecture Components][github-browser-sample]
 * [Android Architecture Blueprints v1 (todo-mvvm-live)][todo-mvvm-live]
-
-[sunflower]: https://github.com/android/sunflower
+* 一些获取豆瓣数据的方法
+  [sunflower]: https://github.com/android/sunflower
 
 [guides]: https://developer.android.google.cn/guide
 
 [github-browser-sample]: https://github.com/android/architecture-components-samples/tree/master/GithubBrowserSample
 
 [todo-mvvm-live]: https://github.com/android/architecture-samples/tree/todo-mvvm-live
+
+辅助工具
+---------
+
+* HTTPCanary
+* MiX
 
