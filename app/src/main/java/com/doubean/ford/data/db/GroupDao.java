@@ -11,6 +11,7 @@ import androidx.room.Transaction;
 import com.doubean.ford.data.FavGroup;
 import com.doubean.ford.data.Group;
 import com.doubean.ford.data.GroupSearchResult;
+import com.doubean.ford.data.GroupTopic;
 
 import java.util.Comparator;
 import java.util.List;
@@ -20,7 +21,7 @@ public interface GroupDao {
     @Query("SELECT * FROM groups")
     LiveData<List<Group>> getGroups();
 
-    @Query("SELECT * FROM groups WHERE groupId = :groupId")
+    @Query("SELECT * FROM groups WHERE id = :groupId")
     LiveData<Group> getGroup(String groupId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -33,7 +34,7 @@ public interface GroupDao {
     void addFavGroup(FavGroup favGroup);
 
     @Transaction
-    @Query("SELECT * FROM groups WHERE groupId IN (SELECT groupId FROM fav_groups)")
+    @Query("SELECT * FROM groups WHERE id IN (SELECT id FROM fav_groups)")
     LiveData<List<Group>> getAllFavGroups();
 
     @Query("SELECT * FROM fav_groups")
@@ -54,6 +55,12 @@ public interface GroupDao {
 
     }
 
-    @Query("SELECT * FROM groups WHERE groupId in (:groupIds)")
+    @Query("SELECT * FROM groups WHERE id in (:groupIds)")
     LiveData<List<Group>> loadById(List<String> groupIds);
+
+    @Query("SELECT * FROM group_topics WHERE group_id = :groupId ORDER BY date_created DESC")
+    LiveData<List<GroupTopic>> getGroupTopics(String groupId);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void addGroupTopic(GroupTopic topic);
 }

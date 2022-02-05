@@ -19,7 +19,7 @@ public final class Group {
     @PrimaryKey
     @NonNull
     @SerializedName("id")
-    public final String groupId;
+    public final String id;
 
     @NonNull
     @SerializedName("name")
@@ -41,8 +41,8 @@ public final class Group {
     @SerializedName("background_mask_color")
     public String color;
 
-    public Group(@NonNull String groupId, @NonNull String groupName, int memberCount, int topicCount, String dateCreated, List<GroupTopicTag> groupTabs, String sharingUrl, String desc, String avatarUrl, String color) {
-        this.groupId = groupId;
+    public Group(@NonNull String id, @NonNull String groupName, int memberCount, int topicCount, String dateCreated, List<GroupTopicTag> groupTabs, String sharingUrl, String desc, String avatarUrl, String color) {
+        this.id = id;
         this.groupName = groupName;
         this.memberCount = memberCount;
         this.topicCount = topicCount;
@@ -78,8 +78,8 @@ public final class Group {
         return color;
     }
 
-    public String getGroupId() {
-        return groupId;
+    public String getId() {
+        return id;
     }
 
     @NonNull

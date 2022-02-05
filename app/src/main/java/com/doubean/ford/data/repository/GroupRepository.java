@@ -13,6 +13,8 @@ import com.doubean.ford.api.GroupSearchResponse;
 import com.doubean.ford.data.FavGroup;
 import com.doubean.ford.data.Group;
 import com.doubean.ford.data.GroupSearchResult;
+import com.doubean.ford.data.GroupTopic;
+import com.doubean.ford.data.TopicsResponse;
 import com.doubean.ford.data.db.AppDatabase;
 import com.doubean.ford.data.db.GroupDao;
 import com.doubean.ford.util.AppExecutors;
@@ -22,10 +24,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GroupRepository {
+    private static GroupRepository instance;
     private final AppExecutors appExecutors;
     private final GroupDao groupDao;
     private final DoubanService doubanService;
-    private static GroupRepository instance;
     private final AppDatabase appDatabase;
 
     private GroupRepository(AppExecutors appExecutors, AppDatabase appDatabase, DoubanService doubanService) {
@@ -56,37 +58,39 @@ public class GroupRepository {
         return groupDao.getAllFavGroupIds();
     }
 
-    public LiveData<List<Group>> getGroups(List<String> groupIds) {
+    public LiveData<List<Group>> getGroups(@NonNull List<String> groupIds) {
         MediatorLiveData<List<Group>> groupsLiveData = new MediatorLiveData<>();
         List<Group> groups = new ArrayList<>(Arrays.asList(new Group[groupIds.size()]));
-        MutableLiveData<Boolean> fetching = new MutableLiveData<>(false);
-        final int[] i = {0};
-        groupsLiveData.addSource(fetching, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (!aBoolean) {
-                    LiveData<Group> groupLiveData = getGroup(groupIds.get(i[0]));
-                    fetching.setValue(true);
-                    groupsLiveData.addSource(groupLiveData, new Observer<Group>() {
-                        @Override
-                        public void onChanged(Group group) {
-                            if (group != null) {
-                                groups.set(i[0], group);
-                                groupsLiveData.removeSource(groupLiveData);
-                                i[0]++;
-                                if (i[0] == groups.size()) {
-                                    groupsLiveData.setValue(groups);
-                                    groupsLiveData.removeSource(fetching);
-                                } else
-                                    fetching.setValue(false);
+        if (groupIds.size() > 0) {
+            MutableLiveData<Boolean> fetching = new MutableLiveData<>(false);
+            final int[] i = {0};
+            groupsLiveData.addSource(fetching, new Observer<Boolean>() {
+                @Override
+                public void onChanged(Boolean aBoolean) {
+                    if (!aBoolean) {
+                        LiveData<Group> groupLiveData = getGroup(groupIds.get(i[0]));
+                        fetching.setValue(true);
+                        groupsLiveData.addSource(groupLiveData, new Observer<Group>() {
+                            @Override
+                            public void onChanged(Group group) {
+                                if (group != null) {
+                                    groups.set(i[0]++, group);
+                                    groupsLiveData.removeSource(groupLiveData);
+                                    if (i[0] == groups.size()) {
+                                        groupsLiveData.setValue(groups);
+                                        groupsLiveData.removeSource(fetching);
+                                    } else
+                                        fetching.setValue(false);
+                                }
+
                             }
+                        });
+                    }
 
-                        }
-                    });
                 }
+            });
+        }
 
-            }
-        });
         return groupsLiveData;
     }
 
@@ -159,6 +163,38 @@ public class GroupRepository {
             }
 
 
+        }.asLiveData();
+    }
+
+    public LiveData<List<GroupTopic>> getGroupTopics(String groupId) {
+        return new NetworkBoundResource<List<GroupTopic>, TopicsResponse>(appExecutors) {
+            @Override
+            protected void saveCallResult(@NonNull TopicsResponse item) {
+                List<GroupTopic> topics = item.getTopics();
+                for (GroupTopic topic : topics) {
+                    topic.groupId = groupId;
+                    groupDao.addGroupTopic(topic);
+                }
+
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable List<GroupTopic> data) {
+                //return data==null||data.isEmpty();
+                return true;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<List<GroupTopic>> loadFromDb() {
+                return groupDao.getGroupTopics(groupId);
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<TopicsResponse> createCall() {
+                return doubanService.getGroupTopics(groupId);
+            }
         }.asLiveData();
     }
 }

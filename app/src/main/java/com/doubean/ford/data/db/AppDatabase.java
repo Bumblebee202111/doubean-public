@@ -43,6 +43,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 dao.addFavGroup(new FavGroup("644960"));
                 dao.addFavGroup(new FavGroup("732299"));
                 dao.addFavGroup(new FavGroup("665372"));
+                //dao.addGroupTopic(new GroupTopic("12345","644960",null,"aaaaa", null,null,0,0,null,null));
                 //dao.addFavGroup(new FavGroup("667320"));
             });
         }
@@ -50,7 +51,6 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract GroupDao getGroupDao();
 
-    public abstract GroupTopicDao getGroupTopicDao();
 
     private static AppDatabase buildDatabase(Context context) {
         return Room.databaseBuilder(context, AppDatabase.class, Constants.DATABASE_NAME)
