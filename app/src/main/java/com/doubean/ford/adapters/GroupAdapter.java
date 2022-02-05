@@ -37,7 +37,7 @@ public class GroupAdapter extends ListAdapter<Group, GroupAdapter.ViewHolder> {
     private static class GroupDiffCallback extends DiffUtil.ItemCallback<Group> {
         @Override
         public boolean areItemsTheSame(@NonNull Group oldItem, @NonNull Group newItem) {
-            return oldItem.getGroupId().equals(newItem.getGroupId());
+            return oldItem.getId().equals(newItem.getId());
         }
 
         @SuppressLint("DiffUtilEquals")
@@ -47,9 +47,9 @@ public class GroupAdapter extends ListAdapter<Group, GroupAdapter.ViewHolder> {
         }
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private ListItemGroupBinding binding;
+        private final ListItemGroupBinding binding;
 
         public ViewHolder(@NonNull ListItemGroupBinding binding) {
             super(binding.getRoot());
@@ -59,7 +59,7 @@ public class GroupAdapter extends ListAdapter<Group, GroupAdapter.ViewHolder> {
 
         private void navigateToGroup(@NonNull Group group, View itemView) {
             GroupsFragmentDirections.ActionNavigationGroupsToNavigationGroupDetail direction =
-                    GroupsFragmentDirections.actionNavigationGroupsToNavigationGroupDetail(group.getGroupId());
+                    GroupsFragmentDirections.actionNavigationGroupsToNavigationGroupDetail(group.getId());
             Navigation.findNavController(itemView).navigate(direction);
         }
 

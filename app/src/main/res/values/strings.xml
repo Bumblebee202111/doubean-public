@@ -3,6 +3,6 @@
     <string name="title_home">Home</string>
     <string name="title_groups">Groups</string>
     <string name="title_notifications">Notifications</string>
-    <string name="favorites">Favorites</string>
+    <string name="text_favorites">Favorites</string>
     <string name="a11y_group_item_image">Avatar of group</string>
 </resources>

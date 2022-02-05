@@ -1,15 +1,15 @@
 package com.doubean.ford.data;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "fav_groups")
-@ForeignKey(entity = Group.class, parentColumns = {"id"}, childColumns = {"group_id"})
 public class FavGroup {
     @PrimaryKey
     @NonNull
+    @ColumnInfo(name = "group_id")
     public String groupId;
 
     public FavGroup(@NonNull String groupId) {

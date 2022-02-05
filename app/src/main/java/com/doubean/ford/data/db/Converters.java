@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import androidx.room.TypeConverter;
 import androidx.room.util.StringUtil;
 
+import com.doubean.ford.data.GroupTopic;
 import com.doubean.ford.data.GroupTopicTag;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -38,6 +39,20 @@ public class Converters {
     @TypeConverter
     public static String intListToString(List<Integer> ints) {
         return StringUtil.joinIntoString(ints);
+    }
+
+    @TypeConverter
+    public static String groupTopicListToString(List<GroupTopic> topics) {
+        return new Gson().toJson(topics);
+    }
+
+    @TypeConverter
+    public static List<GroupTopic> stringToGroupTopicList(String data) {
+        if (data == null) {
+            return Collections.emptyList();
+        }
+        return new Gson().fromJson(data, new TypeToken<ArrayList<GroupTopic>>() {
+        }.getType());
     }
 
     @TypeConverter

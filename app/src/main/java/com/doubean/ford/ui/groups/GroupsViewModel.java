@@ -24,11 +24,14 @@ public class GroupsViewModel extends ViewModel {
         this.favGroups = Transformations.switchMap(favGroupList, new Function<List<FavGroup>, LiveData<List<Group>>>() {
             @Override
             public LiveData<List<Group>> apply(List<FavGroup> input) {
-                List<String> ids = new ArrayList<>();
-                for (FavGroup g : input) {
-                    ids.add(g.groupId);
+                if (input != null) {
+                    List<String> ids = new ArrayList<>();
+                    for (FavGroup g : input) {
+                        ids.add(g.groupId);
+                    }
+                    return groupRepository.getGroups(ids);
                 }
-                return groupRepository.getGroups(ids);
+                return null;
             }
         });
         this.groupRepository = groupRepository;

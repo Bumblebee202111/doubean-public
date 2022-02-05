@@ -34,9 +34,11 @@ public class GroupsFragment extends Fragment {
         groupsViewModel =
                 new ViewModelProvider(this, factory).get(GroupsViewModel.class);
         binding = FragmentGroupsBinding.inflate(inflater, container, false);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
         GroupAdapter adapter = new GroupAdapter();
         binding.groupList.setAdapter(adapter);
         //groupsViewModel.addFavGroup(new FavGroup(644960));
+
         groupsViewModel.getFavGroups().observe(getViewLifecycleOwner(), new Observer<List<Group>>() {
             @Override
             public void onChanged(List<Group> groups) {
@@ -45,6 +47,7 @@ public class GroupsFragment extends Fragment {
                 }
             }
         });
+
         return binding.getRoot();
     }
 

@@ -39,7 +39,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
             if (shouldFetch(data)) {
                 fetchFromNetwork(dbSource);
             } else {
-                result.addSource(dbSource, newData -> setValue(newData));
+                result.addSource(dbSource, this::setValue);
             }
         });
     }
@@ -54,7 +54,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
     private void fetchFromNetwork(final LiveData<ResultType> dbSource) {
         LiveData<RequestType> apiResponse = createCall();
         // we re-attach dbSource as a new source, it will dispatch its latest value quickly
-        result.addSource(dbSource, newData -> setValue(newData));
+        result.addSource(dbSource, this::setValue);
         result.addSource(apiResponse, response -> {
             result.removeSource(apiResponse);
             result.removeSource(dbSource);
