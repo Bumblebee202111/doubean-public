@@ -6,6 +6,7 @@ import androidx.room.TypeConverter;
 import androidx.room.util.StringUtil;
 
 import com.doubean.ford.data.GroupTopic;
+import com.doubean.ford.data.GroupTopicAuthor;
 import com.doubean.ford.data.GroupTopicTag;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -78,5 +79,15 @@ public class Converters {
     public static List<String> stringToStringList(String strings) {
         return new Gson().fromJson(strings, new TypeToken<ArrayList<GroupTopicTag>>() {
         }.getType());
+    }
+
+    @TypeConverter
+    public static GroupTopicAuthor stringToAuthor(String strings) {
+        return new Gson().fromJson(strings, GroupTopicAuthor.class);
+    }
+
+    @TypeConverter
+    public static String authorToString(GroupTopicAuthor author) {
+        return new Gson().toJson(author);
     }
 }

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.doubean.ford.data.GroupTopic;
 import com.doubean.ford.databinding.ListItemGroupTopicBinding;
-import com.doubean.ford.ui.groups.GroupsFragmentDirections;
+import com.doubean.ford.ui.groupDetail.GroupDetailFragmentDirections;
 
 public class GroupTopicAdapter extends ListAdapter<GroupTopic, GroupTopicAdapter.ViewHolder> {
 
@@ -58,8 +58,8 @@ public class GroupTopicAdapter extends ListAdapter<GroupTopic, GroupTopicAdapter
         }
 
         private void navigateToTopic(@NonNull GroupTopic topic, View itemView) {
-            GroupsFragmentDirections.ActionNavigationGroupsToNavigationGroupDetail direction =
-                    GroupsFragmentDirections.actionNavigationGroupsToNavigationGroupDetail(topic.topicId);
+            GroupDetailFragmentDirections.ActionNavigationGroupDetailToNavigationGroupTopicDetail direction =
+                    GroupDetailFragmentDirections.actionNavigationGroupDetailToNavigationGroupTopicDetail(topic.topicId);
             Navigation.findNavController(itemView).navigate(direction);
         }
 

@@ -1,5 +1,7 @@
 package com.doubean.ford.data.repository;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -14,6 +16,7 @@ import com.doubean.ford.data.FavGroup;
 import com.doubean.ford.data.Group;
 import com.doubean.ford.data.GroupSearchResult;
 import com.doubean.ford.data.GroupTopic;
+import com.doubean.ford.data.GroupTopicTag;
 import com.doubean.ford.data.TopicsResponse;
 import com.doubean.ford.data.db.AppDatabase;
 import com.doubean.ford.data.db.GroupDao;
@@ -98,12 +101,13 @@ public class GroupRepository {
         return new NetworkBoundResource<Group, Group>(appExecutors) {
             @Override
             protected void saveCallResult(@NonNull Group group) {
+                group.groupTabs.add(0, GroupTopicTag.DEFAULT);
                 groupDao.insertGroup(group);
             }
 
             @Override
             protected boolean shouldFetch(@Nullable Group data) {
-                return data == null;
+                return true;
             }
 
             @NonNull
@@ -166,13 +170,17 @@ public class GroupRepository {
         }.asLiveData();
     }
 
-    public LiveData<List<GroupTopic>> getGroupTopics(String groupId) {
+    public LiveData<List<GroupTopic>> getGroupTopics(String groupId, String tagId) {
         return new NetworkBoundResource<List<GroupTopic>, TopicsResponse>(appExecutors) {
             @Override
             protected void saveCallResult(@NonNull TopicsResponse item) {
                 List<GroupTopic> topics = item.getTopics();
                 for (GroupTopic topic : topics) {
                     topic.groupId = groupId;
+                    if (!topic.topicTags.isEmpty()) {
+                        topic.tagId = topic.topicTags.get(0).id;
+                    }
+
                     groupDao.addGroupTopic(topic);
                 }
 
@@ -187,13 +195,44 @@ public class GroupRepository {
             @NonNull
             @Override
             protected LiveData<List<GroupTopic>> loadFromDb() {
-                return groupDao.getGroupTopics(groupId);
+                if (TextUtils.isEmpty(tagId))
+                    return groupDao.getGroupTopics(groupId);
+                return groupDao.getGroupTopics(groupId, tagId);
             }
 
             @NonNull
             @Override
             protected LiveData<TopicsResponse> createCall() {
-                return doubanService.getGroupTopics(groupId);
+                if (TextUtils.isEmpty(tagId))
+                    return doubanService.getGroupTopics(groupId);
+                return doubanService.getGroupTopics(groupId, tagId);
+            }
+        }.asLiveData();
+    }
+
+    public LiveData<GroupTopic> getGroupTopic(String topicId) {
+        return new NetworkBoundResource<GroupTopic, GroupTopic>(appExecutors) {
+
+            @Override
+            protected void saveCallResult(@NonNull GroupTopic item) {
+                groupDao.addGroupTopic(item);
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable GroupTopic data) {
+                return data == null;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<GroupTopic> loadFromDb() {
+                return groupDao.getGroupTopic(topicId);
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<GroupTopic> createCall() {
+                return doubanService.getGroupTopic(topicId);
             }
         }.asLiveData();
     }

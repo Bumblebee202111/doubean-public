@@ -30,6 +30,7 @@ public class GroupTopic {
     @SerializedName("update_time")
     @ColumnInfo(name = "date_updated")
     public Date dateUpdated;
+    @SerializedName("like_count")
     @ColumnInfo(name = "like_count")
     public int likeCount;
     @SerializedName("comments_count")
@@ -41,6 +42,7 @@ public class GroupTopic {
     @SerializedName("cover_url")
     @ColumnInfo(name = "cover_url")
     public String coverUrl;
+    public String url;
 
     public GroupTopic(@NonNull String topicId, String groupId, String tagId, String title, Date dateCreated, Date dateUpdated, int likeCount, int commentCount, List<GroupTopicTag> topicTags, String coverUrl) {
         this.topicId = topicId;

@@ -29,7 +29,7 @@ public class GroupsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         factory = new GroupsViewModelFactory(GroupRepository.getInstance(new AppExecutors()
-                , AppDatabase.getInstance(getContext().getApplicationContext())
+                , AppDatabase.getInstance(requireContext().getApplicationContext())
                 , DoubanService.create()));
         groupsViewModel =
                 new ViewModelProvider(this, factory).get(GroupsViewModel.class);
@@ -37,7 +37,6 @@ public class GroupsFragment extends Fragment {
         binding.setLifecycleOwner(getViewLifecycleOwner());
         GroupAdapter adapter = new GroupAdapter();
         binding.groupList.setAdapter(adapter);
-        //groupsViewModel.addFavGroup(new FavGroup(644960));
 
         groupsViewModel.getFavGroups().observe(getViewLifecycleOwner(), new Observer<List<Group>>() {
             @Override

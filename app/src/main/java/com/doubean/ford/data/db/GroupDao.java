@@ -58,9 +58,15 @@ public interface GroupDao {
     @Query("SELECT * FROM groups WHERE id in (:groupIds)")
     LiveData<List<Group>> loadById(List<String> groupIds);
 
-    @Query("SELECT * FROM group_topics WHERE group_id = :groupId ORDER BY date_created DESC")
+    @Query("SELECT * FROM group_topics WHERE group_id = :groupId AND tag_id=:tagId ORDER BY date_created DESC LIMIT 100")
+    LiveData<List<GroupTopic>> getGroupTopics(String groupId, String tagId);
+
+    @Query("SELECT * FROM group_topics WHERE group_id = :groupId ORDER BY date_created DESC LIMIT 100")
     LiveData<List<GroupTopic>> getGroupTopics(String groupId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addGroupTopic(GroupTopic topic);
+
+    @Query("SELECT * FROM group_topics WHERE id=:topicId")
+    LiveData<GroupTopic> getGroupTopic(String topicId);
 }

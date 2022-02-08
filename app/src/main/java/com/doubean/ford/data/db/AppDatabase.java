@@ -13,11 +13,10 @@ import com.doubean.ford.data.FavGroup;
 import com.doubean.ford.data.Group;
 import com.doubean.ford.data.GroupSearchResult;
 import com.doubean.ford.data.GroupTopic;
-import com.doubean.ford.data.GroupTopicTag;
 import com.doubean.ford.util.AppExecutors;
 import com.doubean.ford.util.Constants;
 
-@Database(entities = {Group.class, GroupTopic.class, GroupTopicTag.class, FavGroup.class, GroupSearchResult.class}, version = 1, exportSchema = false)
+@Database(entities = {Group.class, GroupTopic.class, FavGroup.class, GroupSearchResult.class}, version = 1, exportSchema = false)
 @TypeConverters(Converters.class)
 public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase instance;

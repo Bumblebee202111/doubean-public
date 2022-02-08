@@ -1,2 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="title_groups">小组</string>
+    <string name="title_group">小组</string>
+    <string name="title_group_topic">小组话题</string>
+    <string name="title_home">主页</string>
+    <string name="title_notifications">通知</string>
+    <string name="a11y_group_item_image">小组头像</string>
+    <string name="text_favorites">收藏</string>
+    <string name="settings">Settings</string>
+</resources>
