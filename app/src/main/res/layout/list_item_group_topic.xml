@@ -17,10 +17,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/card_side_margin"
-        android:layout_marginEnd="@dimen/card_side_margin"
-        android:layout_marginBottom="@dimen/card_bottom_margin"
-        app:cardElevation="@dimen/card_elevation"
+        android:onClick="@{groupTopic==null?null:clickListener}"
         app:cardPreventCornerOverlap="false"
         app:isGone="@{groupTopic==null}">
 
@@ -28,33 +25,96 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/cover"
-                android:layout_width="@dimen/group_item_image_height"
-                android:layout_height="@dimen/group_item_image_height"
-                android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_small"
-                android:contentDescription="@string/a11y_group_item_image"
-                android:scaleType="centerCrop"
-                app:imageFromUrl="@{groupTopic.coverUrl}"
-
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/title"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/topic_tag"
+                isGone="@{groupTopic.topicTags==null||groupTopic.topicTags.size()==0}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_small"
-                android:text="@{groupTopic.title}"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/cover"
+                android:layout_margin="@dimen/margin_small"
+                android:text="@{groupTopic.topicTags.size()!=0?groupTopic.topicTags.get(0).name:``}"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/cover"
-                tools:text="Topic Title topic title Topic Title topic title Topic Title topic title" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="标签" />
 
+            <TextView
+                android:id="@+id/date_created"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_small"
+                app:date="@{groupTopic.dateCreated}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="20000000" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                app:layout_constraintTop_toBottomOf="@id/date_created">
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:text="@{groupTopic.title}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    app:layout_constraintEnd_toStartOf="@id/cover"
+                    app:layout_constraintStart_toStartOf="parent"
+
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Topic Title topic title Topic Title topic title Topic Title topic title" />
+
+                <ImageView
+                    android:id="@+id/cover"
+                    isGone="@{groupTopic.coverUrl.empty}"
+                    android:layout_width="@dimen/group_item_image_height"
+                    android:layout_height="@dimen/group_item_image_height"
+
+                    android:layout_margin="@dimen/margin_small"
+                    android:contentDescription="@string/a11y_group_item_image"
+                    android:scaleType="centerCrop"
+                    app:imageFromUrl="@{groupTopic.coverUrl}"
+
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_small"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/content"
+                tools:layout_editor_absoluteX="8dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/comment_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_baseline_comment_24"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/comment_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{groupTopic.commentCount+``}"
+                        app:layout_constraintStart_toEndOf="@id/comment_icon"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="123" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

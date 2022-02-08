@@ -29,10 +29,29 @@
     <fragment
         android:id="@+id/navigation_group_detail"
         android:name="com.doubean.ford.ui.groupDetail.GroupDetailFragment"
-        android:label="Group"
-        tools:layout="@layout/group_detail_fragment">
+        android:label="@string/title_group"
+        tools:layout="@layout/fragment_group_detail">
         <argument
             android:name="groupId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_navigation_group_detail_to_navigation_group_topic_detail"
+            app:destination="@id/navigation_group_topic_detail" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_group_topic_detail"
+        android:name="com.doubean.ford.ui.groupTopicDetail.GroupTopicDetailFragment"
+        android:label="@string/title_group_topic"
+        tools:layout="@layout/fragment_group_detail">
+        <argument
+            android:name="topicId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_group_topic_tag"
+        android:name="com.doubean.ford.ui.groupTab.GroupTabFragment">
+        <argument
+            android:name="tagId"
             app:argType="string" />
     </fragment>
 </navigation>

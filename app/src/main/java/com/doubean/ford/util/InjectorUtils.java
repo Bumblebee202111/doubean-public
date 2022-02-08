@@ -19,13 +19,15 @@ package com.doubean.ford.util;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.doubean.ford.api.DoubanService;
 import com.doubean.ford.data.db.AppDatabase;
 import com.doubean.ford.data.repository.GroupRepository;
 import com.doubean.ford.ui.groupDetail.GroupDetailViewModelFactory;
+import com.doubean.ford.ui.groupTab.GroupTabViewModelFactory;
+import com.doubean.ford.ui.groupTopicDetail.GroupTopicDetailViewModelFactory;
 import com.doubean.ford.ui.groups.GroupsViewModelFactory;
-
 
 /**
  * Static methods used to inject classes needed for various Activities and Fragments.
@@ -44,4 +46,11 @@ public class InjectorUtils {
         return new GroupDetailViewModelFactory(getGroupRepository(context), groupId);
     }
 
+    public static GroupTopicDetailViewModelFactory provideGroupTopicDetailViewModelFactory(Context context, @NonNull String topicId) {
+        return new GroupTopicDetailViewModelFactory(getGroupRepository(context), topicId);
+    }
+
+    public static GroupTabViewModelFactory provideGroupTabViewModelFactory(Context context, @NonNull String groupId, @Nullable String tagId) {
+        return new GroupTabViewModelFactory(getGroupRepository(context), groupId, tagId);
+    }
 }

@@ -1,11 +1,16 @@
 package com.doubean.ford.data;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+import androidx.annotation.Nullable;
 
-@Entity
+
 public class GroupTopicTag {
-    @PrimaryKey
-    public int Id;
-    public String Name;
+
+    public static final GroupTopicTag DEFAULT = new GroupTopicTag(null, "全部");
+    public String id;
+    public String name;
+
+    public GroupTopicTag(@Nullable String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }
