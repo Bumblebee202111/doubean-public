@@ -7,14 +7,17 @@ doubean
 * 日常使用
 * 学习Android开发、Java编程以及Git和Github的使用。
 
-功能
+计划
 ----
 
 * 已实现的功能
   * 根据收藏的小组ID（fav_group数据库表）在线或本地加载小组基本信息（不含话题）
-  * 展示小组话题列表
+  * 较为完整地展示小组话题列表
+  * 用网页显示话题详情（过渡）
 * 待实现的功能（**画饼**）
-  * 支持根据关键词黑名单和白名单、小组、话题标签（tag aka tab）订阅话题
+  * 能根据多个小组、话题标签（tag aka tab）订阅话题，支持关键词过滤
+  * 用.xml重写话题详情
+  * 搜索小组和话题
   * (待补充)
 * 不会实现的功能
   * 豆瓣除小组外其他模块和基于登录的服务
@@ -22,7 +25,7 @@ doubean
 特点
 ----
 
-* 基于MVVM架构和Java（100%）语言，优先选择Android Jetpack库中广为使用的组件和顶尖（more than优秀）第三方库
+* 基于MVVM架构和Java（100%）语言，优先选择Android Jetpack库中广为使用的组件和顶尖（\gg优秀）第三方库
 * 能够使用某种方式获取豆瓣实时数据
 * 使用ROOM作为豆瓣服务器数据的缓存
 * 根据多条件订阅关注的话题
@@ -32,8 +35,8 @@ doubean
 注意
 ----
 
-* 仅用于作者小白的个人学习和轻度日常使用，部分“非技术”细节已经.gitignore了，感兴趣的可以搜一搜。方法来自Internet，具体实现时采用了第三方类库。
-* 代码引用大量Android官方样例（“东拼西凑”)，原创性极低。
+* 项目仅用于作者小白的个人学习和轻度日常使用，部分“危险”的细节已经.gitignore了，感兴趣的同学可以搜一搜。方法来自Internet，具体实现时采用了现成的第三方类库，极大地简化代码。
+* 项目实现引用大量Android官方样例（“东拼西凑”)，原创性极低。
 
 使用的库
 -------
@@ -53,7 +56,9 @@ doubean
   * [Fragment][fragment]
   * [Layout][layout]
 * Third party and miscellaneous libraries
-  * [Glide][glide]\(待使用\)
+  * Retrofit
+  * Apache Commons
+  * [Glide][glide]
 
 [foundation]: https://developer.android.com/jetpack/components
 
@@ -87,12 +92,16 @@ doubean
 
 参考的资料
 ---------
+
 * [Android Sunflower][sunflower]
 * [Developer Guides][guides]
 * [Github Browser Sample with Android Architecture Components][github-browser-sample]
 * [Android Architecture Blueprints v1 (todo-mvvm-live)][todo-mvvm-live]
 * 一些获取豆瓣数据的方法
-  [sunflower]: https://github.com/android/sunflower
+* StackOverflow
+* Google
+
+[sunflower]: https://github.com/android/sunflower
 
 [guides]: https://developer.android.google.cn/guide
 
