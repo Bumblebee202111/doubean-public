@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_navigation_groups_to_navigation_group_detail"
             app:destination="@id/navigation_group_detail" />
+        <action
+            android:id="@+id/action_navigation_groups_to_navigation_group_search"
+            app:destination="@id/navigation_group_search" />
     </fragment>
 
     <fragment
@@ -48,10 +51,16 @@
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/navigation_group_topic_tag"
+        android:id="@+id/navigation_group_tab"
         android:name="com.doubean.ford.ui.groupTab.GroupTabFragment">
         <argument
             android:name="tagId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/navigation_group_search"
+        android:name="com.doubean.ford.ui.groupSearch.GroupSearchFragment" />
+    <action
+        android:id="@+id/action_global_navigation_group_detail"
+        app:destination="@id/navigation_group_detail" />
 </navigation>

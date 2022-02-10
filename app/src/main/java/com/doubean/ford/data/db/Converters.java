@@ -76,8 +76,8 @@ public class Converters {
     }
 
     @TypeConverter
-    public static List<String> stringToStringList(String strings) {
-        return new Gson().fromJson(strings, new TypeToken<ArrayList<GroupTopicTag>>() {
+    public static List<String> stringToStringList(String string) {
+        return new Gson().fromJson(string, new TypeToken<ArrayList<String>>() {
         }.getType());
     }
 

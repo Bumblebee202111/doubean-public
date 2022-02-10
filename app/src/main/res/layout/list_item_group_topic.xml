@@ -26,32 +26,22 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/topic_tag"
-                isGone="@{groupTopic.topicTags==null||groupTopic.topicTags.size()==0}"
+                android:id="@+id/topic_tag_and_time"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_small"
-                android:text="@{groupTopic.topicTags.size()!=0?groupTopic.topicTags.get(0).name:``}"
+                app:date="@{groupTopic.dateCreated}"
+                app:tagName="@{groupTopic.tagName}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="标签" />
-
-            <TextView
-                android:id="@+id/date_created"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_small"
-                app:date="@{groupTopic.dateCreated}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="20000000" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_small"
-                app:layout_constraintTop_toBottomOf="@id/date_created">
+                app:layout_constraintTop_toBottomOf="@id/topic_tag_and_time">
 
                 <TextView
                     android:id="@+id/title"
@@ -100,7 +90,7 @@
                         android:id="@+id/comment_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_baseline_comment_24"
+                        android:src="@drawable/ic_comment"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -112,6 +102,25 @@
                         app:layout_constraintStart_toEndOf="@id/comment_icon"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="123" />
+
+                    <TextView
+                        android:id="@+id/text_updated_on"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:text="@string/updated"
+                        app:layout_constraintStart_toEndOf="@id/comment_count"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/updated_on"
+                        date="@{groupTopic.dateUpdated}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_small"
+                        app:layout_constraintStart_toEndOf="@id/text_updated_on"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="22-01-01 00:00" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

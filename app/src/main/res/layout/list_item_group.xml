@@ -23,7 +23,7 @@
         android:layout_marginEnd="@dimen/card_side_margin"
         android:layout_marginBottom="@dimen/card_bottom_margin"
         android:onClick="@{group==null?null:clickListener}"
-        app:cardBackgroundColor="@{Color.parseColor(group==null?`#FFFFFF`:group.color)}"
+        app:cardBackgroundColor="@{Color.parseColor(group==null||group.color==null?`#FFFFFF`:group.color)}"
         app:cardElevation="@dimen/card_elevation"
         app:cardPreventCornerOverlap="false"
         app:isGone="@{group==null}">
@@ -36,10 +36,9 @@
                 android:id="@+id/avatar"
                 android:layout_width="@dimen/group_item_image_height"
                 android:layout_height="@dimen/group_item_image_height"
-                android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_small"
                 android:contentDescription="@string/a11y_group_item_image"
                 android:scaleType="centerCrop"
+                android:layout_margin="@dimen/margin_small"
                 app:imageFromUrl="@{group.avatarUrl}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -48,22 +47,32 @@
                 android:id="@+id/name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginHorizontal="@dimen/margin_small"
                 android:text="@{group.groupName}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                app:layout_constraintBottom_toBottomOf="@id/avatar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/avatar"
                 app:layout_constraintTop_toTopOf="@id/avatar"
+                android:layout_marginStart="@dimen/margin_small"
                 tools:text="小组小组小组小组" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_small"
+                android:text="@{group.memberCount+group.memberName}"
+                app:layout_constraintBottom_toBottomOf="@id/avatar"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="@dimen/margin_small"
+                app:layout_constraintStart_toEndOf="@id/avatar"
+                app:layout_constraintTop_toBottomOf="@id/name"
+                tools:text="12345 members" />
 
             <TextView
                 android:id="@+id/desc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_small"
-                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_margin="@dimen/margin_small"
                 android:text="@{group.shortDesc}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -1,7 +1,6 @@
-package com.doubean.ford.ui.Search;
+package com.doubean.ford.ui.groupSearch;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
@@ -14,12 +13,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class SearchViewModel extends ViewModel {
+public class GroupSearchViewModel extends ViewModel {
     private final LiveData<List<Group>> results;
     private final MutableLiveData<String> query = new MutableLiveData<>();
     private final GroupRepository groupRepository;
 
-    public SearchViewModel(GroupRepository groupRepository) {
+    public GroupSearchViewModel(GroupRepository groupRepository) {
         this.groupRepository = groupRepository;
         results = Transformations.switchMap(query, search -> {
             if (search == null || search.trim().length() == 0) {
@@ -30,7 +29,7 @@ public class SearchViewModel extends ViewModel {
         });
     }
 
-    @VisibleForTesting
+
     public LiveData<List<Group>> getResults() {
         return results;
     }

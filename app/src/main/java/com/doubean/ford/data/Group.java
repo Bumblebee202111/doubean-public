@@ -34,12 +34,15 @@ public final class Group {
     public List<GroupTopicTag> groupTabs;
     @SerializedName("sharing_url")
     public String sharingUrl;
-    @SerializedName("desc")
+    @SerializedName(value = "desc", alternate = {"desc_abstract"})
     public String desc;
     @SerializedName("avatar")
     public String avatarUrl;
     @SerializedName("background_mask_color")
     public String color;
+
+    @SerializedName("member_name")
+    public String memberName;
 
     public Group(@NonNull String id, @NonNull String groupName, int memberCount, int topicCount, String dateCreated, List<GroupTopicTag> groupTabs, String sharingUrl, String desc, String avatarUrl, String color) {
         this.id = id;
@@ -90,7 +93,6 @@ public final class Group {
     public int getMemberCount() {
         return memberCount;
     }
-
     public String getShortDesc() {
         if (desc == null)
             return null;
