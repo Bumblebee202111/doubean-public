@@ -11,12 +11,13 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 
 import com.doubean.ford.api.DoubanService;
-import com.doubean.ford.api.GroupSearchResponse;
 import com.doubean.ford.data.FavGroup;
 import com.doubean.ford.data.Group;
+import com.doubean.ford.data.GroupSearchResponse;
 import com.doubean.ford.data.GroupSearchResult;
 import com.doubean.ford.data.GroupTopic;
 import com.doubean.ford.data.GroupTopicTag;
+import com.doubean.ford.data.SearchResultItem;
 import com.doubean.ford.data.TopicsResponse;
 import com.doubean.ford.data.db.AppDatabase;
 import com.doubean.ford.data.db.GroupDao;
@@ -54,7 +55,7 @@ public class GroupRepository {
 
     public void addFavGroup(@NonNull FavGroup favGroup) {
         appExecutors.diskIO().execute(() ->
-                groupDao.addFavGroup(favGroup));
+                groupDao.insertFavoriteGroup(favGroup));
     }
 
     public LiveData<List<FavGroup>> getFavGroups() {
@@ -129,14 +130,20 @@ public class GroupRepository {
 
             @Override
             protected void saveCallResult(@NonNull GroupSearchResponse item) {
-                List<String> repoIds = item.getGroupIds();
-                GroupSearchResult repoSearchResult = new GroupSearchResult(
-                        query, repoIds);
+                List<String> groupIds = item.getGroupIds();
+                GroupSearchResult groupSearchResult = new GroupSearchResult(
+                        query, groupIds);
+                List<Group> groups = new ArrayList<>();
+                for (SearchResultItem searchResultItem : item.getItems()) {
+                    groups.add(searchResultItem.getGroup());
+                }
+
                 appDatabase.runInTransaction(new Runnable() {
                     @Override
                     public void run() {
-                        groupDao.insertGroups(item.getCards());
-                        groupDao.insert(repoSearchResult);
+
+                        groupDao.insertGroups(groups);
+                        groupDao.insert(groupSearchResult);
                     }
                 });
 
@@ -144,7 +151,8 @@ public class GroupRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable List<Group> data) {
-                return data == null;
+                //return data == null;
+                return true;
             }
 
             @NonNull
@@ -152,7 +160,7 @@ public class GroupRepository {
             protected LiveData<List<Group>> loadFromDb() {
                 return Transformations.switchMap(groupDao.search(query), searchData -> {
                     if (searchData == null) {
-                        return new LiveData<List<Group>>() {
+                        return new LiveData<List<Group>>(null) {
                         };
                     } else {
                         return groupDao.loadOrdered(searchData.groupIds, (g1, g2) -> g2.memberCount - g1.memberCount);
@@ -236,4 +244,19 @@ public class GroupRepository {
             }
         }.asLiveData();
     }
+
+    public LiveData<Boolean> isFavorite(String groupId) {
+        return groupDao.getGroupFavorite(groupId);
+    }
+
+    public void createFavoriteGroup(String groupId) {
+        FavGroup favGroup = new FavGroup(groupId);
+        appExecutors.diskIO().execute(() -> groupDao.insertFavoriteGroup(favGroup));
+    }
+
+    public void removeFavoriteGroup(String groupId) {
+        FavGroup favGroup = new FavGroup(groupId);
+        appExecutors.diskIO().execute(() -> groupDao.deleteFavoriteGroup(favGroup));
+    }
+
 }

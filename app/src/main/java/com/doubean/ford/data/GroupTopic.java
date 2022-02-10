@@ -56,4 +56,9 @@ public class GroupTopic {
         this.topicTags = topicTags;
         this.coverUrl = coverUrl;
     }
+
+    public String getTagName() {
+        if (topicTags.isEmpty()) return null;
+        return topicTags.get(0).name;
+    }
 }

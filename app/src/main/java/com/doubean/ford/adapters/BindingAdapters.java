@@ -38,28 +38,38 @@ public class BindingAdapters {
         }
     }
 
+    @BindingAdapter({"date", "tagName"})
+    public static void bindDateAndTopicName(TextView textView, Date date, String tagName) {
+        if (date != null) {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            String dateTimeText;
+            if (now.getYear() == localDateTime.getYear() && now.getDayOfYear() == localDateTime.getDayOfYear()) {
+                dateTimeText = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault()).format(date);
+            } else {
+                dateTimeText = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()).format(date);
+            }
+            if (TextUtils.isEmpty(tagName)) {
+                textView.setText(dateTimeText);
+            } else {
+                textView.setText(tagName + " · " + dateTimeText);
+            }
+        }
+    }
+
     @BindingAdapter("date")
     public static void bindDate(TextView textView, Date date) {
         if (date != null) {
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
             String text;
-            if (now.getYear() == localDateTime.getYear()) {
-                if (now.getMonth() == localDateTime.getMonth()) {
-                    if (now.getDayOfMonth() == localDateTime.getDayOfMonth()) {
-
-                    } else {
-
-                    }
-
-                } else {
-
-                }
+            if (now.getYear() == localDateTime.getYear() && now.getDayOfYear() == localDateTime.getDayOfYear()) {
+                text = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault()).format(date);
             } else {
-
+                text = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()).format(date);
             }
 
-            textView.setText(DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault()).format(date));
+            textView.setText(text);
         }
     }
 }

@@ -3,6 +3,7 @@ package com.doubean.ford.data.db;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -31,7 +32,10 @@ public interface GroupDao {
     void insertGroups(List<Group> groupList);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void addFavGroup(FavGroup favGroup);
+    void insertFavoriteGroup(FavGroup favGroup);
+
+    @Delete
+    void deleteFavoriteGroup(FavGroup favGroup);
 
     @Transaction
     @Query("SELECT * FROM groups WHERE id IN (SELECT id FROM fav_groups)")
@@ -44,7 +48,7 @@ public interface GroupDao {
     LiveData<GroupSearchResult> search(String query);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(GroupSearchResult repoSearchResult);
+    void insert(GroupSearchResult groupSearchResult);
 
     default LiveData<List<Group>> loadOrdered(List<String> groupIds, Comparator<Group> c) {
 
@@ -69,4 +73,13 @@ public interface GroupDao {
 
     @Query("SELECT * FROM group_topics WHERE id=:topicId")
     LiveData<GroupTopic> getGroupTopic(String topicId);
+
+    @Query("SELECT EXISTS(SELECT * FROM fav_groups WHERE group_id= :groupId)")
+    LiveData<Boolean> getGroupFavorite(String groupId);
+
+    //TODO
+    //@Query("UPDATE groups " +
+    //        "SET id=:group")
+    void conditionalInsertGroups(Group group);
+
 }

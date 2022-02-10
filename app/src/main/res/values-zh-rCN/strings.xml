@@ -8,4 +8,8 @@
     <string name="a11y_group_item_image">小组头像</string>
     <string name="text_favorites">收藏</string>
     <string name="settings">Settings</string>
+    <string name="search">Search</string>
+    <string name="updated">更新于</string>
+    <string name="search_hint">搜索小组</string>
+    <string name="empty_search_result">暂无 <b>%s</b> 的搜索结果</string>
 </resources>

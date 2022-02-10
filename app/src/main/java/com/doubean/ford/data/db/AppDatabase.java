@@ -39,9 +39,9 @@ public abstract class AppDatabase extends RoomDatabase {
                 // Populate the database in the background.
                 // If you want to start with more words, just add them.
                 GroupDao dao = instance.getGroupDao();
-                dao.addFavGroup(new FavGroup("644960"));
-                dao.addFavGroup(new FavGroup("732299"));
-                dao.addFavGroup(new FavGroup("665372"));
+                dao.insertFavoriteGroup(new FavGroup("644960"));
+                dao.insertFavoriteGroup(new FavGroup("732299"));
+                dao.insertFavoriteGroup(new FavGroup("665372"));
                 //dao.addGroupTopic(new GroupTopic("12345","644960",null,"aaaaa", null,null,0,0,null,null));
                 //dao.addFavGroup(new FavGroup("667320"));
             });
