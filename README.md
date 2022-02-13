@@ -1,6 +1,7 @@
 doubean
 =======
 豆瓣非官方app，主要用于小组浏览。**项目仍在起步阶段**。
+![preview](https://github.com/Bumblebee202111/doubean/raw/master/Screenshot_20220213_234545.png)
 
 开发的动机
 ----------
