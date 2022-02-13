@@ -39,10 +39,6 @@ public class GroupFavoritesRepository {
         return groupFavoritesDao.getFavoriteGroupAndTabIds();
     }
 
-    public LiveData<Boolean> getFavorite(String groupId) {
-        return groupFavoritesDao.getFavorite(groupId, null);
-    }
-
     public LiveData<Boolean> getFavorite(String groupId, String currentTabId) {
         return groupFavoritesDao.getFavorite(groupId, currentTabId);
     }
