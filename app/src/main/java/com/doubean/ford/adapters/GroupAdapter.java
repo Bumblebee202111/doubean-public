@@ -59,7 +59,7 @@ public class GroupAdapter extends ListAdapter<Group, GroupAdapter.ViewHolder> {
 
         private void navigateToGroup(@NonNull Group group, View itemView) {
             MobileNavigationDirections.ActionGlobalNavigationGroupDetail direction =
-                    MobileNavigationDirections.actionGlobalNavigationGroupDetail(group.getId());
+                    MobileNavigationDirections.actionGlobalNavigationGroupDetail(group.getId(), null);
             Navigation.findNavController(itemView).navigate(direction);
         }
 

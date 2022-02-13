@@ -5,11 +5,15 @@
     <string name="title_group_topic">小组话题</string>
     <string name="title_home">主页</string>
     <string name="title_notifications">通知</string>
-    <string name="a11y_group_item_image">小组头像</string>
-    <string name="text_favorites">收藏</string>
-    <string name="settings">Settings</string>
-    <string name="search">Search</string>
+    <string name="favorite_groups_header">收藏的小组和小组标签</string>
+    <string name="settings">设置</string>
+    <string name="search">搜索</string>
     <string name="updated">更新于</string>
     <string name="search_hint">搜索小组</string>
     <string name="empty_search_result">暂无 <b>%s</b> 的搜索结果</string>
+
+    <string name="a11y_group_item_image">小组头像</string>
+    <string name="add_to_favorites">添加到收藏</string>
+    <string name="added_group_tab_to_favorites">小组或标签已添加至收藏</string>
+    <string name="removed_group_tab_from_favorites">小组或标签已从收藏中移除</string>
 </resources>

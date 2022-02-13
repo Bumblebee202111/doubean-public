@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 @Entity(tableName = "groups")
 @TypeConverters(Converters.class)
-public final class Group {
+public class Group {
 
     @PrimaryKey
     @NonNull

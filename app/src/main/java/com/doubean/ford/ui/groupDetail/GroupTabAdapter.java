@@ -13,12 +13,12 @@ import java.util.List;
 
 public class GroupTabAdapter extends FragmentStateAdapter {
     private String groupId;
-    private List<GroupTopicTag> groupTopics;
+    private List<GroupTopicTag> groupTopicTags;
 
     public GroupTabAdapter(Fragment fragment, String groupId, List<GroupTopicTag> groupTopicTags) {
         super(fragment);
         this.groupId = groupId;
-        this.groupTopics = groupTopicTags;
+        this.groupTopicTags = groupTopicTags;
     }
 
     @NonNull
@@ -27,13 +27,14 @@ public class GroupTabAdapter extends FragmentStateAdapter {
         Fragment fragment = new GroupTabFragment();
         Bundle args = new Bundle();
         args.putString(GroupTabFragment.ARG_GROUP_ID, groupId);
-        args.putString(GroupTabFragment.ARG_TAG_ID, groupTopics.get(position).id);
+        if (position > 0)
+            args.putString(GroupTabFragment.ARG_TAG_ID, groupTopicTags.get(position - 1).id);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public int getItemCount() {
-        return groupTopics.size();
+        return groupTopicTags.size() + 1;
     }
 }

@@ -21,7 +21,7 @@ public class GroupTabViewModel extends ViewModel {
         this.repository = repository;
         this.groupId = groupId;
         this.tagId = tagId;
-        group = repository.getGroup(groupId);
+        group = repository.getGroup(groupId, false);
         topics = repository.getGroupTopics(groupId, tagId);
     }
 

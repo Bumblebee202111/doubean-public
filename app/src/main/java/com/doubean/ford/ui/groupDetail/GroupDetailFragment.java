@@ -2,8 +2,6 @@ package com.doubean.ford.ui.groupDetail;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +24,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.List;
+import java.util.Objects;
 
 //TODO: refactor it to general Fragment for custom group/tag subscription
 public class GroupDetailFragment extends Fragment {
@@ -33,8 +32,7 @@ public class GroupDetailFragment extends Fragment {
     private GroupDetailViewModel groupDetailViewModel;
     FragmentGroupDetailBinding binding;
     String groupId;
-
-
+    String defaultTabId;
     public static GroupDetailFragment newInstance() {
         return new GroupDetailFragment();
     }
@@ -46,7 +44,8 @@ public class GroupDetailFragment extends Fragment {
         binding = FragmentGroupDetailBinding.inflate(inflater, container, false);
         GroupDetailFragmentArgs args = GroupDetailFragmentArgs.fromBundle(requireArguments());
         groupId = args.getGroupId();
-        GroupDetailViewModelFactory factory = InjectorUtils.provideGroupDetailViewModelFactory(requireContext(), groupId);
+        defaultTabId = args.getDefaultTabId();
+        GroupDetailViewModelFactory factory = InjectorUtils.provideGroupDetailViewModelFactory(requireContext(), groupId, defaultTabId);
         groupDetailViewModel = new ViewModelProvider(this, factory).get(GroupDetailViewModel.class);
         binding.setLifecycleOwner(getViewLifecycleOwner());
         groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(), new Observer<Group>() {
@@ -69,7 +68,7 @@ public class GroupDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding.toolbar.inflateMenu(R.menu.group_detail_menu);
-        groupDetailViewModel.getIsFavorite().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        groupDetailViewModel.getCurrentTabFavorite().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
 
@@ -82,15 +81,15 @@ public class GroupDetailFragment extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_favorite:
-                        Boolean isFavorite = groupDetailViewModel.getIsFavorite().getValue();
+                        Boolean isFavorite = groupDetailViewModel.getCurrentTabFavorite().getValue();
                         if (isFavorite != null) {
                             if (isFavorite) {
-                                groupDetailViewModel.removeGroupFromFavorites();
-                                Snackbar.make(binding.getRoot(), "Removed group from favorites", Snackbar.LENGTH_LONG)
+                                groupDetailViewModel.removeFavorite();
+                                Snackbar.make(binding.getRoot(), R.string.removed_group_tab_from_favorites, Snackbar.LENGTH_LONG)
                                         .show();
                             } else {
-                                groupDetailViewModel.addGroupToFavorites();
-                                Snackbar.make(binding.getRoot(), R.string.added_group_to_favorites, Snackbar.LENGTH_LONG)
+                                groupDetailViewModel.addFavorite();
+                                Snackbar.make(binding.getRoot(), R.string.added_group_tab_to_favorites, Snackbar.LENGTH_LONG)
                                         .show();
                             }
                         }
@@ -112,20 +111,34 @@ public class GroupDetailFragment extends Fragment {
                     TabLayout tabLayout = binding.tabLayout;
                     new TabLayoutMediator(tabLayout, viewPager,
                             (tab, position) -> {
-                                tab.setText(groupTopicTags.get(position).name);
+                                tab.setText(position == 0 ? getString(R.string.all) : groupTopicTags.get(position - 1).name);
                             }
                     ).attach();
+
+                    viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                        @Override
+                        public void onPageSelected(int position) {
+                            super.onPageSelected(position);
+                            groupDetailViewModel.setCurrentTabId(position == 0 ? null : group.groupTabs.get(position - 1).id);
+                        }
+                    });
+
+
+                    int defaultItem = 0;
+                    if (defaultTabId != null) {
+                        for (int i = 0; i < group.groupTabs.size(); i++) {
+                            if (Objects.equals(group.groupTabs.get(i).id, defaultTabId)) {
+                                defaultItem = i + 1;
+                                break;
+                            }
+                        }
+                    }
+                    viewPager.setCurrentItem(defaultItem, false);
                 }
             }
         });
 
-        // tabLayout.
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        //inflater.inflate(R.menu.group_detail_menu,menu);
-    }
 
 }

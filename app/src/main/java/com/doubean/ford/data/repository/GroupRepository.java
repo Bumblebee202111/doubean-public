@@ -11,12 +11,10 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 
 import com.doubean.ford.api.DoubanService;
-import com.doubean.ford.data.FavGroup;
 import com.doubean.ford.data.Group;
 import com.doubean.ford.data.GroupSearchResponse;
 import com.doubean.ford.data.GroupSearchResult;
 import com.doubean.ford.data.GroupTopic;
-import com.doubean.ford.data.GroupTopicTag;
 import com.doubean.ford.data.SearchResultItem;
 import com.doubean.ford.data.TopicsResponse;
 import com.doubean.ford.data.db.AppDatabase;
@@ -53,14 +51,7 @@ public class GroupRepository {
         return instance;
     }
 
-    public void addFavGroup(@NonNull FavGroup favGroup) {
-        appExecutors.diskIO().execute(() ->
-                groupDao.insertFavoriteGroup(favGroup));
-    }
 
-    public LiveData<List<FavGroup>> getFavGroups() {
-        return groupDao.getAllFavGroupIds();
-    }
 
     public LiveData<List<Group>> getGroups(@NonNull List<String> groupIds) {
         MediatorLiveData<List<Group>> groupsLiveData = new MediatorLiveData<>();
@@ -72,7 +63,7 @@ public class GroupRepository {
                 @Override
                 public void onChanged(Boolean aBoolean) {
                     if (!aBoolean) {
-                        LiveData<Group> groupLiveData = getGroup(groupIds.get(i[0]));
+                        LiveData<Group> groupLiveData = getGroup(groupIds.get(i[0]), false);
                         fetching.setValue(true);
                         groupsLiveData.addSource(groupLiveData, new Observer<Group>() {
                             @Override
@@ -98,17 +89,16 @@ public class GroupRepository {
         return groupsLiveData;
     }
 
-    public LiveData<Group> getGroup(String groupId) {
+    public LiveData<Group> getGroup(String groupId, boolean forceFetch) {
         return new NetworkBoundResource<Group, Group>(appExecutors) {
             @Override
             protected void saveCallResult(@NonNull Group group) {
-                group.groupTabs.add(0, GroupTopicTag.DEFAULT);
                 groupDao.insertGroup(group);
             }
 
             @Override
             protected boolean shouldFetch(@Nullable Group data) {
-                return true;
+                return data == null || forceFetch;
             }
 
             @NonNull
@@ -212,8 +202,8 @@ public class GroupRepository {
             @Override
             protected LiveData<TopicsResponse> createCall() {
                 if (TextUtils.isEmpty(tagId))
-                    return doubanService.getGroupTopics(groupId);
-                return doubanService.getGroupTopics(groupId, tagId);
+                    return doubanService.getGroupTopicsOfTag(groupId);
+                return doubanService.getGroupTopicsOfTag(groupId, tagId);
             }
         }.asLiveData();
     }
@@ -243,20 +233,6 @@ public class GroupRepository {
                 return doubanService.getGroupTopic(topicId);
             }
         }.asLiveData();
-    }
-
-    public LiveData<Boolean> isFavorite(String groupId) {
-        return groupDao.getGroupFavorite(groupId);
-    }
-
-    public void createFavoriteGroup(String groupId) {
-        FavGroup favGroup = new FavGroup(groupId);
-        appExecutors.diskIO().execute(() -> groupDao.insertFavoriteGroup(favGroup));
-    }
-
-    public void removeFavoriteGroup(String groupId) {
-        FavGroup favGroup = new FavGroup(groupId);
-        appExecutors.diskIO().execute(() -> groupDao.deleteFavoriteGroup(favGroup));
     }
 
 }

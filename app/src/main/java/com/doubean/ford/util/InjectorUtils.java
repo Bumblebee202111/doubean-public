@@ -23,6 +23,7 @@ import androidx.annotation.Nullable;
 
 import com.doubean.ford.api.DoubanService;
 import com.doubean.ford.data.db.AppDatabase;
+import com.doubean.ford.data.repository.GroupFavoritesRepository;
 import com.doubean.ford.data.repository.GroupRepository;
 import com.doubean.ford.ui.groupDetail.GroupDetailViewModelFactory;
 import com.doubean.ford.ui.groupSearch.GroupSearchViewModelFactory;
@@ -39,12 +40,16 @@ public class InjectorUtils {
         return GroupRepository.getInstance(new AppExecutors(), AppDatabase.getInstance(context.getApplicationContext()), DoubanService.create());
     }
 
-    public static GroupsViewModelFactory provideGroupsViewModelFactory(Context context) {
-        return new GroupsViewModelFactory(getGroupRepository(context));
+    private static GroupFavoritesRepository getFavoriteGroupRepository(Context context) {
+        return GroupFavoritesRepository.getInstance(new AppExecutors(), AppDatabase.getInstance(context.getApplicationContext()), DoubanService.create());
     }
 
-    public static GroupDetailViewModelFactory provideGroupDetailViewModelFactory(Context context, @NonNull String groupId) {
-        return new GroupDetailViewModelFactory(getGroupRepository(context), groupId);
+    public static GroupsViewModelFactory provideGroupsViewModelFactory(Context context) {
+        return new GroupsViewModelFactory(getGroupRepository(context), getFavoriteGroupRepository(context));
+    }
+
+    public static GroupDetailViewModelFactory provideGroupDetailViewModelFactory(Context context, @NonNull String groupId, String defaultTab) {
+        return new GroupDetailViewModelFactory(getGroupRepository(context), getFavoriteGroupRepository(context), groupId, defaultTab);
     }
 
     public static GroupTopicDetailViewModelFactory provideGroupTopicDetailViewModelFactory(Context context, @NonNull String topicId) {

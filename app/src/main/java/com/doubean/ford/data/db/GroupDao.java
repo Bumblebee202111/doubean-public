@@ -7,10 +7,9 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Transaction;
 
-import com.doubean.ford.data.FavGroup;
 import com.doubean.ford.data.Group;
+import com.doubean.ford.data.GroupFavorite;
 import com.doubean.ford.data.GroupSearchResult;
 import com.doubean.ford.data.GroupTopic;
 
@@ -32,17 +31,10 @@ public interface GroupDao {
     void insertGroups(List<Group> groupList);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertFavoriteGroup(FavGroup favGroup);
+    void insertFavoriteGroup(GroupFavorite groupFavorite);
 
     @Delete
-    void deleteFavoriteGroup(FavGroup favGroup);
-
-    @Transaction
-    @Query("SELECT * FROM groups WHERE id IN (SELECT id FROM fav_groups)")
-    LiveData<List<Group>> getAllFavGroups();
-
-    @Query("SELECT * FROM fav_groups")
-    LiveData<List<FavGroup>> getAllFavGroupIds();
+    void deleteFavoriteGroup(GroupFavorite groupFavorite);
 
     @Query("SELECT * FROM GroupSearchResult WHERE `query` = :query")
     LiveData<GroupSearchResult> search(String query);
@@ -74,12 +66,11 @@ public interface GroupDao {
     @Query("SELECT * FROM group_topics WHERE id=:topicId")
     LiveData<GroupTopic> getGroupTopic(String topicId);
 
-    @Query("SELECT EXISTS(SELECT * FROM fav_groups WHERE group_id= :groupId)")
-    LiveData<Boolean> getGroupFavorite(String groupId);
+
 
     //TODO
     //@Query("UPDATE groups " +
     //        "SET id=:group")
-    void conditionalInsertGroups(Group group);
+    //void conditionalInsertGroups(Group group);
 
 }

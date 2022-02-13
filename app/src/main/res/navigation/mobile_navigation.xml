@@ -37,6 +37,10 @@
         <argument
             android:name="groupId"
             app:argType="string" />
+        <argument
+            android:name="defaultTabId"
+            app:argType="string"
+            app:nullable="true" />
         <action
             android:id="@+id/action_navigation_group_detail_to_navigation_group_topic_detail"
             app:destination="@id/navigation_group_topic_detail" />

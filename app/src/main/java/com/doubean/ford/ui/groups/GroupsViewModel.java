@@ -1,56 +1,65 @@
 package com.doubean.ford.ui.groups;
 
 import androidx.annotation.NonNull;
-import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Transformations;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.doubean.ford.data.FavGroup;
 import com.doubean.ford.data.Group;
+import com.doubean.ford.data.GroupFavorite;
+import com.doubean.ford.data.GroupFavoriteDetail;
+import com.doubean.ford.data.repository.GroupFavoritesRepository;
 import com.doubean.ford.data.repository.GroupRepository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GroupsViewModel extends ViewModel {
     private final GroupRepository groupRepository;
-    LiveData<List<FavGroup>> favGroupList;
-    private LiveData<List<Group>> favGroups;
+    private final GroupFavoritesRepository groupFavoritesRepository;
+    private final LiveData<List<GroupFavoriteDetail>> favorites;
 
-    public GroupsViewModel(@NonNull GroupRepository groupRepository) {
+
+    public GroupsViewModel(@NonNull GroupRepository groupRepository, @NonNull GroupFavoritesRepository groupFavoritesRepository) {
         super();
-        this.favGroupList = groupRepository.getFavGroups();
-        this.favGroups = Transformations.switchMap(favGroupList, new Function<List<FavGroup>, LiveData<List<Group>>>() {
-            @Override
-            public LiveData<List<Group>> apply(List<FavGroup> input) {
-                if (input != null) {
-                    List<String> ids = new ArrayList<>();
-                    for (FavGroup g : input) {
-                        ids.add(g.groupId);
-                    }
-                    return groupRepository.getGroups(ids);
-                }
-                return null;
-            }
-        });
+        this.groupFavoritesRepository = groupFavoritesRepository;
+        this.favorites = createFavoritesLiveData();
         this.groupRepository = groupRepository;
 
     }
 
-    public LiveData<List<Group>> getFavGroups() {
-        return favGroups;
+    public LiveData<List<GroupFavoriteDetail>> getFavorites() {
+        return favorites;
     }
 
-    public LiveData<List<FavGroup>> getFavGroupList() {
-        return favGroupList;
+    private LiveData<List<GroupFavoriteDetail>> createFavoritesLiveData() {
+        MediatorLiveData<List<GroupFavoriteDetail>> favoritesLiveData = new MediatorLiveData<>();
+        favoritesLiveData.addSource(groupFavoritesRepository.getFavoriteIds(), new Observer<List<GroupFavorite>>() {
+            @Override
+            public void onChanged(List<GroupFavorite> favoriteIds) {
+                if (favoriteIds != null) {
+                    List<GroupFavoriteDetail> favorites = new ArrayList<>(Arrays.asList(new GroupFavoriteDetail[favoriteIds.size()]));
+                    for (int i = 0; i < favoriteIds.size(); i++) {
+                        LiveData<Group> groupLiveData = groupRepository.getGroup(favoriteIds.get(i).groupId, false);
+                        int finalI = i;
+                        favoritesLiveData.addSource(groupLiveData, new Observer<Group>() {
+                            @Override
+                            public void onChanged(Group group) {
+                                if (group != null) {
+                                    GroupFavoriteDetail groupFavoriteDetail = new GroupFavoriteDetail(group, favoriteIds.get(finalI).groupTabId);
+                                    favorites.set(finalI, groupFavoriteDetail);
+                                    favoritesLiveData.setValue(favorites);
+                                    favoritesLiveData.removeSource(groupLiveData);
+                                }
+
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        return favoritesLiveData;
     }
-
-    ;
-
-    public void addFavGroup(@NonNull FavGroup favGroup) {
-        groupRepository.addFavGroup(favGroup);
-
-    }
-
 }
