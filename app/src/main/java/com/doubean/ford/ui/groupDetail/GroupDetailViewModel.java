@@ -1,5 +1,6 @@
 package com.doubean.ford.ui.groupDetail;
 
+import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
@@ -22,9 +23,14 @@ public class GroupDetailViewModel extends ViewModel {
         this.groupFavoritesRepository = groupFavoritesRepository;
         this.groupId = groupId;
         this.groupRepository = groupRepository;
-        this.currentTabId = new MutableLiveData<>(defaultTabId);
         group = groupRepository.getGroup(groupId, true);
-        this.isCurrentTabFavorite = Transformations.switchMap(currentTabId, input -> groupFavoritesRepository.getFavorite(groupId, input));
+        this.currentTabId = new MutableLiveData<>(defaultTabId);
+        this.isCurrentTabFavorite = Transformations.switchMap(currentTabId, new Function<String, LiveData<Boolean>>() {
+            @Override
+            public LiveData<Boolean> apply(String input) {
+                return groupFavoritesRepository.getFavorite(groupId, input);
+            }
+        });
 
 
     }
