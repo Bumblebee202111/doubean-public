@@ -15,13 +15,10 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.doubean.ford.R;
-import com.doubean.ford.adapters.GroupAdapter;
-import com.doubean.ford.api.DoubanService;
-import com.doubean.ford.data.Group;
-import com.doubean.ford.data.db.AppDatabase;
-import com.doubean.ford.data.repository.GroupRepository;
+import com.doubean.ford.adapters.GroupFavoriteAdapter;
+import com.doubean.ford.data.GroupFavoriteDetail;
 import com.doubean.ford.databinding.FragmentGroupsBinding;
-import com.doubean.ford.util.AppExecutors;
+import com.doubean.ford.util.InjectorUtils;
 import com.doubean.ford.util.SpanCountCalculator;
 
 import java.util.List;
@@ -34,21 +31,19 @@ public class GroupsFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        factory = new GroupsViewModelFactory(GroupRepository.getInstance(new AppExecutors()
-                , AppDatabase.getInstance(requireContext().getApplicationContext())
-                , DoubanService.create()));
+        factory = InjectorUtils.provideGroupsViewModelFactory(requireContext());
         groupsViewModel =
                 new ViewModelProvider(this, factory).get(GroupsViewModel.class);
         binding = FragmentGroupsBinding.inflate(inflater, container, false);
         binding.setLifecycleOwner(getViewLifecycleOwner());
-        GroupAdapter adapter = new GroupAdapter();
+        GroupFavoriteAdapter adapter = new GroupFavoriteAdapter();
         binding.groupList.setAdapter(adapter);
 
-        groupsViewModel.getFavGroups().observe(getViewLifecycleOwner(), new Observer<List<Group>>() {
+        groupsViewModel.getFavorites().observe(getViewLifecycleOwner(), new Observer<List<GroupFavoriteDetail>>() {
             @Override
-            public void onChanged(List<Group> groups) {
-                if (groups != null) {
-                    adapter.submitList(groups);
+            public void onChanged(List<GroupFavoriteDetail> favorites) {
+                if (favorites != null) {
+                    adapter.submitList(favorites);
                 }
             }
         });

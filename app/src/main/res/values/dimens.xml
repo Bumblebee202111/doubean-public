@@ -6,6 +6,7 @@
     <dimen name="header_margin">24dp</dimen>
     <dimen name="card_bottom_margin">24dp</dimen>
     <dimen name="card_elevation">2dp</dimen>
-    <dimen name="group_item_image_height">64dp</dimen>
+    <dimen name="group_item_image_height">48dp</dimen>
     <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_normal">16dp</dimen>
 </resources>

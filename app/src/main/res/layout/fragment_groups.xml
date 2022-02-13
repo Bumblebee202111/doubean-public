@@ -21,12 +21,12 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/favorites"
+                android:id="@+id/favorite_groups"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginEnd="@dimen/margin_small"
-                android:text="@string/text_favorites"
+                android:layout_marginHorizontal="@dimen/margin_normal"
+                android:text="@string/favorite_groups_header"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/toolbar" />
@@ -43,7 +43,7 @@
                 app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/favorites"
+                app:layout_constraintTop_toBottomOf="@id/favorite_groups"
                 tools:context="com.google.samples.apps.sunflower.GardenActivity"
                 tools:listitem="@layout/list_item_group" />
         </androidx.constraintlayout.widget.ConstraintLayout>

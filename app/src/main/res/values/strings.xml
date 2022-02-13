@@ -3,17 +3,21 @@
     <string name="title_home">Home</string>
     <string name="title_groups">Groups</string>
     <string name="title_notifications">Notifications</string>
-    <string name="text_favorites">Favorites</string>
-    <string name="a11y_group_item_image">Avatar of group</string>
+    <string name="favorite_groups_header">Favorite Groups and Group Topics</string>
+
     <string name="title_group" />
     <string name="title_group_topic">Group Topic</string>
     <string name="settings">Settings</string>
     <string name="search">Search</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="updated">updated</string>
     <string name="search_hint">Search groups</string>
 
     <string name="empty_search_result">No results for <b>%s</b></string>
     <string name="add_to_favorites">Favorite</string>
-    <string name="added_group_to_favorites">Added group to favorites</string>
+    <string name="added_group_tab_to_favorites">Added group/tab to favorites</string>
+    <string name="removed_group_tab_from_favorites">Removed group/tab from favorites</string>
+
+    <string name="a11y_group_item_image">Avatar of group</string>
+    <string name="all">All</string>
+
 </resources>

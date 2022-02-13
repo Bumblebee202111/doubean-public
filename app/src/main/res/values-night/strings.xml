@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="text_favorites">Favorites</string>
+    <string name="favorite_groups_header">Favorites</string>
 </resources>
