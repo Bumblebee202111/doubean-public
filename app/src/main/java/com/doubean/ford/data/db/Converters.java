@@ -5,8 +5,8 @@ import android.annotation.SuppressLint;
 import androidx.room.TypeConverter;
 import androidx.room.util.StringUtil;
 
+import com.doubean.ford.data.Author;
 import com.doubean.ford.data.GroupTopic;
-import com.doubean.ford.data.GroupTopicAuthor;
 import com.doubean.ford.data.GroupTopicTag;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -82,12 +82,12 @@ public class Converters {
     }
 
     @TypeConverter
-    public static GroupTopicAuthor stringToAuthor(String strings) {
-        return new Gson().fromJson(strings, GroupTopicAuthor.class);
+    public static Author stringToAuthor(String strings) {
+        return new Gson().fromJson(strings, Author.class);
     }
 
     @TypeConverter
-    public static String authorToString(GroupTopicAuthor author) {
+    public static String authorToString(Author author) {
         return new Gson().toJson(author);
     }
 }

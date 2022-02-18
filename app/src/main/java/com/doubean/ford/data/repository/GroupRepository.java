@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -15,14 +16,19 @@ import com.doubean.ford.data.Group;
 import com.doubean.ford.data.GroupSearchResponse;
 import com.doubean.ford.data.GroupSearchResult;
 import com.doubean.ford.data.GroupTopic;
+import com.doubean.ford.data.GroupTopicComment;
+import com.doubean.ford.data.GroupTopicComments;
+import com.doubean.ford.data.GroupTopicCommentsResponse;
+import com.doubean.ford.data.GroupTopicPopularComments;
+import com.doubean.ford.data.GroupTopicsResponse;
 import com.doubean.ford.data.SearchResultItem;
-import com.doubean.ford.data.TopicsResponse;
 import com.doubean.ford.data.db.AppDatabase;
 import com.doubean.ford.data.db.GroupDao;
 import com.doubean.ford.util.AppExecutors;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class GroupRepository {
@@ -133,7 +139,7 @@ public class GroupRepository {
                     public void run() {
 
                         groupDao.insertGroups(groups);
-                        groupDao.insert(groupSearchResult);
+                        groupDao.insertGroupSearchResult(groupSearchResult);
                     }
                 });
 
@@ -169,16 +175,15 @@ public class GroupRepository {
     }
 
     public LiveData<List<GroupTopic>> getGroupTopics(String groupId, String tagId) {
-        return new NetworkBoundResource<List<GroupTopic>, TopicsResponse>(appExecutors) {
+        return new NetworkBoundResource<List<GroupTopic>, GroupTopicsResponse>(appExecutors) {
             @Override
-            protected void saveCallResult(@NonNull TopicsResponse item) {
+            protected void saveCallResult(@NonNull GroupTopicsResponse item) {
                 List<GroupTopic> topics = item.getTopics();
                 for (GroupTopic topic : topics) {
                     topic.groupId = groupId;
                     if (!topic.topicTags.isEmpty()) {
                         topic.tagId = topic.topicTags.get(0).id;
                     }
-
                     groupDao.addGroupTopic(topic);
                 }
 
@@ -200,7 +205,7 @@ public class GroupRepository {
 
             @NonNull
             @Override
-            protected LiveData<TopicsResponse> createCall() {
+            protected LiveData<GroupTopicsResponse> createCall() {
                 if (TextUtils.isEmpty(tagId))
                     return doubanService.getGroupTopicsOfTag(groupId);
                 return doubanService.getGroupTopicsOfTag(groupId, tagId);
@@ -213,12 +218,17 @@ public class GroupRepository {
 
             @Override
             protected void saveCallResult(@NonNull GroupTopic item) {
+                item.groupId = item.group.id;
+                if (!item.topicTags.isEmpty())
+                    item.tagId = item.topicTags.get(0).id;
                 groupDao.addGroupTopic(item);
+                //groupDao.insertGroup(item.group); item.group is incomplete: no tab info
             }
 
             @Override
             protected boolean shouldFetch(@Nullable GroupTopic data) {
-                return data == null;
+                //return data == null;
+                return true;
             }
 
             @NonNull
@@ -235,4 +245,81 @@ public class GroupRepository {
         }.asLiveData();
     }
 
+    public LiveData<GroupTopicComments> getGroupTopicComments(String topicId) {
+        return new NetworkBoundResource<GroupTopicComments, GroupTopicCommentsResponse>(appExecutors) {
+            @Override
+            protected void saveCallResult(@NonNull GroupTopicCommentsResponse item) {
+                for (GroupTopicComment comment : item.getComments()) {
+                    comment.topicId = topicId;
+                }
+                for (GroupTopicComment comment : item.getPopularComments()) {
+                    comment.topicId = topicId;
+                }
+                List<String> commentIds = item.getPopularCommentIds();
+                GroupTopicPopularComments popularCommentsResult = new GroupTopicPopularComments(
+                        topicId, commentIds);
+                appDatabase.runInTransaction(() -> {
+                    groupDao.insertGroupTopicComments(item.getComments());
+                    groupDao.insertGroupTopicComments(item.getPopularComments());
+                    groupDao.insertGroupTopicPopularComments(popularCommentsResult);
+                });
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable GroupTopicComments data) {
+                return true;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<GroupTopicComments> loadFromDb() {
+                MediatorLiveData<GroupTopicComments> result = new MediatorLiveData<>();
+
+                LiveData<List<GroupTopicComment>> groupTopicPopularComments = Transformations.switchMap(groupDao.getGroupTopicPopularComments(topicId), new Function<GroupTopicPopularComments, LiveData<List<GroupTopicComment>>>() {
+                    @Override
+                    public LiveData<List<GroupTopicComment>> apply(GroupTopicPopularComments input) {
+                        if (input == null)
+                            return new LiveData<List<GroupTopicComment>>(null) {
+                            };
+                        else
+                            return groupDao.loadOrderedComments(input.commentIds, new Comparator<GroupTopicComment>() {
+                                @Override
+                                public int compare(GroupTopicComment o1, GroupTopicComment o2) {
+                                    return o1.voteCount - o2.voteCount;
+                                }
+                            });
+                    }
+                });
+
+                LiveData<List<GroupTopicComment>> allComments = groupDao.getTopicComments(topicId);
+
+                GroupTopicComments groupTopicComments = new GroupTopicComments();
+                result.addSource(groupTopicPopularComments, new Observer<List<GroupTopicComment>>() {
+                    @Override
+                    public void onChanged(List<GroupTopicComment> comments) {
+                        if (comments != null) {
+                            groupTopicComments.setPopularComments(comments);
+                            result.setValue(groupTopicComments);
+                        }
+                    }
+                });
+                result.addSource(allComments, new Observer<List<GroupTopicComment>>() {
+                    @Override
+                    public void onChanged(List<GroupTopicComment> comments) {
+                        if (comments != null) {
+                            groupTopicComments.setAllComments(comments);
+                            result.setValue(groupTopicComments);
+                        }
+                    }
+                });
+                return result;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<GroupTopicCommentsResponse> createCall() {
+                return doubanService.getGroupTopicComments(topicId);
+            }
+        }.asLiveData();
+    }
 }

@@ -47,7 +47,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_group_topic_detail"
-        android:name="com.doubean.ford.ui.groupTopicDetail.GroupTopicDetailFragment"
+        android:name="com.doubean.ford.ui.groupTopic.GroupTopicFragment"
         android:label="@string/title_group_topic"
         tools:layout="@layout/fragment_group_detail">
         <argument

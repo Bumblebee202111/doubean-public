@@ -28,7 +28,7 @@ import com.doubean.ford.data.repository.GroupRepository;
 import com.doubean.ford.ui.groupDetail.GroupDetailViewModelFactory;
 import com.doubean.ford.ui.groupSearch.GroupSearchViewModelFactory;
 import com.doubean.ford.ui.groupTab.GroupTabViewModelFactory;
-import com.doubean.ford.ui.groupTopicDetail.GroupTopicDetailViewModelFactory;
+import com.doubean.ford.ui.groupTopic.GroupTopicViewModelFactory;
 import com.doubean.ford.ui.groups.GroupsViewModelFactory;
 
 /**
@@ -52,8 +52,8 @@ public class InjectorUtils {
         return new GroupDetailViewModelFactory(getGroupRepository(context), getFavoriteGroupRepository(context), groupId, defaultTab);
     }
 
-    public static GroupTopicDetailViewModelFactory provideGroupTopicDetailViewModelFactory(Context context, @NonNull String topicId) {
-        return new GroupTopicDetailViewModelFactory(getGroupRepository(context), topicId);
+    public static GroupTopicViewModelFactory provideGroupTopicDetailViewModelFactory(Context context, @NonNull String topicId) {
+        return new GroupTopicViewModelFactory(getGroupRepository(context), topicId);
     }
 
     public static GroupTabViewModelFactory provideGroupTabViewModelFactory(Context context, @NonNull String groupId, @Nullable String tagId) {

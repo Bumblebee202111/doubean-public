@@ -12,6 +12,8 @@ import com.doubean.ford.data.Group;
 import com.doubean.ford.data.GroupFavorite;
 import com.doubean.ford.data.GroupSearchResult;
 import com.doubean.ford.data.GroupTopic;
+import com.doubean.ford.data.GroupTopicComment;
+import com.doubean.ford.data.GroupTopicPopularComments;
 
 import java.util.Comparator;
 import java.util.List;
@@ -39,20 +41,39 @@ public interface GroupDao {
     @Query("SELECT * FROM GroupSearchResult WHERE `query` = :query")
     LiveData<GroupSearchResult> search(String query);
 
+    @Query("SELECT * FROM group_topic_popular_comments WHERE groupTopicId = :groupTopicId")
+    LiveData<GroupTopicPopularComments> getGroupTopicPopularComments(String groupTopicId);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(GroupSearchResult groupSearchResult);
+    void insertGroupSearchResult(GroupSearchResult groupSearchResult);
+
+    @Query("SELECT * FROM groups WHERE id IN (:groupIds)")
+    LiveData<List<Group>> loadGroupsById(List<String> groupIds);
 
     default LiveData<List<Group>> loadOrdered(List<String> groupIds, Comparator<Group> c) {
 
-        return Transformations.map(loadById(groupIds), repositories -> {
-            repositories.sort(c);
-            return repositories;
+        return Transformations.map(loadGroupsById(groupIds), groups -> {
+            groups.sort(c);
+            return groups;
         });
-
     }
 
-    @Query("SELECT * FROM groups WHERE id in (:groupIds)")
-    LiveData<List<Group>> loadById(List<String> groupIds);
+    @Query("SELECT * FROM group_topic_comments WHERE id IN (:commentIds)")
+    LiveData<List<GroupTopicComment>> loadCommentsById(List<String> commentIds);
+
+    default LiveData<List<GroupTopicComment>> loadOrderedComments(List<String> commentIds, Comparator<GroupTopicComment> c) {
+        return Transformations.map(loadCommentsById(commentIds), comments -> {
+            comments.sort(c);
+            return comments;
+        });
+    }
+
+    @Query("SELECT * FROM group_topic_comments WHERE topic_id = :topicId ORDER BY createTime ASC LIMIT 100")
+    LiveData<List<GroupTopicComment>> getTopicComments(String topicId);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertGroupTopicComments(List<GroupTopicComment> commentList);
+
 
     @Query("SELECT * FROM group_topics WHERE group_id = :groupId AND tag_id=:tagId ORDER BY date_created DESC LIMIT 100")
     LiveData<List<GroupTopic>> getGroupTopics(String groupId, String tagId);
@@ -66,6 +87,8 @@ public interface GroupDao {
     @Query("SELECT * FROM group_topics WHERE id=:topicId")
     LiveData<GroupTopic> getGroupTopic(String topicId);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertGroupTopicPopularComments(GroupTopicPopularComments popularComments);
 
 
     //TODO
