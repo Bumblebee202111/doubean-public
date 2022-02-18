@@ -2,7 +2,7 @@ package com.doubean.ford.data;
 
 import com.google.gson.annotations.SerializedName;
 
-public class GroupTopicAuthor {
+public class Author {
     @SerializedName("kind")
     public String type;
     public String name;

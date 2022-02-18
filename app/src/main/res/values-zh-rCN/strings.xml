@@ -16,4 +16,7 @@
     <string name="add_to_favorites">添加到收藏</string>
     <string name="added_group_tab_to_favorites">小组或标签已添加至收藏</string>
     <string name="removed_group_tab_from_favorites">小组或标签已从收藏中移除</string>
+    <string name="all">全部</string>
+    <string name="popular_comments">热门评论</string>
+    <string name="all_comments">全部评论</string>
 </resources>

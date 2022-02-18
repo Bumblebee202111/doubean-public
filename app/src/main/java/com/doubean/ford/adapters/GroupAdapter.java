@@ -54,6 +54,7 @@ public class GroupAdapter extends ListAdapter<Group, GroupAdapter.ViewHolder> {
         public ViewHolder(@NonNull ListItemGroupBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+
             binding.setClickListener(v -> navigateToGroup(binding.getGroup(), v));
         }
 

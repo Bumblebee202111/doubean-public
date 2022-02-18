@@ -1,9 +1,12 @@
 package com.doubean.ford.ui.groups;
 
 import androidx.annotation.NonNull;
+import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.doubean.ford.data.Group;
@@ -50,7 +53,15 @@ public class GroupsViewModel extends ViewModel {
                                 if (group != null) {
                                     GroupFavoriteDetail groupFavoriteDetail = new GroupFavoriteDetail(group, favoriteIds.get(finalI).groupTabId);
                                     favorites.set(finalI, groupFavoriteDetail);
-                                    favoritesLiveData.setValue(favorites);
+                                    boolean loaded = true;
+                                    for (GroupFavoriteDetail favorite : favorites) {
+                                        if (favorite == null) {
+                                            loaded = false;
+                                            break;
+                                        }
+                                    }
+                                    if (loaded)
+                                        favoritesLiveData.postValue(favorites);
                                     favoritesLiveData.removeSource(groupLiveData);
                                 }
 
@@ -62,4 +73,60 @@ public class GroupsViewModel extends ViewModel {
         });
         return favoritesLiveData;
     }
+
+    private LiveData<List<GroupFavoriteDetail>> createFavoritesLiveData1() {
+        MediatorLiveData<List<GroupFavoriteDetail>> favoritesLiveData = new MediatorLiveData<>();
+
+        favoritesLiveData.addSource(groupFavoritesRepository.getFavoriteIds(), favoriteIds -> {
+            if (favoriteIds != null) {
+                List<LiveData<GroupFavoriteDetail>> favoriteLiveDataList = new ArrayList<>();
+                for (int i = 0; i < favoriteIds.size(); i++)
+                    favoriteLiveDataList.add(new MutableLiveData<>());
+
+                for (int i = 1; i < favoriteLiveDataList.size(); i++) {
+                    int index = i;
+                    favoriteLiveDataList.set(i, Transformations.switchMap(favoriteLiveDataList.get(i - 1), new Function<GroupFavoriteDetail, LiveData<GroupFavoriteDetail>>() {
+                        @Override
+                        public LiveData<GroupFavoriteDetail> apply(GroupFavoriteDetail favorite) {
+                            LiveData<GroupFavoriteDetail> favoriteDetail = null;
+                            if (favorite != null) {
+                                favoriteDetail = getGroupFavorite(favoriteIds.get(index));
+                            }
+                            return favoriteDetail;
+                        }
+                    }));
+                }
+                favoriteLiveDataList.set(0, getGroupFavorite(favoriteIds.get(0)));
+                favoritesLiveData.addSource(favoriteLiveDataList.get(favoriteLiveDataList.size() - 1), new Observer<GroupFavoriteDetail>() {
+                    @Override
+                    public void onChanged(GroupFavoriteDetail groupFavoriteDetail) {
+                        if (groupFavoriteDetail != null) {
+                            List<GroupFavoriteDetail> favoriteDetailList = new ArrayList<>();
+                            for (LiveData<GroupFavoriteDetail> favoriteDetail : favoriteLiveDataList) {
+                                favoriteDetailList.add(favoriteDetail.getValue());
+                            }
+                            favoritesLiveData.setValue(favoriteDetailList);
+                        }
+
+                    }
+                });
+            }
+
+
+        });
+
+        return favoritesLiveData;
+    }
+
+    private LiveData<GroupFavoriteDetail> getGroupFavorite(GroupFavorite favorite) {
+        LiveData<Group> groupLiveData = groupRepository.getGroup(favorite.groupId, false);
+        return Transformations.map(groupLiveData,
+                new Function<Group, GroupFavoriteDetail>() {
+                    @Override
+                    public GroupFavoriteDetail apply(Group group) {
+                        return new GroupFavoriteDetail(group, favorite.groupTabId);
+                    }
+                });
+    }
+
 }

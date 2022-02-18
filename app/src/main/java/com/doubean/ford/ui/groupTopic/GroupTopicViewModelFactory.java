@@ -1,4 +1,4 @@
-package com.doubean.ford.ui.groupTopicDetail;
+package com.doubean.ford.ui.groupTopic;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
@@ -6,11 +6,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.doubean.ford.data.repository.GroupRepository;
 
-public class GroupTopicDetailViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+public class GroupTopicViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private GroupRepository repository;
     private String topicId;
 
-    public GroupTopicDetailViewModelFactory(@NonNull GroupRepository repository, String topicId) {
+    public GroupTopicViewModelFactory(@NonNull GroupRepository repository, String topicId) {
         super();
         this.repository = repository;
         this.topicId = topicId;
@@ -19,6 +19,6 @@ public class GroupTopicDetailViewModelFactory extends ViewModelProvider.NewInsta
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new GroupTopicDetailViewModel(repository, topicId);
+        return (T) new GroupTopicViewModel(repository, topicId);
     }
 }

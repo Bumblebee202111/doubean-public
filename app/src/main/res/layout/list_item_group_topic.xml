@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="com.doubean.ford.util.DateUtil" />
         <variable
             name="groupTopic"
             type="com.doubean.ford.data.GroupTopic" />
@@ -22,109 +22,118 @@
         app:isGone="@{groupTopic==null}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/topic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <ImageView
+                android:id="@+id/author_avatar"
+                avatarFromUrl="@{groupTopic.author.avatarUrl}"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
-                android:id="@+id/topic_tag_and_time"
+                android:id="@+id/topic_tag_and_create_time"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="@dimen/margin_small"
+                android:gravity="center_vertical"
+                android:text="@{groupTopic.author.name+` · `+DateUtil.getShortDateString(groupTopic.dateCreated)}"
+                app:layout_constraintBottom_toBottomOf="@id/author_avatar"
+                app:layout_constraintEnd_toStartOf="@id/cover"
+                app:layout_constraintStart_toEndOf="@id/author_avatar"
+                app:layout_constraintTop_toTopOf="@id/author_avatar"
+                tools:text="username · 202202" />
+
+            <TextView
+                android:id="@+id/topic_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_small"
-                app:date="@{groupTopic.dateCreated}"
-                app:tagName="@{groupTopic.tagName}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="标签" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_small"
                 android:layout_marginTop="@dimen/margin_small"
-                app:layout_constraintTop_toBottomOf="@id/topic_tag_and_time">
+                android:gravity="center_vertical"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                app:layout_constraintEnd_toStartOf="@id/cover"
+                app:layout_constraintTop_toBottomOf="@id/author_avatar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:topicTabName="@{groupTopic.tagName}"
+                app:topicTitle="@{groupTopic.title}"
+                tools:text="Topic Title topic title Topic Title topic title Topic Title topic title" />
 
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:text="@{groupTopic.title}"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    app:layout_constraintEnd_toStartOf="@id/cover"
-                    app:layout_constraintStart_toStartOf="parent"
 
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Topic Title topic title Topic Title topic title Topic Title topic title" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/cover"
+                isGone="@{groupTopic.coverUrl.empty}"
+                android:layout_width="100dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginEnd="@dimen/margin_small"
+                android:contentDescription="@string/a11y_group_item_image"
+                android:scaleType="centerCrop"
+                app:imageFromUrl="@{groupTopic.coverUrl}"
+                app:layout_constraintBottom_toBottomOf="parent"
 
-                <ImageView
-                    android:id="@+id/cover"
-                    isGone="@{groupTopic.coverUrl.empty}"
-                    android:layout_width="@dimen/group_item_image_height"
-                    android:layout_height="@dimen/group_item_image_height"
-
-                    android:layout_margin="@dimen/margin_small"
-                    android:contentDescription="@string/a11y_group_item_image"
-                    android:scaleType="centerCrop"
-                    app:imageFromUrl="@{groupTopic.coverUrl}"
-
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/roundedCornersImageView" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+                android:id="@+id/topic_comment_count_and_update_on"
+                android:layout_width="0dp"
+                app:layout_constraintEnd_toStartOf="@id/cover"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_small"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/topic_title"
                 tools:layout_editor_absoluteX="8dp">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <ImageView
+                    android:id="@+id/comment_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:src="@drawable/ic_comment"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <ImageView
-                        android:id="@+id/comment_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_comment"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/comment_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{groupTopic.commentCount+``}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/comment_icon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="123" />
 
-                    <TextView
-                        android:id="@+id/comment_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{groupTopic.commentCount+``}"
-                        app:layout_constraintStart_toEndOf="@id/comment_icon"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="123" />
+                <TextView
+                    android:id="@+id/text_updated_on"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:text="@string/updated"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/comment_count"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/text_updated_on"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
-                        android:text="@string/updated"
-                        app:layout_constraintStart_toEndOf="@id/comment_count"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/updated_on"
-                        date="@{groupTopic.dateUpdated}"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_small"
-                        app:layout_constraintStart_toEndOf="@id/text_updated_on"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="22-01-01 00:00" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
+                <TextView
+                    android:id="@+id/updated_on"
+                    date="@{groupTopic.dateUpdated}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_small"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/text_updated_on"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="22-01-01 00:00" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.cardview.widget.CardView>
 </layout>

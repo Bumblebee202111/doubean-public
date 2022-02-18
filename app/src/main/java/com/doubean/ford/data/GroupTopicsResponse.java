@@ -2,7 +2,7 @@ package com.doubean.ford.data;
 
 import java.util.List;
 
-public class TopicsResponse {
+public class GroupTopicsResponse {
     private int count;
     private int start;
     private int total;
