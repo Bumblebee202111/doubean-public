@@ -1,8 +1,8 @@
 doubean
 =======
 豆瓣非官方app，主要用于小组浏览。**练手项目，仍未初步完成**。
-![preview](https://github.com/Bumblebee202111/doubean/raw/master/Screenshot_20220213_234545.png)
-
+![preview](https://github.com/Bumblebee202111/doubean/raw/master/Screenshot_20220221_010243.png)
+![preview](https://github.com/Bumblebee202111/doubean/raw/master/Screenshot_20220221_010431.png)
 注意
 ----
 * 停更倒计时中，只能选取重点来完成。
