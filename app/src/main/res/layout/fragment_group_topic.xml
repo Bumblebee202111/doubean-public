@@ -10,17 +10,20 @@
             type="com.doubean.ford.ui.groupTopic.GroupTopicViewModel" />
     </data>
 
-
-    <androidx.core.widget.NestedScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context=".ui.groupTopic.GroupTopicFragment">
+        android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/topic"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:context=".ui.groupTopic.GroupTopicFragment">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/topic"
+                android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:descendantFocusability="blocksDescendants"
             app:layout_constraintEnd_toEndOf="parent"
@@ -40,15 +43,15 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="title title title title title title title title" />
 
-            <ImageView
-                android:id="@+id/author_avatar"
-                imageFromUrl="@{viewModel.topic.author.avatarUrl}"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_small"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/topic_title" />
+                <ImageView
+                    android:id="@+id/author_avatar"
+                    android:layout_width="@dimen/large_avatar_or_icon_height"
+                    android:layout_height="@dimen/large_avatar_or_icon_height"
+                    app:avatarFromUrl="@{viewModel.topic.author.avatarUrl}"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_small"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/topic_title" />
 
             <TextView
                 android:id="@+id/author_name"
@@ -75,6 +78,7 @@
 
             <WebView
                 android:id="@+id/content"
+                android:layout_marginTop="@dimen/margin_small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_small"
@@ -97,6 +101,7 @@
                 android:minWidth="0dp"
                 android:minHeight="0dp"
                 android:text="@{viewModel.topic.tagName}"
+                android:layout_marginStart="@dimen/margin_small"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/content"
                 tools:text="标签tag" />
@@ -108,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_small"
                 android:layout_marginTop="@dimen/margin_normal"
-                android:text="@string/popular_comments"
+                android:text="@string/popular_replies"
                 android:textAppearance="?attr/textAppearanceSubtitle2"
                 android:textColor="?attr/colorAccent"
                 android:textStyle="bold"
@@ -124,26 +129,28 @@
                 android:layout_marginTop="@dimen/margin_small"
                 android:nestedScrollingEnabled="false"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/list_item_group_topic_comment"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/popular_comments_header" />
 
-            <TextView
-                android:id="@+id/all_comments_header"
-                isGone="@{viewModel.topicComments.allComments==null||viewModel.topicComments.allComments.empty}"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_normal"
-                android:text="@string/all_comments"
-                android:textAppearance="?attr/textAppearanceSubtitle2"
-                android:textColor="?attr/colorAccent"
-                android:textStyle="bold"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/all_comments_header"
+                    isGone="@{viewModel.topicComments.allComments==null||viewModel.topicComments.allComments.empty}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:text="@string/all_replies"
+                    android:textAppearance="?attr/textAppearanceSubtitle2"
+                    android:textColor="?attr/colorAccent"
+                    android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/popular_comments" />
 
             <androidx.recyclerview.widget.RecyclerView
+                tools:listitem="@layout/list_item_group_topic_comment"
                 android:id="@+id/all_comments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -155,21 +162,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/all_comments_header" />
 
-            <WebView
-                android:id="@+id/webView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginHorizontal="@dimen/margin_small"
-                android:nestedScrollingEnabled="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/all_comments">
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            </WebView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    </androidx.core.widget.NestedScrollView>
-
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

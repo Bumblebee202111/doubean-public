@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GroupTopicCommentsResponse {
+public class CommentsResponse {
     @SerializedName("popular_comments")
     private List<GroupTopicComment> popularComments;
     private int start;

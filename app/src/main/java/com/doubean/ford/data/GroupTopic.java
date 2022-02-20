@@ -24,7 +24,7 @@ public class GroupTopic {
     @ColumnInfo(name = "tag_id")
     public String tagId;
     public String title;
-    public Author author;
+    public User author;
     @SerializedName("create_time")
     @ColumnInfo(name = "date_created")
     public Date dateCreated;

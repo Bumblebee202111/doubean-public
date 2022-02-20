@@ -19,7 +19,7 @@
 
     <string name="a11y_group_item_image">Avatar of group</string>
     <string name="all">All</string>
-    <string name="popular_comments">Popular Comments</string>
-    <string name="all_comments">All comments</string>
+    <string name="popular_replies">Popular replies</string>
+    <string name="all_replies">All replies</string>
 
 </resources>
