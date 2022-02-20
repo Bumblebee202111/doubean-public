@@ -12,13 +12,13 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 
 import com.doubean.ford.api.DoubanService;
+import com.doubean.ford.data.CommentsResponse;
 import com.doubean.ford.data.Group;
 import com.doubean.ford.data.GroupSearchResponse;
 import com.doubean.ford.data.GroupSearchResult;
 import com.doubean.ford.data.GroupTopic;
 import com.doubean.ford.data.GroupTopicComment;
 import com.doubean.ford.data.GroupTopicComments;
-import com.doubean.ford.data.GroupTopicCommentsResponse;
 import com.doubean.ford.data.GroupTopicPopularComments;
 import com.doubean.ford.data.GroupTopicsResponse;
 import com.doubean.ford.data.SearchResultItem;
@@ -246,9 +246,9 @@ public class GroupRepository {
     }
 
     public LiveData<GroupTopicComments> getGroupTopicComments(String topicId) {
-        return new NetworkBoundResource<GroupTopicComments, GroupTopicCommentsResponse>(appExecutors) {
+        return new NetworkBoundResource<GroupTopicComments, CommentsResponse>(appExecutors) {
             @Override
-            protected void saveCallResult(@NonNull GroupTopicCommentsResponse item) {
+            protected void saveCallResult(@NonNull CommentsResponse item) {
                 for (GroupTopicComment comment : item.getComments()) {
                     comment.topicId = topicId;
                 }
@@ -275,49 +275,49 @@ public class GroupRepository {
             protected LiveData<GroupTopicComments> loadFromDb() {
                 MediatorLiveData<GroupTopicComments> result = new MediatorLiveData<>();
 
-                LiveData<List<GroupTopicComment>> groupTopicPopularComments = Transformations.switchMap(groupDao.getGroupTopicPopularComments(topicId), new Function<GroupTopicPopularComments, LiveData<List<GroupTopicComment>>>() {
-                    @Override
-                    public LiveData<List<GroupTopicComment>> apply(GroupTopicPopularComments input) {
-                        if (input == null)
-                            return new LiveData<List<GroupTopicComment>>(null) {
-                            };
-                        else
-                            return groupDao.loadOrderedComments(input.commentIds, new Comparator<GroupTopicComment>() {
-                                @Override
-                                public int compare(GroupTopicComment o1, GroupTopicComment o2) {
-                                    return o1.voteCount - o2.voteCount;
-                                }
-                            });
-                    }
-                });
 
                 LiveData<List<GroupTopicComment>> allComments = groupDao.getTopicComments(topicId);
 
                 GroupTopicComments groupTopicComments = new GroupTopicComments();
-                result.addSource(groupTopicPopularComments, new Observer<List<GroupTopicComment>>() {
-                    @Override
-                    public void onChanged(List<GroupTopicComment> comments) {
-                        if (comments != null) {
-                            groupTopicComments.setPopularComments(comments);
-                            result.setValue(groupTopicComments);
-                        }
-                    }
-                });
                 result.addSource(allComments, new Observer<List<GroupTopicComment>>() {
                     @Override
                     public void onChanged(List<GroupTopicComment> comments) {
                         if (comments != null) {
                             groupTopicComments.setAllComments(comments);
                             result.setValue(groupTopicComments);
+                            result.removeSource(allComments);
+                            LiveData<List<GroupTopicComment>> groupTopicPopularComments = Transformations.switchMap(groupDao.getGroupTopicPopularComments(topicId), new Function<GroupTopicPopularComments, LiveData<List<GroupTopicComment>>>() {
+                                @Override
+                                public LiveData<List<GroupTopicComment>> apply(GroupTopicPopularComments input) {
+                                    if (input == null)
+                                        return new LiveData<List<GroupTopicComment>>(null) {
+                                        };
+                                    else
+                                        return groupDao.loadOrderedComments(input.commentIds, new Comparator<GroupTopicComment>() {
+                                            @Override
+                                            public int compare(GroupTopicComment o1, GroupTopicComment o2) {
+                                                return o1.voteCount - o2.voteCount;
+                                            }
+                                        });
+                                }
+                            });
+                            result.addSource(groupTopicPopularComments, comments1 -> {
+                                if (comments1 != null) {
+                                    groupTopicComments.setPopularComments(comments1);
+                                    result.setValue(groupTopicComments);
+                                }
+                            });
                         }
                     }
                 });
+
+
                 return result;
             }
 
             @NonNull
             @Override
-            protected LiveData<GroupTopicCommentsResponse> createCall() {
+            protected LiveData<CommentsResponse> createCall() {
                 return doubanService.getGroupTopicComments(topicId);
             }
         }.asLiveData();

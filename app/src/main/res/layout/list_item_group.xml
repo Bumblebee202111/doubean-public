@@ -34,8 +34,8 @@
 
             <ImageView
                 android:id="@+id/avatar"
-                android:layout_width="@dimen/group_item_image_height"
-                android:layout_height="@dimen/group_item_image_height"
+                android:layout_width="@dimen/large_avatar_or_icon_height"
+                android:layout_height="@dimen/large_avatar_or_icon_height"
                 android:contentDescription="@string/a11y_group_item_image"
                 android:scaleType="centerCrop"
                 android:layout_margin="@dimen/margin_small"

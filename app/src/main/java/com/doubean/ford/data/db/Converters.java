@@ -5,9 +5,10 @@ import android.annotation.SuppressLint;
 import androidx.room.TypeConverter;
 import androidx.room.util.StringUtil;
 
-import com.doubean.ford.data.Author;
 import com.doubean.ford.data.GroupTopic;
 import com.doubean.ford.data.GroupTopicTag;
+import com.doubean.ford.data.SizedPhoto;
+import com.doubean.ford.data.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -82,12 +83,23 @@ public class Converters {
     }
 
     @TypeConverter
-    public static Author stringToAuthor(String strings) {
-        return new Gson().fromJson(strings, Author.class);
+    public static User stringToUser(String strings) {
+        return new Gson().fromJson(strings, User.class);
     }
 
     @TypeConverter
-    public static String authorToString(Author author) {
-        return new Gson().toJson(author);
+    public static String userToString(User user) {
+        return new Gson().toJson(user);
+    }
+
+    @TypeConverter
+    public static String sizedPhotoListToString(List<SizedPhoto> photo) {
+        return new Gson().toJson(photo);
+    }
+
+    @TypeConverter
+    public static List<SizedPhoto> stringToSizedPhotoList(String string) {
+        return new Gson().fromJson(string, new TypeToken<ArrayList<SizedPhoto>>() {
+        }.getType());
     }
 }

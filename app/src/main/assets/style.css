@@ -1,3 +1,22 @@
  .image-wrapper img{
-        width: auto !important;
+      width: auto !important;
+      display: block;
+      max-width: 100%;
+      margin: auto;
+  }
+  div {
+      display: block;
+  }
+  .rich-content .question-wrapper, .topic-richtext .question-wrapper {
+      padding: 20px;
+  }
+  .rich-content .question-wrapper, .topic-richtext .question-wrapper, .rich-content .poll-wrapper, .topic-richtext .poll-wrapper, .rich-content .video-card, .topic-richtext .video-card, .rich-content .subject-wrapper, .topic-richtext .subject-wrapper, .rich-content .topic-card, .topic-richtext .topic-card {
+      margin: 0 30px 30px;
+      overflow: hidden;
+      line-height: 0;
+  }
+  .rich-content .question-wrapper .question-title, .topic-richtext .question-wrapper .question-title {
+      font-size: 1.5em;
+      line-height: 1.4;
+      font-weight: 600;
   }
