@@ -18,6 +18,9 @@ import com.doubean.ford.data.GroupTopicPopularComments;
 import com.doubean.ford.util.AppExecutors;
 import com.doubean.ford.util.Constants;
 
+/**
+ * The Room database for this app
+ */
 @Database(entities = {Group.class, GroupTopic.class, GroupFavorite.class, GroupSearchResult.class, GroupTopicComment.class, GroupTopicPopularComments.class}, version = 1, exportSchema = false)
 @TypeConverters(Converters.class)
 public abstract class AppDatabase extends RoomDatabase {
@@ -52,7 +55,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract GroupDao getGroupDao();
 
-    public abstract GroupFavoritesDao getFavoriteGroupDao();
+    public abstract GroupFavoriteDao getFavoriteGroupDao();
 
     private static AppDatabase buildDatabase(Context context) {
         return Room.databaseBuilder(context, AppDatabase.class, Constants.DATABASE_NAME)

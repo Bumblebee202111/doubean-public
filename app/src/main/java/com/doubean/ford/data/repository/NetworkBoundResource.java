@@ -96,6 +96,9 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
     @MainThread
     protected abstract boolean shouldFetch(@Nullable ResultType data);
 
+    /**
+     * Note that the returned LiveData should be exactly set once (by BumbleBee202111)
+     */
     @NonNull
     @MainThread
     protected abstract LiveData<ResultType> loadFromDb();

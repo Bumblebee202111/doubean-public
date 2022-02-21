@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -275,37 +274,28 @@ public class GroupRepository {
             protected LiveData<GroupTopicComments> loadFromDb() {
                 MediatorLiveData<GroupTopicComments> result = new MediatorLiveData<>();
 
-
-                LiveData<List<GroupTopicComment>> allComments = groupDao.getTopicComments(topicId);
-
                 GroupTopicComments groupTopicComments = new GroupTopicComments();
-                result.addSource(allComments, new Observer<List<GroupTopicComment>>() {
+                result.addSource(groupDao.getTopicComments(topicId), new Observer<List<GroupTopicComment>>() {
                     @Override
                     public void onChanged(List<GroupTopicComment> comments) {
-                        if (comments != null) {
+                        if (comments != null && !comments.isEmpty()) {
                             groupTopicComments.setAllComments(comments);
-                            result.setValue(groupTopicComments);
-                            result.removeSource(allComments);
-                            LiveData<List<GroupTopicComment>> groupTopicPopularComments = Transformations.switchMap(groupDao.getGroupTopicPopularComments(topicId), new Function<GroupTopicPopularComments, LiveData<List<GroupTopicComment>>>() {
-                                @Override
-                                public LiveData<List<GroupTopicComment>> apply(GroupTopicPopularComments input) {
-                                    if (input == null)
-                                        return new LiveData<List<GroupTopicComment>>(null) {
-                                        };
-                                    else
-                                        return groupDao.loadOrderedComments(input.commentIds, new Comparator<GroupTopicComment>() {
-                                            @Override
-                                            public int compare(GroupTopicComment o1, GroupTopicComment o2) {
-                                                return o1.voteCount - o2.voteCount;
-                                            }
-                                        });
-                                }
+                            //result.setValue(groupTopicComments);
+                            LiveData<List<GroupTopicComment>> groupTopicPopularComments = Transformations.switchMap(groupDao.getGroupTopicPopularComments(topicId), data -> {
+                                if (data == null)
+                                    return new LiveData<List<GroupTopicComment>>(null) {
+                                    };
+                                else
+                                    return groupDao.loadOrderedComments(data.commentIds, new Comparator<GroupTopicComment>() {
+                                        @Override
+                                        public int compare(GroupTopicComment o1, GroupTopicComment o2) {
+                                            return o1.voteCount - o2.voteCount;
+                                        }
+                                    });
                             });
-                            result.addSource(groupTopicPopularComments, comments1 -> {
-                                if (comments1 != null) {
-                                    groupTopicComments.setPopularComments(comments1);
-                                    result.setValue(groupTopicComments);
-                                }
+                            result.addSource(groupTopicPopularComments, data -> {
+                                groupTopicComments.setPopularComments(data);
+                                result.setValue(groupTopicComments);
                             });
                         }
                     }

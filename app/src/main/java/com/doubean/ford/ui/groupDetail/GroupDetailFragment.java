@@ -1,5 +1,6 @@
 package com.doubean.ford.ui.groupDetail;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -26,7 +27,9 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.List;
 import java.util.Objects;
 
-//TODO: refactor it to general Fragment for custom group/tag subscription
+/**
+ * A fragment representing a single Group detail screen.
+ */
 public class GroupDetailFragment extends Fragment {
 
     private GroupDetailViewModel groupDetailViewModel;
@@ -42,18 +45,21 @@ public class GroupDetailFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         binding = FragmentGroupDetailBinding.inflate(inflater, container, false);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
         GroupDetailFragmentArgs args = GroupDetailFragmentArgs.fromBundle(requireArguments());
         groupId = args.getGroupId();
         defaultTabId = args.getDefaultTabId();
         GroupDetailViewModelFactory factory = InjectorUtils.provideGroupDetailViewModelFactory(requireContext(), groupId, defaultTabId);
         groupDetailViewModel = new ViewModelProvider(this, factory).get(GroupDetailViewModel.class);
-        binding.setLifecycleOwner(getViewLifecycleOwner());
+        binding.setViewModel(groupDetailViewModel);
         groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(), new Observer<Group>() {
             @Override
             public void onChanged(@NonNull Group group) {
                 binding.setGroup(group);
             }
         });
+        groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(),
+                group -> binding.appbar.setBackgroundColor(Color.parseColor(group == null ? "#FFFFFF" : group.getColor())));
 
         return binding.getRoot();
     }

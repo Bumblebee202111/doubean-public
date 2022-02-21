@@ -13,7 +13,7 @@ public class GroupDetailViewModelFactory extends ViewModelProvider.NewInstanceFa
     private String groupId;
     private String defaultTab;
 
-    public GroupDetailViewModelFactory(@NonNull GroupRepository repository, GroupFavoritesRepository groupFavoritesRepository, String groupId, String defaultTab) {
+    public GroupDetailViewModelFactory(@NonNull GroupRepository repository, @NonNull GroupFavoritesRepository groupFavoritesRepository, String groupId, String defaultTab) {
         super();
         this.repository = repository;
         this.groupFavoritesRepository = groupFavoritesRepository;

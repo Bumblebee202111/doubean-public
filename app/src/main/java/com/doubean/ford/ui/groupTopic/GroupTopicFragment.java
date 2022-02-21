@@ -1,14 +1,11 @@
 package com.doubean.ford.ui.groupTopic;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -23,6 +20,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import com.doubean.ford.adapters.GroupTopicCommentAdapter;
 import com.doubean.ford.data.GroupTopicComments;
 import com.doubean.ford.databinding.FragmentGroupTopicBinding;
+import com.doubean.ford.util.Constants;
 import com.doubean.ford.util.InjectorUtils;
 
 import java.io.InputStream;
@@ -58,20 +56,10 @@ public class GroupTopicFragment extends Fragment {
         webSettings.setJavaScriptEnabled(true);
         //webSettings.setUseWideViewPort(true);
         //webSettings.setLoadWithOverviewMode(true);
-        //webSettings.setMinimumFontSize(16);
-
         binding.content.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
                 injectCSS();
-                WindowManager manager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-
-                DisplayMetrics metrics = new DisplayMetrics();
-                manager.getDefaultDisplay().getMetrics(metrics);
-
-                metrics.widthPixels /= metrics.density;
-
-                //view.loadUrl("javascript:var scale = " + metrics.widthPixels + " / document.body.scrollWidth; document.body.style.zoom = scale;");
                 super.onPageFinished(view, url);
             }
         });
@@ -81,33 +69,33 @@ public class GroupTopicFragment extends Fragment {
                     String encodedContent = Base64.encodeToString(groupTopic.content.getBytes(),
                             Base64.NO_PADDING);
                     binding.content.loadData(encodedContent, "text/html", "base64");
-
-
                 }
-
-                //binding.webView.loadUrl(groupTopic.url);//TODO: remove this line
             }
 
         });
         GroupTopicCommentAdapter popularCommentAdapter = new GroupTopicCommentAdapter();
         GroupTopicCommentAdapter allCommentAdapter = new GroupTopicCommentAdapter();
+        binding.popularComments.setAdapter(popularCommentAdapter);
+        binding.allComments.setAdapter(allCommentAdapter);
+        subscribeUi(popularCommentAdapter, allCommentAdapter);
+
+        binding.popularComments.addItemDecoration(new DividerItemDecoration(binding.popularComments.getContext(), DividerItemDecoration.VERTICAL));
+        binding.allComments.addItemDecoration(new DividerItemDecoration(binding.allComments.getContext(), DividerItemDecoration.VERTICAL));
+
+        return binding.getRoot();
+    }
+
+    private void subscribeUi(GroupTopicCommentAdapter popularCommentAdapter, GroupTopicCommentAdapter allCommentAdapter) {
         groupTopicViewModel.getTopicComments().observe(getViewLifecycleOwner(), new Observer<GroupTopicComments>() {
             @Override
             public void onChanged(GroupTopicComments groupTopicComments) {
                 if (groupTopicComments != null && groupTopicComments.getAllComments() != null && !groupTopicComments.getAllComments().isEmpty()) {
-                    //for(int i=0;i<5;i++)
-                    //    groupTopicComments.getAllComments().addAll(groupTopicComments.getAllComments());
                     popularCommentAdapter.submitList(groupTopicComments.getPopularComments());
                     allCommentAdapter.submitList(groupTopicComments.getAllComments());
                 }
 
             }
         });
-        binding.popularComments.addItemDecoration(new DividerItemDecoration(binding.popularComments.getContext(), DividerItemDecoration.VERTICAL));
-        binding.allComments.addItemDecoration(new DividerItemDecoration(binding.allComments.getContext(), DividerItemDecoration.VERTICAL));
-        binding.popularComments.setAdapter(popularCommentAdapter);
-        binding.allComments.setAdapter(allCommentAdapter);
-        return binding.getRoot();
     }
 
     /**
@@ -115,7 +103,7 @@ public class GroupTopicFragment extends Fragment {
      */
     private void injectCSS() {
         try {
-            InputStream inputStream = requireContext().getAssets().open("style.css");
+            InputStream inputStream = requireContext().getAssets().open(Constants.TOPIC_CSS_FILENAME);
             byte[] buffer = new byte[inputStream.available()];
             inputStream.read(buffer);
             inputStream.close();

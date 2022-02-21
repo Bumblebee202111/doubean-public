@@ -18,6 +18,9 @@ import com.doubean.ford.data.GroupTopicPopularComments;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * The Data Access Object for the [Group] class.
+ */
 @Dao
 public interface GroupDao {
     @Query("SELECT * FROM groups")
