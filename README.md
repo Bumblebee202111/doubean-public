@@ -1,11 +1,11 @@
 doubean
 =======
 豆瓣非官方app，主要用于小组浏览。**练手项目，仍未初步完成**。
-![preview](https://github.com/Bumblebee202111/doubean/raw/master/Screenshot_20220221_010243.png)
-![preview](https://github.com/Bumblebee202111/doubean/raw/master/Screenshot_20220221_010431.png)
+![preview](Screenshot_20220221_010243.png)![preview](Screenshot_20220221_010431.png)
 注意
 ----
-* 停更倒计时中，只能选取重点来完成。
+
+* 即日起随缘更新。
 * 项目仅用于作者小白的个人学习和轻度日常使用。* 想要发布.apk又怕侵权，但转念一想我这种菜鸟的作品应该没人看吧。犹豫中……
 * 部分获取数据的可能侵权的代码已经.gitignore了。方法来自各路大神的博客和仓库，作者具体实现时采用了现成的第三方类库，极大地简化代码。
 * 编写代码时尽自己所能选用权威的库、架构和理念，抄袭了大量Android官方样例（“东拼西凑”)，原创性极低，但代码质量自觉不高，请谨慎参考。
@@ -28,8 +28,7 @@ doubean
 * **待实现（较为现实的计划，既包含细枝末节，也包含整体要求）**
   * 优化UI，适当补充尚未使用的字段，调整View间的布局，设置主题，如在小组详情页合适的地方显示小组详情
   * 话题评论列表中显示回复的评论
-  * 补充正确加载话题或评论内容所需的除.img之外的CSS选择器
-  * 保存WebView中的图片
+  * 保存WebView中的图片（dev上有方法）
   * SwipeRefreshLayout（试试看）
   * Deep links（试试看）
   * 添加已读
@@ -39,7 +38,7 @@ doubean
   * 🛠从话题页返回话题列表时丢失位置（拖，学习相关知识以解决问题）
   * 🛠部分接口的缺失字段覆盖已有字段导致模型丢失缓存（拖，临时解决方案：不保存不完整的对象）
   * 🛠Room离线时不加载（拖，应该容易排除）
-  * 实现一个WebView的Fragment，以便用户查看所支持的页面的完整信息，禁用多余元素（拖）
+  * 实现一个WebView的Fragment，以便用户查看所支持的页面的完整信息或预防接口失效，并注入JavaScript禁用多余元素（拖）
   * ……
 * 看未来（画饼）
   * Paging （重中之重，基本需求）
@@ -71,8 +70,8 @@ doubean
 -------
 
 * [Foundation][foundation]
-    * [AppCompat][appcompat]
-    * [Test][test]（待使用）
+  * [AppCompat][appcompat]
+  * [Test][test]（待使用）
 * [Architecture][arch]
   * [Data Binding][data-binding]
   * [Lifecycles][lifecycle]
