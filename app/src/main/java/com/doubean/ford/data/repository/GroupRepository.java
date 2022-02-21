@@ -297,6 +297,8 @@ public class GroupRepository {
                                 groupTopicComments.setPopularComments(data);
                                 result.setValue(groupTopicComments);
                             });
+                        } else {
+                            result.setValue(groupTopicComments);
                         }
                     }
                 });
