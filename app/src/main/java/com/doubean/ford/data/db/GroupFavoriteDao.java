@@ -9,15 +9,18 @@ import androidx.room.Query;
 import com.doubean.ford.data.GroupFavorite;
 
 import java.util.List;
-
+/**
+ * The Data Access Object for the [GroupFavorite] class.
+ */
 @Dao
-public interface GroupFavoritesDao {
+public interface GroupFavoriteDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertGroupFavorite(GroupFavorite groupFavorite);
 
     @Query("DELETE FROM group_favorites WHERE group_id=:groupId AND (group_tab_id=:groupTabId OR ( group_tab_id IS NULL AND :groupTabId IS NULL ))")
     void deleteGroupFavorite(String groupId, String groupTabId);
+
     @Query("SELECT * FROM group_favorites")
     LiveData<List<GroupFavorite>> getFavoriteGroupAndTabIds();
 

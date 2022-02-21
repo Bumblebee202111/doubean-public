@@ -78,6 +78,8 @@ public class Group {
     }
 
     public String getColor() {
+        if (color == null)
+            return "#FFFFFF";
         return color;
     }
 

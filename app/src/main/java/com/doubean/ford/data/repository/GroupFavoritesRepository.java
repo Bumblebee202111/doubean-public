@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData;
 import com.doubean.ford.api.DoubanService;
 import com.doubean.ford.data.GroupFavorite;
 import com.doubean.ford.data.db.AppDatabase;
-import com.doubean.ford.data.db.GroupFavoritesDao;
+import com.doubean.ford.data.db.GroupFavoriteDao;
 import com.doubean.ford.util.AppExecutors;
 
 import java.util.List;
@@ -13,13 +13,13 @@ import java.util.List;
 public class GroupFavoritesRepository {
     private static GroupFavoritesRepository instance;
     private final AppExecutors appExecutors;
-    private final GroupFavoritesDao groupFavoritesDao;
+    private final GroupFavoriteDao groupFavoriteDao;
     private final DoubanService doubanService;
     private final AppDatabase appDatabase;
 
     private GroupFavoritesRepository(AppExecutors appExecutors, AppDatabase appDatabase, DoubanService doubanService) {
         this.appExecutors = appExecutors;
-        this.groupFavoritesDao = appDatabase.getFavoriteGroupDao();
+        this.groupFavoriteDao = appDatabase.getFavoriteGroupDao();
         this.doubanService = doubanService;
         this.appDatabase = appDatabase;
     }
@@ -36,20 +36,20 @@ public class GroupFavoritesRepository {
     }
 
     public LiveData<List<GroupFavorite>> getFavoriteIds() {
-        return groupFavoritesDao.getFavoriteGroupAndTabIds();
+        return groupFavoriteDao.getFavoriteGroupAndTabIds();
     }
 
     public LiveData<Boolean> getFavorite(String groupId, String currentTabId) {
-        return groupFavoritesDao.getFavorite(groupId, currentTabId);
+        return groupFavoriteDao.getFavorite(groupId, currentTabId);
     }
 
     public void removeFavorite(String groupId, String currentTabId) {
-        appExecutors.diskIO().execute(() -> groupFavoritesDao.deleteGroupFavorite(groupId, currentTabId));
+        appExecutors.diskIO().execute(() -> groupFavoriteDao.deleteGroupFavorite(groupId, currentTabId));
     }
 
     public void createFavorite(String groupId, String groupTabId) {
         GroupFavorite groupFavorite = new GroupFavorite(groupId, groupTabId);
-        appExecutors.diskIO().execute(() -> groupFavoritesDao.insertGroupFavorite(groupFavorite));
+        appExecutors.diskIO().execute(() -> groupFavoriteDao.insertGroupFavorite(groupFavorite));
     }
 
 
