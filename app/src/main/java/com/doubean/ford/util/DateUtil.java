@@ -14,16 +14,10 @@ public class DateUtil {
         LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         String datePattern;
         if (now.getYear() == localDateTime.getYear()) {
-            if (now.getDayOfYear() == localDateTime.getDayOfYear()) {
-                datePattern = "HH:mm";
-            } else {
                 datePattern = "MM-dd";
-            }
         } else {
             datePattern = "yyyy-MM-dd";
         }
-        LocalDateTime dayNow = LocalDateTime.from(now);
-
         String timePattern = ChronoUnit.DAYS.between(localDateTime.toLocalDate(), now.toLocalDate()) <= 1 ? "HH:mm" : "";
         String pattern = datePattern;
         if (!TextUtils.isEmpty(datePattern) || !TextUtils.isEmpty(timePattern))
