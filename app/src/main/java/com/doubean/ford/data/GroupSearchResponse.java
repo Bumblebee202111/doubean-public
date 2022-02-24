@@ -6,7 +6,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Data class that represents a group search response from Douban.
+ */
 public class GroupSearchResponse {
 
     private String q;

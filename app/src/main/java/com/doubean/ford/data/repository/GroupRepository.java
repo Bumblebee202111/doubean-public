@@ -289,7 +289,7 @@ public class GroupRepository {
                                     return groupDao.loadOrderedComments(data.commentIds, new Comparator<GroupTopicComment>() {
                                         @Override
                                         public int compare(GroupTopicComment o1, GroupTopicComment o2) {
-                                            return o1.voteCount - o2.voteCount;
+                                            return o2.voteCount - o1.voteCount;
                                         }
                                     });
                             });

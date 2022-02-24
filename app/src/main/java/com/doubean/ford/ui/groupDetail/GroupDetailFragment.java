@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.doubean.ford.R;
@@ -60,20 +61,6 @@ public class GroupDetailFragment extends Fragment {
         });
         groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(),
                 group -> binding.appbar.setBackgroundColor(Color.parseColor(group == null ? "#FFFFFF" : group.getColor())));
-
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        binding.toolbar.inflateMenu(R.menu.group_detail_menu);
         groupDetailViewModel.getCurrentTabFavorite().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -82,6 +69,25 @@ public class GroupDetailFragment extends Fragment {
                 favoriteItem.setIcon(aBoolean ? R.drawable.ic_favorite : R.drawable.ic_favorite_border);
             }
         });
+
+        final Boolean[] isToolbarShown = {false};
+
+        /*
+          Below code doesn't make visibility of toolbar adaptive because setOnScrollChangeListener
+          must be called on a NestedScrollView.
+          Possible fix: passing a callback to tab adapter
+          Not look too bad without such listener though
+        binding.pager.setOnScrollChangeListener(
+                (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                    boolean shouldShowToolbar = scrollY > binding.toolbar.getHeight();
+                    if (isToolbarShown[0] != shouldShowToolbar) {
+                        isToolbarShown[0] = shouldShowToolbar;
+                        binding.appbar.setActivated(shouldShowToolbar);
+                        binding.toolbarLayout.setTitleEnabled(shouldShowToolbar);
+                    }
+                });
+        */
+
         binding.toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -106,6 +112,25 @@ public class GroupDetailFragment extends Fragment {
                 }
             }
         });
+        setHasOptionsMenu(true);
+
+        binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigateUp();
+            }
+        });
+
+
+        return binding.getRoot();
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
         ViewPager2 viewPager = binding.pager;
         groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(), new Observer<Group>() {
             @Override

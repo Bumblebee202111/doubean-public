@@ -19,6 +19,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+
         android:fitsSystemWindows="true">
 
         <androidx.viewpager2.widget.ViewPager2
@@ -27,34 +28,81 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
+            android:animateLayoutChanges="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true">
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/toolbar_layout"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|snap"
+                app:collapsedTitleGravity="center"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:title="@{group.groupName}"
+                app:titleEnabled="false"
                 app:toolbarId="@id/toolbar">
-
 
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    app:contentInsetStart="0dp"
+                    app:contentInsetStartWithNavigation="0dp"
+                    app:layout_collapseMode="pin"
+                    app:menu="@menu/menu_group_detail"
+                    app:navigationIcon="@drawable/ic_detail_back" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_normal"
                     app:layout_collapseMode="parallax">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize"
-                        android:gravity="center"
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/group_avatar"
+                        imageFromUrl="@{group.avatarUrl}"
+                        android:layout_width="@dimen/large_avatar_or_icon_height"
+                        android:layout_height="@dimen/large_avatar_or_icon_height"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/group_name"
                         android:text="@{group.groupName}"
-                        android:textAppearance="?attr/textAppearanceHeadline5"
-                        tools:text="abcdefg" />
-                </com.google.android.material.appbar.MaterialToolbar>
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/group_avatar"
+                        app:layout_constraintTop_toTopOf="@id/group_avatar"
+                        tools:text="group name" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/group_member"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:text="@{group.memberCount+group.memberName}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/group_avatar"
+                        app:layout_constraintTop_toBottomOf="@id/group_name" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/group_desc"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_normal"
+                        android:text="@{group.desc}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/group_avatar" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
             <com.google.android.material.tabs.TabLayout
