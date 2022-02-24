@@ -71,7 +71,7 @@ public interface GroupDao {
         });
     }
 
-    @Query("SELECT * FROM group_topic_comments WHERE topic_id = :topicId ORDER BY createTime ASC LIMIT 100")
+    @Query("SELECT * FROM group_topic_comments WHERE topic_id = :topicId ORDER BY createTime ASC")
     LiveData<List<GroupTopicComment>> getTopicComments(String topicId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

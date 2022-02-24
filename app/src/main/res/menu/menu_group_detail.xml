@@ -6,11 +6,4 @@
         android:icon="@drawable/ic_favorite_border"
         android:title="@string/add_to_favorites"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/action_settings"
-        android:icon="@drawable/ic_settings"
-        android:title="@string/settings"
-        app:showAsAction="ifRoom" />
-
-
 </menu>
