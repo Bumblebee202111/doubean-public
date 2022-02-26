@@ -58,6 +58,7 @@
                     app:navigationIcon="@drawable/ic_detail_back" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/group_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_normal"

@@ -8,7 +8,8 @@
         <entry key="..\:/Projects/doubean/app/src/main/res/layout/fragment_dashboard.xml" value="0.2563405797101449" />
         <entry key="..\:/Projects/doubean/app/src/main/res/layout/fragment_group_detail.xml" value="0.1" />
         <entry key="..\:/Projects/doubean/app/src/main/res/layout/fragment_group_search.xml" value="0.2" />
-        <entry key="..\:/Projects/doubean/app/src/main/res/layout/fragment_group_topic.xml" value="0.1" />
+        <entry key="..\:/Projects/doubean/app/src/main/res/layout/fragment_group_tab.xml" value="0.1" />
+        <entry key="..\:/Projects/doubean/app/src/main/res/layout/fragment_group_topic.xml" value="0.2" />
         <entry key="..\:/Projects/doubean/app/src/main/res/layout/fragment_group_topic_detail.xml" value="0.16" />
         <entry key="..\:/Projects/doubean/app/src/main/res/layout/fragment_groups.xml" value="0.2" />
         <entry key="..\:/Projects/doubean/app/src/main/res/layout/fragment_home.xml" value="0.2625" />
@@ -21,6 +22,7 @@
         <entry key="..\:/Projects/doubean/app/src/main/res/layout/list_item_group_topic.xml" value="0.29411764705882354" />
         <entry key="..\:/Projects/doubean/app/src/main/res/layout/list_item_group_topic_comment.xml" value="0.1" />
         <entry key="..\:/Projects/doubean/app/src/main/res/layout/list_item_topic.xml" value="0.2625" />
+        <entry key="..\:/Projects/doubean/app/src/main/res/menu/bottom_nav_menu.xml" value="0.19119878603945373" />
         <entry key="..\:/Projects/doubean/app/src/main/res/menu/group_detail_menu.xml" value="0.2625" />
         <entry key="..\:/Projects/doubean/app/src/main/res/menu/groups_menu.xml" value="0.15833333333333333" />
         <entry key="..\:/Projects/doubean/app/src/main/res/menu/menu_group_detail.xml" value="0.19119878603945373" />

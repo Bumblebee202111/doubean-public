@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.doubean.ford.MobileNavigationDirections;
 import com.doubean.ford.data.Group;
 import com.doubean.ford.databinding.ListItemGroupBinding;
+import com.doubean.ford.ui.groupSearch.GroupSearchFragmentDirections;
 
 public class GroupAdapter extends ListAdapter<Group, GroupAdapter.ViewHolder> {
 
@@ -59,9 +59,9 @@ public class GroupAdapter extends ListAdapter<Group, GroupAdapter.ViewHolder> {
         }
 
         private void navigateToGroup(@NonNull Group group, View itemView) {
-            MobileNavigationDirections.ActionGlobalNavigationGroupDetail direction =
-                    MobileNavigationDirections.actionGlobalNavigationGroupDetail(group.getId(), null);
+            GroupSearchFragmentDirections.ActionNavigationGroupSearchToNavigationGroupDetail direction = GroupSearchFragmentDirections.actionNavigationGroupSearchToNavigationGroupDetail(group.id);
             Navigation.findNavController(itemView).navigate(direction);
+
         }
 
         void bind(Group item) {
