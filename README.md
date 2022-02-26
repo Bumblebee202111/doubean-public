@@ -1,37 +1,67 @@
 doubean
 =======
+
 豆瓣非官方app，主要用于小组浏览。**练手项目，仍未初步完成**。
-![preview](Screenshot_20220221_010243.png)![preview](Screenshot_20220221_010431.png)
+![preview](Screenshot_20220226_180402.png)
+
 注意
 ----
 
 * 即日起随缘更新。
-* 项目仅用于作者小白的个人学习和轻度日常使用。* 想要发布.apk又怕侵权，但转念一想我这种菜鸟的作品应该没人看吧。犹豫中……
-* 部分获取数据的可能侵权的代码已经.gitignore了。方法来自各路大神的博客和仓库，作者具体实现时采用了现成的第三方类库，极大地简化代码。
-* 编写代码时抄袭了大量Android官方样例（“东拼西凑”)，原创性极低，且代码质量自觉不高，请谨慎参考。
+* app-release.apk和DoubanService已加入.gitignore。
+  * 怕侵权，但事实上根本没人看，犹豫中……
+* 编写代码时抄袭了大量Android官方样例，原创性极低，但代码质量自觉不高，请谨慎参考。
 
-开发的动机
-----------
+App受众
+-------
 
-* 日常使用
-* 学习Android开发、Java编程以及Git和Github的使用。
+* 作为小白学习Android开发、Java编程以及Git和Github的使用中的本人
+* 本人和其他有轻度使用需求的用户
+* 其他感兴趣的开发者
+
+## 功能
+
+该app包含三个主界面
+
+### GroupFragment
+
+#### 小组主界面
+
+* 收藏小组和标签
+
+#### 小组详情
+
+* 小组简介
+* 小组话题
+
+#### 小组话题详情
+
+* 话题内容
+* 话题评论
+
+#### 小组搜索
+
+* 搜索小组
+
+### HomeFragment
+
+空，来自模板，placeholder
+
+#### NotificationFragment
+
+同上
 
 计划
 ----
+
 功能、关键的库、bug修复
 
-* 已实现（仅列出关键内容）
-    * 收藏小组和话题
-    * 话题详情（重点解决了WebView的显示问题）
-    * 搜索小组
-    * 运用常用的Jetpack库（具体见下）
 * **待实现（较为现实的计划，既包含细枝末节，也包含整体要求）**
   * 完善CSS
   * 优化UI，调整View间的布局，设置主题
   * 适当补充尚未使用的字段，如在评论中标注楼主、显示回复的评论
   * 保存WebView中的图片（dev上有方法）
   * SwipeRefreshLayout（试试看）
-  * Deep links（试试看）
   * 分享功能
   * 添加记录已读、取消已读的功能
   * 设计Tab工具栏？搜索话题？Tab的收藏按钮移动至自己的工具栏？
@@ -59,14 +89,16 @@ doubean
 ----
 
 * 基于100% Java语言，尽自己所能选用权威的库（Jetpack中的库和优秀第三方库）、架构（MVVM）和理念（Android Jetpack）
-    * 同时对Hilt/Dagger2/Kotlin/WorkManager等新技术和争议技术持保守的观望态度
-    * 保证了较好的性能，便于代码编写和阅读，在一定程度上弥补了作者自身水平的不足
+  * 同时对Hilt/Dagger2/Kotlin/WorkManager等新技术和争议技术持保守的观望态度
+  * 保证了较好的性能，便于代码编写和阅读，在一定程度上弥补了作者自身水平的不足
 * 对UI的字符串常量提供中英双语支持
 * 能够使用某种方式获取豆瓣实时数据
 * 使用ROOM作为豆瓣服务器数据的缓存
 * 根据多条件订阅关注的话题（画饼）
 * 轻量app（既由于作者水平和精力有限，又由于官方app诸多“累赘”的模块和功能不在本项目开发计划之内）
 * 较为原始的依赖注入：InjectorUtils.java
+* 访问接口采用了Apache Commons的现成工具，极大地简化代码。
+* 支持豆瓣网页URL的deep links
 
 使用的库
 -------
@@ -82,7 +114,7 @@ doubean
   * [Room][room]
   * [ViewModel][viewmodel]
 * [UI][ui]
-  * [Animations & Transitions][animation]\(待使用\)
+  * [Animations & Transitions][animation]
   * [Fragment][fragment]
   * [Layout][layout]
 * Third party and miscellaneous libraries
@@ -127,7 +159,7 @@ doubean
 * [Developer Guides][guides]
 * [Github Browser Sample with Android Architecture Components][github-browser-sample]
 * [Android Architecture Blueprints v1 (todo-mvvm-live)][todo-mvvm-live]
-* 一些获取豆瓣数据的方法
+* 一些获取豆瓣数据的方法，来自各路大神的博客和仓库
 * StackOverflow
 * Google
 
@@ -144,4 +176,4 @@ doubean
 
 * HTTPCanary
 * MiX
-
+* jadx-gui
