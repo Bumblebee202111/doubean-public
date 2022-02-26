@@ -180,7 +180,7 @@ public class GroupRepository {
                 List<GroupTopic> topics = item.getTopics();
                 for (GroupTopic topic : topics) {
                     topic.groupId = groupId;
-                    if (!topic.topicTags.isEmpty()) {
+                    if (topic.topicTags != null && !topic.topicTags.isEmpty()) {
                         topic.tagId = topic.topicTags.get(0).id;
                     }
                     groupDao.addGroupTopic(topic);

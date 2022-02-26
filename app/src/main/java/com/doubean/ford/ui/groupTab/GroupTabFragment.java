@@ -36,6 +36,7 @@ public class GroupTabFragment extends Fragment {
         GroupTabViewModelFactory factory = InjectorUtils.provideGroupTabViewModelFactory(getContext(), groupId, tagId);
         GroupTabViewModel groupTabViewModel = new ViewModelProvider(this, factory).get(GroupTabViewModel.class);
         GroupTopicAdapter adapter = new GroupTopicAdapter();
+
         binding.topicList.setAdapter(adapter);
         binding.topicList.addItemDecoration(new DividerItemDecoration(binding.topicList.getContext(), DividerItemDecoration.VERTICAL));
         groupTabViewModel.getTopics().observe(getViewLifecycleOwner(), adapter::submitList);
