@@ -11,6 +11,7 @@ doubean
 * app-release.apk和DoubanService已加入.gitignore。
   * 怕侵权，但事实上根本没人看，犹豫中……
 * 编写代码时抄袭了大量Android官方样例，原创性极低，但代码质量自觉不高，请谨慎参考。
+* 所有列表最多加载100个元素，如需查看完整列表，请点击在豆瓣网页中查看（实现中，现仅话题详情支持）
 
 App受众
 -------
@@ -47,7 +48,7 @@ App受众
 
 空，来自模板，placeholder
 
-#### NotificationFragment
+### NotificationFragment
 
 同上
 
@@ -70,7 +71,7 @@ App受众
   * 🛠从话题页返回话题列表时丢失位置（拖，学习相关知识以解决问题）
   * 🛠部分接口的缺失字段覆盖已有字段导致模型丢失缓存（拖，临时解决方案：不保存不完整的对象）
   * 🛠Room离线时不加载（拖，应该容易排除）
-  * 实现一个WebView的Fragment，以便用户查看所支持的页面的完整信息或预防接口失效，并注入JavaScript禁用多余元素（拖）
+  * 继续完善WebView的Fragment
   * ……
 * 看未来（画饼）
   * Paging （重中之重，基本需求）
@@ -91,6 +92,7 @@ App受众
 * 基于100% Java语言，尽自己所能选用权威的库（Jetpack中的库和优秀第三方库）、架构（MVVM）和理念（Android Jetpack）
   * 同时对Hilt/Dagger2/Kotlin/WorkManager等新技术和争议技术持保守的观望态度
   * 保证了较好的性能，便于代码编写和阅读，在一定程度上弥补了作者自身水平的不足
+* 支持在豆瓣网页的WebView中查看Fragment，用作显示完整信息以及预防接口失效，注入了JavaScript以禁用多余元素和正确缩放
 * 对UI的字符串常量提供中英双语支持
 * 能够使用某种方式获取豆瓣实时数据
 * 使用ROOM作为豆瓣服务器数据的缓存
