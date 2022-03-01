@@ -78,5 +78,15 @@
                 app:argType="string" />
         </fragment>
     </navigation>
-
+    <fragment
+        android:id="@+id/navigation_web_view"
+        android:name="com.doubean.ford.ui.webView.WebViewFragment"
+        tools:layout="@layout/fragment_web_view">
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_navigation_web_view"
+        app:destination="@id/navigation_web_view" />
 </navigation>

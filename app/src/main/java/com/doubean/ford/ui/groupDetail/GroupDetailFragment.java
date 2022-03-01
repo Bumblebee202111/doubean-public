@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -88,28 +87,26 @@ public class GroupDetailFragment extends Fragment {
                 });
         */
 
-        binding.toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_favorite:
-                        Boolean isFavorite = groupDetailViewModel.getCurrentTabFavorite().getValue();
-                        if (isFavorite != null) {
-                            if (isFavorite) {
-                                groupDetailViewModel.removeFavorite();
-                                Snackbar.make(binding.getRoot(), R.string.removed_group_tab_from_favorites, Snackbar.LENGTH_LONG)
-                                        .show();
-                            } else {
-                                groupDetailViewModel.addFavorite();
-                                Snackbar.make(binding.getRoot(), R.string.added_group_tab_to_favorites, Snackbar.LENGTH_LONG)
-                                        .show();
-                            }
+        binding.toolbar.setOnMenuItemClickListener(item -> {
+            //noinspection SwitchStatementWithTooFewBranches
+            switch (item.getItemId()) {
+                case R.id.action_favorite:
+                    Boolean isFavorite = groupDetailViewModel.getCurrentTabFavorite().getValue();
+                    if (isFavorite != null) {
+                        if (isFavorite) {
+                            groupDetailViewModel.removeFavorite();
+                            Snackbar.make(binding.getRoot(), R.string.removed_group_tab_from_favorites, Snackbar.LENGTH_LONG)
+                                    .show();
+                        } else {
+                            groupDetailViewModel.addFavorite();
+                            Snackbar.make(binding.getRoot(), R.string.added_group_tab_to_favorites, Snackbar.LENGTH_LONG)
+                                    .show();
                         }
+                    }
 
-                        return true;
-                    default:
-                        return true;
-                }
+                    return true;
+                default:
+                    return false;
             }
         });
         setHasOptionsMenu(true);
