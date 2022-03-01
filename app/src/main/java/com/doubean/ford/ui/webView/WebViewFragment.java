@@ -69,7 +69,7 @@ public class WebViewFragment extends Fragment {
      */
     private void injectCSS() {
         try {
-            InputStream inputStream = requireContext().getAssets().open(Constants.WEBVIEW_CSS_FILENAME);
+            InputStream inputStream = requireContext().getAssets().open(Constants.DOUBAN_WEB_CSS_FILENAME);
             byte[] buffer = new byte[inputStream.available()];
             inputStream.read(buffer);
             inputStream.close();

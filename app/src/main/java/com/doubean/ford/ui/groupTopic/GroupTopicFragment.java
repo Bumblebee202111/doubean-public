@@ -125,7 +125,7 @@ public class GroupTopicFragment extends Fragment {
      */
     private void injectCSS() {
         try {
-            InputStream inputStream = requireContext().getAssets().open(Constants.TOPIC_CSS_FILENAME);
+            InputStream inputStream = requireContext().getAssets().open(Constants.TOPIC_CONTENT_CSS_FILENAME);
             byte[] buffer = new byte[inputStream.available()];
             inputStream.read(buffer);
             inputStream.close();
