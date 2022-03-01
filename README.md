@@ -8,8 +8,8 @@ doubean
 ----
 
 * 即日起随缘更新。
-* app-release.apk和DoubanService已加入.gitignore。
-  * 怕侵权，但事实上根本没人看，犹豫中……
+* 试着上传app-release.apk。
+  * DoubanService已加入.gitignore，担心侵权，但根本没人看，犹豫中……
 * 编写代码时抄袭了大量Android官方样例，原创性极低，但代码质量自觉不高，请谨慎参考。
 * 所有列表最多加载100个元素，如需查看完整列表，请点击在豆瓣网页中查看（实现中，现仅话题详情支持）
 
@@ -58,20 +58,19 @@ App受众
 功能、关键的库、bug修复
 
 * **待实现（较为现实的计划，既包含细枝末节，也包含整体要求）**
-  * 完善CSS
-  * 优化UI，调整View间的布局，设置主题
-  * 适当补充尚未使用的字段，如在评论中标注楼主、显示回复的评论
-  * 保存WebView中的图片（dev上有方法）
+  * 适当补充尚未使用的字段，如显示评论中的图片、在评论中标注楼主、显示回复的评论
+  * 保存WebView中的图片
   * SwipeRefreshLayout（试试看）
   * 分享功能
   * 添加记录已读、取消已读的功能
   * 设计Tab工具栏？搜索话题？Tab的收藏按钮移动至自己的工具栏？
   * 直接在收藏列表中移除收藏、调整顺序
-  * 能建立自定义话题类别，根据多个小组、话题标签（tag aka tab）订阅话题，支持关键词过滤（拖，试试看）
-  * 🛠从话题页返回话题列表时丢失位置（拖，学习相关知识以解决问题）
+  * 🛠从话题页返回话题列表时TabLayout回到原位置
   * 🛠部分接口的缺失字段覆盖已有字段导致模型丢失缓存（拖，临时解决方案：不保存不完整的对象）
   * 🛠Room离线时不加载（拖，应该容易排除）
+  * 能建立自定义话题类别，根据多个小组、话题标签（tag aka tab）订阅话题，支持关键词过滤（有难度，但不一定有用）
   * 继续完善WebView的Fragment
+  * 优化UI，调整View间的布局，设置主题
   * ……
 * 看未来（画饼）
   * Paging （重中之重，基本需求）
@@ -161,7 +160,7 @@ App受众
 * [Developer Guides][guides]
 * [Github Browser Sample with Android Architecture Components][github-browser-sample]
 * [Android Architecture Blueprints v1 (todo-mvvm-live)][todo-mvvm-live]
-* 一些获取豆瓣数据的方法，来自各路大神的博客和仓库
+* 他人博客和仓库中有关获取豆瓣数据的方法
 * StackOverflow
 * Google
 
@@ -179,3 +178,4 @@ App受众
 * HTTPCanary
 * MiX
 * jadx-gui
+* Google Chrome for CSS debugging
