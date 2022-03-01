@@ -15,9 +15,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
 
+import com.doubean.ford.MobileNavigationDirections;
+import com.doubean.ford.R;
 import com.doubean.ford.adapters.GroupTopicCommentAdapter;
+import com.doubean.ford.data.GroupTopic;
 import com.doubean.ford.data.GroupTopicComments;
 import com.doubean.ford.databinding.FragmentGroupTopicBinding;
 import com.doubean.ford.util.Constants;
@@ -70,6 +74,7 @@ public class GroupTopicFragment extends Fragment {
                             Base64.NO_PADDING);
                     binding.content.loadData(encodedContent, "text/html", "base64");
                 }
+
             }
 
         });
@@ -81,6 +86,23 @@ public class GroupTopicFragment extends Fragment {
 
         binding.popularComments.addItemDecoration(new DividerItemDecoration(binding.popularComments.getContext(), DividerItemDecoration.VERTICAL));
         binding.allComments.addItemDecoration(new DividerItemDecoration(binding.allComments.getContext(), DividerItemDecoration.VERTICAL));
+
+        binding.toolbar.setOnMenuItemClickListener(item -> {
+            //noinspection SwitchStatementWithTooFewBranches
+            switch (item.getItemId()) {
+                case R.id.action_view_in_web:
+                    GroupTopic topic = groupTopicViewModel.getTopic().getValue();
+                    if (topic != null) {
+                        MobileNavigationDirections.ActionGlobalNavigationWebView direction = MobileNavigationDirections.actionGlobalNavigationWebView(topic.url);
+                        Navigation.findNavController(requireView()).navigate(direction);
+                    }
+                    return true;
+                default:
+                    return false;
+            }
+
+        });
+        setHasOptionsMenu(true);
 
         return binding.getRoot();
     }
