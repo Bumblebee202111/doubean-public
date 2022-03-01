@@ -39,16 +39,10 @@ public abstract class AppDatabase extends RoomDatabase {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
-
             new AppExecutors().diskIO().execute(() -> {
-                // Populate the database in the background.
-                // If you want to start with more words, just add them.
                 GroupDao dao = instance.getGroupDao();
+                dao.insertFavoriteGroup(new GroupFavorite("665372", null));
                 dao.insertFavoriteGroup(new GroupFavorite("644960", "53959"));
-                dao.insertFavoriteGroup(new GroupFavorite("732299", null));
-                //dao.insertFavoriteGroup(new GroupFavorite("665372", null));
-                //dao.addGroupTopic(new GroupTopic("12345","644960",null,"aaaaa", null,null,0,0,null,null));
-                //dao.addFavGroup(new FavGroup("667320"));
             });
         }
     };
