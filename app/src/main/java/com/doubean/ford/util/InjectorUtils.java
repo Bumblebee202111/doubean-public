@@ -35,13 +35,16 @@ import com.doubean.ford.ui.groups.GroupsViewModelFactory;
  * Static methods used to inject classes needed for various Activities and Fragments.
  */
 public class InjectorUtils {
+    private static DoubanService provideDoubanService() {
+        return DoubanService.create();
+    }
 
     private static GroupRepository getGroupRepository(Context context) {
-        return GroupRepository.getInstance(new AppExecutors(), AppDatabase.getInstance(context.getApplicationContext()), DoubanService.create());
+        return GroupRepository.getInstance(new AppExecutors(), AppDatabase.getInstance(context.getApplicationContext()), provideDoubanService());
     }
 
     private static GroupFavoritesRepository getFavoriteGroupRepository(Context context) {
-        return GroupFavoritesRepository.getInstance(new AppExecutors(), AppDatabase.getInstance(context.getApplicationContext()), DoubanService.create());
+        return GroupFavoritesRepository.getInstance(new AppExecutors(), AppDatabase.getInstance(context.getApplicationContext()), provideDoubanService());
     }
 
     public static GroupsViewModelFactory provideGroupsViewModelFactory(Context context) {
