@@ -72,13 +72,17 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
                 });
             } else {
                 onFetchFailed();
+                //Modification by Bumblebee202111
+                //Always use ROOM cache as substitute when fetch fails
                 result.addSource(dbSource,
-                        newData -> setValue(null));
+                        newData -> setValue(newData));
+                //result.addSource(dbSource, newData -> setValue(null));
             }
         });
     }
 
     protected void onFetchFailed() {
+
     }
 
     public LiveData<ResultType> asLiveData() {
@@ -97,7 +101,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
     protected abstract boolean shouldFetch(@Nullable ResultType data);
 
     /**
-     * Note that the returned LiveData should be exactly set once (by BumbleBee202111)
+     * Note that the returned LiveData should always be exactly set once (by BumbleBee202111)
      */
     @NonNull
     @MainThread
