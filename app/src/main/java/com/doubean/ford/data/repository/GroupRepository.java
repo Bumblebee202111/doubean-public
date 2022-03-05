@@ -197,16 +197,18 @@ public class GroupRepository {
             @NonNull
             @Override
             protected LiveData<List<GroupTopic>> loadFromDb() {
-                if (TextUtils.isEmpty(tagId))
+                if (TextUtils.isEmpty(tagId)) {
                     return groupDao.getGroupTopics(groupId);
+                }
                 return groupDao.getGroupTopics(groupId, tagId);
             }
 
             @NonNull
             @Override
             protected LiveData<GroupTopicsResponse> createCall() {
-                if (TextUtils.isEmpty(tagId))
+                if (TextUtils.isEmpty(tagId)) {
                     return doubanService.getGroupTopicsOfTag(groupId);
+                }
                 return doubanService.getGroupTopicsOfTag(groupId, tagId);
             }
         }.asLiveData();
