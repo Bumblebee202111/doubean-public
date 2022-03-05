@@ -87,6 +87,7 @@ public class GroupTopicFragment extends Fragment {
         binding.popularComments.addItemDecoration(new DividerItemDecoration(binding.popularComments.getContext(), DividerItemDecoration.VERTICAL));
         binding.allComments.addItemDecoration(new DividerItemDecoration(binding.allComments.getContext(), DividerItemDecoration.VERTICAL));
 
+        binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).navigateUp());
         binding.toolbar.setOnMenuItemClickListener(item -> {
             //noinspection SwitchStatementWithTooFewBranches
             switch (item.getItemId()) {

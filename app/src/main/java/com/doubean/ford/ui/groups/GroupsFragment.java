@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
@@ -16,12 +15,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.doubean.ford.R;
 import com.doubean.ford.adapters.GroupFavoriteAdapter;
-import com.doubean.ford.data.GroupFavoriteDetail;
 import com.doubean.ford.databinding.FragmentGroupsBinding;
 import com.doubean.ford.util.InjectorUtils;
 import com.doubean.ford.util.SpanCountCalculator;
-
-import java.util.List;
 
 public class GroupsFragment extends Fragment {
 
@@ -39,12 +35,9 @@ public class GroupsFragment extends Fragment {
         GroupFavoriteAdapter adapter = new GroupFavoriteAdapter();
         binding.groupList.setAdapter(adapter);
 
-        groupsViewModel.getFavorites().observe(getViewLifecycleOwner(), new Observer<List<GroupFavoriteDetail>>() {
-            @Override
-            public void onChanged(List<GroupFavoriteDetail> favorites) {
-                if (favorites != null) {
-                    adapter.submitList(favorites);
-                }
+        groupsViewModel.getFavorites().observe(getViewLifecycleOwner(), favorites -> {
+            if (favorites != null) {
+                adapter.submitList(favorites);
             }
         });
         int spanCount = SpanCountCalculator.getSpanCount(requireContext(), 400);
@@ -74,6 +67,6 @@ public class GroupsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        //binding = null;
     }
 }

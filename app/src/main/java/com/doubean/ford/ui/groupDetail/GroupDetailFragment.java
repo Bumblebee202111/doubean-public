@@ -111,12 +111,7 @@ public class GroupDetailFragment extends Fragment {
         });
         setHasOptionsMenu(true);
 
-        binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(v).navigateUp();
-            }
-        });
+        binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).navigateUp());
 
 
         return binding.getRoot();
