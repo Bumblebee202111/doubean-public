@@ -8,17 +8,16 @@ doubean
 ----
 
 * 即日起随缘更新。
-* 试着上传app-release.apk。
-  * DoubanService已加入.gitignore，担心侵权，但根本没人看，犹豫中……
+* 尝试发布apk。
+  * 但害怕侵权，DoubanService已列入.gitignore
 * 编写代码时抄袭了大量Android官方样例，原创性极低，但代码质量自觉不高，请谨慎参考。
-* 所有列表最多加载100个元素，如需查看完整列表，请点击在豆瓣网页中查看（实现中，现仅话题详情支持）
+* 所有列表最多加载100个元素，如需查看完整列表，请点击按钮在豆瓣网页中查看（逐步实现中，现仅话题详情支持）
 
 App受众
 -------
 
-* 作为小白学习Android开发、Java编程以及Git和Github的使用中的本人
-* 本人和其他有轻度使用需求的用户
-* 其他感兴趣的开发者
+* 学习Android、Java、版本控制的作者小白本人和其他感兴趣的开发者
+* 本人和其他有轻度豆瓣小组浏览需求的用户
 
 ## 功能
 
@@ -58,23 +57,24 @@ App受众
 功能、关键的库、bug修复
 
 * **待实现（较为现实的计划，既包含细枝末节，也包含整体要求）**
-  * 适当补充尚未使用的字段，如显示评论中的图片、在评论中标注楼主、显示回复的评论
-  * 推荐小组
-  * 保存WebView中的图片
-  * SwipeRefreshLayout（试试看）
-  * 分享功能
-  * 添加记录已读、取消已读的功能
-  * 小组或标签内搜索话题
-  * 将Tab的收藏按钮移至Tab内部（考虑增加工具栏或efab）
-  * 全局搜索话题
-  * 直接在收藏列表中移除收藏、调整顺序
-  * 🛠小组收藏列表中用小组主题色填充元素过于鲜艳
-  * 🛠小组详情页的小组头像遮挡返回按钮
-  * 小组详情页根据滑动位置来判断小组头部介绍的显示方式（难点：ViewPager2本身不可滑动）
+  * 【GroupTopicFragment】适当补充尚未使用的字段，如显示评论中的图片、在评论中标注楼主、显示回复的评论
+  * 【GroupsFragment】推荐小组
+  * 【GroupTopicFragment】保存WebView中的图片
+  * 【ListView】SwipeRefreshLayout（试试看）
+  * 【GroupFragment】【GroupTopicFragment】分享功能
+  * 【GroupFragment】【GroupTopicFragment】添加记录已读、取消已读的功能
+  * 【GroupFragment】【GroupTabFragment】小组或标签内搜索话题
+  * 【GroupFragment】【GroupTabFragment】将Tab的收藏按钮移至Tab内部（考虑增加工具栏或efab）
+  * 【GroupsFragment】全局搜索话题
+  * 【GroupsFragment】收藏列表中允许移除收藏、调整顺序
+  * 🛠【GroupsFragment】用小组主题色填充元素过于鲜艳
+  * 🛠【GroupFragment】小组头像遮挡返回按钮
+  * 【GroupFragment】根据滑动位置来判断小组头部介绍的显示方式（难点：ViewPager2本身不可滑动）
   * 🛠返回栈不能保存视图，如从话题页返回话题列表时TabLayout会回到初始位置（需查阅资料搞懂原理）
   * 🛠部分接口的缺失字段覆盖已有字段导致模型丢失缓存（拖，临时解决方案：不保存不完整的对象）
+  * 🛠【GroupTabFragment】话题item中过长的用户名会导致发布时间不能正确显示
   * 能建立自定义话题类别，根据多个小组、话题标签（tag aka tab）订阅话题，支持关键词过滤（有难度，但不一定有用）
-  * 继续完善WebView的Fragment
+  * 【GroupFragment】【WebViewFragment】支持小组的WebViewFragment
   * 优化UI，调整View间的布局，设置主题
   * ……
 * 看未来（画饼）
