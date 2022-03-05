@@ -94,11 +94,13 @@
                         app:layout_constraintStart_toEndOf="@id/group_avatar"
                         app:layout_constraintTop_toBottomOf="@id/group_name" />
 
+                    <!-- TODO: properly display @+id/group_desc, e.g., by adding View More-->
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/group_desc"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_normal"
+                        android:maxLines="5"
                         android:text="@{group.desc}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
