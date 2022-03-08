@@ -207,7 +207,7 @@ public class GroupRepository {
             @Override
             protected LiveData<GroupTopicsResponse> createCall() {
                 if (TextUtils.isEmpty(tagId)) {
-                    return doubanService.getGroupTopicsOfTag(groupId);
+                    return doubanService.getGroupTopics(groupId);
                 }
                 return doubanService.getGroupTopicsOfTag(groupId, tagId);
             }
