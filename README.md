@@ -2,8 +2,9 @@ doubean
 =======
 
 豆瓣非官方app，主要用于小组浏览。**练手项目，仍未初步完成**。
-![preview](Screenshot_20220226_180402.png)
-
+![preview](screenshots/phone_group_detail.png)
+![preview](screenshots/phone_group_search.png)
+![preview](screenshots/phone_topic_detail.png)
 注意
 ----
 
