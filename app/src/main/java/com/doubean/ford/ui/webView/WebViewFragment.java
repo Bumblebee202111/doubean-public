@@ -1,6 +1,6 @@
 package com.doubean.ford.ui.webView;
 
-import android.graphics.Bitmap;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -21,6 +21,8 @@ import java.io.InputStream;
 
 public class WebViewFragment extends Fragment {
     FragmentWebViewBinding binding;
+
+    @SuppressLint("SetJavaScriptEnabled")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -37,29 +39,23 @@ public class WebViewFragment extends Fragment {
         });
         binding.webView.setVerticalScrollBarEnabled(false);
         binding.webView.setHorizontalScrollBarEnabled(false);
-        //binding.webView.setPadding(0, 0, 0, 0);
+
         WebSettings webSettings = binding.webView.getSettings();
-        webSettings.setUserAgentString("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36");
+        webSettings.setUserAgentString("Mozilla/5.0 (Linux; Android 8.1; Nexus 7 Build/JSS15Q) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36");
         webSettings.setBuiltInZoomControls(true);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDisplayZoomControls(false);
         binding.webView.setVisibility(View.GONE);
-        binding.webView.setWebViewClient(new WebViewClient() {
-                                             @Override
-                                             public void onPageStarted(WebView view, String url, Bitmap favicon) {
 
-                                                 super.onPageStarted(view, url, favicon);
-                                             }
-
-                                             @Override
-                                             public void onPageFinished(WebView view, String url) {
-                                                 injectCSS();
-                                                 binding.webView.setVisibility(View.VISIBLE);
-                                                 super.onPageFinished(view, url);
-
-                                             }
-                                         }
-        );
+        WebViewClient myWebViewClient = new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                injectCSS();
+                view.setVisibility(View.VISIBLE);
+                super.onPageFinished(view, url);
+            }
+        };
+        binding.webView.setWebViewClient(myWebViewClient);
         binding.webView.loadUrl(url);
         return binding.getRoot();
     }
@@ -74,14 +70,12 @@ public class WebViewFragment extends Fragment {
             inputStream.read(buffer);
             inputStream.close();
             String encoded = Base64.encodeToString(buffer, Base64.NO_WRAP);
-            binding.webView.loadUrl("javascript:(function() {" +
-                    "var parent = document.getElementsByTagName('head').item(0);" +
+            binding.webView.evaluateJavascript("javascript:(function() {" +
                     "var style = document.createElement('style');" +
                     "style.type = 'text/css';" +
-                    // Tell the browser to BASE64-decode the string into your script !!!
                     "style.innerHTML = window.atob('" + encoded + "');" +
-                    "parent.appendChild(style)" +
-                    "})()");
+                    "document.head.appendChild(style)" +
+                    "})()", null);
         } catch (Exception e) {
             e.printStackTrace();
         }
