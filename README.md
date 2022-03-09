@@ -2,14 +2,16 @@ doubean
 =======
 
 豆瓣非官方app，主要用于小组浏览。**练手项目，仍未初步完成**。
+
 ![preview](screenshots/phone_group_detail.png)
 ![preview](screenshots/phone_group_search.png)
 ![preview](screenshots/phone_topic_detail.png)
+
 注意
 ----
 
 * 即日起随缘更新。
-* 已发布apk，但害怕侵权，因此源代码中的DoubanService.java已列入.gitignore
+* 担心侵权，虽然发布了apk，但同时把源代码中的DoubanService.java列入了.gitignore
 * 编写代码时抄袭了大量Android官方样例，原创性极低，但代码质量自觉不高，请谨慎参考。
 * 所有列表最多加载100个元素，如需查看完整列表，请点击按钮在豆瓣网页中查看（逐步实现中，现仅话题详情支持）
 
