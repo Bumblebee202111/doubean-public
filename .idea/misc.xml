@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Projects/doubean/app/src/main/res/drawable/ic_comment.xml" value="0.1625" />
         <entry key="..\:/Projects/doubean/app/src/main/res/layout/activity_main.xml" value="0.2563405797101449" />
         <entry key="..\:/Projects/doubean/app/src/main/res/layout/fragment_collection_object.xml" value="0.2625" />
         <entry key="..\:/Projects/doubean/app/src/main/res/layout/fragment_dashboard.xml" value="0.2563405797101449" />
@@ -17,10 +18,10 @@
         <entry key="..\:/Projects/doubean/app/src/main/res/layout/fragment_web_view.xml" value="0.1665402124430956" />
         <entry key="..\:/Projects/doubean/app/src/main/res/layout/group_detail_fragment.xml" value="0.1" />
         <entry key="..\:/Projects/doubean/app/src/main/res/layout/group_topic_detail_fragment.xml" value="0.18177083333333333" />
-        <entry key="..\:/Projects/doubean/app/src/main/res/layout/list_item_group.xml" value="0.17587939698492464" />
-        <entry key="..\:/Projects/doubean/app/src/main/res/layout/list_item_group_favorite.xml" value="0.1" />
-        <entry key="..\:/Projects/doubean/app/src/main/res/layout/list_item_group_topic.xml" value="0.29411764705882354" />
-        <entry key="..\:/Projects/doubean/app/src/main/res/layout/list_item_group_topic_comment.xml" value="0.1" />
+        <entry key="..\:/Projects/doubean/app/src/main/res/layout/list_item_group.xml" value="0.264" />
+        <entry key="..\:/Projects/doubean/app/src/main/res/layout/list_item_group_favorite.xml" value="0.1597222222222222" />
+        <entry key="..\:/Projects/doubean/app/src/main/res/layout/list_item_group_topic.xml" value="0.5058823529411764" />
+        <entry key="..\:/Projects/doubean/app/src/main/res/layout/list_item_group_topic_comment.xml" value="0.2" />
         <entry key="..\:/Projects/doubean/app/src/main/res/layout/list_item_topic.xml" value="0.2625" />
         <entry key="..\:/Projects/doubean/app/src/main/res/menu/bottom_nav_menu.xml" value="0.19119878603945373" />
         <entry key="..\:/Projects/doubean/app/src/main/res/menu/group_detail_menu.xml" value="0.2625" />
