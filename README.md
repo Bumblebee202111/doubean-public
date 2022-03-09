@@ -76,6 +76,7 @@ App受众
 * 能建立自定义话题类别，根据多个小组、话题标签（tag aka tab）订阅话题，支持关键词过滤（有难度，但不一定有用）
 * \[GroupFragment\]\[WebViewFragment\]支持小组的WebViewFragment
 * 设置主题
+* 收藏（或称作关注）小组、话题、标签、用户……
 * \[ListView\]结合SharedPref实现个性化推荐
 * \[ListView\]Paging （重中之重，基本需求）
 * \[ListView\]话题排序：默认（自创、多条件）、发布时间、回复时间、热度
