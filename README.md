@@ -56,7 +56,9 @@ App受众
 计划
 ----
 
-新增功能、引入库、bug修复（大致按实现顺序排列）
+包含新增功能、引入库、bug修复（大致按实现顺序排列）。
+
+目标：逐个消灭计划项！！！
 
 * \[GroupTopicFragment\]适当补充尚未使用的字段，如显示评论中的图片、在评论中标注楼主、显示回复的评论
 * \[GroupsFragment\]推荐小组（或话题）
@@ -70,7 +72,6 @@ App受众
 * \[GroupsFragment\]收藏列表中允许移除收藏、调整顺序
 * \[GroupsFragment\]考虑将列表元素全部替换成CardView
 * 🛠\[GroupFragment\]小组头像遮挡返回按钮
-* 🛠\[WebViewFragment\]滑到底部会弹回
 * \[GroupFragment\]根据滑动位置来判断小组头部介绍的显示方式（难点：ViewPager2本身不可滑动）
 * 🛠返回栈不能保存视图，如从话题页返回话题列表时TabLayout会回到初始位置（需查阅资料搞懂原理）
 * 🛠部分接口的缺失字段覆盖已有字段导致模型丢失缓存（临时解决方案：不保存不完整的对象）
@@ -78,7 +79,7 @@ App受众
 * 能建立自定义话题类别，根据多个小组、话题标签（tag aka tab）订阅话题，支持关键词过滤（有难度，但不一定有用）
 * \[GroupFragment\]\[WebViewFragment\]支持小组的WebViewFragment
 * 设置主题
-* 收藏（或称作关注）小组、话题、标签、用户……
+* 收藏（或称关注）小组、话题、标签、用户……
 * \[ListView\]结合SharedPref实现个性化推荐
 * \[ListView\]Paging （重中之重，基本需求）
 * \[ListView\]话题排序：默认（自创、多条件）、发布时间、回复时间、热度
