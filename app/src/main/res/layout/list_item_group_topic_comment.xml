@@ -13,40 +13,56 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_small">
+        android:layout_margin="@dimen/margin_normal">
 
         <ImageView
             android:id="@+id/author_avatar"
-            android:layout_width="@dimen/small_avatar_or_icon_height"
-            android:layout_height="@dimen/small_avatar_or_icon_height"
+            android:layout_width="@dimen/large_avatar_or_icon_height"
+            android:layout_height="@dimen/large_avatar_or_icon_height"
             app:avatarFromUrl="@{groupTopicComment.author.avatarUrl}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
+        <!--TODO: display OP-->
         <TextView
             android:id="@+id/author_name_and_create_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginStart="@dimen/margin_normal"
             android:layout_marginEnd="@dimen/margin_normal"
             android:gravity="center_vertical"
             android:text="@{groupTopicComment.author.name+` · `+DateUtil.getShortDateString(groupTopicComment.createTime)}"
-            app:layout_constraintBottom_toBottomOf="@id/author_avatar"
-            app:layout_constraintEnd_toStartOf="@id/like_icon"
+
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/author_avatar"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Wang Wang · 122222222222 " />
 
+
+        <TextView
+            android:id="@+id/comment_text"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:layout_marginTop="@dimen/margin_small"
+            android:text="@{groupTopicComment.text}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/author_avatar"
+            app:layout_constraintTop_toBottomOf="@id/author_name_and_create_time"
+            tools:text="text text text" />
+
         <androidx.appcompat.widget.AppCompatImageView
+            android:layout_marginStart="@dimen/margin_normal"
             android:id="@+id/like_icon"
             isGone="@{groupTopicComment.voteCount==0}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_small"
             android:src="@drawable/ic_outline_thumb_up"
-            app:layout_constraintBottom_toBottomOf="@id/author_avatar"
-            app:layout_constraintEnd_toStartOf="@id/like_count"
-            app:layout_constraintTop_toTopOf="@id/author_avatar" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/author_avatar"
+            app:layout_constraintTop_toBottomOf="@id/comment_text" />
 
         <TextView
             android:id="@+id/like_count"
@@ -55,23 +71,10 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:text="@{groupTopicComment.voteCount+``}"
-            app:layout_constraintBottom_toBottomOf="@id/author_avatar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/author_avatar"
+            android:layout_marginStart="@dimen/margin_small"
+            app:layout_constraintBottom_toBottomOf="@id/like_icon"
+            app:layout_constraintStart_toEndOf="@id/like_icon"
+            app:layout_constraintTop_toTopOf="@id/like_icon"
             tools:text="123" />
-
-        <TextView
-            android:id="@+id/comment_text"
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
-            android:text="@{groupTopicComment.text}"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/author_avatar"
-            tools:text="text text text" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

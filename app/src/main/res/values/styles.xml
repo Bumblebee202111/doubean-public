@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="roundedCornersImageView" parent="">
+    <style name="smallRoundedCornersImageView" parent="">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">8dp</item>
+        <item name="cornerSize">@dimen/corner_size_small</item>
+    </style>
+
+    <style name="normalRoundedCornersImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/corner_size_normal</item>
     </style>
 </resources>

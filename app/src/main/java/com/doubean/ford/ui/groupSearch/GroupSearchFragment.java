@@ -12,15 +12,12 @@ import android.view.inputmethod.InputMethodManager;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 
 import com.doubean.ford.adapters.GroupAdapter;
-import com.doubean.ford.data.Group;
 import com.doubean.ford.databinding.FragmentGroupSearchBinding;
 import com.doubean.ford.util.InjectorUtils;
-
-import java.util.List;
 
 public class GroupSearchFragment extends Fragment {
 
@@ -83,14 +80,11 @@ public class GroupSearchFragment extends Fragment {
     }
 
     private void initRecyclerView() {
-
-        groupSearchViewModel.getResults().observe(getViewLifecycleOwner(), new Observer<List<Group>>() {
-            @Override
-            public void onChanged(List<Group> result) {
-                binding.setGroups(result);
-                binding.setResultCount(result == null ? 0 : result.size());
-                adapter.submitList(result);
-            }
+        binding.groupList.addItemDecoration(new DividerItemDecoration(binding.groupList.getContext(), DividerItemDecoration.VERTICAL));
+        groupSearchViewModel.getResults().observe(getViewLifecycleOwner(), result -> {
+            binding.setGroups(result);
+            binding.setResultCount(result == null ? 0 : result.size());
+            adapter.submitList(result);
         });
 
 

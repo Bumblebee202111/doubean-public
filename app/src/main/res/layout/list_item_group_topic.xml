@@ -17,7 +17,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{groupTopic==null?null:clickListener}"
+        android:onClick="@{clickListener}"
         app:cardPreventCornerOverlap="false"
         app:isGone="@{groupTopic==null}">
 
@@ -26,76 +26,74 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/author_avatar"
-                avatarFromUrl="@{groupTopic.author.avatarUrl}"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_small"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/author_name_and_create_time"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/first_line"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginHorizontal="@dimen/margin_small"
-                android:gravity="center_vertical"
-                android:text="@{groupTopic.author.name+` · `+DateUtil.getShortDateString(groupTopic.dateCreated)}"
-                app:layout_constraintBottom_toBottomOf="@id/author_avatar"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_normal"
+                android:layout_marginTop="@dimen/margin_normal"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/cover"
-                app:layout_constraintStart_toEndOf="@id/author_avatar"
-                app:layout_constraintTop_toTopOf="@id/author_avatar"
-                tools:text="username · 202202" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/author_avatar"
+                    avatarFromUrl="@{groupTopic.author.avatarUrl}"
+                    android:layout_width="@dimen/small_avatar_or_icon_height"
+                    android:layout_height="@dimen/small_avatar_or_icon_height"
+
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/author_name_and_create_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_small"
+
+                    android:gravity="center_vertical"
+                    android:text="@{groupTopic.author.name+` · `+DateUtil.getShortDateString(groupTopic.dateCreated)}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/author_avatar"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="username · 202202" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <TextView
                 android:id="@+id/topic_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/margin_small"
+                android:layout_marginHorizontal="@dimen/margin_normal"
                 android:layout_marginTop="@dimen/margin_small"
                 android:gravity="center_vertical"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 app:layout_constraintEnd_toStartOf="@id/cover"
-                app:layout_constraintTop_toBottomOf="@id/author_avatar"
+                app:layout_constraintTop_toBottomOf="@id/first_line"
                 app:layout_constraintStart_toStartOf="parent"
                 app:topicTabName="@{groupTopic.tagName}"
                 app:topicTitle="@{groupTopic.title}"
                 tools:text="Topic Title topic title Topic Title topic title Topic Title topic title" />
 
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/cover"
-                isGone="@{groupTopic.coverUrl.empty}"
-                android:layout_width="100dp"
-                android:layout_height="56dp"
-                android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginEnd="@dimen/margin_small"
-                android:contentDescription="@string/a11y_group_item_image"
-                android:scaleType="centerCrop"
-                app:imageFromUrl="@{groupTopic.coverUrl}"
-                app:layout_constraintBottom_toBottomOf="parent"
-
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearanceOverlay="@style/roundedCornersImageView" />
-
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/topic_comment_count_and_update_on"
+                android:id="@+id/last_line"
                 android:layout_width="0dp"
-                app:layout_constraintEnd_toStartOf="@id/cover"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_small"
+                android:layout_marginHorizontal="@dimen/margin_normal"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_normal"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/cover"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/topic_title"
-                tools:layout_editor_absoluteX="8dp">
+                app:layout_constraintTop_toBottomOf="@id/topic_title">
 
                 <ImageView
                     android:id="@+id/comment_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/small_icon_size"
+                    android:layout_height="@dimen/small_icon_size"
                     android:src="@drawable/ic_comment"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -105,6 +103,7 @@
                     android:id="@+id/comment_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_small"
                     android:text="@{groupTopic.commentCount+``}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/comment_icon"
@@ -130,8 +129,25 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/text_updated_on"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="22-01-01 00:00" />
+                    tools:text="01-01 00:00" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.imageview.ShapeableImageView
+
+                android:layout_width="80dp"
+                android:id="@+id/cover"
+                isGone="@{groupTopic.coverUrl.empty}"
+                android:layout_height="80dp"
+                android:layout_marginVertical="@dimen/margin_normal"
+                android:layout_marginEnd="@dimen/margin_normal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:contentDescription="@string/a11y_group_item_image"
+                android:scaleType="centerCrop"
+                app:imageFromUrl="@{groupTopic.coverUrl}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0"
+                app:shapeAppearanceOverlay="@style/normalRoundedCornersImageView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

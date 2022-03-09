@@ -19,11 +19,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/card_side_margin"
-        android:layout_marginEnd="@dimen/card_side_margin"
-        android:layout_marginBottom="@dimen/card_bottom_margin"
         android:onClick="@{favorite==null?null:clickListener}"
-        app:cardBackgroundColor="@{Color.parseColor(favorite==null||favorite.groupColor==null?`#FFFFFF`:favorite.groupColor)}"
         app:cardElevation="@dimen/card_elevation"
         app:cardPreventCornerOverlap="false"
         app:isGone="@{favorite==null}">
@@ -32,11 +28,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_margin="@dimen/margin_normal"
                 android:id="@+id/avatar"
                 android:layout_width="@dimen/large_avatar_or_icon_height"
                 android:layout_height="@dimen/large_avatar_or_icon_height"
-                android:layout_margin="@dimen/margin_small"
+                app:shapeAppearanceOverlay="@style/smallRoundedCornersImageView"
                 android:contentDescription="@string/a11y_group_item_image"
                 android:scaleType="centerCrop"
                 app:imageFromUrl="@{favorite.groupAvatarUrl}"
@@ -48,7 +45,7 @@
                 android:id="@+id/name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/margin_small"
+                android:layout_marginHorizontal="@dimen/margin_normal"
                 android:text="@{favorite.groupName}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -62,7 +59,7 @@
                 isGone="@{favorite.groupTabId==null}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/margin_small"
+                android:layout_marginHorizontal="@dimen/margin_normal"
                 android:layout_marginTop="@dimen/margin_small"
                 android:text="@{favorite.groupTabName}"
                 app:layout_constraintBottom_toBottomOf="@id/avatar"

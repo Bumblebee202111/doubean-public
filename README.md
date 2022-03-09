@@ -65,8 +65,9 @@ App受众
 * \[GroupFragment\]\[GroupTabFragment\]将Tab的收藏按钮移至Tab内部（考虑增加工具栏或efab）
 * \[GroupsFragment\]全局搜索话题
 * \[GroupsFragment\]收藏列表中允许移除收藏、调整顺序
-* 🛠\[GroupsFragment\]用小组主题色填充元素过于鲜艳
+* \[GroupsFragment\]考虑将列表元素全部替换成CardView
 * 🛠\[GroupFragment\]小组头像遮挡返回按钮
+* 🛠\[WebViewFragment\]滑到底部会弹回
 * \[GroupFragment\]根据滑动位置来判断小组头部介绍的显示方式（难点：ViewPager2本身不可滑动）
 * 🛠返回栈不能保存视图，如从话题页返回话题列表时TabLayout会回到初始位置（需查阅资料搞懂原理）
 * 🛠部分接口的缺失字段覆盖已有字段导致模型丢失缓存（临时解决方案：不保存不完整的对象）

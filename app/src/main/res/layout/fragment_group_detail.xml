@@ -64,7 +64,8 @@
                     android:layout_margin="@dimen/margin_normal"
                     app:layout_collapseMode="parallax">
 
-                    <androidx.appcompat.widget.AppCompatImageView
+                    <com.google.android.material.imageview.ShapeableImageView
+                        app:shapeAppearanceOverlay="@style/smallRoundedCornersImageView"
                         android:id="@+id/group_avatar"
                         imageFromUrl="@{group.avatarUrl}"
                         android:layout_width="@dimen/large_avatar_or_icon_height"
