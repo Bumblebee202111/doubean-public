@@ -15,8 +15,6 @@ import com.doubean.ford.adapters.GroupTopicAdapter;
 import com.doubean.ford.databinding.FragmentGroupTabBinding;
 import com.doubean.ford.util.InjectorUtils;
 
-import java.util.Objects;
-
 public class GroupTabFragment extends Fragment {
     public static final String ARG_GROUP_ID = "group_id";
     public static final String ARG_TAG_ID = "tag_id";
@@ -30,9 +28,9 @@ public class GroupTabFragment extends Fragment {
         binding = FragmentGroupTabBinding.inflate(inflater, container, false);
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
-        Bundle args = getArguments();
-        String groupId = Objects.requireNonNull(args).getString(ARG_GROUP_ID);
-        String tagId = Objects.requireNonNull(args).getString(ARG_TAG_ID);
+        Bundle args = requireArguments();
+        String groupId = args.getString(ARG_GROUP_ID);
+        String tagId = args.getString(ARG_TAG_ID);
         GroupTabViewModelFactory factory = InjectorUtils.provideGroupTabViewModelFactory(getContext(), groupId, tagId);
         GroupTabViewModel groupTabViewModel = new ViewModelProvider(this, factory).get(GroupTabViewModel.class);
         GroupTopicAdapter adapter = new GroupTopicAdapter();
@@ -43,9 +41,4 @@ public class GroupTabFragment extends Fragment {
         return binding.getRoot();
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
-
-    }
 }
