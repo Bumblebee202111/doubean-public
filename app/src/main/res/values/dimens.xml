@@ -7,8 +7,8 @@
     <dimen name="card_bottom_margin">24dp</dimen>
     <dimen name="card_elevation">2dp</dimen>
     <dimen name="large_avatar_or_icon_height">48dp</dimen>
-    <dimen name="small_avatar_or_icon_height">16dp</dimen>
-    <dimen name="small_icon_size">18.75dp</dimen>
+    <dimen name="small_avatar_size">18dp</dimen>
+    <dimen name="small_icon_size">20dp</dimen>
     <dimen name="margin_small">8dp</dimen>
     <dimen name="margin_normal">16dp</dimen>
     <dimen name="corner_size_small">4dp</dimen>
