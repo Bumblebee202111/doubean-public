@@ -59,7 +59,7 @@ App受众
 包含新增功能、引入库、bug修复（大致按实现顺序排列）。
 
 目标：逐个消灭计划项！！！
-
+* 🛠返回栈不能保存视图，如从话题页返回话题列表时TabLayout会回到初始Tab（需查阅资料搞懂原理）
 * \[GroupTopicFragment\]适当补充尚未使用的字段，如显示评论中的图片、在评论中标注楼主、显示回复的评论
 * \[GroupsFragment\]推荐小组（或话题）
 * \[GroupTopicFragment\]保存WebView中的图片
@@ -73,16 +73,16 @@ App受众
 * \[GroupsFragment\]考虑将列表元素全部替换成CardView
 * 🛠\[GroupFragment\]小组头像遮挡返回按钮
 * \[GroupFragment\]根据滑动位置来判断小组头部介绍的显示方式（难点：ViewPager2本身不可滑动）
-* 🛠返回栈不能保存视图，如从话题页返回话题列表时TabLayout会回到初始位置（需查阅资料搞懂原理）
+* \[GroupFragment\]重新设计收藏（或称关注）的模型，支持收藏（关注）小组、话题、标签……，并建立自定义类别，根据多个收藏项订阅话题，支持关键词过滤（有难度，但不一定有用）
+* \[GroupFragment\]\[WebViewFragment\]支持小组的WebViewFragment
+* 🛠\[GroupTopicFragment\]处理话题详情中的URL：在浏览器中打开或直接跳转对应页，而不应在原WebView中加载
+* 设置主题
+* \[ListView\]话题排序：发布时间（伪，由于接口限制）、回复时间、热度
 * 🛠部分接口的缺失字段覆盖已有字段导致模型丢失缓存（临时解决方案：不保存不完整的对象）
 * 🛠\[GroupTabFragment\]话题item中过长的用户名会导致发布时间不能正确显示
-* 能建立自定义话题类别，根据多个小组、话题标签（tag aka tab）订阅话题，支持关键词过滤（有难度，但不一定有用）
-* \[GroupFragment\]\[WebViewFragment\]支持小组的WebViewFragment
-* 设置主题
-* 收藏（或称关注）小组、话题、标签、用户……
 * \[ListView\]结合SharedPref实现个性化推荐
 * \[ListView\]Paging （重中之重，基本需求）
-* \[ListView\]话题排序：默认（自创、多条件）、发布时间、回复时间、热度
+* \[ListView\]话题排序：自创的多参数排序规则
 * Widgets
 * 通知、推送（考虑其意义、国情和作者自身条件，搁置）
 * 🛠MIUI 10 Android 8.1加载含WebView的NestedScrollView时子视图会因滑动或WebView中选中本文等操作而消失或
@@ -109,7 +109,7 @@ App受众
 * 能够获取豆瓣实时数据
 * 支持离线加载缓存
 * 根据多条件订阅关注的话题
-* 轻量app（既由于作者水平和精力有限，又由于官方app诸多“累赘”的模块和功能不在本项目开发计划之内）
+* 无广告的轻量app（既由于作者水平和精力有限，又由于官方app诸多“累赘”的模块和功能不在本项目开发计划之内）
 * 较为原始的依赖注入：InjectorUtils.java
 * 访问接口采用了Apache Commons的现成工具，极大地简化代码。
 * 支持豆瓣网页URL的deep links
@@ -188,7 +188,7 @@ App受众
 辅助工具
 ---------
 
-* HTTPCanary
-* MiX
-* jadx-gui
+* HTTPCanary for douban access
+* jadx-gui for understanding models
 * Google Chrome for CSS debugging
+* Twitter, Chrome, CoolApk apps as references for UI design
