@@ -39,8 +39,8 @@
                 <ImageView
                     android:id="@+id/author_avatar"
                     avatarFromUrl="@{groupTopic.author.avatarUrl}"
-                    android:layout_width="@dimen/small_avatar_or_icon_height"
-                    android:layout_height="@dimen/small_avatar_or_icon_height"
+                    android:layout_width="@dimen/small_avatar_size"
+                    android:layout_height="@dimen/small_avatar_size"
 
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
