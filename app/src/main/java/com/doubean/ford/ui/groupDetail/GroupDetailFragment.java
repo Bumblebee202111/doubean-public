@@ -32,10 +32,10 @@ import java.util.Objects;
  */
 public class GroupDetailFragment extends Fragment {
 
-    private GroupDetailViewModel groupDetailViewModel;
-    FragmentGroupDetailBinding binding;
     String groupId;
     String defaultTabId;
+    private GroupDetailViewModel groupDetailViewModel;
+
     public static GroupDetailFragment newInstance() {
         return new GroupDetailFragment();
     }
@@ -43,39 +43,32 @@ public class GroupDetailFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
-        binding = FragmentGroupDetailBinding.inflate(inflater, container, false);
-        binding.setLifecycleOwner(getViewLifecycleOwner());
+        super.onCreateView(inflater, container, savedInstanceState);
+        FragmentGroupDetailBinding binding = FragmentGroupDetailBinding.inflate(inflater, container, false);
+        //binding.setLifecycleOwner(getViewLifecycleOwner());
         GroupDetailFragmentArgs args = GroupDetailFragmentArgs.fromBundle(requireArguments());
         groupId = args.getGroupId();
         defaultTabId = args.getDefaultTabId();
         GroupDetailViewModelFactory factory = InjectorUtils.provideGroupDetailViewModelFactory(requireContext(), groupId, defaultTabId);
         groupDetailViewModel = new ViewModelProvider(this, factory).get(GroupDetailViewModel.class);
         binding.setViewModel(groupDetailViewModel);
-        groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(), new Observer<Group>() {
-            @Override
-            public void onChanged(@NonNull Group group) {
-                binding.setGroup(group);
-            }
-        });
         groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(),
-                group -> binding.appbar.setBackgroundColor(Color.parseColor(group == null ? "#FFFFFF" : group.getColor())));
-        groupDetailViewModel.getCurrentTabFavorite().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-
-                MenuItem favoriteItem = binding.toolbar.getMenu().findItem(R.id.action_favorite);
-                favoriteItem.setIcon(aBoolean ? R.drawable.ic_favorite : R.drawable.ic_favorite_border);
-            }
+                group -> {
+                    binding.setGroup(group);
+                    binding.appbar.setBackgroundColor(Color.parseColor(group == null ? "#FFFFFF" : group.getColor()));
+                });
+        groupDetailViewModel.getCurrentTabFavorite().observe(getViewLifecycleOwner(), aBoolean -> {
+            MenuItem favoriteItem = binding.toolbar.getMenu().findItem(R.id.action_favorite);
+            favoriteItem.setIcon(aBoolean ? R.drawable.ic_favorite : R.drawable.ic_favorite_border);
         });
 
-        final Boolean[] isToolbarShown = {false};
+
 
         /*
           Below code doesn't make visibility of toolbar adaptive because setOnScrollChangeListener
           must be called on a NestedScrollView.
           Possible fix: passing a callback to tab adapter
-          Not look too bad without such listener though
+        final Boolean[] isToolbarShown = {false};
         binding.pager.setOnScrollChangeListener(
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
                     boolean shouldShowToolbar = scrollY > binding.toolbar.getHeight();
@@ -113,30 +106,22 @@ public class GroupDetailFragment extends Fragment {
 
         binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).navigateUp());
 
-
-        return binding.getRoot();
-    }
-
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-
         ViewPager2 viewPager = binding.pager;
         groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(), new Observer<Group>() {
             @Override
             public void onChanged(Group group) {
                 if (group != null && group.groupTabs != null) {
                     List<GroupTopicTag> groupTopicTags = group.getGroupTabs();
-                    GroupTabAdapter groupTabAdapter = new GroupTabAdapter(GroupDetailFragment.this, groupId, group.getGroupTabs());
-                    viewPager.setAdapter(groupTabAdapter);
+                    GroupPagerAdapter groupPagerAdapter = new GroupPagerAdapter(GroupDetailFragment.this, groupId, group.getGroupTabs());
+                    viewPager.setAdapter(groupPagerAdapter);
                     TabLayout tabLayout = binding.tabLayout;
                     new TabLayoutMediator(tabLayout, viewPager,
                             (tab, position) -> {
                                 tab.setText(position == 0 ? getString(R.string.all) : groupTopicTags.get(position - 1).name);
                             }
                     ).attach();
+
+                    /*TODO: remove below code, perform tab/page operations inside the page instead */
 
                     viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                         @Override
@@ -146,22 +131,25 @@ public class GroupDetailFragment extends Fragment {
                         }
                     });
 
-
-                    int defaultItem = 0;
-                    if (defaultTabId != null) {
-                        for (int i = 0; i < group.groupTabs.size(); i++) {
-                            if (Objects.equals(group.groupTabs.get(i).id, defaultTabId)) {
-                                defaultItem = i + 1;
-                                break;
+                    viewPager.post(() -> {
+                        int defaultItem = 0;
+                        if (defaultTabId != null) {
+                            for (int i = 0; i < group.groupTabs.size(); i++) {
+                                if (Objects.equals(group.groupTabs.get(i).id, defaultTabId)) {
+                                    defaultItem = i + 1;
+                                    break;
+                                }
                             }
                         }
-                    }
-                    viewPager.setCurrentItem(defaultItem, false);
+                        viewPager.setCurrentItem(defaultItem, false);//what causes page reset on nav back!!!
+                    });
+
+
                 }
             }
         });
 
+        return binding.getRoot();
     }
-
 
 }

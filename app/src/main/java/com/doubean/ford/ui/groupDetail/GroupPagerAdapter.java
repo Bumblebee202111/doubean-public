@@ -11,11 +11,11 @@ import com.doubean.ford.ui.groupTab.GroupTabFragment;
 
 import java.util.List;
 
-public class GroupTabAdapter extends FragmentStateAdapter {
+public class GroupPagerAdapter extends FragmentStateAdapter {
     private String groupId;
     private List<GroupTopicTag> groupTopicTags;
 
-    public GroupTabAdapter(Fragment fragment, String groupId, List<GroupTopicTag> groupTopicTags) {
+    public GroupPagerAdapter(Fragment fragment, String groupId, List<GroupTopicTag> groupTopicTags) {
         super(fragment);
         this.groupId = groupId;
         this.groupTopicTags = groupTopicTags;
