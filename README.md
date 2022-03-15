@@ -59,18 +59,18 @@ App受众
 包含新增功能、引入库、bug修复（大致按实现顺序排列）。
 
 目标：逐个消灭计划项！！！
-* 🛠返回栈不能保存视图，如从话题页返回话题列表时TabLayout会回到初始Tab（需查阅资料搞懂原理）
 * \[GroupTopicFragment\]适当补充尚未使用的字段，如显示评论中的图片、在评论中标注楼主、显示回复的评论
 * \[GroupsFragment\]推荐小组（或话题）
 * \[GroupTopicFragment\]保存WebView中的图片
 * \[ListView\]SwipeRefreshLayout
 * \[GroupFragment\]\[GroupTopicFragment\]分享功能
 * \[GroupFragment\]\[GroupTopicFragment\]添加记录已读、取消已读的功能
-* \[GroupFragment\]\[GroupTabFragment\]小组或标签内搜索话题
-* \[GroupFragment\]\[GroupTabFragment\]将Tab的收藏按钮移至Tab内部（考虑增加工具栏或efab）
+* \[GroupFragment\]小组或标签内搜索话题
 * \[GroupsFragment\]全局搜索话题
+* \[GroupFragment\]将Tab的收藏按钮移至Tab内部（考虑增加工具栏或efab）
 * \[GroupsFragment\]收藏列表中允许移除收藏、调整顺序
-* \[GroupsFragment\]考虑将列表元素全部替换成CardView
+* \[GroupsFragment\]\[GroupFragment\]将列表元素全部替换成CardView，并进行布局调整*
+  🛠\[GroupTabFragment\]话题item中过长的用户名会导致发布时间不能正确显示
 * 🛠\[GroupFragment\]小组头像遮挡返回按钮
 * \[GroupFragment\]根据滑动位置来判断小组头部介绍的显示方式（难点：ViewPager2本身不可滑动）
 * \[GroupFragment\]重新设计收藏（或称关注）的模型，支持收藏（关注）小组、话题、标签……，并建立自定义类别，根据多个收藏项订阅话题，支持关键词过滤（有难度，但不一定有用）
@@ -79,7 +79,6 @@ App受众
 * 设置主题
 * \[ListView\]话题排序：发布时间（伪，由于接口限制）、回复时间、热度
 * 🛠部分接口的缺失字段覆盖已有字段导致模型丢失缓存（临时解决方案：不保存不完整的对象）
-* 🛠\[GroupTabFragment\]话题item中过长的用户名会导致发布时间不能正确显示
 * \[ListView\]结合SharedPref实现个性化推荐
 * \[ListView\]Paging （重中之重，基本需求）
 * \[ListView\]话题排序：自创的多参数排序规则
