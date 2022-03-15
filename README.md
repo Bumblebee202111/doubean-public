@@ -3,9 +3,10 @@ doubean
 
 豆瓣非官方app，主要用于小组浏览。**练手项目，仍未初步完成**。
 
-![preview](screenshots/phone_group_detail.png)
-![preview](screenshots/phone_group_search.png)
-![preview](screenshots/phone_topic_detail.png)
+<p><img src="screenshots/phone_group_detail.png" alt="phone_group_detail" width="300" />
+<img src="screenshots/phone_group_search.png" alt="phone_group_search" width="300" />
+<img src="screenshots/phone_topic_detail.png" alt="phone_topic_detail" width="300" /></p>
+
 
 注意
 ----
