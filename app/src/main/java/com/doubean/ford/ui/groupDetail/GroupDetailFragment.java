@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
@@ -24,6 +23,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,7 +45,7 @@ public class GroupDetailFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         FragmentGroupDetailBinding binding = FragmentGroupDetailBinding.inflate(inflater, container, false);
-        //binding.setLifecycleOwner(getViewLifecycleOwner());
+        binding.setLifecycleOwner(getViewLifecycleOwner());
         GroupDetailFragmentArgs args = GroupDetailFragmentArgs.fromBundle(requireArguments());
         groupId = args.getGroupId();
         defaultTabId = args.getDefaultTabId();
@@ -56,13 +56,39 @@ public class GroupDetailFragment extends Fragment {
                 group -> {
                     binding.setGroup(group);
                     binding.appbar.setBackgroundColor(Color.parseColor(group == null ? "#FFFFFF" : group.getColor()));
+                    if (group != null && group.groupTabs != null) {
+
+                        List<GroupTopicTag> groupTopicTags = group.getGroupTabs();
+                        GroupPagerAdapter groupPagerAdapter = new GroupPagerAdapter(GroupDetailFragment.this, groupId, group.getGroupTabs());
+
+                        /*Hacking ViewPager2*/
+                        ViewPager2 viewPager = binding.pager;
+                        presetDefaultItem(viewPager, group);
+                        viewPager.setAdapter(groupPagerAdapter);
+
+                        TabLayout tabLayout = binding.tabLayout;
+                        new TabLayoutMediator(tabLayout, viewPager,
+                                (tab, position) -> {
+                                    tab.setText(position == 0 ? getString(R.string.all) : groupTopicTags.get(position - 1).name);
+                                }
+                        ).attach();
+
+                        /*TODO: remove below code, perform tab/page operations inside the page instead */
+
+                        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                            @Override
+                            public void onPageSelected(int position) {
+                                super.onPageSelected(position);
+                                groupDetailViewModel.setCurrentTabId(position == 0 ? null : group.groupTabs.get(position - 1).id);
+                            }
+                        });
+
+                    }
                 });
         groupDetailViewModel.getCurrentTabFavorite().observe(getViewLifecycleOwner(), aBoolean -> {
             MenuItem favoriteItem = binding.toolbar.getMenu().findItem(R.id.action_favorite);
             favoriteItem.setIcon(aBoolean ? R.drawable.ic_favorite : R.drawable.ic_favorite_border);
         });
-
-
 
         /*
           Below code doesn't make visibility of toolbar adaptive because setOnScrollChangeListener
@@ -106,50 +132,33 @@ public class GroupDetailFragment extends Fragment {
 
         binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).navigateUp());
 
-        ViewPager2 viewPager = binding.pager;
-        groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(), new Observer<Group>() {
-            @Override
-            public void onChanged(Group group) {
-                if (group != null && group.groupTabs != null) {
-                    List<GroupTopicTag> groupTopicTags = group.getGroupTabs();
-                    GroupPagerAdapter groupPagerAdapter = new GroupPagerAdapter(GroupDetailFragment.this, groupId, group.getGroupTabs());
-                    viewPager.setAdapter(groupPagerAdapter);
-                    TabLayout tabLayout = binding.tabLayout;
-                    new TabLayoutMediator(tabLayout, viewPager,
-                            (tab, position) -> {
-                                tab.setText(position == 0 ? getString(R.string.all) : groupTopicTags.get(position - 1).name);
-                            }
-                    ).attach();
-
-                    /*TODO: remove below code, perform tab/page operations inside the page instead */
-
-                    viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-                        @Override
-                        public void onPageSelected(int position) {
-                            super.onPageSelected(position);
-                            groupDetailViewModel.setCurrentTabId(position == 0 ? null : group.groupTabs.get(position - 1).id);
-                        }
-                    });
-
-                    viewPager.post(() -> {
-                        int defaultItem = 0;
-                        if (defaultTabId != null) {
-                            for (int i = 0; i < group.groupTabs.size(); i++) {
-                                if (Objects.equals(group.groupTabs.get(i).id, defaultTabId)) {
-                                    defaultItem = i + 1;
-                                    break;
-                                }
-                            }
-                        }
-                        viewPager.setCurrentItem(defaultItem, false);//what causes page reset on nav back!!!
-                    });
-
-
-                }
-            }
-        });
-
         return binding.getRoot();
     }
 
+    private int getDefaultItem(Group group) {
+        if (defaultTabId != null) {
+            for (int i = 0; i < group.groupTabs.size(); i++) {
+                if (Objects.equals(group.groupTabs.get(i).id, defaultTabId)) {
+                    return i + 1;
+                }
+            }
+        }
+        return 0;
+    }
+
+    private void presetDefaultItem(ViewPager2 viewPager, Group group) {
+        try {
+            Field field = viewPager.getClass().getDeclaredField("mPendingCurrentItem");
+            field.setAccessible(true);
+            try {
+                if (field.getInt(viewPager) == -1) { //-1: NO_POSITION
+                    field.setInt(viewPager, getDefaultItem(group));
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+    }
 }
