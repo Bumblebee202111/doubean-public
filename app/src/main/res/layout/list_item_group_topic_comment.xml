@@ -68,7 +68,7 @@
                 tools:text="122222222222 " />
 
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/comment_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

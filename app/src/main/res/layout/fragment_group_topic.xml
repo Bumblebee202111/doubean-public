@@ -52,7 +52,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/topic_title"
                     style="?android:attr/textAppearanceLarge"
                     android:layout_width="0dp"
@@ -76,7 +76,7 @@
                     app:layout_constraintTop_toBottomOf="@id/topic_title"
                     app:shapeAppearanceOverlay="@style/smallRoundedCornersImageView" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/author_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -88,8 +88,7 @@
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                     tools:text="Li Ming" />
 
-                <TextView
-
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/topic_date"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -124,7 +123,7 @@
                     app:layout_constraintTop_toBottomOf="@id/content"
                     tools:text="标签tag" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/popular_comments_header"
                     isGone="@{viewModel.topicComments.popularComments==null||viewModel.topicComments.popularComments.empty}"
                     android:layout_width="0dp"
@@ -151,7 +150,7 @@
                     app:layout_constraintTop_toBottomOf="@id/popular_comments_header"
                     tools:listitem="@layout/list_item_group_topic_comment" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/all_comments_header"
                     isGone="@{viewModel.topicComments.allComments==null||viewModel.topicComments.allComments.empty}"
                     android:layout_width="0dp"
