@@ -9,6 +9,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.doubean.ford.data.GroupTopicTag;
 import com.doubean.ford.ui.groupTab.GroupTabFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GroupPagerAdapter extends FragmentStateAdapter {
@@ -18,7 +19,7 @@ public class GroupPagerAdapter extends FragmentStateAdapter {
     public GroupPagerAdapter(Fragment fragment, String groupId, List<GroupTopicTag> groupTopicTags) {
         super(fragment);
         this.groupId = groupId;
-        this.groupTopicTags = groupTopicTags;
+        this.groupTopicTags = groupTopicTags == null ? new ArrayList<>() : groupTopicTags;
     }
 
     @NonNull

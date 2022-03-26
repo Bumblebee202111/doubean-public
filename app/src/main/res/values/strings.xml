@@ -21,5 +21,6 @@
     <string name="all">All</string>
     <string name="popular_replies">Popular replies</string>
     <string name="all_replies">All replies</string>
+    <string name="middle_dot">·</string>
 
 </resources>

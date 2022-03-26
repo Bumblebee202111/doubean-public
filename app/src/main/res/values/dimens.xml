@@ -6,11 +6,19 @@
     <dimen name="header_margin">24dp</dimen>
     <dimen name="card_bottom_margin">24dp</dimen>
     <dimen name="card_elevation">2dp</dimen>
-    <dimen name="large_avatar_or_icon_height">48dp</dimen>
-    <dimen name="small_avatar_size">18dp</dimen>
-    <dimen name="small_icon_size">20dp</dimen>
+
+
+    <dimen name="icon_size_extra_small">20dp</dimen>
+    <dimen name="icon_size_small">24dp</dimen>
+    <dimen name="icon_size_normal">32dp</dimen>
+    <dimen name="icon_size_large">40dp</dimen>
+    <dimen name="icon_size_extra_large">56dp</dimen>
+    <dimen name="icon_size_extra_extra_large">80dp</dimen>
+
+    <dimen name="margin_extra_small">4dp</dimen>
     <dimen name="margin_small">8dp</dimen>
     <dimen name="margin_normal">16dp</dimen>
+
     <dimen name="corner_size_small">4dp</dimen>
     <dimen name="corner_size_normal">8dp</dimen>
 </resources>

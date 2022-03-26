@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 
 import com.doubean.ford.adapters.GroupTopicAdapter;
 import com.doubean.ford.databinding.FragmentGroupTabBinding;
+import com.doubean.ford.ui.groupDetail.GroupDetailFragment;
 import com.doubean.ford.util.InjectorUtils;
 
 public class GroupTabFragment extends Fragment {
@@ -38,7 +39,10 @@ public class GroupTabFragment extends Fragment {
         binding.topicList.setAdapter(adapter);
         binding.topicList.addItemDecoration(new DividerItemDecoration(binding.topicList.getContext(), DividerItemDecoration.VERTICAL));
         groupTabViewModel.getTopics().observe(getViewLifecycleOwner(), adapter::submitList);
+        GroupDetailFragment groupDetailFragment = (GroupDetailFragment) requireParentFragment();
+
         return binding.getRoot();
     }
+
 
 }

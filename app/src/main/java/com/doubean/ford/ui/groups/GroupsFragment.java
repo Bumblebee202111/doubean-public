@@ -11,14 +11,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.doubean.ford.R;
 import com.doubean.ford.adapters.GroupFavoriteAdapter;
 import com.doubean.ford.databinding.FragmentGroupsBinding;
 import com.doubean.ford.util.InjectorUtils;
-import com.doubean.ford.util.SpanCountCalculator;
 
 public class GroupsFragment extends Fragment {
 
@@ -34,12 +31,9 @@ public class GroupsFragment extends Fragment {
         binding = FragmentGroupsBinding.inflate(inflater, container, false);
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
-        binding.groupList.addItemDecoration(new DividerItemDecoration(binding.groupList.getContext(), DividerItemDecoration.VERTICAL));
         GroupFavoriteAdapter adapter = new GroupFavoriteAdapter();
         binding.groupList.setAdapter(adapter);
         groupsViewModel.getFavorites().observe(getViewLifecycleOwner(), adapter::submitList);
-        int spanCount = SpanCountCalculator.getSpanCount(requireContext(), 400);
-        binding.groupList.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
         return binding.getRoot();
     }
 

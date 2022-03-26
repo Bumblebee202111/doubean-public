@@ -1,7 +1,11 @@
 package com.doubean.ford.data;
 
+import android.graphics.Color;
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -39,12 +43,12 @@ public class Group {
     @SerializedName("avatar")
     public String avatarUrl;
     @SerializedName("background_mask_color")
-    public String color;
+    public String colorString;
 
     @SerializedName("member_name")
     public String memberName;
 
-    public Group(@NonNull String id, @NonNull String groupName, int memberCount, int topicCount, String dateCreated, List<GroupTopicTag> groupTabs, String sharingUrl, String desc, String avatarUrl, String color) {
+    public Group(@NonNull String id, @NonNull String groupName, int memberCount, int topicCount, String dateCreated, List<GroupTopicTag> groupTabs, String sharingUrl, String desc, String avatarUrl, String colorString) {
         this.id = id;
         this.groupName = groupName;
         this.memberCount = memberCount;
@@ -54,7 +58,7 @@ public class Group {
         this.sharingUrl = sharingUrl;
         this.desc = desc;
         this.avatarUrl = avatarUrl;
-        this.color = color;
+        this.colorString = colorString;
     }
 
     public int getTopicCount() {
@@ -77,10 +81,9 @@ public class Group {
         return desc;
     }
 
-    public String getColor() {
-        if (color == null)
-            return "#FFFFFF";
-        return color;
+    @Ignore
+    public int getColor() {
+        return Color.parseColor(TextUtils.isEmpty(colorString) ? "#FFFFFF" : colorString);
     }
 
     public String getId() {

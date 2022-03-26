@@ -10,14 +10,16 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.doubean.ford.adapters.GroupAdapter;
 import com.doubean.ford.databinding.FragmentGroupSearchBinding;
 import com.doubean.ford.util.InjectorUtils;
+import com.doubean.ford.util.SpanCountCalculator;
 
 public class GroupSearchFragment extends Fragment {
 
@@ -26,19 +28,9 @@ public class GroupSearchFragment extends Fragment {
     FragmentGroupSearchBinding binding;
     GroupAdapter adapter;
 
-    public GroupSearchFragment() {
-
-    }
-
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         binding = FragmentGroupSearchBinding.inflate(inflater, container, false);
@@ -50,6 +42,8 @@ public class GroupSearchFragment extends Fragment {
 
         adapter = new GroupAdapter();
         binding.groupList.setAdapter(adapter);
+        int spanCount = SpanCountCalculator.getSpanCount(getContext(), 500);
+        binding.groupList.setLayoutManager(new StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL));
         initSearchInputListener();
         return binding.getRoot();
     }
@@ -80,7 +74,6 @@ public class GroupSearchFragment extends Fragment {
     }
 
     private void initRecyclerView() {
-        binding.groupList.addItemDecoration(new DividerItemDecoration(binding.groupList.getContext(), DividerItemDecoration.VERTICAL));
         groupSearchViewModel.getResults().observe(getViewLifecycleOwner(), result -> {
             binding.setGroups(result);
             binding.setResultCount(result == null ? 0 : result.size());

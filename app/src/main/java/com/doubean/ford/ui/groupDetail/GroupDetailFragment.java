@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
@@ -32,79 +33,77 @@ import java.util.Objects;
  */
 public class GroupDetailFragment extends Fragment {
 
+    final Boolean[] isToolbarShown = {false};
     String groupId;
     String defaultTabId;
+    FragmentGroupDetailBinding binding;
     private GroupDetailViewModel groupDetailViewModel;
-
-    public static GroupDetailFragment newInstance() {
-        return new GroupDetailFragment();
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        FragmentGroupDetailBinding binding = FragmentGroupDetailBinding.inflate(inflater, container, false);
+
+        binding = FragmentGroupDetailBinding.inflate(inflater, container, false);
         binding.setLifecycleOwner(getViewLifecycleOwner());
+
         GroupDetailFragmentArgs args = GroupDetailFragmentArgs.fromBundle(requireArguments());
         groupId = args.getGroupId();
         defaultTabId = args.getDefaultTabId();
+
         GroupDetailViewModelFactory factory = InjectorUtils.provideGroupDetailViewModelFactory(requireContext(), groupId, defaultTabId);
         groupDetailViewModel = new ViewModelProvider(this, factory).get(GroupDetailViewModel.class);
         binding.setViewModel(groupDetailViewModel);
-        groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(),
-                group -> {
-                    binding.setGroup(group);
-                    binding.appbar.setBackgroundColor(Color.parseColor(group == null ? "#FFFFFF" : group.getColor()));
-                    if (group != null && group.groupTabs != null) {
+        groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(), group -> {
+            if (group != null) {
+                binding.setGroup(group);
+                final int color = group.getColor();
+                binding.mask.setBackgroundColor(color);
+                binding.toolbar.setBackgroundColor(color);
+                binding.tabLayout.setSelectedTabIndicatorColor(color);
 
-                        List<GroupTopicTag> groupTopicTags = group.getGroupTabs();
-                        GroupPagerAdapter groupPagerAdapter = new GroupPagerAdapter(GroupDetailFragment.this, groupId, group.getGroupTabs());
+                List<GroupTopicTag> groupTopicTags = group.getGroupTabs();
 
-                        /*Hacking ViewPager2*/
-                        ViewPager2 viewPager = binding.pager;
-                        presetDefaultItem(viewPager, group);
-                        viewPager.setAdapter(groupPagerAdapter);
+                GroupPagerAdapter groupPagerAdapter = new GroupPagerAdapter(GroupDetailFragment.this, groupId, group.getGroupTabs());
 
-                        TabLayout tabLayout = binding.tabLayout;
-                        new TabLayoutMediator(tabLayout, viewPager,
-                                (tab, position) -> {
-                                    tab.setText(position == 0 ? getString(R.string.all) : groupTopicTags.get(position - 1).name);
-                                }
-                        ).attach();
+                ViewPager2 viewPager = binding.pager;
+                presetDefaultItem(viewPager, group);
+                viewPager.setAdapter(groupPagerAdapter);
 
-                        /*TODO: remove below code, perform tab/page operations inside the page instead */
+                TabLayout tabLayout = binding.tabLayout;
+                new TabLayoutMediator(tabLayout, viewPager,
+                        (tab, position) -> {
+                            tab.setText(position == 0 ? getString(R.string.all) : groupTopicTags.get(position - 1).name);
+                        }
+                ).attach();
 
-                        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-                            @Override
-                            public void onPageSelected(int position) {
-                                super.onPageSelected(position);
-                                groupDetailViewModel.setCurrentTabId(position == 0 ? null : group.groupTabs.get(position - 1).id);
-                            }
-                        });
-
+                /*TODO: remove below code, perform tab/page operations inside the page instead */
+                viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                    @Override
+                    public void onPageSelected(int position) {
+                        super.onPageSelected(position);
+                        groupDetailViewModel.setCurrentTabId(position == 0 ? null : group.groupTabs.get(position - 1).id);
                     }
                 });
+            }
+
+        });
         groupDetailViewModel.getCurrentTabFavorite().observe(getViewLifecycleOwner(), aBoolean -> {
             MenuItem favoriteItem = binding.toolbar.getMenu().findItem(R.id.action_favorite);
             favoriteItem.setIcon(aBoolean ? R.drawable.ic_favorite : R.drawable.ic_favorite_border);
         });
+        binding.appbar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
 
-        /*
-          Below code doesn't make visibility of toolbar adaptive because setOnScrollChangeListener
-          must be called on a NestedScrollView.
-          Possible fix: passing a callback to tab adapter
-        final Boolean[] isToolbarShown = {false};
-        binding.pager.setOnScrollChangeListener(
-                (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                    boolean shouldShowToolbar = scrollY > binding.toolbar.getHeight();
-                    if (isToolbarShown[0] != shouldShowToolbar) {
-                        isToolbarShown[0] = shouldShowToolbar;
-                        binding.appbar.setActivated(shouldShowToolbar);
-                        binding.toolbarLayout.setTitleEnabled(shouldShowToolbar);
-                    }
-                });
-        */
+            //ref: https://stackoverflow.com/a/33891727
+            boolean shouldShowToolbar = verticalOffset + appBarLayout.getTotalScrollRange() == 0;
+
+            if (isToolbarShown[0] != shouldShowToolbar) {
+                isToolbarShown[0] = shouldShowToolbar;
+                binding.appbar.setActivated(shouldShowToolbar);
+                binding.toolbarLayout.setTitleEnabled(shouldShowToolbar);
+            }
+
+        });
 
         binding.toolbar.setOnMenuItemClickListener(item -> {
             //noinspection SwitchStatementWithTooFewBranches
@@ -135,6 +134,25 @@ public class GroupDetailFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(), new Observer<Group>() {
+            @Override
+            public void onChanged(Group group) {
+                if (group != null) {
+                    getActivity().getWindow().setStatusBarColor(group.getColor());
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
+    }
+
     private int getDefaultItem(Group group) {
         if (defaultTabId != null) {
             for (int i = 0; i < group.groupTabs.size(); i++) {
@@ -161,4 +179,5 @@ public class GroupDetailFragment extends Fragment {
             e.printStackTrace();
         }
     }
+
 }
