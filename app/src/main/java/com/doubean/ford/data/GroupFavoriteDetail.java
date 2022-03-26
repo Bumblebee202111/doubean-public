@@ -29,7 +29,7 @@ public class GroupFavoriteDetail {
                 }
             }
         }
-        this.groupColor = group.color;
+        this.groupColor = group.colorString;
         this.groupMemberCount = group.memberCount;
         this.groupMemberName = group.memberName;
         this.groupShortDesc = group.getShortDesc();

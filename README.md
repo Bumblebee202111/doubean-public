@@ -3,9 +3,9 @@ doubean
 
 豆瓣非官方app，主要用于小组浏览。**练手项目，仍未初步完成**。
 
-<p><img src="screenshots/phone_group_detail.png" alt="phone_group_detail" width="300" />
-<img src="screenshots/phone_group_search.png" alt="phone_group_search" width="300" />
-<img src="screenshots/phone_topic_detail.png" alt="phone_topic_detail" width="300" /></p>
+<p><img src="screenshots/phone_group_detail.png" alt="phone_group_detail" width="200" />
+<img src="screenshots/phone_group_search.png" alt="phone_group_search" width="200" />
+<img src="screenshots/phone_topic_detail.png" alt="phone_topic_detail" width="200" /></p>
 
 
 注意
@@ -60,8 +60,13 @@ App受众
 包含新增功能、引入库、bug修复（大致按实现顺序排列）。
 
 目标：逐个消灭计划项！！！
+
 * \[GroupTopicFragment\]适当补充尚未使用的字段，如显示评论中的图片、在评论中标注楼主、显示回复的评论
-* \[GroupsFragment\]推荐小组（或话题）
+* \[GroupsFragment\]增加小组日榜
+* 重新命名变量和UI文本，以便于理解（可能与官方叫法冲突，如“话题”->“帖子”），重新整理packages
+* 🛠 响应的保存（缓存）方式不合理，造成如小组首页加载收藏会触发NPE（解决方法为暴力简化，直接保存嵌套对象，修复后为话题详情页应用小组主题色）
+* \[GroupFragment\] 显示/隐藏标题的时机
+* 🛠 \[GroupFragment\] 返回至任何位置标题均不显示
 * \[GroupTopicFragment\]保存WebView中的图片
 * \[RecyclerView\]SwipeRefreshLayout
 * \[GroupFragment\]\[GroupTopicFragment\]分享功能
@@ -70,23 +75,21 @@ App受众
 * \[GroupsFragment\]全局搜索话题
 * \[GroupFragment\]将Tab的收藏按钮移至Tab内部（考虑增加工具栏或efab）
 * \[GroupsFragment\]收藏列表中允许移除收藏、调整顺序
-* \[GroupsFragment\]\[GroupFragment\]将列表元素全部替换成CardView，并进行布局调整
-* 🛠\[GroupTabFragment\]话题item中过长的用户名会导致发布时间不能正确显示
-* 🛠\[GroupFragment\]小组头像遮挡返回按钮
-* \[GroupFragment\]根据滑动位置来判断小组头部介绍的显示方式（难点：ViewPager2本身不可滑动）
 * \[GroupFragment\]重新设计收藏（或称关注）的模型，支持收藏（关注）小组、话题、标签……，并建立自定义类别，根据多个收藏项订阅话题，支持关键词过滤（有难度，但不一定有用）
-* \[GroupFragment\]\[WebViewFragment\]支持小组的WebViewFragment
+* \[GroupFragment\]小组的快捷方式
+* \[ListView\]仿Reddit折叠/展开列表项
 * 🛠\[GroupTopicFragment\]处理话题详情中的URL：在浏览器中打开或直接跳转对应页，而不应在原WebView中加载
-* 设置主题
-* \[ListView\]话题排序：发布时间（伪，由于接口限制）、回复时间、热度
-* 🛠部分接口的缺失字段覆盖已有字段导致模型丢失缓存（临时解决方案：不保存不完整的对象）
+* 支持默认或手动屏蔽不友善、负能量的内容
+* \[GroupFragment\]话题排序：发布时间（伪，由于接口限制）、回复时间、热度
+* Color
+* Typography
+* 🛠 \[ListView\]列表如GroupFragment中的Tab加载时出现卡顿（Pagination） （重中之重，基本需求）
 * \[ListView\]结合SharedPref实现个性化推荐
-* \[ListView\]Paging （重中之重，基本需求）
 * \[ListView\]话题排序：自创的多参数排序规则
 * Widgets
 * 通知、推送（考虑其意义、国情和作者自身条件，搁置）
 * 🛠MIUI 10 Android 8.1加载含WebView的NestedScrollView时子视图会因滑动或WebView中选中本文等操作而消失或
-  复现（原因未知，初步判断为旧版MIUI的问题，由于本人水平有限且系统较旧，暂时搁置）
+  复现（原因未知，初步判断为旧版MIUI的问题，由于本人水平有限且系统较旧）
 * 豆瓣除小组外其他模块（如图书）
 
 非目标
@@ -96,21 +99,19 @@ App受众
 * Kotlin
 * Dagger2/Hilt
 * RxAndroid
-* 深入Material Design
+* 深度使用Material Design
 
 特点
 ----
+在实现官方app最基本功能的基础上又具有自己的特点，改善了小组较为封闭的现状。
 
-* 基于100% Java语言，尽自己所能选用权威的库（Jetpack中的库和优秀第三方库）、架构（MVVM）和理念（Android Jetpack）
-  * 同时对Hilt/Dagger2/Kotlin/WorkManager等新技术和争议技术持保守的观望态度
-  * 保证了较好的性能，便于代码编写和阅读，在一定程度上弥补了作者自身水平的不足
-* 支持豆瓣网页的WebView（已注入JS优化布局）中查看Fragment，用作显示完整信息以及预防接口失效
+* 基于100% Java语言，尽自己所能选用权威的库（Jetpack中的库和优秀第三方库）、架构（MVVM）和理念（Android
+  Jetpack），保证了较好的性能，便于代码编写和阅读，同时对Hilt/Dagger2/Kotlin等新技术或争议技术持保守的观望态度
+* 支持在豆瓣网页的WebView（已注入JS优化）中查看界面，以备不时之需
 * 对UI的字符串常量提供中英双语支持
-* 能够获取豆瓣实时数据
 * 支持离线加载缓存
-* 根据多条件订阅关注的话题
-* 无广告的轻量app（既由于作者水平和精力有限，又由于官方app诸多“累赘”的模块和功能不在本项目开发计划之内）
-* 较为原始的依赖注入：InjectorUtils.java
+* 根据多条件订阅关注的话题（待实现）
+* 无广告的轻量app
 * 访问接口采用了Apache Commons的现成工具，极大地简化代码。
 * 支持豆瓣网页URL的deep links
 
@@ -176,6 +177,7 @@ App受众
 * 他人博客和仓库中有关获取豆瓣数据的方法
 * StackOverflow
 * Google
+* CSDN/cnblogs
 
 [sunflower]: https://github.com/android/sunflower
 
@@ -191,4 +193,4 @@ App受众
 * HTTPCanary for douban access
 * jadx-gui for understanding models
 * Google Chrome for CSS debugging
-* Twitter, Chrome, CoolApk apps as references for UI design
+* Twitter, Chrome, CoolApk, Reddit, Google News apps as references for UI design

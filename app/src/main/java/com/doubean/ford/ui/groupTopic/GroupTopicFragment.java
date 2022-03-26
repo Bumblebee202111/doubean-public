@@ -1,5 +1,6 @@
 package com.doubean.ford.ui.groupTopic;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -12,6 +13,8 @@ import android.webkit.WebViewClient;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -34,10 +37,7 @@ public class GroupTopicFragment extends Fragment {
 
     private GroupTopicViewModel groupTopicViewModel;
     private FragmentGroupTopicBinding binding;
-
-    public static GroupTopicFragment newInstance() {
-        return new GroupTopicFragment();
-    }
+    final Boolean[] isToolbarShown = {false};
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -55,7 +55,6 @@ public class GroupTopicFragment extends Fragment {
         content.setHorizontalScrollBarEnabled(false);
         content.setPadding(0, 0, 0, 0);
         WebSettings webSettings = content.getSettings();
-        //webSettings.setTextZoom(175);
         webSettings.setNeedInitialFocus(false);
         webSettings.setJavaScriptEnabled(true);
         //webSettings.setUseWideViewPort(true);
@@ -67,6 +66,7 @@ public class GroupTopicFragment extends Fragment {
                 super.onPageFinished(view, url);
             }
         });
+
         groupTopicViewModel.getTopic().observe(getViewLifecycleOwner(), groupTopic -> {
             if (groupTopic != null) {
                 if (!TextUtils.isEmpty(groupTopic.content)) {
@@ -74,7 +74,7 @@ public class GroupTopicFragment extends Fragment {
                             Base64.NO_PADDING);
                     binding.content.loadData(encodedContent, "text/html", "base64");
                 }
-
+                //requireActivity().getWindow().setStatusBarColor(groupTopic.group.getColor());
             }
 
         });
@@ -105,7 +105,22 @@ public class GroupTopicFragment extends Fragment {
         });
         setHasOptionsMenu(true);
 
+        binding.topicDetailScrollview.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+        });
         return binding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getContext(), R.color.doubean_green));
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
     }
 
     private void subscribeUi(GroupTopicCommentAdapter popularCommentAdapter, GroupTopicCommentAdapter allCommentAdapter) {

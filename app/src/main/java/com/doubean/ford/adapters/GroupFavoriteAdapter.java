@@ -57,6 +57,7 @@ public class GroupFavoriteAdapter extends ListAdapter<GroupFavoriteDetail, Group
             super(binding.getRoot());
             this.binding = binding;
             binding.setClickListener(v -> navigateToGroup(binding.getFavorite(), v));
+
         }
 
         private void navigateToGroup(@NonNull GroupFavoriteDetail favorite, View itemView) {

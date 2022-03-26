@@ -7,9 +7,11 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -17,11 +19,13 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
+                android:fitsSystemWindows="true"
+                app:titleTextColor="?attr/colorOnSurface"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/favorite_groups"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -36,12 +40,13 @@
                 android:id="@+id/group_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_normal"
                 android:clipToPadding="false"
                 android:nestedScrollingEnabled="false"
                 android:paddingTop="@dimen/header_margin"
-                app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/favorite_groups"
                 tools:context="com.google.samples.apps.sunflower.GardenActivity"
                 tools:listitem="@layout/list_item_group" />

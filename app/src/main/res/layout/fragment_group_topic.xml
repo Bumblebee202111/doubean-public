@@ -10,52 +10,37 @@
             type="com.doubean.ford.ui.groupTopic.GroupTopicViewModel" />
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar"
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            android:fitsSystemWindows="true"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/doubean_green"
+            android:theme="@style/ThemeOverlay.Doubean.AppBar"
+            app:contentInsetStartWithNavigation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:menu="@menu/menu_topic_detail"
+            app:navigationIcon="@drawable/ic_detail_back"
+            app:title="@{viewModel.topic.title}"
+            tools:title="title title title title " />
+        <!--todo: app:subtitle="@{viewModel.topic.abstract}"-->
 
-            <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/toolbar_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                app:collapsedTitleGravity="center"
-                app:contentScrim="?attr/colorSurface"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:statusBarScrim="?attr/colorSurface"
-                app:title="@{viewModel.topic.title}"
-                app:titleEnabled="false"
-                app:toolbarId="@id/toolbar">
-
-                <com.google.android.material.appbar.MaterialToolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="@android:color/transparent"
-                    app:contentInsetStartWithNavigation="0dp"
-                    app:layout_collapseMode="pin"
-                    app:menu="@menu/menu_topic_detail"
-                    app:navigationIcon="@drawable/ic_detail_back"
-                    app:titleTextColor="?attr/colorOnSurface" />
-
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-        </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/topic_detail_scrollview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:clipToPadding="false"
-            android:fillViewport="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
             tools:context=".ui.groupTopic.GroupTopicFragment">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -81,15 +66,15 @@
                     tools:text="title title title title title title title title" />
 
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_marginStart="@dimen/margin_normal"
                     android:id="@+id/author_avatar"
-                    android:layout_width="@dimen/large_avatar_or_icon_height"
-                    android:layout_height="@dimen/large_avatar_or_icon_height"
-                    app:shapeAppearanceOverlay="@style/smallRoundedCornersImageView"
+                    android:layout_width="@dimen/icon_size_large"
+                    android:layout_height="@dimen/icon_size_large"
+                    android:layout_marginStart="@dimen/margin_normal"
                     android:layout_marginTop="@dimen/margin_small"
                     app:avatarFromUrl="@{viewModel.topic.author.avatarUrl}"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/topic_title" />
+                    app:layout_constraintTop_toBottomOf="@id/topic_title"
+                    app:shapeAppearanceOverlay="@style/smallRoundedCornersImageView" />
 
                 <TextView
                     android:id="@+id/author_name"
@@ -100,6 +85,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/author_avatar"
                     app:layout_constraintTop_toTopOf="@id/author_avatar"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                     tools:text="Li Ming" />
 
                 <TextView
@@ -118,27 +104,21 @@
                     android:id="@+id/content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_small"
+                    android:layout_marginHorizontal="@dimen/margin_normal"
                     android:layout_marginTop="@dimen/margin_small"
                     android:nestedScrollingEnabled="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/author_avatar" />
 
-                <com.google.android.material.button.MaterialButton
+                <com.google.android.material.chip.Chip
                     android:id="@+id/topic_tag"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
                     isGone="@{viewModel.topic.tagId==null}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_normal"
                     android:layout_marginTop="@dimen/margin_small"
-                    android:includeFontPadding="false"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
-                    android:letterSpacing="0"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
                     android:text="@{viewModel.topic.tagName}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/content"
@@ -203,5 +183,7 @@
 
 
         </androidx.core.widget.NestedScrollView>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

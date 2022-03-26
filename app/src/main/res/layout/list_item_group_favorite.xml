@@ -7,6 +7,8 @@
 
         <import type="android.graphics.Color" />
 
+        <import type="com.doubean.ford.R" />
+
         <variable
             name="clickListener"
             type="android.view.View.OnClickListener" />
@@ -16,59 +18,68 @@
             type="com.doubean.ford.data.GroupFavoriteDetail" />
     </data>
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="@{favorite==null?null:clickListener}"
-        app:cardElevation="@dimen/card_elevation"
-        app:cardPreventCornerOverlap="false"
+        android:layout_marginEnd="@dimen/margin_small"
         app:isGone="@{favorite==null}">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{clickListener}"
+            app:cardElevation="0dp"
+            app:cardPreventCornerOverlap="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="@color/stroke_color"
+            app:strokeWidth="1dp">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:layout_margin="@dimen/margin_normal"
                 android:id="@+id/avatar"
-                android:layout_width="@dimen/large_avatar_or_icon_height"
-                android:layout_height="@dimen/large_avatar_or_icon_height"
+                android:layout_width="@dimen/icon_size_extra_extra_large"
+                android:layout_height="@dimen/icon_size_extra_extra_large"
                 app:shapeAppearanceOverlay="@style/smallRoundedCornersImageView"
                 android:contentDescription="@string/a11y_group_item_image"
                 android:scaleType="centerCrop"
-                app:imageFromUrl="@{favorite.groupAvatarUrl}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:imageFromUrl="@{favorite.groupAvatarUrl}" />
+        </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/margin_normal"
-                android:text="@{favorite.groupName}"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/avatar"
-                app:layout_constraintTop_toTopOf="@id/avatar"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/group_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:ellipsize="end"
+            android:text="@{favorite.groupName}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:maxLines="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card"
+            tools:text="小组小组小组小组" />
 
-                tools:text="小组小组小组小组" />
-
-            <TextView
-                android:id="@+id/group_tab_name"
-                isGone="@{favorite.groupTabId==null}"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/margin_normal"
-                android:layout_marginTop="@dimen/margin_small"
-                android:text="@{favorite.groupTabName}"
-                app:layout_constraintBottom_toBottomOf="@id/avatar"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/avatar"
-                app:layout_constraintTop_toBottomOf="@id/name"
-                tools:text="tab tab tab" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/group_tab_name"
+            isGone="@{favorite.groupTabId==null}"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:ellipsize="end"
+            android:text="@{favorite.groupTabName}"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/group_name"
+            tools:text="tab tab tab" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+
 
 </layout>

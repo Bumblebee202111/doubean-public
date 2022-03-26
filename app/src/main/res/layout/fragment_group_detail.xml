@@ -17,10 +17,10 @@
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/coordinator_layout"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="false">
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/pager"
@@ -28,94 +28,112 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
-            android:animateLayoutChanges="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            android:fitsSystemWindows="true">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/toolbar_layout"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 app:collapsedTitleGravity="center"
+                android:fitsSystemWindows="true"
+                app:contentScrim="?attr/colorSurface"
+                app:statusBarScrim="?attr/colorSurface"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:title="@{group.groupName}"
                 app:titleEnabled="false"
                 app:toolbarId="@id/toolbar">
 
+                <View
+                    android:id="@+id/mask"
+                    android:layout_width="match_parent"
+                    android:layout_height="92dp"
+                    android:fitsSystemWindows="false" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/group_info"
+                    isGone="@{group==null}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fitsSystemWindows="false"
+                    android:paddingHorizontal="@dimen/margin_normal"
+                    android:paddingTop="68dp"
+                    android:paddingBottom="@dimen/margin_normal">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/group_avatar"
+                        imageFromUrl="@{group.avatarUrl}"
+                        android:layout_width="@dimen/icon_size_extra_large"
+                        android:layout_height="@dimen/icon_size_extra_large"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:shapeAppearanceOverlay="@style/smallRoundedCornersImageView"
+                        tools:src="@drawable/ic_baseline_web_24" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/group_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:text="@{group.groupName}"
+                        android:textAppearance="?attr/textAppearanceHeadline6"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/group_avatar"
+                        tools:text="group name" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/group_member_count"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:text="@{group.memberCount+group.memberName}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/group_name"
+                        tools:text="12345 members" />
+
+                    <!-- TODO: properly display @+id/group_desc, e.g., by adding View More-->
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/group_desc"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="@{group.desc}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/group_member_count"
+                        tools:text="this is description this is description this is description this is description this is description this is description " />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/transparent"
                     app:contentInsetStartWithNavigation="0dp"
                     app:layout_collapseMode="pin"
                     app:menu="@menu/menu_group_detail"
                     app:navigationIcon="@drawable/ic_detail_back" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/group_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_normal"
-                    app:layout_collapseMode="parallax">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        app:shapeAppearanceOverlay="@style/smallRoundedCornersImageView"
-                        android:id="@+id/group_avatar"
-                        imageFromUrl="@{group.avatarUrl}"
-                        android:layout_width="@dimen/large_avatar_or_icon_height"
-                        android:layout_height="@dimen/large_avatar_or_icon_height"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/group_name"
-                        android:text="@{group.groupName}"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_normal"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/group_avatar"
-                        app:layout_constraintTop_toTopOf="@id/group_avatar"
-                        tools:text="group name" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/group_member"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_normal"
-                        android:layout_marginTop="@dimen/margin_small"
-                        android:text="@{group.memberCount+group.memberName}"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/group_avatar"
-                        app:layout_constraintTop_toBottomOf="@id/group_name" />
-
-                    <!-- TODO: properly display @+id/group_desc, e.g., by adding View More-->
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/group_desc"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_normal"
-                        android:maxLines="5"
-                        android:text="@{group.desc}"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/group_avatar" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
+                style="@style/Widget.MaterialComponents.TabLayout.Colored"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="wrap_content"
+                android:background="@color/doubean_white"
                 app:tabGravity="start"
                 app:tabMaxWidth="0dp"
-                app:tabMode="scrollable" />
+                app:layout_collapseMode="parallax"
+                app:tabMode="scrollable"
+                app:tabPadding="0dp" />
         </com.google.android.material.appbar.AppBarLayout>
 
 
