@@ -37,7 +37,7 @@
                 android:layout_marginEnd="@dimen/margin_normal"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/author_avatar"
                     avatarFromUrl="@{groupTopic.author.avatarUrl}"
                     android:layout_width="@dimen/icon_size_extra_small"
@@ -46,7 +46,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/author_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="username" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/middle_dot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
                     app:layout_constraintStart_toEndOf="@id/author_name"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/create_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
                     tools:text="202202" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/topic_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -146,7 +146,7 @@
                     app:layout_constraintStart_toEndOf="@id/comment_count"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/updated_on"
                     date="@{groupTopic.dateUpdated}"
                     android:layout_width="wrap_content"
