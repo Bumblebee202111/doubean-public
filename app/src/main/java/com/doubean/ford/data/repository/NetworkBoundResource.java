@@ -72,12 +72,13 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
                 });
             } else {
                 onFetchFailed();
-                //Modification by Bumblebee202111
-                //Always use ROOM cache as substitute when fetch fails
-                result.addSource(dbSource,
-                        newData -> setValue(newData));
-                //result.addSource(dbSource, newData -> setValue(null));
+
             }
+            //Modification by Bumblebee202111
+            //Always use ROOM cache as substitute when fetch fails
+            //result.addSource(dbSource,
+            //        newData -> setValue(newData));
+            //result.addSource(dbSource, newData -> setValue(null));
         });
     }
 
