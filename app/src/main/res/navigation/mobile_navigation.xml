@@ -22,7 +22,7 @@
         app:startDestination="@id/navigation_groups">
         <fragment
             android:id="@+id/navigation_groups"
-            android:name="com.doubean.ford.ui.groups.GroupsFragment"
+            android:name="com.doubean.ford.ui.groups.groupsHome.GroupsHomeFragment"
             android:label="@string/title_groups"
             tools:layout="@layout/fragment_groups">
             <action
@@ -36,7 +36,7 @@
         </fragment>
         <fragment
             android:id="@+id/navigation_group_detail"
-            android:name="com.doubean.ford.ui.groupDetail.GroupDetailFragment"
+            android:name="com.doubean.ford.ui.groups.groupDetail.GroupDetailFragment"
             android:label="@string/title_group"
             tools:layout="@layout/fragment_group_detail">
             <argument
@@ -48,14 +48,14 @@
                 app:argType="string"
                 app:nullable="true" />
             <action
-                android:id="@+id/action_navigation_group_detail_to_navigation_group_topic_detail"
-                app:destination="@id/navigation_group_topic_detail" />
+                android:id="@+id/action_navigation_group_detail_to_navigation_post_detail"
+                app:destination="@id/navigation_post_detail" />
             <deepLink app:uri="https://m.douban.com/group/{groupId}/" />
             <deepLink app:uri="https://www.douban.com/group/{groupId}/" />
         </fragment>
         <fragment
             android:id="@+id/navigation_group_search"
-            android:name="com.doubean.ford.ui.groupSearch.GroupSearchFragment">
+            android:name="com.doubean.ford.ui.groups.groupSearch.GroupSearchFragment">
 
             <action
                 android:id="@+id/action_navigation_group_search_to_navigation_group_detail"
@@ -63,24 +63,24 @@
         </fragment>
         <fragment
             android:id="@+id/navigation_group_tab"
-            android:name="com.doubean.ford.ui.groupTab.GroupTabFragment">
+            android:name="com.doubean.ford.ui.groups.groupTab.GroupTabFragment">
             <argument
                 android:name="tagId"
                 app:argType="string" />
         </fragment>
         <fragment
-            android:id="@+id/navigation_group_topic_detail"
-            android:name="com.doubean.ford.ui.groupTopic.GroupTopicFragment"
-            android:label="@string/title_group_topic"
-            tools:layout="@layout/fragment_group_detail">
+            android:id="@+id/navigation_post_detail"
+            android:name="com.doubean.ford.ui.groups.postDetail.PostDetailFragment"
+            android:label="@string/title_post_detail"
+            tools:layout="@layout/fragment_post_detail">
             <argument
-                android:name="topicId"
+                android:name="postId"
                 app:argType="string" />
         </fragment>
     </navigation>
     <fragment
         android:id="@+id/navigation_web_view"
-        android:name="com.doubean.ford.ui.webView.WebViewFragment"
+        android:name="com.doubean.ford.ui.groups.webView.WebViewFragment"
         tools:layout="@layout/fragment_web_view">
         <argument
             android:name="url"

@@ -25,11 +25,12 @@ import com.doubean.ford.api.DoubanService;
 import com.doubean.ford.data.db.AppDatabase;
 import com.doubean.ford.data.repository.GroupFavoritesRepository;
 import com.doubean.ford.data.repository.GroupRepository;
-import com.doubean.ford.ui.groupDetail.GroupDetailViewModelFactory;
-import com.doubean.ford.ui.groupSearch.GroupSearchViewModelFactory;
-import com.doubean.ford.ui.groupTab.GroupTabViewModelFactory;
-import com.doubean.ford.ui.groupTopic.GroupTopicViewModelFactory;
-import com.doubean.ford.ui.groups.GroupsViewModelFactory;
+import com.doubean.ford.ui.groups.groupDetail.GroupDetailViewModelFactory;
+import com.doubean.ford.ui.groups.groupSearch.GroupSearchViewModelFactory;
+import com.doubean.ford.ui.groups.groupTab.GroupTabViewModelFactory;
+import com.doubean.ford.ui.groups.groupsHome.GroupsHomeViewModelFactory;
+import com.doubean.ford.ui.groups.postDetail.PostDetailViewModelFactory;
+
 
 /**
  * Static methods used to inject classes needed for various Activities and Fragments.
@@ -47,16 +48,16 @@ public class InjectorUtils {
         return GroupFavoritesRepository.getInstance(new AppExecutors(), AppDatabase.getInstance(context.getApplicationContext()), provideDoubanService());
     }
 
-    public static GroupsViewModelFactory provideGroupsViewModelFactory(Context context) {
-        return new GroupsViewModelFactory(getGroupRepository(context), getFavoriteGroupRepository(context));
+    public static GroupsHomeViewModelFactory provideGroupsViewModelFactory(Context context) {
+        return new GroupsHomeViewModelFactory(getGroupRepository(context), getFavoriteGroupRepository(context));
     }
 
     public static GroupDetailViewModelFactory provideGroupDetailViewModelFactory(Context context, @NonNull String groupId, String defaultTab) {
         return new GroupDetailViewModelFactory(getGroupRepository(context), getFavoriteGroupRepository(context), groupId, defaultTab);
     }
 
-    public static GroupTopicViewModelFactory provideGroupTopicDetailViewModelFactory(Context context, @NonNull String topicId) {
-        return new GroupTopicViewModelFactory(getGroupRepository(context), topicId);
+    public static PostDetailViewModelFactory providePostDetailViewModelFactory(Context context, @NonNull String postId) {
+        return new PostDetailViewModelFactory(getGroupRepository(context), postId);
     }
 
     public static GroupTabViewModelFactory provideGroupTabViewModelFactory(Context context, @NonNull String groupId, @Nullable String tagId) {

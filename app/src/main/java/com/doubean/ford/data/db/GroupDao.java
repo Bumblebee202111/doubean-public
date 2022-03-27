@@ -8,12 +8,12 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.doubean.ford.data.Group;
-import com.doubean.ford.data.GroupFavorite;
-import com.doubean.ford.data.GroupSearchResult;
-import com.doubean.ford.data.GroupTopic;
-import com.doubean.ford.data.GroupTopicComment;
-import com.doubean.ford.data.GroupTopicPopularComments;
+import com.doubean.ford.data.vo.Group;
+import com.doubean.ford.data.vo.GroupFavorite;
+import com.doubean.ford.data.vo.GroupPost;
+import com.doubean.ford.data.vo.GroupPostComment;
+import com.doubean.ford.data.vo.GroupPostPopularComments;
+import com.doubean.ford.data.vo.GroupSearchResult;
 
 import java.util.Comparator;
 import java.util.List;
@@ -44,8 +44,8 @@ public interface GroupDao {
     @Query("SELECT * FROM GroupSearchResult WHERE `query` = :query")
     LiveData<GroupSearchResult> search(String query);
 
-    @Query("SELECT * FROM group_topic_popular_comments WHERE groupTopicId = :groupTopicId")
-    LiveData<GroupTopicPopularComments> getGroupTopicPopularComments(String groupTopicId);
+    @Query("SELECT * FROM group_post_popular_comments WHERE groupPostId = :groupPostId")
+    LiveData<GroupPostPopularComments> getGroupPostPopularComments(String groupPostId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertGroupSearchResult(GroupSearchResult groupSearchResult);
@@ -61,37 +61,37 @@ public interface GroupDao {
         });
     }
 
-    @Query("SELECT * FROM group_topic_comments WHERE id IN (:commentIds)")
-    LiveData<List<GroupTopicComment>> loadCommentsById(List<String> commentIds);
+    @Query("SELECT * FROM group_post_comments WHERE id IN (:commentIds)")
+    LiveData<List<GroupPostComment>> loadCommentsById(List<String> commentIds);
 
-    default LiveData<List<GroupTopicComment>> loadOrderedComments(List<String> commentIds, Comparator<GroupTopicComment> c) {
+    default LiveData<List<GroupPostComment>> loadOrderedComments(List<String> commentIds, Comparator<GroupPostComment> c) {
         return Transformations.map(loadCommentsById(commentIds), comments -> {
             comments.sort(c);
             return comments;
         });
     }
 
-    @Query("SELECT * FROM group_topic_comments WHERE topic_id = :topicId ORDER BY createTime ASC")
-    LiveData<List<GroupTopicComment>> getTopicComments(String topicId);
+    @Query("SELECT * FROM group_post_comments WHERE post_id = :postId ORDER BY created ASC")
+    LiveData<List<GroupPostComment>> getPostComments(String postId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertGroupTopicComments(List<GroupTopicComment> commentList);
+    void insertGroupPostComments(List<GroupPostComment> commentList);
 
 
-    @Query("SELECT * FROM group_topics WHERE group_id = :groupId AND tag_id=:tagId ORDER BY date_created DESC LIMIT 100")
-    LiveData<List<GroupTopic>> getGroupTopics(String groupId, String tagId);
+    @Query("SELECT * FROM group_posts WHERE group_id = :groupId AND tag_id=:tagId ORDER BY date_created DESC LIMIT 100")
+    LiveData<List<GroupPost>> getGroupPosts(String groupId, String tagId);
 
-    @Query("SELECT * FROM group_topics WHERE group_id = :groupId ORDER BY date_created DESC LIMIT 100")
-    LiveData<List<GroupTopic>> getGroupTopics(String groupId);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void addGroupTopic(GroupTopic topic);
-
-    @Query("SELECT * FROM group_topics WHERE id=:topicId")
-    LiveData<GroupTopic> getGroupTopic(String topicId);
+    @Query("SELECT * FROM group_posts WHERE group_id = :groupId ORDER BY date_created DESC LIMIT 100")
+    LiveData<List<GroupPost>> getGroupPosts(String groupId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertGroupTopicPopularComments(GroupTopicPopularComments popularComments);
+    void addGroupPost(GroupPost post);
+
+    @Query("SELECT * FROM group_posts WHERE id=:postId")
+    LiveData<GroupPost> getGroupPost(String postId);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertGroupPostPopularComments(GroupPostPopularComments popularComments);
 
 
     //TODO

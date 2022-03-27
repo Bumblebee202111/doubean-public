@@ -6,7 +6,7 @@ doubean
 <p><img src="screenshots/phone_groups.png" alt="phone_groups" width="175" />
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" width="175" />
 <img src="screenshots/phone_group_search.png" alt="phone_group_search" width="350" />
-<img src="screenshots/phone_topic_detail.png" alt="phone_topic_detail" width="175" /></p>
+<img src="screenshots/phone_post_detail.png" alt="phone_post_detail" width="175" /></p>
 
 
 注意
@@ -15,7 +15,7 @@ doubean
 * 即日起随缘更新。
 * 担心侵权，虽然发布了apk，但同时把源代码中的DoubanService.java列入了.gitignore
 * 编写代码时抄袭了大量Android官方样例，原创性极低，但代码质量自觉不高，请谨慎参考。
-* 所有列表最多加载100个元素，如需查看完整列表，请点击按钮在豆瓣网页中查看（逐步实现中，现仅话题详情支持）
+* 所有列表最多加载100个元素，如需查看完整列表，请点击按钮在豆瓣网页中查看（逐步实现中，现仅帖子详情支持）
 
 App受众
 -------
@@ -36,12 +36,12 @@ App受众
 #### 小组详情
 
 * 小组简介
-* 小组话题
+* 分标签帖子列表
 
-#### 小组话题详情
+#### 小组帖子详情
 
-* 话题内容
-* 话题评论
+* 帖子内容
+* 帖子评论
 
 #### 小组搜索
 
@@ -62,35 +62,34 @@ App受众
 
 目标：逐个消灭计划项！！！
 
-* \[GroupTopicFragment\]适当补充尚未使用的字段，如显示评论中的图片、在评论中标注楼主、显示回复的评论
+* \[GroupPostFragment\]适当补充尚未使用的字段，如显示评论中的图片、在评论中标注楼主、显示回复的评论
 * \[GroupsFragment\]增加小组日榜
-* 重新命名变量和UI文本，以便于理解（可能与官方叫法冲突，如“话题”->“帖子”），重新整理packages
-* 🛠 响应的保存（缓存）方式不合理，造成如小组首页加载收藏会触发NPE（解决方法为暴力简化，直接保存嵌套对象，修复后为话题详情页应用小组主题色）
+* 🛠 响应的保存（缓存）方式不合理，造成如小组首页加载收藏会触发NPE（解决方法为暴力简化，直接保存嵌套对象，修复后为帖子详情页应用小组主题色）
 * \[GroupFragment\] 显示/隐藏标题的时机
 * 🛠 \[GroupFragment\] 返回至任何位置标题均不显示
-* \[GroupTopicFragment\]保存WebView中的图片
+* \[GroupPostFragment\]保存WebView中的图片
 * \[RecyclerView\]SwipeRefreshLayout
-* \[GroupFragment\]\[GroupTopicFragment\]分享功能
-* \[GroupFragment\]\[GroupTopicFragment\]添加记录已读、取消已读的功能
-* \[GroupFragment\]小组或标签内搜索话题
-* \[GroupsFragment\]全局搜索话题
+* \[GroupFragment\]\[GroupPostFragment\]分享功能
+* \[GroupFragment\]\[GroupPostFragment\]添加记录已读、取消已读的功能
+* \[GroupFragment\]小组或标签内搜索帖子
+* \[GroupsFragment\]全局搜索帖子
 * \[GroupFragment\]将Tab的收藏按钮移至Tab内部（考虑增加工具栏或efab）
 * \[GroupsFragment\]收藏列表中允许移除收藏、调整顺序
-* \[GroupFragment\]重新设计收藏（或称关注）的模型，支持收藏（关注）小组、话题、标签……，并建立自定义类别，根据多个收藏项订阅话题，支持关键词过滤（有难度，但不一定有用）
+* \[GroupFragment\]重新设计关注功能，支持收藏（关注）小组、帖子、标签……，并建立自定义类别，根据多个收藏项订阅帖子，支持关键词过滤（有难度，但不一定有用）
 * \[GroupFragment\]小组的快捷方式
 * \[ListView\]仿Reddit折叠/展开列表项
-* 🛠\[GroupTopicFragment\]处理话题详情中的URL：在浏览器中打开或直接跳转对应页，而不应在原WebView中加载
+* 🛠\[GroupPostFragment\]处理帖子内容中的URL：在浏览器中打开或直接跳转对应页，而不应在原WebView中加载
 * 支持默认或手动屏蔽不友善、负能量的内容
-* \[GroupFragment\]话题排序：发布时间（伪，由于接口限制）、回复时间、热度
+* \[GroupFragment\]帖子排序：发布时间（伪，由于接口限制）、回复时间、热度
 * Color
 * Typography
-* 🛠 \[ListView\]列表如GroupFragment中的Tab加载时出现卡顿（Pagination） （重中之重，基本需求）
+* 🛠 \[ListView\]列表如GroupFragment中的Tab加载时出现卡顿（Pagination） （重中之重，刚需）
 * \[ListView\]结合SharedPref实现个性化推荐
-* \[ListView\]话题排序：自创的多参数排序规则
+* \[ListView\]帖子排序：自创的多参数排序规则
 * Widgets
 * 通知、推送（考虑其意义、国情和作者自身条件，搁置）
-* 🛠MIUI 10 Android 8.1加载含WebView的NestedScrollView时子视图会因滑动或WebView中选中本文等操作而消失或
-  复现（原因未知，初步判断为旧版MIUI的问题，由于本人水平有限且系统较旧）
+* 🛠MIUI 10 Android
+  8.1加载含WebView的NestedScrollView时子视图会因滑动或WebView中选中本文等操作而消失或复现（原因未知，初步判断为旧版MIUI的问题，由于本人水平有限且系统较旧，搁置）
 * 豆瓣除小组外其他模块（如图书）
 
 非目标
@@ -111,7 +110,7 @@ App受众
 * 支持在豆瓣网页的WebView（已注入JS优化）中查看界面，以备不时之需
 * 对UI的字符串常量提供中英双语支持
 * 支持离线加载缓存
-* 根据多条件订阅关注的话题（待实现）
+* 根据多条件订阅关注的帖子（待实现）
 * 无广告的轻量app
 * 访问接口采用了Apache Commons的现成工具，极大地简化代码。
 * 支持豆瓣网页URL的deep links

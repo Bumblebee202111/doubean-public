@@ -3,10 +3,10 @@
     <string name="title_home">Home</string>
     <string name="title_groups">Groups</string>
     <string name="title_notifications">Notifications</string>
-    <string name="favorite_groups_header">Favorite Groups and Group Topics</string>
+    <string name="following_groups_header">Favorite Groups and Tags</string>
 
     <string name="title_group" />
-    <string name="title_group_topic">Group Topic</string>
+    <string name="title_post_detail">Post Detail</string>
     <string name="settings">Settings</string>
     <string name="search">Search</string>
     <string name="updated">updated</string>

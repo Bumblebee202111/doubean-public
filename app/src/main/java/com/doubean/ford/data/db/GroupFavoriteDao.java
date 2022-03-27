@@ -6,9 +6,10 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.doubean.ford.data.GroupFavorite;
+import com.doubean.ford.data.vo.GroupFavorite;
 
 import java.util.List;
+
 /**
  * The Data Access Object for the [GroupFavorite] class.
  */

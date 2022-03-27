@@ -13,7 +13,7 @@
 
         <variable
             name="group"
-            type="com.doubean.ford.data.Group" />
+            type="com.doubean.ford.data.vo.Group" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

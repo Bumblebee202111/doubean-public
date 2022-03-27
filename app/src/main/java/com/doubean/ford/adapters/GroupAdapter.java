@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.doubean.ford.data.Group;
+import com.doubean.ford.data.vo.Group;
 import com.doubean.ford.databinding.ListItemGroupBinding;
-import com.doubean.ford.ui.groupSearch.GroupSearchFragmentDirections;
+import com.doubean.ford.ui.groups.groupSearch.GroupSearchFragmentDirections;
 
 public class GroupAdapter extends ListAdapter<Group, GroupAdapter.ViewHolder> {
 

@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.doubean.ford.data.GroupFavoriteDetail;
+import com.doubean.ford.data.vo.GroupFavoriteDetail;
 import com.doubean.ford.databinding.ListItemGroupFavoriteBinding;
-import com.doubean.ford.ui.groups.GroupsFragmentDirections;
+import com.doubean.ford.ui.groups.groupsHome.GroupsHomeFragmentDirections;
 
 import java.util.Objects;
 
@@ -61,7 +61,7 @@ public class GroupFavoriteAdapter extends ListAdapter<GroupFavoriteDetail, Group
         }
 
         private void navigateToGroup(@NonNull GroupFavoriteDetail favorite, View itemView) {
-            GroupsFragmentDirections.ActionNavigationGroupsToNavigationGroupDetail direction = GroupsFragmentDirections.actionNavigationGroupsToNavigationGroupDetail(favorite.getGroupId()).setDefaultTabId(favorite.getGroupTabId());
+            GroupsHomeFragmentDirections.ActionNavigationGroupsToNavigationGroupDetail direction = GroupsHomeFragmentDirections.actionNavigationGroupsToNavigationGroupDetail(favorite.getGroupId()).setDefaultTabId(favorite.getGroupTabId());
             Navigation.findNavController(itemView).navigate(direction);
         }
 

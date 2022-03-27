@@ -5,7 +5,7 @@
 
     <data>
 
-        <import type="com.doubean.ford.data.Group" />
+        <import type="com.doubean.ford.data.vo.Group" />
 
         <import type="java.util.List" />
 
