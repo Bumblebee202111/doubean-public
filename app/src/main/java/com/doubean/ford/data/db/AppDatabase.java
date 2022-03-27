@@ -9,19 +9,19 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.doubean.ford.data.Group;
-import com.doubean.ford.data.GroupFavorite;
-import com.doubean.ford.data.GroupSearchResult;
-import com.doubean.ford.data.GroupTopic;
-import com.doubean.ford.data.GroupTopicComment;
-import com.doubean.ford.data.GroupTopicPopularComments;
+import com.doubean.ford.data.vo.Group;
+import com.doubean.ford.data.vo.GroupFavorite;
+import com.doubean.ford.data.vo.GroupPost;
+import com.doubean.ford.data.vo.GroupPostComment;
+import com.doubean.ford.data.vo.GroupPostPopularComments;
+import com.doubean.ford.data.vo.GroupSearchResult;
 import com.doubean.ford.util.AppExecutors;
 import com.doubean.ford.util.Constants;
 
 /**
  * The Room database for this app
  */
-@Database(entities = {Group.class, GroupTopic.class, GroupFavorite.class, GroupSearchResult.class, GroupTopicComment.class, GroupTopicPopularComments.class}, version = 1, exportSchema = false)
+@Database(entities = {Group.class, GroupPost.class, GroupFavorite.class, GroupSearchResult.class, GroupPostComment.class, GroupPostPopularComments.class}, version = 1, exportSchema = false)
 @TypeConverters(Converters.class)
 public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase instance;

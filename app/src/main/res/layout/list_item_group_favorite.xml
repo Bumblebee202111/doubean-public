@@ -15,7 +15,7 @@
 
         <variable
             name="favorite"
-            type="com.doubean.ford.data.GroupFavoriteDetail" />
+            type="com.doubean.ford.data.vo.GroupFavoriteDetail" />
     </data>
 
 

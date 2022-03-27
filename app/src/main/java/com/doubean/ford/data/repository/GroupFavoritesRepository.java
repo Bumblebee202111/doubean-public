@@ -3,9 +3,9 @@ package com.doubean.ford.data.repository;
 import androidx.lifecycle.LiveData;
 
 import com.doubean.ford.api.DoubanService;
-import com.doubean.ford.data.GroupFavorite;
 import com.doubean.ford.data.db.AppDatabase;
 import com.doubean.ford.data.db.GroupFavoriteDao;
+import com.doubean.ford.data.vo.GroupFavorite;
 import com.doubean.ford.util.AppExecutors;
 
 import java.util.List;

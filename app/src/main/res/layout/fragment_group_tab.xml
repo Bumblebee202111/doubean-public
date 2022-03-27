@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.doubean.ford.ui.groupTab.GroupTabViewModel" />
+            type="com.doubean.ford.ui.groups.groupTab.GroupTabViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -15,7 +15,7 @@
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/topic_list"
+            android:id="@+id/post_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"

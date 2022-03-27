@@ -5,10 +5,11 @@ import android.annotation.SuppressLint;
 import androidx.room.TypeConverter;
 import androidx.room.util.StringUtil;
 
-import com.doubean.ford.data.GroupTopic;
-import com.doubean.ford.data.GroupTopicTag;
-import com.doubean.ford.data.SizedPhoto;
-import com.doubean.ford.data.User;
+import com.doubean.ford.data.vo.Group;
+import com.doubean.ford.data.vo.GroupPost;
+import com.doubean.ford.data.vo.GroupPostTag;
+import com.doubean.ford.data.vo.SizedPhoto;
+import com.doubean.ford.data.vo.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -44,30 +45,30 @@ public class Converters {
     }
 
     @TypeConverter
-    public static String groupTopicListToString(List<GroupTopic> topics) {
-        return new Gson().toJson(topics);
+    public static String groupPostListToString(List<GroupPost> posts) {
+        return new Gson().toJson(posts);
     }
 
     @TypeConverter
-    public static List<GroupTopic> stringToGroupTopicList(String data) {
+    public static List<GroupPost> stringToGroupPostList(String data) {
         if (data == null) {
             return Collections.emptyList();
         }
-        return new Gson().fromJson(data, new TypeToken<ArrayList<GroupTopic>>() {
+        return new Gson().fromJson(data, new TypeToken<ArrayList<GroupPost>>() {
         }.getType());
     }
 
     @TypeConverter
-    public static String groupTabListToString(List<GroupTopicTag> ints) {
+    public static String groupTabListToString(List<GroupPostTag> ints) {
         return new Gson().toJson(ints);
     }
 
     @TypeConverter
-    public static List<GroupTopicTag> stringToGroupTabList(String data) {
+    public static List<GroupPostTag> stringToGroupTabList(String data) {
         if (data == null) {
             return Collections.emptyList();
         }
-        return new Gson().fromJson(data, new TypeToken<ArrayList<GroupTopicTag>>() {
+        return new Gson().fromJson(data, new TypeToken<ArrayList<GroupPostTag>>() {
         }.getType());
     }
 
@@ -90,6 +91,16 @@ public class Converters {
     @TypeConverter
     public static String userToString(User user) {
         return new Gson().toJson(user);
+    }
+
+    @TypeConverter
+    public static Group stringToGroup(String strings) {
+        return new Gson().fromJson(strings, Group.class);
+    }
+
+    @TypeConverter
+    public static String groupToString(Group group) {
+        return new Gson().toJson(group);
     }
 
     @TypeConverter

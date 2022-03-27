@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.doubean.ford.util.DateUtil" />
+
+        <variable
+            name="groupPostComment"
+            type="com.doubean.ford.data.vo.GroupPostComment" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="0dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_normal">
+
+            <ImageView
+                android:id="@+id/author_avatar"
+                android:layout_width="@dimen/icon_size_normal"
+                android:layout_height="@dimen/icon_size_normal"
+                app:avatarFromUrl="@{groupPostComment.author.avatarUrl}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <!--TODO: display OP-->
+            <TextView
+                android:id="@+id/author_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:text="@{groupPostComment.author.name}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                app:layout_constraintStart_toEndOf="@id/author_avatar"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Wang Wang" />
+
+            <TextView
+                android:id="@+id/middle_dot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_small"
+                android:gravity="center_vertical"
+                android:text="@string/middle_dot"
+                app:layout_constraintBottom_toBottomOf="@id/author_name"
+                app:layout_constraintStart_toEndOf="@id/author_name"
+                app:layout_constraintTop_toTopOf="@id/author_name" />
+
+            <TextView
+                android:id="@+id/created"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_small"
+                android:gravity="center_vertical"
+                android:text="@{DateUtil.getShortDateString(groupPostComment.created)}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/middle_dot"
+                app:layout_constraintTop_toTopOf="@id/author_name"
+                tools:text="122222222222 " />
+
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/comment_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="@{groupPostComment.text}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/author_avatar"
+                app:layout_constraintTop_toBottomOf="@id/author_name"
+                tools:text="text text text" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/like_icon"
+                isGone="@{groupPostComment.voteCount==0}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:layout_marginTop="@dimen/margin_small"
+                android:src="@drawable/ic_outline_thumb_up"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/author_avatar"
+                app:layout_constraintTop_toBottomOf="@id/comment_text" />
+
+            <TextView
+                android:id="@+id/like_count"
+                isGone="@{groupPostComment.voteCount==0}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_small"
+                android:gravity="center_vertical"
+                android:text="@{groupPostComment.voteCount+``}"
+                app:layout_constraintBottom_toBottomOf="@id/like_icon"
+                app:layout_constraintStart_toEndOf="@id/like_icon"
+                app:layout_constraintTop_toTopOf="@id/like_icon"
+                tools:text="123" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

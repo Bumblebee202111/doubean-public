@@ -62,12 +62,12 @@ public class BindingAdapters {
         }
     }
 
-    @BindingAdapter({"topicTabName", "topicTitle"})
-    public static void bindTopicTabNameAndTitle(TextView view, String topicTabName, String topicTitle) {
+    @BindingAdapter({"postTabName", "postTitle"})
+    public static void bindPostTabNameAndTitle(TextView view, String postTabName, String postTitle) {
         String text = "";
-        if (!TextUtils.isEmpty(topicTabName))
-            text += topicTabName + "｜";
-        text += topicTitle;
+        if (!TextUtils.isEmpty(postTabName))
+            text += postTabName + "｜";
+        text += postTitle;
         view.setText(text);
     }
 }
