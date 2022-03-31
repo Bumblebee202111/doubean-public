@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="com.doubean.ford.util.DateUtil" />
+        <import type="com.doubean.ford.util.DateTimeUtil" />
         <variable
             name="groupPost"
             type="com.doubean.ford.data.vo.GroupPost" />
@@ -80,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_extra_small"
                     android:gravity="center_vertical"
-                    android:text="@{DateUtil.getShortDateString(groupPost.dateCreated)}"
+                    android:text="@{DateTimeUtil.dateTimeText(groupPost.dateCreated,DateTimeUtil.DateTimeTextLength.SHORT)}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -148,7 +148,7 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/updated_on"
-                    date="@{groupPost.dateUpdated}"
+                    android:text="@{DateTimeUtil.dateTimeText(groupPost.dateUpdated,DateTimeUtil.DateTimeTextLength.SHORT)}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_small"
