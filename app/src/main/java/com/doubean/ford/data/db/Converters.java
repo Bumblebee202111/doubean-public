@@ -10,23 +10,25 @@ import com.doubean.ford.data.vo.GroupPost;
 import com.doubean.ford.data.vo.GroupPostTag;
 import com.doubean.ford.data.vo.SizedPhoto;
 import com.doubean.ford.data.vo.User;
+import com.doubean.ford.util.Constants;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class Converters {
     @TypeConverter
-    public static Date timestampToDate(Long value) {
-        return value == null ? null : new Date(value);
+    public static LocalDateTime stringToLocalDateTime(String text) {
+        return text == null ? null : LocalDateTime.parse(text, DateTimeFormatter.ofPattern(Constants.DATETIME_PATTERN_DEFAULT));
     }
 
     @TypeConverter
-    public static Long dateToTimestamp(Date date) {
-        return date == null ? null : date.getTime();
+    public static String dateToTimestamp(LocalDateTime localDateTime) {
+        return localDateTime == null ? null : localDateTime.format(DateTimeFormatter.ofPattern(Constants.DATETIME_PATTERN_DEFAULT));
     }
 
     @SuppressLint("RestrictedApi")

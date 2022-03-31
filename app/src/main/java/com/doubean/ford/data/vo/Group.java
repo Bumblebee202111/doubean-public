@@ -12,6 +12,7 @@ import androidx.room.TypeConverters;
 import com.doubean.ford.data.db.Converters;
 import com.google.gson.annotations.SerializedName;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,7 +34,7 @@ public class Group {
     @SerializedName("topic_count")
     public int postCount;
     @SerializedName("create_time")
-    public String dateCreated;
+    public LocalDateTime dateCreated;
     @SerializedName("group_tabs")
     public List<GroupPostTag> groupTabs;
     @SerializedName("sharing_url")
@@ -48,7 +49,7 @@ public class Group {
     @SerializedName("member_name")
     public String memberName;
 
-    public Group(@NonNull String id, @NonNull String groupName, int memberCount, int postCount, String dateCreated, List<GroupPostTag> groupTabs, String sharingUrl, String desc, String avatarUrl, String colorString) {
+    public Group(@NonNull String id, @NonNull String groupName, int memberCount, int postCount, LocalDateTime dateCreated, List<GroupPostTag> groupTabs, String sharingUrl, String desc, String avatarUrl, String colorString) {
         this.id = id;
         this.groupName = groupName;
         this.memberCount = memberCount;
@@ -65,7 +66,7 @@ public class Group {
         return postCount;
     }
 
-    public String getDateCreated() {
+    public LocalDateTime getDateCreated() {
         return dateCreated;
     }
 
