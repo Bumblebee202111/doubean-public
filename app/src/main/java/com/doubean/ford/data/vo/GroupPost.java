@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -28,10 +28,10 @@ public class GroupPost {
     public User author;
     @SerializedName("create_time")
     @ColumnInfo(name = "date_created")
-    public Date dateCreated;
+    public LocalDateTime dateCreated;
     @SerializedName("update_time")
     @ColumnInfo(name = "date_updated")
-    public Date dateUpdated;
+    public LocalDateTime dateUpdated;
     @SerializedName("like_count")
     @ColumnInfo(name = "like_count")
     public int likeCount;

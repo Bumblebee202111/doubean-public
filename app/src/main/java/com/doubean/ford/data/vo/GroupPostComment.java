@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity(tableName = "group_post_comments")
@@ -23,7 +23,7 @@ public class GroupPostComment {
     public String text;
     @SerializedName("create_time")
     @ColumnInfo(name = "created")
-    public Date created;
+    public LocalDateTime created;
 
     @SerializedName("vote_count")
     public int voteCount;

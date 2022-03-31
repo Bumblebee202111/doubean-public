@@ -14,9 +14,6 @@ import com.bumptech.glide.integration.webp.decoder.WebpDrawableTransformation;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.doubean.ford.util.DateUtil;
-
-import java.util.Date;
 
 public class BindingAdapters {
 
@@ -45,20 +42,6 @@ public class BindingAdapters {
                     .optionalTransform(WebpDrawable.class, new WebpDrawableTransformation(circleCrop))
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(view);
-        }
-    }
-
-
-    @BindingAdapter("date")
-    public static void bindDate(TextView textView, Date date) {
-        if (date != null)
-            textView.setText(DateUtil.getShortDateString(date));
-    }
-
-    @BindingAdapter("fullDate")
-    public static void bindFullDate(TextView textView, Date date) {
-        if (date != null) {
-            textView.setText(DateUtil.getFullDateString(date));
         }
     }
 
