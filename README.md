@@ -15,7 +15,7 @@ doubean
 * 即日起随缘更新。
 * 担心侵权，虽然发布了apk，但同时把源代码中的DoubanService.java列入了.gitignore
 * 编写代码时抄袭了大量Android官方样例，原创性极低，但代码质量自觉不高，请谨慎参考。
-* 所有列表最多加载100个元素，如需查看完整列表，请点击按钮在豆瓣网页中查看（逐步实现中，现仅帖子详情支持）
+* 所有列表最多加载100个元素，并且部分列表一开始会有些许卡顿，日后会增加分页。如需查看完整列表，请点击按钮在豆瓣网页中查看（逐步实现中，现仅帖子详情支持）。
 
 App受众
 -------
@@ -64,9 +64,9 @@ App受众
 
 * \[GroupPostFragment\]适当补充尚未使用的字段，如显示评论中的图片、在评论中标注楼主、显示回复的评论
 * \[GroupsFragment\]增加小组日榜
-* 🛠 响应的保存（缓存）方式不合理，造成如小组首页加载收藏会触发NPE（解决方法为暴力简化，直接保存嵌套对象，修复后为帖子详情页应用小组主题色）
+* 🛠 响应的保存（缓存）方式不合理，造成如小组首页加载收藏会触发NPE（修复后为帖子详情页应用小组主题色）
 * \[GroupFragment\] 显示/隐藏标题的时机
-* 🛠 \[GroupFragment\] 返回至任何位置标题均不显示
+* 🛠 \[GroupFragment\] 返回栈时标题不显示
 * \[GroupPostFragment\]保存WebView中的图片
 * \[RecyclerView\]SwipeRefreshLayout
 * \[GroupFragment\]\[GroupPostFragment\]分享功能
@@ -78,12 +78,12 @@ App受众
 * \[GroupFragment\]重新设计关注功能，支持收藏（关注）小组、帖子、标签……，并建立自定义类别，根据多个收藏项订阅帖子，支持关键词过滤（有难度，但不一定有用）
 * \[GroupFragment\]小组的快捷方式
 * \[ListView\]仿Reddit折叠/展开列表项
-* 🛠\[GroupPostFragment\]处理帖子内容中的URL：在浏览器中打开或直接跳转对应页，而不应在原WebView中加载
-* 支持默认或手动屏蔽不友善、负能量的内容
+* 🛠 \[ListView\]列表如GroupFragment中的Tab加载时出现卡顿（Pagination） （重中之重，刚需）
 * \[GroupFragment\]帖子排序：发布时间（伪，由于接口限制）、回复时间、热度
 * Color
 * Typography
-* 🛠 \[ListView\]列表如GroupFragment中的Tab加载时出现卡顿（Pagination） （重中之重，刚需）
+* 🛠\[GroupPostFragment\]处理帖子内容中的URL：在浏览器中打开或直接跳转对应页，而不应在原WebView中加载
+* 支持默认或手动屏蔽不友善、负能量的内容
 * \[ListView\]结合SharedPref实现个性化推荐
 * \[ListView\]帖子排序：自创的多参数排序规则
 * Widgets
