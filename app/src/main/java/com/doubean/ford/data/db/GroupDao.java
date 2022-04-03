@@ -78,10 +78,10 @@ public interface GroupDao {
     void insertGroupPostComments(List<GroupPostComment> commentList);
 
 
-    @Query("SELECT * FROM group_posts WHERE group_id = :groupId AND tag_id=:tagId ORDER BY date_created DESC LIMIT 100")
+    @Query("SELECT * FROM group_posts WHERE group_id = :groupId AND tag_id=:tagId ORDER BY created DESC LIMIT 100")
     LiveData<List<GroupPost>> getGroupPosts(String groupId, String tagId);
 
-    @Query("SELECT * FROM group_posts WHERE group_id = :groupId ORDER BY date_created DESC LIMIT 100")
+    @Query("SELECT * FROM group_posts WHERE group_id = :groupId ORDER BY created DESC LIMIT 100")
     LiveData<List<GroupPost>> getGroupPosts(String groupId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

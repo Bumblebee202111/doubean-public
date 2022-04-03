@@ -27,11 +27,11 @@ public class GroupPost {
     public String title;
     public User author;
     @SerializedName("create_time")
-    @ColumnInfo(name = "date_created")
-    public LocalDateTime dateCreated;
+    @ColumnInfo(name = "created")
+    public LocalDateTime created;
     @SerializedName("update_time")
-    @ColumnInfo(name = "date_updated")
-    public LocalDateTime dateUpdated;
+    @ColumnInfo(name = "last_updated")
+    public LocalDateTime lastUpdated;
     @SerializedName("like_count")
     @ColumnInfo(name = "like_count")
     public int likeCount;
@@ -40,6 +40,7 @@ public class GroupPost {
     public int commentCount;
     public String content;
     @SerializedName("topic_tags")
+    @ColumnInfo(name = "post_tags")
     public List<GroupPostTag> postTags;
     @SerializedName("cover_url")
     @ColumnInfo(name = "cover_url")

@@ -80,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_extra_small"
                     android:gravity="center_vertical"
-                    android:text="@{DateTimeUtil.dateTimeText(groupPost.dateCreated,DateTimeUtil.DateTimeTextLength.SHORT)}"
+                    android:text="@{DateTimeUtil.dateTimeText(groupPost.created,DateTimeUtil.DateTimeTextLength.SHORT)}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -108,7 +108,7 @@
                 android:id="@+id/last_line"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                isGone="@{groupPost.commentCount==0&amp;&amp;groupPost.dateCreated.equals(groupPost.dateUpdated)}"
+                isGone="@{groupPost.commentCount==0&amp;&amp;groupPost.created.equals(groupPost.lastUpdated)}"
                 android:layout_marginTop="@dimen/margin_small"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/cover"
@@ -137,23 +137,23 @@
                     tools:text="123" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/text_updated_on"
+                    android:id="@+id/text_last_updated"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
-                    android:text="@string/updated"
+                    android:text="@string/last_updated"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/comment_count"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/updated_on"
-                    android:text="@{DateTimeUtil.dateTimeText(groupPost.dateUpdated,DateTimeUtil.DateTimeTextLength.SHORT)}"
+                    android:id="@+id/last_updated"
+                    android:text="@{DateTimeUtil.dateTimeText(groupPost.lastUpdated,DateTimeUtil.DateTimeTextLength.SHORT)}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_small"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/text_updated_on"
+                    app:layout_constraintStart_toEndOf="@id/text_last_updated"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="01-01 00:00" />
             </androidx.constraintlayout.widget.ConstraintLayout>
