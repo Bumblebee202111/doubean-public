@@ -8,7 +8,7 @@
     <string name="following_groups_header">收藏的小组和标签</string>
     <string name="settings">设置</string>
     <string name="search">搜索</string>
-    <string name="updated">更新于</string>
+    <string name="last_updated">最后更新于</string>
     <string name="search_hint">搜索小组</string>
     <string name="empty_search_result">暂无 <b>%s</b> 的搜索结果</string>
 
