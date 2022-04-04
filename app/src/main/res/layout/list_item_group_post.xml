@@ -26,15 +26,15 @@
             android:id="@+id/post"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_normal">
+            android:layout_marginHorizontal="@dimen/margin_normal"
+            android:layout_marginVertical="@dimen/margin_smaller">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/first_line"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/cover"
-                android:layout_marginEnd="@dimen/margin_normal"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -48,29 +48,33 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/author_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginEnd="@dimen/margin_extra_small"
                     android:ellipsize="end"
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:text="@{groupPost.author.name}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/middle_dot"
-                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintEnd_toStartOf="@id/created_middle_dot"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintWidth="wrap_content_constrained"
                     app:layout_constraintStart_toEndOf="@id/author_avatar"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="username" />
+                    tools:text="usernameeeee" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/middle_dot"
+                    android:id="@+id/created_middle_dot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_extra_small"
+                    android:layout_marginEnd="@dimen/margin_extra_small"
                     android:gravity="center_vertical"
                     android:text="@string/middle_dot"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/created"
                     app:layout_constraintStart_toEndOf="@id/author_name"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -78,14 +82,12 @@
                     android:id="@+id/created"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_extra_small"
                     android:gravity="center_vertical"
                     android:text="@{DateTimeUtil.dateTimeText(groupPost.created,DateTimeUtil.DateTimeTextLength.SHORT)}"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/created_middle_dot"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/middle_dot"
                     tools:text="202202" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -93,13 +95,12 @@
                 android:id="@+id/post_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/margin_normal"
                 android:layout_marginTop="@dimen/margin_small"
                 android:gravity="center_vertical"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                app:layout_constraintEnd_toStartOf="@id/cover"
-                app:layout_constraintTop_toBottomOf="@id/first_line"
+                app:layout_constraintEnd_toEndOf="@id/first_line"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/first_line"
                 app:postTabName="@{groupPost.tagName}"
                 app:postTitle="@{groupPost.title}"
                 tools:text="Post title post title post title post title post title post title post title" />
@@ -108,12 +109,11 @@
                 android:id="@+id/last_line"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                isGone="@{groupPost.commentCount==0&amp;&amp;groupPost.created.equals(groupPost.lastUpdated)}"
                 android:layout_marginTop="@dimen/margin_small"
+                app:isGone="@{groupPost.commentCount==0&amp;&amp;groupPost.created.equals(groupPost.lastUpdated)}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/cover"
+                app:layout_constraintEnd_toEndOf="@id/first_line"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginEnd="@dimen/margin_normal"
                 app:layout_constraintTop_toBottomOf="@id/post_title">
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -136,40 +136,44 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="123" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/text_last_updated"
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/last_commented_middle_dot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:text="@string/last_updated"
+                    android:layout_marginStart="@dimen/margin_extra_small"
+                    android:gravity="center_vertical"
+                    android:text="@string/middle_dot"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/comment_count"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/last_updated"
-                    android:text="@{DateTimeUtil.dateTimeText(groupPost.lastUpdated,DateTimeUtil.DateTimeTextLength.SHORT)}"
+                    android:id="@+id/text_last_updated"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginStart="@dimen/margin_extra_small"
+                    android:text="@{@string/last_updated(DateTimeUtil.dateTimeText(groupPost.lastUpdated,DateTimeUtil.DateTimeTextLength.SHORT))}"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/text_last_updated"
+                    app:layout_constraintStart_toEndOf="@id/last_commented_middle_dot"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="01-01 00:00" />
+                    tools:text="Last updated 10:10" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/cover"
+                isGone="@{groupPost.coverUrl.empty}"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
+                android:layout_marginStart="@dimen/margin_normal"
                 android:contentDescription="@string/a11y_group_item_image"
                 android:scaleType="centerCrop"
-                isGone="@{groupPost.coverUrl.empty}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:imageFromUrl="@{groupPost.coverUrl}"
-                app:layout_constraintVertical_bias="0"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/first_line"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0"
                 app:shapeAppearanceOverlay="@style/normalRoundedCornersImageView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

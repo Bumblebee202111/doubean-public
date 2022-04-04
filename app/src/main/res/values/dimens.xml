@@ -7,8 +7,7 @@
     <dimen name="card_bottom_margin">24dp</dimen>
     <dimen name="card_elevation">2dp</dimen>
 
-
-    <dimen name="icon_size_extra_small">20dp</dimen>
+    <dimen name="icon_size_extra_small">16dp</dimen>
     <dimen name="icon_size_small">24dp</dimen>
     <dimen name="icon_size_normal">32dp</dimen>
     <dimen name="icon_size_large">40dp</dimen>
@@ -17,6 +16,7 @@
 
     <dimen name="margin_extra_small">4dp</dimen>
     <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_smaller">12dp</dimen>
     <dimen name="margin_normal">16dp</dimen>
 
     <dimen name="corner_size_small">4dp</dimen>
