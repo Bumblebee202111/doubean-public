@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.doubean.ford.adapters.GroupAdapter;
@@ -44,6 +45,7 @@ public class GroupSearchFragment extends Fragment {
         binding.groupList.setAdapter(adapter);
         int spanCount = SpanCountCalculator.getSpanCount(getContext(), 500);
         binding.groupList.setLayoutManager(new StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL));
+        binding.groupList.addItemDecoration(new DividerItemDecoration(binding.groupList.getContext(), DividerItemDecoration.VERTICAL));
         initSearchInputListener();
         return binding.getRoot();
     }

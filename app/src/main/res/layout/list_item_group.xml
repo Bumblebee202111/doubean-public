@@ -26,13 +26,14 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_normal"
+            android:layout_marginVertical="@dimen/margin_smaller">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/avatar"
                 android:layout_width="@dimen/icon_size_extra_large"
                 android:layout_height="@dimen/icon_size_extra_large"
-                android:layout_margin="@dimen/margin_normal"
                 android:contentDescription="@string/a11y_group_item_image"
                 android:scaleType="centerCrop"
                 app:imageFromUrl="@{group.avatarUrl}"
@@ -42,13 +43,11 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearanceOverlay="@style/smallRoundedCornersImageView" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginEnd="@dimen/margin_normal"
-                android:layout_marginTop="@dimen/margin_normal"
+                android:layout_marginStart="@dimen/margin_smaller"
                 android:text="@{group.groupName}"
                 android:textStyle="bold"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
@@ -57,12 +56,11 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="小组小组小组小组" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/group_member_count"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginEnd="@dimen/margin_normal"
+                android:layout_marginStart="@dimen/margin_smaller"
                 android:layout_marginTop="@dimen/margin_extra_small"
                 android:layout_marginBottom="@dimen/margin_normal"
                 android:text="@{group.memberCount+group.memberName}"
@@ -71,15 +69,13 @@
                 app:layout_constraintTop_toBottomOf="@id/name"
                 tools:text="12345 members" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/desc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginEnd="@dimen/margin_normal"
+                android:layout_marginStart="@dimen/margin_smaller"
                 android:layout_marginTop="@dimen/margin_extra_small"
-                android:layout_marginBottom="@dimen/margin_normal"
-                android:maxLines="2"
+                android:maxLines="1"
                 android:ellipsize="end"
                 android:text="@{group.desc}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
@@ -88,8 +84,6 @@
                 app:layout_constraintStart_toEndOf="@id/avatar"
                 app:layout_constraintTop_toBottomOf="@id/group_member_count"
                 tools:text="0123456789" />
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 

@@ -20,9 +20,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_normal">
+            android:layout_marginHorizontal="@dimen/margin_normal"
+            android:layout_marginVertical="@dimen/margin_smaller">
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/author_avatar"
                 android:layout_width="@dimen/icon_size_normal"
                 android:layout_height="@dimen/icon_size_normal"
@@ -30,50 +31,54 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
             <!--TODO: display OP-->
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/author_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_normal"
+                android:layout_marginStart="@dimen/margin_small"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
                 android:text="@{groupPostComment.author.name}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                app:layout_constraintEnd_toStartOf="@id/middle_dot"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintWidth="wrap_content_constrained"
                 app:layout_constraintStart_toEndOf="@id/author_avatar"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Wang Wang" />
+                tools:text="Li Ming Li Ming Li Ming Li Ming Li Ming " />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/middle_dot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_extra_small"
                 android:gravity="center_vertical"
                 android:text="@string/middle_dot"
+                app:layout_constraintEnd_toStartOf="@id/created"
                 app:layout_constraintBottom_toBottomOf="@id/author_name"
                 app:layout_constraintStart_toEndOf="@id/author_name"
                 app:layout_constraintTop_toTopOf="@id/author_name" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/created"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_extra_small"
                 android:gravity="center_vertical"
                 android:text="@{DateTimeUtil.dateTimeText(groupPostComment.created,DateTimeUtil.DateTimeTextLength.NORMAL)}"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/middle_dot"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/author_name"
                 tools:text="1222-34" />
-
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/comment_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_normal"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_extra_small"
                 android:text="@{groupPostComment.text}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/author_avatar"
@@ -85,14 +90,14 @@
                 isGone="@{groupPostComment.voteCount==0}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_normal"
+                android:layout_marginStart="@dimen/margin_small"
                 android:layout_marginTop="@dimen/margin_small"
                 android:src="@drawable/ic_outline_thumb_up"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/author_avatar"
                 app:layout_constraintTop_toBottomOf="@id/comment_text" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/like_count"
                 isGone="@{groupPostComment.voteCount==0}"
                 android:layout_width="wrap_content"
