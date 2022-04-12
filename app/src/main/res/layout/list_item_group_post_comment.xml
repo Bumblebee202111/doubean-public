@@ -6,7 +6,7 @@
     <data>
 
         <import type="com.doubean.ford.util.DateTimeUtil" />
-
+        <import type="com.doubean.ford.util.DateTimeStyle" />
         <variable
             name="groupPostComment"
             type="com.doubean.ford.data.vo.GroupPostComment" />
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_extra_small"
                 android:gravity="center_vertical"
-                android:text="@{DateTimeUtil.dateTimeText(groupPostComment.created,DateTimeUtil.DateTimeTextLength.NORMAL)}"
+                android:text="@{DateTimeUtil.dateTimeText(groupPostComment.created,DateTimeStyle.NORMAL)}"
                 app:layout_constraintStart_toEndOf="@id/middle_dot"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/author_name"

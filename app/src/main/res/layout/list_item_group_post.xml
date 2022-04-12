@@ -5,6 +5,7 @@
 
     <data>
         <import type="com.doubean.ford.util.DateTimeUtil" />
+        <import type="com.doubean.ford.util.DateTimeStyle" />
         <variable
             name="groupPost"
             type="com.doubean.ford.data.vo.GroupPost" />
@@ -83,7 +84,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:text="@{DateTimeUtil.dateTimeText(groupPost.created,DateTimeUtil.DateTimeTextLength.SHORT)}"
+                    android:text="@{DateTimeUtil.dateTimeText(groupPost.created,DateTimeStyle.SHORT)}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/created_middle_dot"
@@ -152,7 +153,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_extra_small"
-                    android:text="@{@string/last_updated(DateTimeUtil.dateTimeText(groupPost.lastUpdated,DateTimeUtil.DateTimeTextLength.SHORT))}"
+                    android:text="@{@string/last_updated(DateTimeUtil.dateTimeText(groupPost.lastUpdated,DateTimeStyle.SHORT))}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/last_commented_middle_dot"
                     app:layout_constraintTop_toTopOf="parent"

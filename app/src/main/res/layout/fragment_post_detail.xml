@@ -5,6 +5,7 @@
 
     <data>
         <import type="com.doubean.ford.util.DateTimeUtil" />
+        <import type="com.doubean.ford.util.DateTimeStyle" />
         <variable
             name="viewModel"
             type="com.doubean.ford.ui.groups.postDetail.PostDetailViewModel" />
@@ -93,7 +94,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/margin_small"
-                    android:text="@{DateTimeUtil.dateTimeText(viewModel.post.created,DateTimeUtil.DateTimeTextLength.LONG)}"
+                    android:text="@{DateTimeUtil.dateTimeText(viewModel.post.created,DateTimeStyle.LONG)}"
                     app:layout_constraintStart_toEndOf="@id/author_avatar"
                     app:layout_constraintTop_toBottomOf="@id/author_name"
                     tools:text="1999" />
