@@ -49,37 +49,77 @@
                 app:imageFromUrl="@{favorite.groupAvatarUrl}" />
         </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/group_name"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/group"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"
-            android:ellipsize="end"
-            android:text="@{favorite.groupName}"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             app:layout_constraintEnd_toEndOf="parent"
-            android:maxLines="1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/card"
-            tools:text="小组小组小组小组" />
+            app:layout_constraintTop_toBottomOf="@id/card">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/group_tab_name"
-            isGone="@{favorite.groupTabId==null}"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/group_icon"
+                android:layout_width="@dimen/icon_size_extra_small"
+                android:layout_height="@dimen/icon_size_extra_small"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_baseline_group" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/group_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:text="@{favorite.groupName}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="@dimen/margin_extra_small"
+                android:maxLines="1"
+                app:layout_constraintStart_toEndOf="@id/group_icon"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="小组小组小组小组" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/group_tab"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
-            android:ellipsize="end"
-            android:text="@{favorite.groupTabName}"
-            android:maxLines="1"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            isGone="@{favorite.groupTabId==null}"
+            android:layout_marginTop="@dimen/margin_extra_small"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/group_name"
-            tools:text="tab tab tab" />
+            app:layout_constraintTop_toBottomOf="@id/group">
 
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/group_tab_icon"
+                android:layout_width="@dimen/icon_size_extra_small"
+                android:layout_height="@dimen/icon_size_extra_small"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_baseline_tab" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/group_tab_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_extra_small"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{favorite.groupTabName}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/group_tab_icon"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="tab tab tab" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </layout>
