@@ -7,14 +7,14 @@ import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.doubean.ford.data.repository.GroupRepository;
-import com.doubean.ford.data.vo.Group;
+import com.doubean.ford.data.vo.GroupItem;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
 public class GroupSearchViewModel extends ViewModel {
-    private final LiveData<List<Group>> results;
+    private final LiveData<List<GroupItem>> results;
     private final MutableLiveData<String> query = new MutableLiveData<>();
     private final GroupRepository groupRepository;
 
@@ -30,7 +30,7 @@ public class GroupSearchViewModel extends ViewModel {
     }
 
 
-    public LiveData<List<Group>> getResults() {
+    public LiveData<List<GroupItem>> getResults() {
         return results;
     }
 

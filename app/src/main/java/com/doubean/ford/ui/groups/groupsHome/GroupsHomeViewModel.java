@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.doubean.ford.data.repository.GroupFavoritesRepository;
 import com.doubean.ford.data.repository.GroupRepository;
-import com.doubean.ford.data.vo.Group;
+import com.doubean.ford.data.vo.GroupDetail;
 import com.doubean.ford.data.vo.GroupFavorite;
 import com.doubean.ford.data.vo.GroupFavoriteDetail;
 
@@ -45,11 +45,11 @@ public class GroupsHomeViewModel extends ViewModel {
                 if (favoriteIds != null) {
                     List<GroupFavoriteDetail> favorites = new ArrayList<>(Arrays.asList(new GroupFavoriteDetail[favoriteIds.size()]));
                     for (int i = 0; i < favoriteIds.size(); i++) {
-                        LiveData<Group> groupLiveData = groupRepository.getGroup(favoriteIds.get(i).groupId, false);
+                        LiveData<GroupDetail> groupLiveData = groupRepository.getGroup(favoriteIds.get(i).groupId, false);
                         int finalI = i;
-                        favoritesLiveData.addSource(groupLiveData, new Observer<Group>() {
+                        favoritesLiveData.addSource(groupLiveData, new Observer<GroupDetail>() {
                             @Override
-                            public void onChanged(Group group) {
+                            public void onChanged(GroupDetail group) {
                                 if (group != null) {
                                     GroupFavoriteDetail groupFavoriteDetail = new GroupFavoriteDetail(group, favoriteIds.get(finalI).groupTabId);
                                     favorites.set(finalI, groupFavoriteDetail);
@@ -119,14 +119,9 @@ public class GroupsHomeViewModel extends ViewModel {
     }
 
     private LiveData<GroupFavoriteDetail> getGroupFavorite(GroupFavorite favorite) {
-        LiveData<Group> groupLiveData = groupRepository.getGroup(favorite.groupId, false);
+        LiveData<GroupDetail> groupLiveData = groupRepository.getGroup(favorite.groupId, false);
         return Transformations.map(groupLiveData,
-                new Function<Group, GroupFavoriteDetail>() {
-                    @Override
-                    public GroupFavoriteDetail apply(Group group) {
-                        return new GroupFavoriteDetail(group, favorite.groupTabId);
-                    }
-                });
+                group -> new GroupFavoriteDetail(group, favorite.groupTabId));
     }
 
 }

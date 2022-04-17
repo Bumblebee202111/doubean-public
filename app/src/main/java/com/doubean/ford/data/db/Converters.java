@@ -6,8 +6,10 @@ import androidx.room.TypeConverter;
 import androidx.room.util.StringUtil;
 
 import com.doubean.ford.data.vo.Group;
+import com.doubean.ford.data.vo.GroupBrief;
 import com.doubean.ford.data.vo.GroupPost;
 import com.doubean.ford.data.vo.GroupPostTag;
+import com.doubean.ford.data.vo.GroupTab;
 import com.doubean.ford.data.vo.SizedPhoto;
 import com.doubean.ford.data.vo.User;
 import com.doubean.ford.util.Constants;
@@ -61,12 +63,26 @@ public class Converters {
     }
 
     @TypeConverter
-    public static String groupTabListToString(List<GroupPostTag> ints) {
-        return new Gson().toJson(ints);
+    public static String groupTabListToString(List<GroupTab> groupTabs) {
+        return new Gson().toJson(groupTabs);
     }
 
     @TypeConverter
-    public static List<GroupPostTag> stringToGroupTabList(String data) {
+    public static List<GroupTab> stringToGroupTabList(String data) {
+        if (data == null) {
+            return Collections.emptyList();
+        }
+        return new Gson().fromJson(data, new TypeToken<ArrayList<GroupTab>>() {
+        }.getType());
+    }
+
+    @TypeConverter
+    public static String postTagListToString(List<GroupPostTag> groupPostTags) {
+        return new Gson().toJson(groupPostTags);
+    }
+
+    @TypeConverter
+    public static List<GroupPostTag> stringToPostTagList(String data) {
         if (data == null) {
             return Collections.emptyList();
         }
@@ -103,6 +119,16 @@ public class Converters {
     @TypeConverter
     public static String groupToString(Group group) {
         return new Gson().toJson(group);
+    }
+
+    @TypeConverter
+    public static GroupBrief stringToGroupBrief(String strings) {
+        return new Gson().fromJson(strings, GroupBrief.class);
+    }
+
+    @TypeConverter
+    public static String groupBriefToString(GroupBrief groupBrief) {
+        return new Gson().toJson(groupBrief);
     }
 
     @TypeConverter

@@ -11,38 +11,37 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.doubean.ford.data.vo.GroupPost;
+import com.doubean.ford.data.vo.GroupPostItem;
 import com.doubean.ford.databinding.ListItemGroupPostBinding;
 import com.doubean.ford.ui.groups.groupDetail.GroupDetailFragmentDirections;
 
-public class GroupPostAdapter extends ListAdapter<GroupPost, GroupPostAdapter.ViewHolder> {
+public class PostAdapter extends ListAdapter<GroupPostItem, PostAdapter.ViewHolder> {
 
-    public GroupPostAdapter() {
-        super(new GroupPostAdapter.GroupDiffCallback());
+    public PostAdapter() {
+        super(new PostAdapter.GroupDiffCallback());
     }
 
     @NonNull
     @Override
-    public GroupPostAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
+    public PostAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(ListItemGroupPostBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GroupPostAdapter.ViewHolder holder, int position) {
-        GroupPost post = getItem(position);
+    public void onBindViewHolder(@NonNull PostAdapter.ViewHolder holder, int position) {
+        GroupPostItem post = getItem(position);
         holder.bind(post);
     }
 
-    private static class GroupDiffCallback extends DiffUtil.ItemCallback<GroupPost> {
+    private static class GroupDiffCallback extends DiffUtil.ItemCallback<GroupPostItem> {
         @Override
-        public boolean areItemsTheSame(@NonNull GroupPost oldItem, @NonNull GroupPost newItem) {
+        public boolean areItemsTheSame(@NonNull GroupPostItem oldItem, @NonNull GroupPostItem newItem) {
             return oldItem.id.equals(newItem.id);
         }
 
         @SuppressLint("DiffUtilEquals")
         @Override
-        public boolean areContentsTheSame(@NonNull GroupPost oldItem, @NonNull GroupPost newItem) {
+        public boolean areContentsTheSame(@NonNull GroupPostItem oldItem, @NonNull GroupPostItem newItem) {
             return oldItem == newItem;
         }
     }
@@ -54,17 +53,17 @@ public class GroupPostAdapter extends ListAdapter<GroupPost, GroupPostAdapter.Vi
         public ViewHolder(@NonNull ListItemGroupPostBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-            binding.setClickListener(v -> navigateToPost(binding.getGroupPost(), v));
+            binding.setClickListener(v -> navigateToPost(binding.getPost(), v));
         }
 
-        private void navigateToPost(@NonNull GroupPost post, View itemView) {
+        private void navigateToPost(@NonNull GroupPostItem post, View itemView) {
             GroupDetailFragmentDirections.ActionNavigationGroupDetailToNavigationPostDetail direction =
                     GroupDetailFragmentDirections.actionNavigationGroupDetailToNavigationPostDetail(post.id);
             Navigation.findNavController(itemView).navigate(direction);
         }
 
-        void bind(GroupPost item) {
-            binding.setGroupPost(item);
+        void bind(GroupPostItem item) {
+            binding.setPost(item);
             binding.executePendingBindings();
         }
     }

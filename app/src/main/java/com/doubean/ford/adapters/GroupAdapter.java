@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.doubean.ford.data.vo.Group;
+import com.doubean.ford.data.vo.GroupItem;
 import com.doubean.ford.databinding.ListItemGroupBinding;
 import com.doubean.ford.ui.groups.groupSearch.GroupSearchFragmentDirections;
 
-public class GroupAdapter extends ListAdapter<Group, GroupAdapter.ViewHolder> {
+public class GroupAdapter extends ListAdapter<GroupItem, GroupAdapter.ViewHolder> {
 
     public GroupAdapter() {
         super(new GroupDiffCallback());
@@ -30,19 +30,19 @@ public class GroupAdapter extends ListAdapter<Group, GroupAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Group group = getItem(position);
+        GroupItem group = getItem(position);
         holder.bind(group);
     }
 
-    private static class GroupDiffCallback extends DiffUtil.ItemCallback<Group> {
+    private static class GroupDiffCallback extends DiffUtil.ItemCallback<GroupItem> {
         @Override
-        public boolean areItemsTheSame(@NonNull Group oldItem, @NonNull Group newItem) {
-            return oldItem.getId().equals(newItem.getId());
+        public boolean areItemsTheSame(@NonNull GroupItem oldItem, @NonNull GroupItem newItem) {
+            return oldItem.id.equals(newItem.id);
         }
 
         @SuppressLint("DiffUtilEquals")
         @Override
-        public boolean areContentsTheSame(@NonNull Group oldItem, @NonNull Group newItem) {
+        public boolean areContentsTheSame(@NonNull GroupItem oldItem, @NonNull GroupItem newItem) {
             return oldItem == newItem;
         }
     }
@@ -58,13 +58,13 @@ public class GroupAdapter extends ListAdapter<Group, GroupAdapter.ViewHolder> {
             binding.setClickListener(v -> navigateToGroup(binding.getGroup(), v));
         }
 
-        private void navigateToGroup(@NonNull Group group, View itemView) {
+        private void navigateToGroup(@NonNull GroupItem group, View itemView) {
             GroupSearchFragmentDirections.ActionNavigationGroupSearchToNavigationGroupDetail direction = GroupSearchFragmentDirections.actionNavigationGroupSearchToNavigationGroupDetail(group.id);
             Navigation.findNavController(itemView).navigate(direction);
 
         }
 
-        void bind(Group item) {
+        void bind(GroupItem item) {
             binding.setGroup(item);
             binding.executePendingBindings();
         }

@@ -1,21 +1,12 @@
 package com.doubean.ford.data.vo;
 
-import androidx.annotation.NonNull;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-
 import com.google.gson.annotations.SerializedName;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Class officially known as topic/话题
- */
-@Entity(tableName = "group_posts")
-public class GroupPost {
-    @NonNull
-    @PrimaryKey
+public class GroupPostItem {
+
     @SerializedName("id")
     public String id;
 
@@ -34,21 +25,10 @@ public class GroupPost {
     public LocalDateTime lastUpdated;
 
     @SerializedName("like_count")
-    public Integer likeCount;
-
-    public Integer reactions_count;
-
-    @SerializedName("reshares_count")
-    public Integer repostCount;
-
-    @SerializedName("collections_count")
-    public Integer saveCount;
+    public int likeCount;
 
     @SerializedName("comments_count")
-    public Integer commentCount;
-
-    @SerializedName("abstract")
-    public String shortContent;
+    public int commentCount;
 
     public String content;
 
@@ -60,7 +40,7 @@ public class GroupPost {
 
     public String url;
 
-    public GroupBrief group;
+    public Group group;
 
     public String getTagName() {
         if (postTags.isEmpty()) return null;
