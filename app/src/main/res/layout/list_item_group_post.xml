@@ -7,8 +7,8 @@
         <import type="com.doubean.ford.util.DateTimeUtil" />
         <import type="com.doubean.ford.util.DateTimeStyle" />
         <variable
-            name="groupPost"
-            type="com.doubean.ford.data.vo.GroupPost" />
+            name="post"
+            type="com.doubean.ford.data.vo.GroupPostItem" />
 
         <variable
             name="clickListener"
@@ -21,10 +21,9 @@
         android:onClick="@{clickListener}"
         app:cardElevation="0dp"
         app:cardPreventCornerOverlap="false"
-        app:isGone="@{groupPost==null}">
+        app:isGone="@{post==null}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/post"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_normal"
@@ -40,7 +39,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/author_avatar"
-                    avatarFromUrl="@{groupPost.author.avatarUrl}"
+                    avatarFromUrl="@{post.author.avatarUrl}"
                     android:layout_width="@dimen/icon_size_extra_small"
                     android:layout_height="@dimen/icon_size_extra_small"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -56,7 +55,7 @@
                     android:ellipsize="end"
                     android:gravity="center_vertical"
                     android:maxLines="1"
-                    android:text="@{groupPost.author.name}"
+                    android:text="@{post.author.name}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/created_middle_dot"
@@ -84,7 +83,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:text="@{DateTimeUtil.dateTimeText(groupPost.created,DateTimeStyle.SHORT)}"
+                    android:text="@{DateTimeUtil.dateTimeText(post.created,DateTimeStyle.SHORT)}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/created_middle_dot"
@@ -102,8 +101,8 @@
                 app:layout_constraintEnd_toEndOf="@id/first_line"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/first_line"
-                app:postTabName="@{groupPost.tagName}"
-                app:postTitle="@{groupPost.title}"
+                app:postTabName="@{post.tagName}"
+                app:postTitle="@{post.title}"
                 tools:text="Post title post title post title post title post title post title post title" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -111,7 +110,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_small"
-                app:isGone="@{groupPost.commentCount==0&amp;&amp;groupPost.created.equals(groupPost.lastUpdated)}"
+                app:isGone="@{post.commentCount==0&amp;&amp;post.created.equals(post.lastUpdated)}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/first_line"
                 app:layout_constraintStart_toStartOf="parent"
@@ -131,7 +130,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_small"
-                    android:text="@{groupPost.commentCount+``}"
+                    android:text="@{post.commentCount+``}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/comment_icon"
                     app:layout_constraintTop_toTopOf="parent"
@@ -153,7 +152,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_extra_small"
-                    android:text="@{@string/last_updated(DateTimeUtil.dateTimeText(groupPost.lastUpdated,DateTimeStyle.SHORT))}"
+                    android:text="@{@string/last_updated(DateTimeUtil.dateTimeText(post.lastUpdated,DateTimeStyle.SHORT))}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/last_commented_middle_dot"
                     app:layout_constraintTop_toTopOf="parent"
@@ -163,13 +162,13 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/cover"
-                isGone="@{groupPost.coverUrl.empty}"
+                isGone="@{post.coverUrl.empty}"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginStart="@dimen/margin_normal"
                 android:contentDescription="@string/a11y_group_item_image"
                 android:scaleType="centerCrop"
-                app:imageFromUrl="@{groupPost.coverUrl}"
+                app:imageFromUrl="@{post.coverUrl}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/first_line"

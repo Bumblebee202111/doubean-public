@@ -4,10 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class SearchResultItem {
     @SerializedName("target")
-    private Group group;
+    private GroupItem group;
 
-    public Group getGroup() {
+    public GroupItem getGroup() {
         return group;
     }
-
 }

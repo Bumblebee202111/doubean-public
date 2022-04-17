@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 
 import com.doubean.ford.api.DoubanService;
@@ -16,10 +15,12 @@ import com.doubean.ford.api.GroupPostsResponse;
 import com.doubean.ford.api.GroupSearchResponse;
 import com.doubean.ford.data.db.AppDatabase;
 import com.doubean.ford.data.db.GroupDao;
-import com.doubean.ford.data.vo.Group;
+import com.doubean.ford.data.vo.GroupDetail;
+import com.doubean.ford.data.vo.GroupItem;
 import com.doubean.ford.data.vo.GroupPost;
 import com.doubean.ford.data.vo.GroupPostComment;
 import com.doubean.ford.data.vo.GroupPostComments;
+import com.doubean.ford.data.vo.GroupPostItem;
 import com.doubean.ford.data.vo.GroupPostPopularComments;
 import com.doubean.ford.data.vo.GroupSearchResult;
 import com.doubean.ford.data.vo.SearchResultItem;
@@ -57,105 +58,94 @@ public class GroupRepository {
     }
 
 
-
-    public LiveData<List<Group>> getGroups(@NonNull List<String> groupIds) {
-        MediatorLiveData<List<Group>> groupsLiveData = new MediatorLiveData<>();
-        List<Group> groups = new ArrayList<>(Arrays.asList(new Group[groupIds.size()]));
+    public LiveData<List<GroupItem>> getGroups(@NonNull List<String> groupIds) {
+        MediatorLiveData<List<GroupItem>> groupsLiveData = new MediatorLiveData<>();
+        List<GroupItem> groups = new ArrayList<>(Arrays.asList(new GroupItem[groupIds.size()]));
         if (groupIds.size() > 0) {
             MutableLiveData<Boolean> fetching = new MutableLiveData<>(false);
             final int[] i = {0};
-            groupsLiveData.addSource(fetching, new Observer<Boolean>() {
-                @Override
-                public void onChanged(Boolean aBoolean) {
-                    if (!aBoolean) {
-                        LiveData<Group> groupLiveData = getGroup(groupIds.get(i[0]), false);
-                        fetching.setValue(true);
-                        groupsLiveData.addSource(groupLiveData, new Observer<Group>() {
-                            @Override
-                            public void onChanged(Group group) {
-                                if (group != null) {
-                                    groups.set(i[0]++, group);
-                                    groupsLiveData.removeSource(groupLiveData);
-                                    if (i[0] == groups.size()) {
-                                        groupsLiveData.setValue(groups);
-                                        groupsLiveData.removeSource(fetching);
-                                    } else
-                                        fetching.setValue(false);
-                                }
+            groupsLiveData.addSource(fetching, aBoolean -> {
+                if (!aBoolean) {
+                    LiveData<GroupDetail> groupLiveData = getGroup(groupIds.get(i[0]), false);
+                    fetching.setValue(true);
+                    groupsLiveData.addSource(groupLiveData, group -> {
+                        if (group != null) {
+                            groups.set(i[0]++, group.toGroupItem());
+                            groupsLiveData.removeSource(groupLiveData);
+                            if (i[0] == groups.size()) {
+                                groupsLiveData.setValue(groups);
+                                groupsLiveData.removeSource(fetching);
+                            } else
+                                fetching.setValue(false);
+                        }
 
-                            }
-                        });
-                    }
-
+                    });
                 }
+
             });
         }
 
         return groupsLiveData;
     }
 
-    public LiveData<Group> getGroup(String groupId, boolean forceFetch) {
-        return new NetworkBoundResource<Group, Group>(appExecutors) {
+    public LiveData<GroupDetail> getGroup(String groupId, boolean forceFetch) {
+        return new NetworkBoundResource<GroupDetail, GroupDetail>(appExecutors) {
             @Override
-            protected void saveCallResult(@NonNull Group group) {
-                groupDao.insertGroup(group);
+            protected void saveCallResult(@NonNull GroupDetail group) {
+                groupDao.upsertGroup(group);
             }
 
             @Override
-            protected boolean shouldFetch(@Nullable Group data) {
+            protected boolean shouldFetch(@Nullable GroupDetail data) {
                 return data == null || forceFetch;
             }
 
             @NonNull
             @Override
-            protected LiveData<Group> loadFromDb() {
+            protected LiveData<GroupDetail> loadFromDb() {
                 return groupDao.getGroup(groupId);
             }
 
             @NonNull
             @Override
-            protected LiveData<Group> createCall() {
+            protected LiveData<GroupDetail> createCall() {
                 return doubanService.getGroup(groupId, 1);
             }
         }.asLiveData();
     }
 
-    public LiveData<List<Group>> search(String query) {
-        return new NetworkBoundResource<List<Group>, GroupSearchResponse>(appExecutors) {
+    public LiveData<List<GroupItem>> search(String query) {
+        return new NetworkBoundResource<List<GroupItem>, GroupSearchResponse>(appExecutors) {
 
             @Override
             protected void saveCallResult(@NonNull GroupSearchResponse item) {
                 List<String> groupIds = item.getGroupIds();
                 GroupSearchResult groupSearchResult = new GroupSearchResult(
                         query, groupIds);
-                List<Group> groups = new ArrayList<>();
+                List<GroupItem> groups = new ArrayList<>();
                 for (SearchResultItem searchResultItem : item.getItems()) {
                     groups.add(searchResultItem.getGroup());
                 }
 
-                appDatabase.runInTransaction(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        groupDao.insertGroups(groups);
-                        groupDao.insertGroupSearchResult(groupSearchResult);
-                    }
+                appDatabase.runInTransaction(() -> {
+                    groupDao.upsertGroups(groups);
+                    groupDao.insertGroupSearchResult(groupSearchResult);
                 });
 
             }
 
             @Override
-            protected boolean shouldFetch(@Nullable List<Group> data) {
+            protected boolean shouldFetch(@Nullable List<GroupItem> data) {
                 //return data == null;
                 return true;
             }
 
             @NonNull
             @Override
-            protected LiveData<List<Group>> loadFromDb() {
+            protected LiveData<List<GroupItem>> loadFromDb() {
                 return Transformations.switchMap(groupDao.search(query), searchData -> {
                     if (searchData == null) {
-                        return new LiveData<List<Group>>(null) {
+                        return new LiveData<List<GroupItem>>(null) {
                         };
                     } else {
                         return groupDao.loadOrdered(searchData.groupIds, (g1, g2) -> g2.memberCount - g1.memberCount);
@@ -173,30 +163,30 @@ public class GroupRepository {
         }.asLiveData();
     }
 
-    public LiveData<List<GroupPost>> getGroupPosts(String groupId, String tagId) {
-        return new NetworkBoundResource<List<GroupPost>, GroupPostsResponse>(appExecutors) {
+    public LiveData<List<GroupPostItem>> getGroupPosts(String groupId, String tagId) {
+        return new NetworkBoundResource<List<GroupPostItem>, GroupPostsResponse>(appExecutors) {
             @Override
             protected void saveCallResult(@NonNull GroupPostsResponse item) {
-                List<GroupPost> posts = item.getPosts();
-                for (GroupPost post : posts) {
+                List<GroupPostItem> posts = item.getPosts();
+                for (GroupPostItem post : posts) {
                     post.groupId = groupId;
                     if (post.postTags != null && !post.postTags.isEmpty()) {
                         post.tagId = post.postTags.get(0).id;
                     }
-                    groupDao.addGroupPost(post);
+                    groupDao.upsertPostItem(post);
                 }
 
             }
 
             @Override
-            protected boolean shouldFetch(@Nullable List<GroupPost> data) {
+            protected boolean shouldFetch(@Nullable List<GroupPostItem> data) {
                 //return data==null||data.isEmpty();
                 return true;
             }
 
             @NonNull
             @Override
-            protected LiveData<List<GroupPost>> loadFromDb() {
+            protected LiveData<List<GroupPostItem>> loadFromDb() {
                 if (TextUtils.isEmpty(tagId)) {
                     return groupDao.getGroupPosts(groupId);
                 }
@@ -222,13 +212,16 @@ public class GroupRepository {
                 item.groupId = item.group.id;
                 if (!item.postTags.isEmpty())
                     item.tagId = item.postTags.get(0).id;
-                groupDao.addGroupPost(item);
-                //groupDao.insertGroup(item.group); item.group is incomplete: no tab info
+
+                appDatabase.runInTransaction(() -> {
+                    groupDao.insertPost(item);
+                    groupDao.upsertGroup(item.group);
+                });
+
             }
 
             @Override
             protected boolean shouldFetch(@Nullable GroupPost data) {
-                //return data == null;
                 return true;
             }
 

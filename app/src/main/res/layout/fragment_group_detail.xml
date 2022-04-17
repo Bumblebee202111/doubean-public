@@ -9,7 +9,7 @@
 
         <variable
             name="group"
-            type="com.doubean.ford.data.vo.Group" />
+            type="com.doubean.ford.data.vo.GroupDetail" />
 
         <variable
             name="viewModel"
@@ -43,7 +43,7 @@
                 app:contentScrim="?attr/colorSurface"
                 app:statusBarScrim="?attr/colorSurface"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:title="@{group.groupName}"
+                app:title="@{group.name}"
                 app:titleEnabled="false"
                 app:toolbarId="@id/toolbar">
 
@@ -78,7 +78,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_small"
-                        android:text="@{group.groupName}"
+                        android:text="@{group.name}"
                         android:textAppearance="?attr/textAppearanceHeadline6"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -104,7 +104,7 @@
                         android:layout_marginTop="@dimen/margin_small"
                         android:ellipsize="end"
                         android:maxLines="2"
-                        android:text="@{group.desc}"
+                        android:text="@{group.description}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/group_member_count"

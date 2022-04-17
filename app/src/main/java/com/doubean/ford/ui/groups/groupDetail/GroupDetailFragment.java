@@ -15,8 +15,8 @@ import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.doubean.ford.R;
-import com.doubean.ford.data.vo.Group;
-import com.doubean.ford.data.vo.GroupPostTag;
+import com.doubean.ford.data.vo.GroupDetail;
+import com.doubean.ford.data.vo.GroupTab;
 import com.doubean.ford.databinding.FragmentGroupDetailBinding;
 import com.doubean.ford.util.InjectorUtils;
 import com.google.android.material.snackbar.Snackbar;
@@ -53,26 +53,28 @@ public class GroupDetailFragment extends Fragment {
         GroupDetailViewModelFactory factory = InjectorUtils.provideGroupDetailViewModelFactory(requireContext(), groupId, defaultTabId);
         groupDetailViewModel = new ViewModelProvider(this, factory).get(GroupDetailViewModel.class);
         binding.setViewModel(groupDetailViewModel);
+
         groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(), group -> {
             if (group != null) {
                 binding.setGroup(group);
+
                 final int color = group.getColor();
                 binding.mask.setBackgroundColor(color);
                 binding.toolbar.setBackgroundColor(color);
                 binding.tabLayout.setSelectedTabIndicatorColor(color);
 
-                List<GroupPostTag> groupPostTags = group.getGroupTabs();
+                List<GroupTab> tabs = group.tabs;
 
-                GroupPagerAdapter groupPagerAdapter = new GroupPagerAdapter(GroupDetailFragment.this, groupId, group.getGroupTabs());
+                GroupPagerAdapter groupPagerAdapter = new GroupPagerAdapter(GroupDetailFragment.this, groupId, tabs);
 
                 ViewPager2 viewPager = binding.pager;
-                presetDefaultItem(viewPager, group);
+                initViewPager2WithDefaultItem(viewPager, group);
                 viewPager.setAdapter(groupPagerAdapter);
 
                 TabLayout tabLayout = binding.tabLayout;
                 new TabLayoutMediator(tabLayout, viewPager,
                         (tab, position) -> {
-                            tab.setText(position == 0 ? getString(R.string.all) : groupPostTags.get(position - 1).name);
+                            tab.setText(position == 0 ? getString(R.string.all) : tabs.get(position - 1).name);
                         }
                 ).attach();
 
@@ -81,7 +83,7 @@ public class GroupDetailFragment extends Fragment {
                     @Override
                     public void onPageSelected(int position) {
                         super.onPageSelected(position);
-                        groupDetailViewModel.setCurrentTabId(position == 0 ? null : group.groupTabs.get(position - 1).id);
+                        groupDetailViewModel.setCurrentTabId(position == 0 ? null : tabs.get(position - 1).id);
                     }
                 });
             }
@@ -149,24 +151,24 @@ public class GroupDetailFragment extends Fragment {
         getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
     }
 
-    private int getDefaultItem(Group group) {
+    private int getDefaultItem(List<GroupTab> groupTabs) {
         if (defaultTabId != null) {
-            for (int i = 0; i < group.groupTabs.size(); i++) {
-                if (Objects.equals(group.groupTabs.get(i).id, defaultTabId)) {
-                    return i + 1;
+            for (GroupTab tab : groupTabs) {
+                if (Objects.equals(tab.id, defaultTabId)) {
+                    return tab.seq;
                 }
             }
         }
         return 0;
     }
 
-    private void presetDefaultItem(ViewPager2 viewPager, Group group) {
+    private void initViewPager2WithDefaultItem(ViewPager2 viewPager, GroupDetail group) {
         try {
             Field field = viewPager.getClass().getDeclaredField("mPendingCurrentItem");
             field.setAccessible(true);
             try {
                 if (field.getInt(viewPager) == -1) { //-1: NO_POSITION
-                    field.setInt(viewPager, getDefaultItem(group));
+                    field.setInt(viewPager, getDefaultItem(group.tabs));
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();

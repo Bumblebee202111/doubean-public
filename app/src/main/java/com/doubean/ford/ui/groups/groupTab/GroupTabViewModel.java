@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.doubean.ford.data.repository.GroupRepository;
-import com.doubean.ford.data.vo.Group;
-import com.doubean.ford.data.vo.GroupPost;
+import com.doubean.ford.data.vo.GroupDetail;
+import com.doubean.ford.data.vo.GroupPostItem;
 
 import java.util.List;
 
@@ -14,8 +14,8 @@ public class GroupTabViewModel extends ViewModel {
 
     private String groupId;
     private String tagId;
-    private LiveData<Group> group;
-    private LiveData<List<GroupPost>> posts;
+    private LiveData<GroupDetail> group;
+    private LiveData<List<GroupPostItem>> posts;
 
     public GroupTabViewModel(GroupRepository repository, String groupId, String tagId) {
         this.repository = repository;
@@ -25,11 +25,11 @@ public class GroupTabViewModel extends ViewModel {
         posts = repository.getGroupPosts(groupId, tagId);
     }
 
-    public LiveData<Group> getGroup() {
+    public LiveData<GroupDetail> getGroup() {
         return group;
     }
 
-    public LiveData<List<GroupPost>> getPosts() {
+    public LiveData<List<GroupPostItem>> getPosts() {
         return posts;
     }
 }

@@ -21,7 +21,8 @@ import com.doubean.ford.util.Constants;
 /**
  * The Room database for this app
  */
-@Database(entities = {Group.class, GroupPost.class, GroupFavorite.class, GroupSearchResult.class, GroupPostComment.class, GroupPostPopularComments.class}, version = 1, exportSchema = false)
+@Database(entities = {Group.class, GroupPost.class, GroupFavorite.class, GroupSearchResult.class, GroupPostComment.class, GroupPostPopularComments.class},
+        version = 1)
 @TypeConverters(Converters.class)
 public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase instance;
@@ -35,14 +36,14 @@ public abstract class AppDatabase extends RoomDatabase {
         return instance;
     }
 
-    private static RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
+    private static final RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
             new AppExecutors().diskIO().execute(() -> {
-                GroupDao dao = instance.getGroupDao();
-                dao.insertFavoriteGroup(new GroupFavorite("665372", null));
-                dao.insertFavoriteGroup(new GroupFavorite("644960", "53959"));
+                GroupFavoriteDao dao = instance.getFavoriteGroupDao();
+                dao.insertGroupFavorite(new GroupFavorite("665372", null));
+                dao.insertGroupFavorite(new GroupFavorite("644960", "53959"));
             });
         }
     };

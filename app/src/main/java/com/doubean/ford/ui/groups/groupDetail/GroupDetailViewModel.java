@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.doubean.ford.data.repository.GroupFavoritesRepository;
 import com.doubean.ford.data.repository.GroupRepository;
-import com.doubean.ford.data.vo.Group;
+import com.doubean.ford.data.vo.GroupDetail;
 
 public class GroupDetailViewModel extends ViewModel {
     private final GroupRepository groupRepository;
@@ -16,7 +16,7 @@ public class GroupDetailViewModel extends ViewModel {
     private String groupId;
     private MutableLiveData<String> currentTabId;
     private LiveData<Boolean> isCurrentTabFavorite;
-    private final LiveData<Group> group;
+    private final LiveData<GroupDetail> group;
 
 
     public GroupDetailViewModel(GroupRepository groupRepository, GroupFavoritesRepository groupFavoritesRepository, String groupId, String defaultTabId) {
@@ -43,7 +43,7 @@ public class GroupDetailViewModel extends ViewModel {
         return isCurrentTabFavorite;
     }
 
-    public LiveData<Group> getGroup() {
+    public LiveData<GroupDetail> getGroup() {
         return group;
     }
 

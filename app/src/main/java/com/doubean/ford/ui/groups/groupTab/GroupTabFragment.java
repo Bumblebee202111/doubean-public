@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 
-import com.doubean.ford.adapters.GroupPostAdapter;
+import com.doubean.ford.adapters.PostAdapter;
 import com.doubean.ford.databinding.FragmentGroupTabBinding;
 import com.doubean.ford.ui.groups.groupDetail.GroupDetailFragment;
 import com.doubean.ford.util.InjectorUtils;
@@ -34,7 +34,7 @@ public class GroupTabFragment extends Fragment {
         String tagId = args.getString(ARG_TAG_ID);
         GroupTabViewModelFactory factory = InjectorUtils.provideGroupTabViewModelFactory(getContext(), groupId, tagId);
         GroupTabViewModel groupTabViewModel = new ViewModelProvider(this, factory).get(GroupTabViewModel.class);
-        GroupPostAdapter adapter = new GroupPostAdapter();
+        PostAdapter adapter = new PostAdapter();
 
         binding.postList.setAdapter(adapter);
         binding.postList.addItemDecoration(new DividerItemDecoration(binding.postList.getContext(), DividerItemDecoration.VERTICAL));

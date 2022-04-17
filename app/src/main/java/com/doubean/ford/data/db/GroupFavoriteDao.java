@@ -28,9 +28,4 @@ public interface GroupFavoriteDao {
     @Query("SELECT EXISTS(SELECT * FROM group_favorites WHERE group_id= :groupId and  (group_tab_id=:groupTabId OR ( group_tab_id IS NULL AND :groupTabId IS NULL )))")
     LiveData<Boolean> getFavorite(String groupId, String groupTabId);
 
-    //TODO
-    //@Query("UPDATE groups " +
-    //        "SET id=:group")
-    //void conditionalInsertGroups(Group group);
-
 }

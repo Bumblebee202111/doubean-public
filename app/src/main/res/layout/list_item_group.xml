@@ -13,7 +13,7 @@
 
         <variable
             name="group"
-            type="com.doubean.ford.data.vo.Group" />
+            type="com.doubean.ford.data.vo.GroupItem" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -48,7 +48,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_smaller"
-                android:text="@{group.groupName}"
+                android:text="@{group.name}"
                 android:textStyle="bold"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -70,14 +70,14 @@
                 tools:text="12345 members" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/desc"
+                android:id="@+id/short_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_smaller"
                 android:layout_marginTop="@dimen/margin_extra_small"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:text="@{group.desc}"
+                android:text="@{group.shortDescription}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

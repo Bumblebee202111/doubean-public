@@ -1,6 +1,6 @@
 package com.doubean.ford.api;
 
-import com.doubean.ford.data.vo.GroupPost;
+import com.doubean.ford.data.vo.GroupPostItem;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -10,7 +10,7 @@ public class GroupPostsResponse {
     private int start;
     private int total;
     @SerializedName("topics")
-    private List<GroupPost> posts;
+    private List<GroupPostItem> posts;
 
     public int getCount() {
         return count;
@@ -36,11 +36,11 @@ public class GroupPostsResponse {
         this.total = total;
     }
 
-    public List<GroupPost> getPosts() {
+    public List<GroupPostItem> getPosts() {
         return posts;
     }
 
-    public void setPosts(List<GroupPost> posts) {
+    public void setPosts(List<GroupPostItem> posts) {
         this.posts = posts;
     }
 

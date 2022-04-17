@@ -7,7 +7,6 @@ public class GroupFavoriteDetail {
 
     private final String groupMemberName;
     private final int groupMemberCount;
-    private final String groupShortDesc;
     @NonNull
     private String groupId;
     private String groupName;
@@ -17,13 +16,13 @@ public class GroupFavoriteDetail {
     @Nullable
     private String groupTabId;
 
-    public GroupFavoriteDetail(@NonNull Group group, @Nullable String groupTabId) {
+    public GroupFavoriteDetail(@NonNull GroupDetail group, @Nullable String groupTabId) {
         this.groupId = group.id;
-        this.groupName = group.groupName;
+        this.groupName = group.name;
         this.groupAvatarUrl = group.avatarUrl;
         this.groupTabId = groupTabId;
         if (groupTabId != null) {
-            for (GroupPostTag tab : group.groupTabs) {
+            for (GroupPostTag tab : group.tabs) {
                 if (tab.id.equals(groupTabId)) {
                     groupTabName = tab.name;
                 }
@@ -32,7 +31,6 @@ public class GroupFavoriteDetail {
         this.groupColor = group.colorString;
         this.groupMemberCount = group.memberCount;
         this.groupMemberName = group.memberName;
-        this.groupShortDesc = group.getShortDesc();
     }
 
     @NonNull
@@ -64,9 +62,6 @@ public class GroupFavoriteDetail {
         return groupMemberCount;
     }
 
-    public String getGroupShortDesc() {
-        return groupShortDesc;
-    }
 
     public String getGroupTabId() {
         return groupTabId;
