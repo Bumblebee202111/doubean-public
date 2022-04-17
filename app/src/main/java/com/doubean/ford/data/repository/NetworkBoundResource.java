@@ -14,7 +14,9 @@ import java.util.Objects;
 
 /**
  * Simplified version of https://github.com/android/architecture-components-samples/blob/main/GithubBrowserSample/app/src/main/java/com/android/example/github/repository/NetworkBoundResource.kt
- * No resource/response encapsulation
+ * -No resource/response encapsulation
+ * -Will only be updated once, no unnecessary loads
+ * Original comment:
  * <p>
  * A generic class that can provide a resource backed by both the sqlite database and the network.
  * <p>
@@ -29,6 +31,9 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
 
     private final MediatorLiveData<ResultType> result = new MediatorLiveData<>();
 
+    /**
+     * Note that the returned LiveData should always be exactly set once (by BumbleBee202111)
+     */
     @MainThread
     NetworkBoundResource(AppExecutors appExecutors) {
         this.appExecutors = appExecutors;
@@ -37,7 +42,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
         result.addSource(dbSource, data -> {
             result.removeSource(dbSource);
             if (shouldFetch(data)) {
-                fetchFromNetwork(dbSource);
+                fetchFromNetwork(data);
             } else {
                 result.addSource(dbSource, this::setValue);
             }
@@ -51,34 +56,23 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
         }
     }
 
-    private void fetchFromNetwork(final LiveData<ResultType> dbSource) {
+    private void fetchFromNetwork(final ResultType cachedData) {
         LiveData<RequestType> apiResponse = createCall();
-        // we re-attach dbSource as a new source, it will dispatch its latest value quickly
-        result.addSource(dbSource, this::setValue);
         result.addSource(apiResponse, response -> {
             result.removeSource(apiResponse);
-            result.removeSource(dbSource);
-            //noinspection ConstantConditions
             if (response != null) {
                 appExecutors.diskIO().execute(() -> {
                     saveCallResult(response);
                     appExecutors.mainThread().execute(() ->
-                            // we specially request a new live data,
-                            // otherwise we will get immediately last cached value,
-                            // which may not be updated with latest results received from network.
                             result.addSource(loadFromDb(),
-                                    newData -> setValue(newData))
+                                    this::setValue)
                     );
                 });
             } else {
                 onFetchFailed();
-
+                setValue(cachedData);
             }
-            //Modification by Bumblebee202111
-            //Always use ROOM cache as substitute when fetch fails
-            //result.addSource(dbSource,
-            //        newData -> setValue(newData));
-            //result.addSource(dbSource, newData -> setValue(null));
+
         });
     }
 
@@ -101,9 +95,6 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
     @MainThread
     protected abstract boolean shouldFetch(@Nullable ResultType data);
 
-    /**
-     * Note that the returned LiveData should always be exactly set once (by BumbleBee202111)
-     */
     @NonNull
     @MainThread
     protected abstract LiveData<ResultType> loadFromDb();
