@@ -4,8 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="com.doubean.ford.util.DateTimeUtil" />
+
         <import type="com.doubean.ford.util.DateTimeStyle" />
+
         <variable
             name="viewModel"
             type="com.doubean.ford.ui.groups.postDetail.PostDetailViewModel" />
@@ -20,7 +23,6 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/doubean_green"
             android:theme="@style/ThemeOverlay.Doubean.AppBar"
             app:contentInsetStartWithNavigation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +33,6 @@
             app:title="@{viewModel.post.title}"
             tools:title="title title title title " />
         <!--todo: app:subtitle="@{viewModel.post.abstract}"-->
-
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/post_detail_scrollview"
@@ -53,6 +54,74 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/group_avatar"
+                    imageFromUrl="@{viewModel.post.group.avatarUrl}"
+                    android:layout_width="@dimen/icon_size_extra_small"
+                    android:layout_height="@dimen/icon_size_extra_small"
+                    app:layout_constraintBottom_toBottomOf="@id/group_name"
+                    app:layout_constraintEnd_toEndOf="@id/author_avatar"
+                    app:layout_constraintTop_toTopOf="@id/group_name" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/group_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@{viewModel.post.group.name}"
+                    app:layout_constraintStart_toEndOf="@id/group_avatar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="group group group" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/author_avatar"
+                    android:layout_width="@dimen/icon_size_large"
+                    android:layout_height="@dimen/icon_size_large"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginTop="@dimen/margin_small"
+                    app:avatarFromUrl="@{viewModel.post.author.avatarUrl}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/group_name"
+                    app:shapeAppearanceOverlay="@style/smallRoundedCornersImageView" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/author_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginEnd="@dimen/margin_small"
+                    android:text="@{viewModel.post.author.name}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    app:layout_constraintEnd_toStartOf="@id/more"
+                    app:layout_constraintStart_toEndOf="@id/author_avatar"
+                    app:layout_constraintTop_toTopOf="@id/author_avatar"
+                    tools:text="Li Ming" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/more"
+                    android:layout_width="@dimen/icon_size_extra_small"
+                    android:layout_height="@dimen/icon_size_extra_small"
+                    android:layout_marginEnd="@dimen/margin_extra_small"
+                    android:src="@drawable/ic_baseline_more"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/author_name" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/post_created"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_extra_small"
+                    android:text="@{DateTimeUtil.dateTimeText(viewModel.post.created,DateTimeStyle.LONG)}"
+                    app:layout_constraintStart_toEndOf="@id/author_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/author_name"
+                    tools:text="1999" />
+
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/post_title"
                     style="?android:attr/textAppearanceLarge"
@@ -63,53 +132,8 @@
                     android:text="@{viewModel.post.title}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/post_created"
                     tools:text="title title title title title title title title" />
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/author_avatar"
-                    android:layout_width="@dimen/icon_size_large"
-                    android:layout_height="@dimen/icon_size_large"
-                    android:layout_marginStart="@dimen/margin_normal"
-                    android:layout_marginTop="@dimen/margin_small"
-                    app:avatarFromUrl="@{viewModel.post.author.avatarUrl}"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/post_title"
-                    app:shapeAppearanceOverlay="@style/smallRoundedCornersImageView" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/author_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_small"
-                    android:text="@{viewModel.post.author.name}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/author_avatar"
-                    app:layout_constraintTop_toTopOf="@id/author_avatar"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                    tools:text="Li Ming" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/post_created"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_small"
-                    android:text="@{DateTimeUtil.dateTimeText(viewModel.post.created,DateTimeStyle.LONG)}"
-                    app:layout_constraintStart_toEndOf="@id/author_avatar"
-                    app:layout_constraintTop_toBottomOf="@id/author_name"
-                    tools:text="1999" />
-
-
-                <WebView
-                    android:id="@+id/content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_normal"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:nestedScrollingEnabled="false"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/author_avatar" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/post_tag"
@@ -121,26 +145,98 @@
                     android:layout_marginTop="@dimen/margin_small"
                     android:text="@{viewModel.post.tagName}"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/content"
+                    app:layout_constraintTop_toBottomOf="@id/post_title"
                     tools:text="标签tag" />
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/popular_comments_header"
-                    isGone="@{viewModel.postComments.popularComments==null||viewModel.postComments.popularComments.empty}"
-                    android:layout_width="0dp"
+                <com.doubean.ford.ui.common.DoubeanWebView
+                    android:id="@+id/content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/margin_normal"
-                    android:layout_marginTop="@dimen/margin_normal"
-                    android:text="@string/popular_replies"
-                    android:textAppearance="?attr/textAppearanceSubtitle2"
-                    android:textColor="?attr/colorAccent"
-                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:nestedScrollingEnabled="false"
+                    android:padding="0dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/post_tag" />
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/counts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_normal"
+                    android:layout_marginTop="@dimen/margin_small"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/content">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/repost_count"
+                        isGone="@{viewModel.post.repostCount==null}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.post.repostCount==null?``:@plurals/reposts(viewModel.post.repostCount,viewModel.post.repostCount)}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/like_count"
+                        isGone="@{viewModel.post.likeCount==null}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:text="@{viewModel.post.likeCount==null?``:@plurals/likes(viewModel.post.likeCount,viewModel.post.likeCount)}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/repost_count"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/save_count"
+                        isGone="@{viewModel.post.saveCount==null}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:text="@{viewModel.post.saveCount==null?``:@plurals/saves(viewModel.post.saveCount,viewModel.post.saveCount)}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/like_count"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/top_comments_header"
+                    isGone="@{viewModel.postComments.topComments==null||viewModel.postComments.topComments.empty}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_normal"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:text="@string/top_comments"
+                    android:textAppearance="?attr/textAppearanceSubtitle2"
+                    android:textColor="?attr/colorAccent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/counts" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/top_comment_count"
+                    isGone="@{viewModel.postComments.topComments==null||viewModel.postComments.topComments.empty}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_normal"
+                    android:text="@{``+viewModel.postComments.topComments.size()}"
+                    android:textAppearance="?attr/textAppearanceSubtitle2"
+                    android:textColor="?attr/colorAccent"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/top_comments_header"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/top_comments_header"
+                    app:layout_constraintTop_toTopOf="@id/top_comments_header"
+                    tools:text="101111" />
+
+
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/popular_comments"
+                    android:id="@+id/top_comments"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
@@ -148,23 +244,37 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/popular_comments_header"
+                    app:layout_constraintTop_toBottomOf="@id/top_comments_header"
                     tools:listitem="@layout/list_item_group_post_comment" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/all_comments_header"
                     isGone="@{viewModel.postComments.allComments==null||viewModel.postComments.allComments.empty}"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/margin_normal"
                     android:layout_marginTop="@dimen/margin_normal"
-                    android:text="@string/all_replies"
+                    android:text="@string/all_comments"
+                    android:textAppearance="?attr/textAppearanceSubtitle2"
+                    android:textColor="?attr/colorAccent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/top_comments" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/all_comment_count"
+                    isGone="@{viewModel.postComments.allComments==null||viewModel.postComments.allComments.empty}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_normal"
+                    android:text="@{``+viewModel.postComments.allComments.size()}"
                     android:textAppearance="?attr/textAppearanceSubtitle2"
                     android:textColor="?attr/colorAccent"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/all_comments_header"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/popular_comments" />
+                    app:layout_constraintStart_toEndOf="@id/all_comments_header"
+                    app:layout_constraintTop_toTopOf="@id/all_comments_header"
+                    tools:text="11010111" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/all_comments"

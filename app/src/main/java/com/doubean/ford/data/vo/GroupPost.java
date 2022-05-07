@@ -36,7 +36,8 @@ public class GroupPost {
     @SerializedName("like_count")
     public Integer likeCount;
 
-    public Integer reactions_count;
+    @SerializedName("reactions_count")
+    public Integer reactionCount;
 
     @SerializedName("reshares_count")
     public Integer repostCount;

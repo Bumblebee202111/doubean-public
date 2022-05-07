@@ -28,5 +28,7 @@ public class GroupPostComment {
     @SerializedName("vote_count")
     public int voteCount;
 
+    @SerializedName("ref_comment")
+    public GroupPostComment repliedTo;
 
 }

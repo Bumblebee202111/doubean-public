@@ -6,15 +6,15 @@ import androidx.room.PrimaryKey;
 
 import java.util.List;
 
-@Entity(tableName = "group_post_popular_comments")
-public class GroupPostPopularComments {
+@Entity(tableName = "group_post_top_comments")
+public class GroupPostTopComments {
     @PrimaryKey
     @NonNull
-    public String groupPostId;
+    public String postId;
     public List<String> commentIds;
 
-    public GroupPostPopularComments(@NonNull String groupPostId, List<String> commentIds) {
-        this.groupPostId = groupPostId;
+    public GroupPostTopComments(@NonNull String postId, List<String> commentIds) {
+        this.postId = postId;
         this.commentIds = commentIds;
     }
 

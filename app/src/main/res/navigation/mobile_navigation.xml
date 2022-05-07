@@ -76,6 +76,9 @@
             <argument
                 android:name="postId"
                 app:argType="string" />
+            <action
+                android:id="@+id/action_navigation_post_detail_to_navigation_group_detail"
+                app:destination="@id/navigation_group_detail" />
         </fragment>
     </navigation>
     <fragment
