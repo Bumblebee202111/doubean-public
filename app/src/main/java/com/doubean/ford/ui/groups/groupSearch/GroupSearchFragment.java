@@ -42,10 +42,10 @@ public class GroupSearchFragment extends Fragment {
         initRecyclerView();
 
         adapter = new GroupAdapter();
-        binding.groupList.setAdapter(adapter);
+        binding.followedList.setAdapter(adapter);
         int spanCount = SpanCountCalculator.getSpanCount(getContext(), 500);
-        binding.groupList.setLayoutManager(new StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL));
-        binding.groupList.addItemDecoration(new DividerItemDecoration(binding.groupList.getContext(), DividerItemDecoration.VERTICAL));
+        binding.followedList.setLayoutManager(new StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL));
+        binding.followedList.addItemDecoration(new DividerItemDecoration(binding.followedList.getContext(), DividerItemDecoration.VERTICAL));
         initSearchInputListener();
         return binding.getRoot();
     }

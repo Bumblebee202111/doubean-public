@@ -23,7 +23,7 @@ import androidx.annotation.Nullable;
 
 import com.doubean.ford.api.DoubanService;
 import com.doubean.ford.data.db.AppDatabase;
-import com.doubean.ford.data.repository.GroupFavoritesRepository;
+import com.doubean.ford.data.repository.GroupFollowingRepository;
 import com.doubean.ford.data.repository.GroupRepository;
 import com.doubean.ford.ui.groups.groupDetail.GroupDetailViewModelFactory;
 import com.doubean.ford.ui.groups.groupSearch.GroupSearchViewModelFactory;
@@ -44,16 +44,16 @@ public class InjectorUtils {
         return GroupRepository.getInstance(new AppExecutors(), AppDatabase.getInstance(context.getApplicationContext()), provideDoubanService());
     }
 
-    private static GroupFavoritesRepository getFavoriteGroupRepository(Context context) {
-        return GroupFavoritesRepository.getInstance(new AppExecutors(), AppDatabase.getInstance(context.getApplicationContext()), provideDoubanService());
+    private static GroupFollowingRepository getGroupFollowedRepository(Context context) {
+        return GroupFollowingRepository.getInstance(new AppExecutors(), AppDatabase.getInstance(context.getApplicationContext()), provideDoubanService());
     }
 
     public static GroupsHomeViewModelFactory provideGroupsViewModelFactory(Context context) {
-        return new GroupsHomeViewModelFactory(getGroupRepository(context), getFavoriteGroupRepository(context));
+        return new GroupsHomeViewModelFactory(getGroupRepository(context), getGroupFollowedRepository(context));
     }
 
     public static GroupDetailViewModelFactory provideGroupDetailViewModelFactory(Context context, @NonNull String groupId, String defaultTab) {
-        return new GroupDetailViewModelFactory(getGroupRepository(context), getFavoriteGroupRepository(context), groupId, defaultTab);
+        return new GroupDetailViewModelFactory(getGroupRepository(context), getGroupFollowedRepository(context), groupId, defaultTab);
     }
 
     public static PostDetailViewModelFactory providePostDetailViewModelFactory(Context context, @NonNull String postId) {

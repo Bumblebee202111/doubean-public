@@ -3,7 +3,7 @@ package com.doubean.ford.data.vo;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class GroupFavoriteDetail {
+public class GroupFollowedItem {
 
     private final String groupMemberName;
     private final int groupMemberCount;
@@ -16,7 +16,7 @@ public class GroupFavoriteDetail {
     @Nullable
     private String groupTabId;
 
-    public GroupFavoriteDetail(@NonNull GroupDetail group, @Nullable String groupTabId) {
+    public GroupFollowedItem(@NonNull GroupDetail group, @Nullable String groupTabId) {
         this.groupId = group.id;
         this.groupName = group.name;
         this.groupAvatarUrl = group.avatarUrl;

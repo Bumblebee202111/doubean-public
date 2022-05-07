@@ -10,7 +10,7 @@ import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.doubean.ford.data.vo.Group;
-import com.doubean.ford.data.vo.GroupFavorite;
+import com.doubean.ford.data.vo.GroupFollowed;
 import com.doubean.ford.data.vo.GroupPost;
 import com.doubean.ford.data.vo.GroupPostComment;
 import com.doubean.ford.data.vo.GroupPostTopComments;
@@ -21,7 +21,7 @@ import com.doubean.ford.util.Constants;
 /**
  * The Room database for this app
  */
-@Database(entities = {Group.class, GroupPost.class, GroupFavorite.class, GroupSearchResult.class, GroupPostComment.class, GroupPostTopComments.class},
+@Database(entities = {Group.class, GroupPost.class, GroupFollowed.class, GroupSearchResult.class, GroupPostComment.class, GroupPostTopComments.class},
         version = 1,
         exportSchema = false)
 @TypeConverters(Converters.class)
@@ -42,16 +42,16 @@ public abstract class AppDatabase extends RoomDatabase {
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
             new AppExecutors().diskIO().execute(() -> {
-                GroupFavoriteDao dao = instance.getFavoriteGroupDao();
-                dao.insertGroupFavorite(new GroupFavorite("665372", null));
-                dao.insertGroupFavorite(new GroupFavorite("644960", "53959"));
+                GroupFollowedDao dao = instance.getGroupFollowingDao();
+                dao.insertFollowed(new GroupFollowed("665372", null));
+                dao.insertFollowed(new GroupFollowed("644960", "53959"));
             });
         }
     };
 
     public abstract GroupDao getGroupDao();
 
-    public abstract GroupFavoriteDao getFavoriteGroupDao();
+    public abstract GroupFollowedDao getGroupFollowingDao();
 
     private static AppDatabase buildDatabase(Context context) {
         return Room.databaseBuilder(context, AppDatabase.class, Constants.DATABASE_NAME)
