@@ -5,7 +5,7 @@ An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
 
 From now on, this repo will not be updated frequently due to my personal situation. Note I am a
-beginner and the only developer of it. Occational crashes may happen, UI design may be incomplete
+beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete
 and features you need may be missing. Pretty much of my work is copy and paste from the official
 documentation and samples of Google Android.
 
@@ -80,19 +80,20 @@ list. However, the latest release is always available.
 
 ### Features
 
-It not only implements the very basic features of Douban app, but also have its own features, which
-to some extent improve the trend to being more closed of Douban community.
+It not only implements the very basic features of Douban app, but also has its own features, which
+may resist the trend of Douban community to being walled \(or closed\).
 
 * Inherent advantages leading to good performance and simple coding | Design Aspect | Choice\(s\) |
-  | --- | --- | | Language | Pure Java | | Libraries | Jetpack and authoritative third party
-  libraries | | Architecture | MVVM | | Design philosophy | Android Jetpack |
-* Support view content in Douban WebView optimized for mobile reading
-* Support loading cache as alternative when connection is off
+  | --- | --- | | Language | Java | | Libraries | Jetpack and authoritative third party libraries |
+  | Architecture | MVVM | | Design philosophy | Android Jetpack |
+* Support for viewing content in Douban WebView optimized for mobile reading
+* Support for loading cache as alternative when connection is off
 * Bilingual support for UI strings
-* Ad-free, lite
+* Ad-free, lite \(~30MB\)
 * Support URL deep links
 * Basic support for dark theme and tablets/landscape
-* Support creating categories of group/tab posts by multiple user-defined conditions \(TODO\)
+* Support creating categories consisting of group/tab/search posts by multiple user-defined
+  conditions \(TODO\)
 
 Libraries Used
 --------------
@@ -154,43 +155,43 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
-* Set color of post toolbar and status bar to group color
-* \[GroupPostFragment\]Add views for fields unused, e.g., for post comments, quotes, OP and attached
-  pictures, for posts, various counts
-* \[GroupsHomeFragment\]Add "groups of the day" list
 * \[GroupsHomeFragment\]Rename "favorite" to "follow"
-* \[GroupFragment\] Adjust when to hide/show toolbar
-* 🛠 \[GroupFragment\] Title not shown on recreate
-* \[GroupPostFragment\]Save WebView images
-* \[RecyclerView\]SwipeRefreshLayout
-* \[GroupFragment\]\[GroupPostFragment\]Share
-* \[GroupFragment\]Search group/tab posts
-* \[GroupsFragment\]Search posts from all groups
+* \[GroupsHomeFragment\]Show followed / saved posts with group info
+* \[GroupFragment\]Remove shared follow button into each tab \(add top bar\)
 * \[GroupFragment\]\[GroupPostFragment\]Open in browser/Douban app
-* \[GroupFragment\]\[GroupPostFragment\]Record/revert read
-* \[SearchFragment\]Add follow button for each item
-* \[GroupFragment\]Cancel the shared follow button, move it to each tab instead \(toolbar/efab\)
-* 🛠 \[RecyclerView\]Lists too large, size not flexible \(Pagination\)
+* \[GroupsHomeFragment\]Add "groups of the day" list
+* \[GroupFragment\]Adjust when to hide/show toolbar
+* 🛠 \[GroupFragment\]Title not shown on recreate
+* \[GroupPostFragment\]Save WebView images
+* \[GroupFragment\]Post order: date created \(not real cuz no such API\), last updated and top
+* \[Lists\]SwipeRefreshLayout and Pagination
+* \[GroupFragment\]Search group/tab posts
+* \[GroupsFragment\]Search posts of all groups
+* \[GroupFragment\]\[GroupPostFragment\]Share
+* Use Twitter-like date formatting
+* \[Lists\]Add follow/save button for each item
+* \[GroupFragment\]\[GroupPostFragment\]Track/mark/revert read
 * \[GroupsHomeFragment\]Unfollow/reorder items
-* \[GroupFragment\]Refactor following, support following groups, tags and various types of searches,
-  which can consistute custom posts categories with filters available
-* \[GroupFragment\]\[GroupPostFragment\]Save posts and comments
-* \[GroupFragment\]Group shortcuts
 * \[GroupFragment\]WebView for group
-* \[GroupFragment\]Post order: date created \(not real cuz no such API\), last updated and hot
+* \[GroupFragment\]Refactor following, support following groups, tags and search which can
+  constitute custom posts categories/groups with filters available
+* \[GroupFragment\]\[GroupPostFragment\]Save various types of searches, posts and comments
+* \[WebView\]Complete CSS of content WebView: find official CSS source or write on my own
+* \[GroupFragment\]Group/tab/post shortcuts
+* Add views for fields currently unused
 * Color
 * Typography
-* Decouple DoubanInterface and add as much code to VC as possible \(Make anything but keys
+* Decouple DoubanInterface and expose as much code to VC as possible \(Make anything but keys
   open-source\)
-* \[RecyclerView\]Reddit-like item expand/collapse
+* \[Lists\]Reddit-like item expand/collapse
 * \[GroupFragment\]For post items, optimize tag display, e.g., assign color to each tag mapped from
   name
 * 🛠\[GroupPostFragment\]Dealing with post URL click - new page should not show in WebView
-* Block unfriendly content
+* Support blocking unfriendly content
 * \[GroupsHomeFragment\]Recommendations using SharedPref
-* \[RecyclerView\]Post order: custom rules taking multiple conditions into account
+* \[Lists\]Post order: custom rules taking multiple conditions into account
 * Widgets
-* Optimize for landscape experience
+* Optimize landscape experience
 * Notifications and push services \(delayed in consideration of its difficulty and unimportance\)
 * 🛠 Views on top of WebView become invisible after scroll on my MIUI 10 Android 8.1 device
   \(reasons unknown, may never be fixed\)
@@ -203,7 +204,6 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 * [Github Browser Sample with Android Architecture Components][github-browser-sample]
 * [Android Architecture Blueprints v1 (todo-mvvm-live)][todo-mvvm-live]
 * [Material Design][material]
-
 * Interactive communities: [StackOverflow][stack-overflow], [Google][google], [GitHub][github]
   , [cnblogs][cnblogs], [Medium][medium], [CSDN][CSDN], etc.
   * Especially went through articles/posts on how to gain Douban access
