@@ -3,7 +3,7 @@
     <string name="title_home">Home</string>
     <string name="title_groups">Groups</string>
     <string name="title_notifications">Notifications</string>
-    <string name="following_groups_header">Favorite Groups and Tags</string>
+    <string name="followed_header">Followed</string>
 
     <string name="title_group" />
     <string name="title_post_detail">Post Detail</string>
@@ -13,9 +13,9 @@
     <string name="search_hint">Search groups</string>
 
     <string name="empty_search_result">No results for <b>%s</b></string>
-    <string name="add_to_favorites">Favorite</string>
-    <string name="added_group_tab_to_favorites">Added group/tab to favorites</string>
-    <string name="removed_group_tab_from_favorites">Removed group/tab from favorites</string>
+    <string name="add_to_followed">Follow</string>
+    <string name="added_group_tab_to_followed">Added group/tab to groupFollowed</string>
+    <string name="removed_group_tab_from_followed">Removed group/tab from groupFollowed</string>
 
     <string name="a11y_group_item_image">Avatar of group</string>
     <string name="all">All</string>

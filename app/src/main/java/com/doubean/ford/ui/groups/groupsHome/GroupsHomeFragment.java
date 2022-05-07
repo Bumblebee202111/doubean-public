@@ -13,7 +13,7 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.doubean.ford.R;
-import com.doubean.ford.adapters.GroupFavoriteAdapter;
+import com.doubean.ford.adapters.GroupFollowedAdapter;
 import com.doubean.ford.databinding.FragmentGroupsBinding;
 import com.doubean.ford.util.InjectorUtils;
 
@@ -31,9 +31,9 @@ public class GroupsHomeFragment extends Fragment {
         binding = FragmentGroupsBinding.inflate(inflater, container, false);
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
-        GroupFavoriteAdapter adapter = new GroupFavoriteAdapter();
-        binding.groupList.setAdapter(adapter);
-        groupsHomeViewModel.getFavorites().observe(getViewLifecycleOwner(), adapter::submitList);
+        GroupFollowedAdapter adapter = new GroupFollowedAdapter();
+        binding.followedList.setAdapter(adapter);
+        groupsHomeViewModel.getFollowedList().observe(getViewLifecycleOwner(), adapter::submitList);
         return binding.getRoot();
     }
 

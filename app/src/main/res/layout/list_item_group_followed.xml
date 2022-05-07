@@ -14,8 +14,8 @@
             type="android.view.View.OnClickListener" />
 
         <variable
-            name="favorite"
-            type="com.doubean.ford.data.vo.GroupFavoriteDetail" />
+            name="groupFollowed"
+            type="com.doubean.ford.data.vo.GroupFollowedItem" />
     </data>
 
 
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/margin_small"
-        app:isGone="@{favorite==null}">
+        app:isGone="@{groupFollowed==null}">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card"
@@ -46,7 +46,7 @@
                 app:shapeAppearanceOverlay="@style/smallRoundedCornersImageView"
                 android:contentDescription="@string/a11y_group_item_image"
                 android:scaleType="centerCrop"
-                app:imageFromUrl="@{favorite.groupAvatarUrl}" />
+                app:imageFromUrl="@{groupFollowed.groupAvatarUrl}" />
         </com.google.android.material.card.MaterialCardView>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -72,7 +72,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:text="@{favorite.groupName}"
+                android:text="@{groupFollowed.groupName}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginStart="@dimen/margin_extra_small"
@@ -86,7 +86,7 @@
             android:id="@+id/group_tab"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            isGone="@{favorite.groupTabId==null}"
+            isGone="@{groupFollowed.groupTabId==null}"
             android:layout_marginTop="@dimen/margin_extra_small"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -109,7 +109,7 @@
                 android:layout_marginStart="@dimen/margin_extra_small"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@{favorite.groupTabName}"
+                android:text="@{groupFollowed.groupTabName}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

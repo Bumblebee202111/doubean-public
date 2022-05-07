@@ -7,10 +7,10 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "group_favorites", indices = @Index(value = {"group_id", "group_tab_id"}, unique = true))
-public class GroupFavorite {
+@Entity(tableName = "group_followed", indices = @Index(value = {"group_id", "group_tab_id"}, unique = true))
+public class GroupFollowed {
     @PrimaryKey(autoGenerate = true)
-    public int favoriteId;
+    public int id;
     @NonNull
     @ColumnInfo(name = "group_id")
     public String groupId;
@@ -18,7 +18,7 @@ public class GroupFavorite {
     @ColumnInfo(name = "group_tab_id")
     public String groupTabId;
 
-    public GroupFavorite(@NonNull String groupId, @Nullable String groupTabId) {
+    public GroupFollowed(@NonNull String groupId, @Nullable String groupTabId) {
         this.groupId = groupId;
         this.groupTabId = groupTabId;
     }

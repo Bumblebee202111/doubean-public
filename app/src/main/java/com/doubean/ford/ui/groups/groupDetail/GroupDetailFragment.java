@@ -89,9 +89,9 @@ public class GroupDetailFragment extends Fragment {
             }
 
         });
-        groupDetailViewModel.getCurrentTabFavorite().observe(getViewLifecycleOwner(), aBoolean -> {
-            MenuItem favoriteItem = binding.toolbar.getMenu().findItem(R.id.action_favorite);
-            favoriteItem.setIcon(aBoolean ? R.drawable.ic_favorite : R.drawable.ic_favorite_border);
+        groupDetailViewModel.getCurrentTabFollowed().observe(getViewLifecycleOwner(), followed -> {
+            MenuItem followedItem = binding.toolbar.getMenu().findItem(R.id.action_follow);
+            followedItem.setIcon(followed ? R.drawable.ic_remove : R.drawable.ic_add);
         });
         binding.appbar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
 
@@ -109,16 +109,16 @@ public class GroupDetailFragment extends Fragment {
         binding.toolbar.setOnMenuItemClickListener(item -> {
             //noinspection SwitchStatementWithTooFewBranches
             switch (item.getItemId()) {
-                case R.id.action_favorite:
-                    Boolean isFavorite = groupDetailViewModel.getCurrentTabFavorite().getValue();
-                    if (isFavorite != null) {
-                        if (isFavorite) {
-                            groupDetailViewModel.removeFavorite();
-                            Snackbar.make(binding.getRoot(), R.string.removed_group_tab_from_favorites, Snackbar.LENGTH_LONG)
+                case R.id.action_follow:
+                    Boolean isFollowed = groupDetailViewModel.getCurrentTabFollowed().getValue();
+                    if (isFollowed != null) {
+                        if (isFollowed) {
+                            groupDetailViewModel.removeFollowed();
+                            Snackbar.make(binding.getRoot(), R.string.removed_group_tab_from_followed, Snackbar.LENGTH_LONG)
                                     .show();
                         } else {
-                            groupDetailViewModel.addFavorite();
-                            Snackbar.make(binding.getRoot(), R.string.added_group_tab_to_favorites, Snackbar.LENGTH_LONG)
+                            groupDetailViewModel.addFollowed();
+                            Snackbar.make(binding.getRoot(), R.string.added_group_tab_to_followed, Snackbar.LENGTH_LONG)
                                     .show();
                         }
                     }

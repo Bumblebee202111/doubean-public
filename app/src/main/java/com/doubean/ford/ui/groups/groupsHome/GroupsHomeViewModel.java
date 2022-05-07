@@ -9,11 +9,11 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
-import com.doubean.ford.data.repository.GroupFavoritesRepository;
+import com.doubean.ford.data.repository.GroupFollowingRepository;
 import com.doubean.ford.data.repository.GroupRepository;
 import com.doubean.ford.data.vo.GroupDetail;
-import com.doubean.ford.data.vo.GroupFavorite;
-import com.doubean.ford.data.vo.GroupFavoriteDetail;
+import com.doubean.ford.data.vo.GroupFollowed;
+import com.doubean.ford.data.vo.GroupFollowedItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,48 +21,48 @@ import java.util.List;
 
 public class GroupsHomeViewModel extends ViewModel {
     private final GroupRepository groupRepository;
-    private final GroupFavoritesRepository groupFavoritesRepository;
-    private final LiveData<List<GroupFavoriteDetail>> favorites;
+    private final GroupFollowingRepository groupFollowingRepository;
+    private final LiveData<List<GroupFollowedItem>> followedList;
 
 
-    public GroupsHomeViewModel(@NonNull GroupRepository groupRepository, @NonNull GroupFavoritesRepository groupFavoritesRepository) {
+    public GroupsHomeViewModel(@NonNull GroupRepository groupRepository, @NonNull GroupFollowingRepository groupFollowingRepository) {
         super();
-        this.groupFavoritesRepository = groupFavoritesRepository;
-        this.favorites = createFavoritesLiveData();
+        this.groupFollowingRepository = groupFollowingRepository;
+        this.followedList = createFollowedListLiveData();
         this.groupRepository = groupRepository;
 
     }
 
-    public LiveData<List<GroupFavoriteDetail>> getFavorites() {
-        return favorites;
+    public LiveData<List<GroupFollowedItem>> getFollowedList() {
+        return followedList;
     }
 
-    private LiveData<List<GroupFavoriteDetail>> createFavoritesLiveData() {
-        MediatorLiveData<List<GroupFavoriteDetail>> favoritesLiveData = new MediatorLiveData<>();
-        favoritesLiveData.addSource(groupFavoritesRepository.getFavoriteIds(), new Observer<List<GroupFavorite>>() {
+    private LiveData<List<GroupFollowedItem>> createFollowedListLiveData() {
+        MediatorLiveData<List<GroupFollowedItem>> followedListLiveData = new MediatorLiveData<>();
+        followedListLiveData.addSource(groupFollowingRepository.getFollowedIds(), new Observer<List<GroupFollowed>>() {
             @Override
-            public void onChanged(List<GroupFavorite> favoriteIds) {
-                if (favoriteIds != null) {
-                    List<GroupFavoriteDetail> favorites = new ArrayList<>(Arrays.asList(new GroupFavoriteDetail[favoriteIds.size()]));
-                    for (int i = 0; i < favoriteIds.size(); i++) {
-                        LiveData<GroupDetail> groupLiveData = groupRepository.getGroup(favoriteIds.get(i).groupId, false);
+            public void onChanged(List<GroupFollowed> groupFollowedIds) {
+                if (groupFollowedIds != null) {
+                    List<GroupFollowedItem> followedList = new ArrayList<>(Arrays.asList(new GroupFollowedItem[groupFollowedIds.size()]));
+                    for (int i = 0; i < groupFollowedIds.size(); i++) {
+                        LiveData<GroupDetail> groupLiveData = groupRepository.getGroup(groupFollowedIds.get(i).groupId, false);
                         int finalI = i;
-                        favoritesLiveData.addSource(groupLiveData, new Observer<GroupDetail>() {
+                        followedListLiveData.addSource(groupLiveData, new Observer<GroupDetail>() {
                             @Override
                             public void onChanged(GroupDetail group) {
                                 if (group != null) {
-                                    GroupFavoriteDetail groupFavoriteDetail = new GroupFavoriteDetail(group, favoriteIds.get(finalI).groupTabId);
-                                    favorites.set(finalI, groupFavoriteDetail);
+                                    GroupFollowedItem groupFollowedItem = new GroupFollowedItem(group, groupFollowedIds.get(finalI).groupTabId);
+                                    followedList.set(finalI, groupFollowedItem);
                                     boolean loaded = true;
-                                    for (GroupFavoriteDetail favorite : favorites) {
-                                        if (favorite == null) {
+                                    for (GroupFollowedItem followedItem : followedList) {
+                                        if (followedItem == null) {
                                             loaded = false;
                                             break;
                                         }
                                     }
                                     if (loaded)
-                                        favoritesLiveData.postValue(favorites);
-                                    favoritesLiveData.removeSource(groupLiveData);
+                                        followedListLiveData.postValue(followedList);
+                                    followedListLiveData.removeSource(groupLiveData);
                                 }
 
                             }
@@ -71,41 +71,41 @@ public class GroupsHomeViewModel extends ViewModel {
                 }
             }
         });
-        return favoritesLiveData;
+        return followedListLiveData;
     }
 
-    private LiveData<List<GroupFavoriteDetail>> createFavoritesLiveData1() {
-        MediatorLiveData<List<GroupFavoriteDetail>> favoritesLiveData = new MediatorLiveData<>();
+    private LiveData<List<GroupFollowedItem>> createFollowedLiveData1() {
+        MediatorLiveData<List<GroupFollowedItem>> followedListLiveData = new MediatorLiveData<>();
 
-        favoritesLiveData.addSource(groupFavoritesRepository.getFavoriteIds(), favoriteIds -> {
-            if (favoriteIds != null) {
-                List<LiveData<GroupFavoriteDetail>> favoriteLiveDataList = new ArrayList<>();
-                for (int i = 0; i < favoriteIds.size(); i++)
-                    favoriteLiveDataList.add(new MutableLiveData<>());
+        followedListLiveData.addSource(groupFollowingRepository.getFollowedIds(), followedIds -> {
+            if (followedIds != null) {
+                List<LiveData<GroupFollowedItem>> followedLiveDataList = new ArrayList<>();
+                for (int i = 0; i < followedIds.size(); i++)
+                    followedLiveDataList.add(new MutableLiveData<>());
 
-                for (int i = 1; i < favoriteLiveDataList.size(); i++) {
+                for (int i = 1; i < followedLiveDataList.size(); i++) {
                     int index = i;
-                    favoriteLiveDataList.set(i, Transformations.switchMap(favoriteLiveDataList.get(i - 1), new Function<GroupFavoriteDetail, LiveData<GroupFavoriteDetail>>() {
+                    followedLiveDataList.set(i, Transformations.switchMap(followedLiveDataList.get(i - 1), new Function<GroupFollowedItem, LiveData<GroupFollowedItem>>() {
                         @Override
-                        public LiveData<GroupFavoriteDetail> apply(GroupFavoriteDetail favorite) {
-                            LiveData<GroupFavoriteDetail> favoriteDetail = null;
-                            if (favorite != null) {
-                                favoriteDetail = getGroupFavorite(favoriteIds.get(index));
+                        public LiveData<GroupFollowedItem> apply(GroupFollowedItem followedItem) {
+                            LiveData<GroupFollowedItem> followedDetail = null;
+                            if (followedItem != null) {
+                                followedDetail = getGroupFollowed(followedIds.get(index));
                             }
-                            return favoriteDetail;
+                            return followedDetail;
                         }
                     }));
                 }
-                favoriteLiveDataList.set(0, getGroupFavorite(favoriteIds.get(0)));
-                favoritesLiveData.addSource(favoriteLiveDataList.get(favoriteLiveDataList.size() - 1), new Observer<GroupFavoriteDetail>() {
+                followedLiveDataList.set(0, getGroupFollowed(followedIds.get(0)));
+                followedListLiveData.addSource(followedLiveDataList.get(followedLiveDataList.size() - 1), new Observer<GroupFollowedItem>() {
                     @Override
-                    public void onChanged(GroupFavoriteDetail groupFavoriteDetail) {
-                        if (groupFavoriteDetail != null) {
-                            List<GroupFavoriteDetail> favoriteDetailList = new ArrayList<>();
-                            for (LiveData<GroupFavoriteDetail> favoriteDetail : favoriteLiveDataList) {
-                                favoriteDetailList.add(favoriteDetail.getValue());
+                    public void onChanged(GroupFollowedItem groupFollowedItem) {
+                        if (groupFollowedItem != null) {
+                            List<GroupFollowedItem> followedItemList = new ArrayList<>();
+                            for (LiveData<GroupFollowedItem> followedItem : followedLiveDataList) {
+                                followedItemList.add(followedItem.getValue());
                             }
-                            favoritesLiveData.setValue(favoriteDetailList);
+                            followedListLiveData.setValue(followedItemList);
                         }
 
                     }
@@ -115,13 +115,13 @@ public class GroupsHomeViewModel extends ViewModel {
 
         });
 
-        return favoritesLiveData;
+        return followedListLiveData;
     }
 
-    private LiveData<GroupFavoriteDetail> getGroupFavorite(GroupFavorite favorite) {
-        LiveData<GroupDetail> groupLiveData = groupRepository.getGroup(favorite.groupId, false);
+    private LiveData<GroupFollowedItem> getGroupFollowed(GroupFollowed groupFollowed) {
+        LiveData<GroupDetail> groupLiveData = groupRepository.getGroup(groupFollowed.groupId, false);
         return Transformations.map(groupLiveData,
-                group -> new GroupFavoriteDetail(group, favorite.groupTabId));
+                group -> new GroupFollowedItem(group, groupFollowed.groupTabId));
     }
 
 }
