@@ -8,14 +8,14 @@ import java.util.List;
 
 public class GroupPostCommentsResponse {
     @SerializedName("popular_comments")
-    private List<GroupPostComment> popularComments;
+    private List<GroupPostComment> topComments;
     private int start;
     private int total;
     private int count;
     private List<GroupPostComment> comments;
 
-    public List<GroupPostComment> getPopularComments() {
-        return popularComments;
+    public List<GroupPostComment> getTopComments() {
+        return topComments;
     }
 
     public int getStart() {
@@ -34,9 +34,9 @@ public class GroupPostCommentsResponse {
         return comments;
     }
 
-    public List<String> getPopularCommentIds() {
+    public List<String> getTopCommentIds() {
         List<String> comments = new ArrayList<>();
-        for (GroupPostComment item : popularComments) {
+        for (GroupPostComment item : topComments) {
             comments.add(item.id);
         }
         return comments;
