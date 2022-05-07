@@ -19,8 +19,22 @@
 
     <string name="a11y_group_item_image">Avatar of group</string>
     <string name="all">All</string>
-    <string name="popular_replies">Popular replies</string>
-    <string name="all_replies">All replies</string>
+
+    <plurals name="reposts">
+        <item quantity="one">%d repost</item>
+        <item quantity="other">%d reposts</item>
+    </plurals>
+    <plurals name="likes">
+        <item quantity="one">%d like</item>
+        <item quantity="other">%d likes</item>
+    </plurals>
+    <plurals name="saves">
+        <item quantity="one">%d save</item>
+        <item quantity="other">%d saves</item>
+    </plurals>
+    <string name="top_comments">Top comments</string>
+    <string name="all_comments">All comments</string>
     <string name="middle_dot" translatable="false">·</string>
+    <string name="op">OP</string>
 
 </resources>
