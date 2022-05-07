@@ -7,7 +7,7 @@ import androidx.room.util.StringUtil;
 
 import com.doubean.ford.data.vo.Group;
 import com.doubean.ford.data.vo.GroupBrief;
-import com.doubean.ford.data.vo.GroupPost;
+import com.doubean.ford.data.vo.GroupPostComment;
 import com.doubean.ford.data.vo.GroupPostTag;
 import com.doubean.ford.data.vo.GroupTab;
 import com.doubean.ford.data.vo.SizedPhoto;
@@ -49,17 +49,16 @@ public class Converters {
     }
 
     @TypeConverter
-    public static String groupPostListToString(List<GroupPost> posts) {
-        return new Gson().toJson(posts);
+    public static String groupPostCommentToString(GroupPostComment groupPostComment) {
+        return new Gson().toJson(groupPostComment);
     }
 
     @TypeConverter
-    public static List<GroupPost> stringToGroupPostList(String data) {
+    public static GroupPostComment stringToGroupPostComment(String data) {
         if (data == null) {
-            return Collections.emptyList();
+            return null;
         }
-        return new Gson().fromJson(data, new TypeToken<ArrayList<GroupPost>>() {
-        }.getType());
+        return new Gson().fromJson(data, GroupPostComment.class);
     }
 
     @TypeConverter

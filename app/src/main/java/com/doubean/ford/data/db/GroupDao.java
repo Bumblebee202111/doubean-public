@@ -17,7 +17,7 @@ import com.doubean.ford.data.vo.GroupItem;
 import com.doubean.ford.data.vo.GroupPost;
 import com.doubean.ford.data.vo.GroupPostComment;
 import com.doubean.ford.data.vo.GroupPostItem;
-import com.doubean.ford.data.vo.GroupPostPopularComments;
+import com.doubean.ford.data.vo.GroupPostTopComments;
 import com.doubean.ford.data.vo.GroupSearchResult;
 
 import java.util.ArrayList;
@@ -144,15 +144,15 @@ public interface GroupDao {
         });
     }
 
-    @Query("SELECT * FROM group_post_popular_comments WHERE groupPostId = :groupPostId")
-    LiveData<GroupPostPopularComments> getGroupPostPopularComments(String groupPostId);
+    @Query("SELECT * FROM group_post_top_comments WHERE postId = :postId")
+    LiveData<GroupPostTopComments> getPostTopComments(String postId);
 
     @Query("SELECT * FROM group_post_comments WHERE post_id = :postId ORDER BY created ASC")
     LiveData<List<GroupPostComment>> getPostComments(String postId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertGroupPostComments(List<GroupPostComment> commentList);
+    void insertPostComments(List<GroupPostComment> comments);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertGroupPostPopularComments(GroupPostPopularComments popularComments);
+    void insertPostTopComments(GroupPostTopComments topComments);
 }

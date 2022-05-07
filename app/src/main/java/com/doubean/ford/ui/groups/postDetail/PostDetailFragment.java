@@ -1,5 +1,7 @@
 package com.doubean.ford.ui.groups.postDetail;
 
+import android.annotation.SuppressLint;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -8,37 +10,37 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.webkit.WebSettingsCompat;
+import androidx.webkit.WebViewFeature;
 
 import com.doubean.ford.MobileNavigationDirections;
 import com.doubean.ford.R;
-import com.doubean.ford.adapters.GroupPostCommentAdapter;
+import com.doubean.ford.adapters.PostCommentAdapter;
 import com.doubean.ford.data.vo.GroupPost;
 import com.doubean.ford.data.vo.GroupPostComments;
 import com.doubean.ford.databinding.FragmentPostDetailBinding;
+import com.doubean.ford.ui.common.DoubeanWebView;
+import com.doubean.ford.ui.common.DoubeanWebViewClient;
 import com.doubean.ford.util.Constants;
 import com.doubean.ford.util.InjectorUtils;
-
-import java.io.InputStream;
 
 
 public class PostDetailFragment extends Fragment {
 
+    final Boolean[] isToolbarShown = {false};
     private PostDetailViewModel postDetailViewModel;
     private FragmentPostDetailBinding binding;
-    final Boolean[] isToolbarShown = {false};
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -50,42 +52,56 @@ public class PostDetailFragment extends Fragment {
         postDetailViewModel = new ViewModelProvider(this, factory).get(PostDetailViewModel.class);
         binding.setViewModel(postDetailViewModel);
 
-        WebView content = binding.content;
-        content.setVerticalScrollBarEnabled(false);
-        content.setHorizontalScrollBarEnabled(false);
+        DoubeanWebView content = binding.content;
+
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+            switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
+                case Configuration.UI_MODE_NIGHT_YES:
+                    WebSettingsCompat.setForceDark(content.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
+                    break;
+                case Configuration.UI_MODE_NIGHT_NO:
+                case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                    WebSettingsCompat.setForceDark(content.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
+                    break;
+            }
+        }
+
         content.setPadding(0, 0, 0, 0);
         WebSettings webSettings = content.getSettings();
         webSettings.setNeedInitialFocus(false);
-        webSettings.setJavaScriptEnabled(true);
         //webSettings.setUseWideViewPort(true);
         //webSettings.setLoadWithOverviewMode(true);
-        binding.content.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                injectCSS();
-                super.onPageFinished(view, url);
-            }
-        });
+        DoubeanWebViewClient webViewClient = new DoubeanWebViewClient(Constants.POST_CONTENT_CSS_FILENAME);
+        content.setWebViewClient(webViewClient);
 
-        postDetailViewModel.getPost().observe(getViewLifecycleOwner(), groupPost -> {
-            if (groupPost != null) {
-                if (!TextUtils.isEmpty(groupPost.content)) {
-                    String encodedContent = Base64.encodeToString(groupPost.content.getBytes(),
+        postDetailViewModel.getPost().observe(getViewLifecycleOwner(), post -> {
+            if (post != null) {
+                if (!TextUtils.isEmpty(post.content)) {
+                    String encodedContent = Base64.encodeToString(post.content.getBytes(),
                             Base64.NO_PADDING);
                     binding.content.loadData(encodedContent, "text/html", "base64");
                 }
-                //requireActivity().getWindow().setStatusBarColor(groupPost.group.getColor());
+                if (post.postTags != null) {
+                    binding.postTag.setOnClickListener(v -> navigateToGroupTab(v, post));
+                }
+
+                binding.groupName.setOnClickListener(v -> navigateToGroup(v, post));
+
+                binding.groupName.setOnClickListener(v -> navigateToGroup(v, post));
+
+                PostCommentAdapter topCommentAdapter = new PostCommentAdapter(post.author.id);
+                PostCommentAdapter allCommentAdapter = new PostCommentAdapter(post.author.id);
+                binding.topComments.setAdapter(topCommentAdapter);
+                binding.allComments.setAdapter(allCommentAdapter);
+                subscribeUi(topCommentAdapter, allCommentAdapter);
+
+                binding.topComments.addItemDecoration(new DividerItemDecoration(binding.topComments.getContext(), DividerItemDecoration.VERTICAL));
+                binding.allComments.addItemDecoration(new DividerItemDecoration(binding.allComments.getContext(), DividerItemDecoration.VERTICAL));
+
             }
 
         });
-        GroupPostCommentAdapter popularCommentAdapter = new GroupPostCommentAdapter();
-        GroupPostCommentAdapter allCommentAdapter = new GroupPostCommentAdapter();
-        binding.popularComments.setAdapter(popularCommentAdapter);
-        binding.allComments.setAdapter(allCommentAdapter);
-        subscribeUi(popularCommentAdapter, allCommentAdapter);
 
-        binding.popularComments.addItemDecoration(new DividerItemDecoration(binding.popularComments.getContext(), DividerItemDecoration.VERTICAL));
-        binding.allComments.addItemDecoration(new DividerItemDecoration(binding.allComments.getContext(), DividerItemDecoration.VERTICAL));
 
         binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).navigateUp());
         binding.toolbar.setOnMenuItemClickListener(item -> {
@@ -94,8 +110,7 @@ public class PostDetailFragment extends Fragment {
                 case R.id.action_view_in_web:
                     GroupPost post = postDetailViewModel.getPost().getValue();
                     if (post != null) {
-                        MobileNavigationDirections.ActionGlobalNavigationWebView direction = MobileNavigationDirections.actionGlobalNavigationWebView(post.url);
-                        Navigation.findNavController(requireView()).navigate(direction);
+                        navigateToWebView(requireView(), post);
                     }
                     return true;
                 default:
@@ -107,28 +122,35 @@ public class PostDetailFragment extends Fragment {
 
         binding.postDetailScrollview.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
         });
+
         return binding.getRoot();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getContext(), R.color.doubean_green));
+        postDetailViewModel.getPost().observe(getViewLifecycleOwner(), post -> {
+            if (post != null) {
+                int color = post.group.getColor();
+                requireActivity().getWindow().setStatusBarColor(color);
+                binding.toolbar.setBackgroundColor(color);
+            }
 
+        });
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
+        requireActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
     }
 
-    private void subscribeUi(GroupPostCommentAdapter popularCommentAdapter, GroupPostCommentAdapter allCommentAdapter) {
+    private void subscribeUi(PostCommentAdapter topCommentAdapter, PostCommentAdapter allCommentAdapter) {
         postDetailViewModel.getPostComments().observe(getViewLifecycleOwner(), new Observer<GroupPostComments>() {
             @Override
             public void onChanged(GroupPostComments groupPostComments) {
                 if (groupPostComments != null && groupPostComments.getAllComments() != null && !groupPostComments.getAllComments().isEmpty()) {
-                    popularCommentAdapter.submitList(groupPostComments.getPopularComments());
+                    topCommentAdapter.submitList(groupPostComments.getTopComments());
                     allCommentAdapter.submitList(groupPostComments.getAllComments());
                 }
 
@@ -136,27 +158,19 @@ public class PostDetailFragment extends Fragment {
         });
     }
 
-    /**
-     * https://stackoverflow.com/a/30018910
-     */
-    private void injectCSS() {
-        try {
-            InputStream inputStream = requireContext().getAssets().open(Constants.POST_CONTENT_CSS_FILENAME);
-            byte[] buffer = new byte[inputStream.available()];
-            inputStream.read(buffer);
-            inputStream.close();
-            String encoded = Base64.encodeToString(buffer, Base64.NO_WRAP);
-            binding.content.loadUrl("javascript:(function() {" +
-                    "var parent = document.getElementsByTagName('head').item(0);" +
-                    "var style = document.createElement('style');" +
-                    "style.type = 'text/css';" +
-                    // Tell the browser to BASE64-decode the string into your script !!!
-                    "style.innerHTML = window.atob('" + encoded + "');" +
-                    "parent.appendChild(style)" +
-                    "})()");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+    private void navigateToWebView(View v, GroupPost post) {
+        MobileNavigationDirections.ActionGlobalNavigationWebView direction = MobileNavigationDirections.actionGlobalNavigationWebView(post.url);
+        Navigation.findNavController(requireView()).navigate(direction);
     }
 
+    private void navigateToGroupTab(View v, GroupPost post) {
+        PostDetailFragmentDirections.ActionNavigationPostDetailToNavigationGroupDetail direction = PostDetailFragmentDirections.actionNavigationPostDetailToNavigationGroupDetail(post.groupId).setDefaultTabId(post.tagId);
+        Navigation.findNavController(v).navigate(direction);
+    }
+
+    private void navigateToGroup(View v, GroupPost post) {
+        PostDetailFragmentDirections.ActionNavigationPostDetailToNavigationGroupDetail direction = PostDetailFragmentDirections.actionNavigationPostDetailToNavigationGroupDetail(post.groupId);
+        Navigation.findNavController(v).navigate(direction);
+    }
 }

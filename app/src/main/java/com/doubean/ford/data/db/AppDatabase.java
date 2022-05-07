@@ -13,7 +13,7 @@ import com.doubean.ford.data.vo.Group;
 import com.doubean.ford.data.vo.GroupFavorite;
 import com.doubean.ford.data.vo.GroupPost;
 import com.doubean.ford.data.vo.GroupPostComment;
-import com.doubean.ford.data.vo.GroupPostPopularComments;
+import com.doubean.ford.data.vo.GroupPostTopComments;
 import com.doubean.ford.data.vo.GroupSearchResult;
 import com.doubean.ford.util.AppExecutors;
 import com.doubean.ford.util.Constants;
@@ -21,8 +21,9 @@ import com.doubean.ford.util.Constants;
 /**
  * The Room database for this app
  */
-@Database(entities = {Group.class, GroupPost.class, GroupFavorite.class, GroupSearchResult.class, GroupPostComment.class, GroupPostPopularComments.class},
-        version = 1)
+@Database(entities = {Group.class, GroupPost.class, GroupFavorite.class, GroupSearchResult.class, GroupPostComment.class, GroupPostTopComments.class},
+        version = 1,
+        exportSchema = false)
 @TypeConverters(Converters.class)
 public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase instance;

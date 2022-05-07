@@ -3,23 +3,23 @@ package com.doubean.ford.data.vo;
 import java.util.List;
 
 public class GroupPostComments {
-    private List<GroupPostComment> popularComments;
+    private List<GroupPostComment> topComments;
     private List<GroupPostComment> allComments;
 
     public GroupPostComments() {
     }
 
-    public GroupPostComments(List<GroupPostComment> popularComments, List<GroupPostComment> allComments) {
-        this.popularComments = popularComments;
+    public GroupPostComments(List<GroupPostComment> topComments, List<GroupPostComment> allComments) {
+        this.topComments = topComments;
         this.allComments = allComments;
     }
 
-    public List<GroupPostComment> getPopularComments() {
-        return popularComments;
+    public List<GroupPostComment> getTopComments() {
+        return topComments;
     }
 
-    public void setPopularComments(List<GroupPostComment> popularComments) {
-        this.popularComments = popularComments;
+    public void setTopComments(List<GroupPostComment> topComments) {
+        this.topComments = topComments;
     }
 
     public List<GroupPostComment> getAllComments() {

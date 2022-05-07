@@ -21,7 +21,7 @@ import com.doubean.ford.data.vo.GroupPost;
 import com.doubean.ford.data.vo.GroupPostComment;
 import com.doubean.ford.data.vo.GroupPostComments;
 import com.doubean.ford.data.vo.GroupPostItem;
-import com.doubean.ford.data.vo.GroupPostPopularComments;
+import com.doubean.ford.data.vo.GroupPostTopComments;
 import com.doubean.ford.data.vo.GroupSearchResult;
 import com.doubean.ford.data.vo.SearchResultItem;
 import com.doubean.ford.util.AppExecutors;
@@ -246,16 +246,16 @@ public class GroupRepository {
                 for (GroupPostComment comment : item.getComments()) {
                     comment.postId = postId;
                 }
-                for (GroupPostComment comment : item.getPopularComments()) {
+                for (GroupPostComment comment : item.getTopComments()) {
                     comment.postId = postId;
                 }
-                List<String> commentIds = item.getPopularCommentIds();
-                GroupPostPopularComments popularCommentsResult = new GroupPostPopularComments(
+                List<String> commentIds = item.getTopCommentIds();
+                GroupPostTopComments topCommentsResult = new GroupPostTopComments(
                         postId, commentIds);
                 appDatabase.runInTransaction(() -> {
-                    groupDao.insertGroupPostComments(item.getComments());
-                    groupDao.insertGroupPostComments(item.getPopularComments());
-                    groupDao.insertGroupPostPopularComments(popularCommentsResult);
+                    groupDao.insertPostComments(item.getComments());
+                    groupDao.insertPostComments(item.getTopComments());
+                    groupDao.insertPostTopComments(topCommentsResult);
                 });
             }
 
@@ -274,7 +274,7 @@ public class GroupRepository {
                     if (comments != null && !comments.isEmpty()) {
                         groupPostCommePnts.setAllComments(comments);
                         //result.setValue(groupPostCommePnts);
-                        LiveData<List<GroupPostComment>> groupPostPopularComments = Transformations.switchMap(groupDao.getGroupPostPopularComments(postId), data -> {
+                        LiveData<List<GroupPostComment>> topComments = Transformations.switchMap(groupDao.getPostTopComments(postId), data -> {
                             if (data == null)
                                 return new LiveData<List<GroupPostComment>>(null) {
                                 };
@@ -286,8 +286,8 @@ public class GroupRepository {
                                     }
                                 });
                         });
-                        result.addSource(groupPostPopularComments, data -> {
-                            groupPostCommePnts.setPopularComments(data);
+                        result.addSource(topComments, data -> {
+                            groupPostCommePnts.setTopComments(data);
                             result.setValue(groupPostCommePnts);
                         });
                     } else {
