@@ -156,7 +156,7 @@ Libraries Used
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
 * \[GroupsHomeFragment\]Rename "favorite" to "follow"
-* \[GroupsHomeFragment\]Show followed / saved posts with group info
+* \[GroupsHomeFragment\]Show groupFollowed / saved posts with group info
 * \[GroupFragment\]Remove shared follow button into each tab \(add top bar\)
 * \[GroupFragment\]\[GroupPostFragment\]Open in browser/Douban app
 * \[GroupsHomeFragment\]Add "groups of the day" list
