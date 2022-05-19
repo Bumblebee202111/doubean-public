@@ -39,7 +39,7 @@ public class PostDetailFragment extends Fragment {
     final Boolean[] isToolbarShown = {false};
     private PostDetailViewModel postDetailViewModel;
     private FragmentPostDetailBinding binding;
-
+    private int groupColor;
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -89,8 +89,14 @@ public class PostDetailFragment extends Fragment {
 
                 binding.groupName.setOnClickListener(v -> navigateToGroup(v, post));
 
-                PostCommentAdapter topCommentAdapter = new PostCommentAdapter(post.author.id);
-                PostCommentAdapter allCommentAdapter = new PostCommentAdapter(post.author.id);
+                groupColor = post.group.getColor();
+
+                int color = groupColor == 0 ? getContext().getColor(R.color.doubean_green) : groupColor;
+                getActivity().getWindow().setStatusBarColor(color);
+                binding.toolbar.setBackgroundColor(color);
+
+                PostCommentAdapter topCommentAdapter = new PostCommentAdapter(post.author.id, groupColor);
+                PostCommentAdapter allCommentAdapter = new PostCommentAdapter(post.author.id, groupColor);
                 binding.topComments.setAdapter(topCommentAdapter);
                 binding.allComments.setAdapter(allCommentAdapter);
                 subscribeUi(topCommentAdapter, allCommentAdapter);
@@ -129,14 +135,8 @@ public class PostDetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        postDetailViewModel.getPost().observe(getViewLifecycleOwner(), post -> {
-            if (post != null) {
-                int color = post.group.getColor();
-                requireActivity().getWindow().setStatusBarColor(color);
-                binding.toolbar.setBackgroundColor(color);
-            }
 
-        });
+
     }
 
     @Override
