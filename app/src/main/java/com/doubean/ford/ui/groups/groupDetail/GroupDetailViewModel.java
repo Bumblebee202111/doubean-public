@@ -2,40 +2,39 @@ package com.doubean.ford.ui.groups.groupDetail;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
-import com.doubean.ford.data.repository.GroupFollowingRepository;
 import com.doubean.ford.data.repository.GroupRepository;
+import com.doubean.ford.data.repository.GroupsFollowedAndSavedRepository;
 import com.doubean.ford.data.vo.GroupDetail;
 
 public class GroupDetailViewModel extends ViewModel {
     private final GroupRepository groupRepository;
     private final LiveData<GroupDetail> group;
-    private final GroupFollowingRepository groupFollowingRepository;
+    private final GroupsFollowedAndSavedRepository groupsFollowedAndSavedRepository;
     private final String groupId;
-    private final MutableLiveData<String> currentTabId;
-    private final LiveData<Boolean> isCurrentTabFollowed;
+    private final LiveData<Boolean> isGroupFollowed;
+    private final MutableLiveData<Integer> currentItem = new MutableLiveData<>();
 
-
-    public GroupDetailViewModel(GroupRepository groupRepository, GroupFollowingRepository groupFollowingRepository, String groupId, String defaultTabId) {
-        this.groupFollowingRepository = groupFollowingRepository;
+    public GroupDetailViewModel(GroupRepository groupRepository, GroupsFollowedAndSavedRepository followedAndSavedRepository, String groupId, String defaultTabId) {
+        this.groupsFollowedAndSavedRepository = followedAndSavedRepository;
         this.groupId = groupId;
         this.groupRepository = groupRepository;
         group = groupRepository.getGroup(groupId, true);
-        this.currentTabId = new MutableLiveData<>(defaultTabId);
-        this.isCurrentTabFollowed = Transformations.switchMap(currentTabId,
-                input -> groupFollowingRepository.getFollowed(groupId, input));
-
+        this.isGroupFollowed = followedAndSavedRepository.getFollowed(groupId, null);
 
     }
 
-    public void setCurrentTabId(String currentTabId) {
-        this.currentTabId.setValue(currentTabId);
+    public MutableLiveData<Integer> getCurrentItem() {
+        return currentItem;
     }
 
-    public LiveData<Boolean> getCurrentTabFollowed() {
-        return isCurrentTabFollowed;
+    public void setCurrentItem(int position) {
+        this.currentItem.setValue(position);
+    }
+
+    public LiveData<Boolean> getFollowed() {
+        return isGroupFollowed;
     }
 
     public LiveData<GroupDetail> getGroup() {
@@ -43,10 +42,10 @@ public class GroupDetailViewModel extends ViewModel {
     }
 
     public void addFollowed() {
-        groupFollowingRepository.createFollowed(groupId, currentTabId.getValue());
+        groupsFollowedAndSavedRepository.createFollowed(groupId, null);
     }
 
     public void removeFollowed() {
-        groupFollowingRepository.removeFollowed(groupId, currentTabId.getValue());
+        groupsFollowedAndSavedRepository.removeFollowed(groupId, null);
     }
 }

@@ -1,7 +1,6 @@
 package com.doubean.ford.ui.groups.webView;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
-import com.doubean.ford.R;
 import com.doubean.ford.databinding.FragmentWebViewBinding;
 import com.doubean.ford.ui.common.DoubeanWebView;
 import com.doubean.ford.ui.common.DoubeanWebViewClient;
@@ -54,16 +52,5 @@ public class WebViewFragment extends Fragment {
         return binding.getRoot();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().getWindow().setStatusBarColor(getActivity().getColor(R.color.doubean_green));
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
-    }
 
 }

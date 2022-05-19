@@ -1,7 +1,9 @@
 package com.doubean.ford.ui.groups.groupDetail;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
@@ -19,6 +22,7 @@ import com.doubean.ford.data.vo.GroupDetail;
 import com.doubean.ford.data.vo.GroupTab;
 import com.doubean.ford.databinding.FragmentGroupDetailBinding;
 import com.doubean.ford.util.InjectorUtils;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -37,6 +41,17 @@ public class GroupDetailFragment extends Fragment {
     String defaultTabId;
     FragmentGroupDetailBinding binding;
     private GroupDetailViewModel groupDetailViewModel;
+
+    public static int getItemOfId(List<GroupTab> groupTabs, String tabId) {
+        if (tabId != null) {
+            for (GroupTab tab : groupTabs) {
+                if (Objects.equals(tab.id, tabId)) {
+                    return tab.seq;
+                }
+            }
+        }
+        return 0;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -59,16 +74,18 @@ public class GroupDetailFragment extends Fragment {
                 binding.setGroup(group);
 
                 final int color = group.getColor();
+
                 binding.mask.setBackgroundColor(color);
                 binding.toolbar.setBackgroundColor(color);
+                getActivity().getWindow().setStatusBarColor(color);
                 binding.tabLayout.setSelectedTabIndicatorColor(color);
 
                 List<GroupTab> tabs = group.tabs;
 
-                GroupPagerAdapter groupPagerAdapter = new GroupPagerAdapter(GroupDetailFragment.this, groupId, tabs);
-
                 ViewPager2 viewPager = binding.pager;
+
                 initViewPager2WithDefaultItem(viewPager, group);
+                GroupPagerAdapter groupPagerAdapter = new GroupPagerAdapter(getChildFragmentManager(), getViewLifecycleOwner().getLifecycle(), groupId, color, tabs);
                 viewPager.setAdapter(groupPagerAdapter);
 
                 TabLayout tabLayout = binding.tabLayout;
@@ -78,21 +95,64 @@ public class GroupDetailFragment extends Fragment {
                         }
                 ).attach();
 
-                /*TODO: remove below code, perform tab/page operations inside the page instead */
                 viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                     @Override
                     public void onPageSelected(int position) {
                         super.onPageSelected(position);
-                        groupDetailViewModel.setCurrentTabId(position == 0 ? null : tabs.get(position - 1).id);
+                        groupDetailViewModel.setCurrentItem(position);
+                    }
+                });
+
+                viewPager.setCurrentItem(getItemOfId(tabs, defaultTabId), false);
+
+                groupDetailViewModel.getCurrentItem().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+                    @Override
+                    public void onChanged(Integer integer) {
+                        //viewPager.setCurrentItem(integer,false);
+                    }
+                });
+
+                int colorSurface = getColorSurface();
+                groupDetailViewModel.getFollowed().observe(getViewLifecycleOwner(), followed -> {
+                    MenuItem followedItem = binding.toolbar.getMenu().findItem(R.id.action_follow);
+
+                    followedItem.setIcon(followed ? R.drawable.ic_remove : R.drawable.ic_add);
+                    MaterialButton followUnfollow = binding.followUnfollow;
+                    if (followed) {
+                        followUnfollow.setIconResource(R.drawable.ic_remove);
+                        followUnfollow.setText(R.string.unfollow);
+                        followUnfollow.setIconTint(ColorStateList.valueOf(color));
+                        followUnfollow.setTextColor(color);
+                        followUnfollow.setBackgroundColor(colorSurface);
+                    } else {
+                        followUnfollow.setIconResource(R.drawable.ic_add);
+                        followUnfollow.setText(R.string.follow);
+                        followUnfollow.setIconTint(ColorStateList.valueOf(colorSurface));
+                        followUnfollow.setTextColor(colorSurface);
+                        followUnfollow.setBackgroundColor(color);
+                    }
+                });
+
+                binding.followUnfollow.setOnClickListener(v -> {
+                    Boolean followed = groupDetailViewModel.getFollowed().getValue();
+                    if (followed != null) {
+                        if (followed) {
+                            groupDetailViewModel.removeFollowed();
+                            Snackbar.make(binding.getRoot(), R.string.unfollowed_group, Snackbar.LENGTH_LONG)
+                                    .show();
+                        } else {
+                            groupDetailViewModel.addFollowed();
+                            Snackbar.make(binding.getRoot(), R.string.followed_group, Snackbar.LENGTH_LONG)
+                                    .show();
+                        }
                     }
                 });
             }
 
         });
-        groupDetailViewModel.getCurrentTabFollowed().observe(getViewLifecycleOwner(), followed -> {
-            MenuItem followedItem = binding.toolbar.getMenu().findItem(R.id.action_follow);
-            followedItem.setIcon(followed ? R.drawable.ic_remove : R.drawable.ic_add);
-        });
+
+        binding.toolbarLayout.setCollapsedTitleTextColor(getContext().getColor(R.color.doubean_white));
+
         binding.appbar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
 
             //ref: https://stackoverflow.com/a/33891727
@@ -110,15 +170,15 @@ public class GroupDetailFragment extends Fragment {
             //noinspection SwitchStatementWithTooFewBranches
             switch (item.getItemId()) {
                 case R.id.action_follow:
-                    Boolean isFollowed = groupDetailViewModel.getCurrentTabFollowed().getValue();
+                    Boolean isFollowed = groupDetailViewModel.getFollowed().getValue();
                     if (isFollowed != null) {
                         if (isFollowed) {
                             groupDetailViewModel.removeFollowed();
-                            Snackbar.make(binding.getRoot(), R.string.removed_group_tab_from_followed, Snackbar.LENGTH_LONG)
+                            Snackbar.make(binding.getRoot(), R.string.unfollowed_group, Snackbar.LENGTH_LONG)
                                     .show();
                         } else {
                             groupDetailViewModel.addFollowed();
-                            Snackbar.make(binding.getRoot(), R.string.added_group_tab_to_followed, Snackbar.LENGTH_LONG)
+                            Snackbar.make(binding.getRoot(), R.string.followed_group, Snackbar.LENGTH_LONG)
                                     .show();
                         }
                     }
@@ -136,8 +196,15 @@ public class GroupDetailFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+        getActivity().getWindow().setStatusBarColor(getContext().getColor(R.color.doubean_green));
         groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(), group -> {
             if (group != null) {
                 getActivity().getWindow().setStatusBarColor(group.getColor());
@@ -145,30 +212,14 @@ public class GroupDetailFragment extends Fragment {
         });
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
-    }
-
-    private int getDefaultItem(List<GroupTab> groupTabs) {
-        if (defaultTabId != null) {
-            for (GroupTab tab : groupTabs) {
-                if (Objects.equals(tab.id, defaultTabId)) {
-                    return tab.seq;
-                }
-            }
-        }
-        return 0;
-    }
-
     private void initViewPager2WithDefaultItem(ViewPager2 viewPager, GroupDetail group) {
         try {
             Field field = viewPager.getClass().getDeclaredField("mPendingCurrentItem");
             field.setAccessible(true);
             try {
+                //Toast.makeText(getContext(),field.getInt(viewPager)+" "+ getItemOfId(group.tabs, defaultTabId),Toast.LENGTH_LONG).show();
                 if (field.getInt(viewPager) == -1) { //-1: NO_POSITION
-                    field.setInt(viewPager, getDefaultItem(group.tabs));
+                    //field.setInt(viewPager, getItemOfId(group.tabs, defaultTabId));
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -178,4 +229,9 @@ public class GroupDetailFragment extends Fragment {
         }
     }
 
+    private int getColorSurface() {
+        TypedValue typedValue = new TypedValue();
+        getContext().getTheme().resolveAttribute(R.attr.colorSurface, typedValue, true);
+        return typedValue.data;
+    }
 }

@@ -23,10 +23,17 @@
     </plurals>
     <string name="a11y_group_item_image">小组头像</string>
     <string name="add_to_followed">添加到收藏</string>
-    <string name="added_group_tab_to_followed">小组或标签已添加至关注</string>
-    <string name="removed_group_tab_from_followed">小组或标签已从关注中移除</string>
+    <string name="followed_group">已关注小组</string>
+    <string name="unfollowed_group">取消关注小组</string>
     <string name="all">全部</string>
     <string name="top_comments">热门评论</string>
     <string name="all_comments">全部评论</string>
     <string name="op">楼主</string>
+    <string name="top_posts">热门发帖</string>
+    <string name="new_posts">最新发帖</string>
+    <string name="follow">关注</string>
+    <string name="unfollow">取消关注</string>
+    <string name="last_updated_posts">最后更新发帖</string>
+    <string name="followed_tab">关注标签</string>
+    <string name="unfollowed_tab">取消关注标签</string>
 </resources>

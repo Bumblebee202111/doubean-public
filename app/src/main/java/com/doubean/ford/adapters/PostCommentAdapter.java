@@ -15,16 +15,18 @@ import com.doubean.ford.databinding.ListItemGroupPostCommentBinding;
 public class PostCommentAdapter extends ListAdapter<GroupPostComment, PostCommentAdapter.ViewHolder> {
 
     private String op;
+    private Integer groupColor;
 
-    public PostCommentAdapter(String op) {
+    public PostCommentAdapter(String op, Integer groupColor) {
         super(new PostCommentDiffCallback());
         this.op = op;
+        this.groupColor = groupColor;
     }
 
     @NonNull
     @Override
     public PostCommentAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(ListItemGroupPostCommentBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false), op);
+        return new ViewHolder(ListItemGroupPostCommentBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false), op, groupColor);
     }
 
     @Override
@@ -51,10 +53,12 @@ public class PostCommentAdapter extends ListAdapter<GroupPostComment, PostCommen
         private final ListItemGroupPostCommentBinding binding;
         private final String opId;
 
-        public ViewHolder(@NonNull ListItemGroupPostCommentBinding binding, String opId) {
+        public ViewHolder(@NonNull ListItemGroupPostCommentBinding binding, String opId, Integer groupColor) {
             super(binding.getRoot());
             this.binding = binding;
             this.opId = opId;
+            binding.authorOp.setTextColor(groupColor);
+            binding.repliedToOp.setTextColor(groupColor);
         }
 
         void bind(GroupPostComment item) {

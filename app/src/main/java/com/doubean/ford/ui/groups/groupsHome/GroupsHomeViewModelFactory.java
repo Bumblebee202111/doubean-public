@@ -4,22 +4,22 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.doubean.ford.data.repository.GroupFollowingRepository;
 import com.doubean.ford.data.repository.GroupRepository;
+import com.doubean.ford.data.repository.GroupsFollowedAndSavedRepository;
 
 public class GroupsHomeViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private GroupRepository repository;
-    private GroupFollowingRepository groupFollowingRepository;
+    private GroupsFollowedAndSavedRepository groupsFollowedAndSavedRepository;
 
-    public GroupsHomeViewModelFactory(@NonNull GroupRepository repository, GroupFollowingRepository groupFollowingRepository) {
+    public GroupsHomeViewModelFactory(@NonNull GroupRepository repository, GroupsFollowedAndSavedRepository groupsFollowedAndSavedRepository) {
         super();
         this.repository = repository;
-        this.groupFollowingRepository = groupFollowingRepository;
+        this.groupsFollowedAndSavedRepository = groupsFollowedAndSavedRepository;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new GroupsHomeViewModel(repository, groupFollowingRepository);
+        return (T) new GroupsHomeViewModel(repository, groupsFollowedAndSavedRepository);
     }
 }

@@ -9,8 +9,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
-import com.doubean.ford.data.repository.GroupFollowingRepository;
 import com.doubean.ford.data.repository.GroupRepository;
+import com.doubean.ford.data.repository.GroupsFollowedAndSavedRepository;
 import com.doubean.ford.data.vo.GroupDetail;
 import com.doubean.ford.data.vo.GroupFollowed;
 import com.doubean.ford.data.vo.GroupFollowedItem;
@@ -21,13 +21,13 @@ import java.util.List;
 
 public class GroupsHomeViewModel extends ViewModel {
     private final GroupRepository groupRepository;
-    private final GroupFollowingRepository groupFollowingRepository;
+    private final GroupsFollowedAndSavedRepository groupsFollowedAndSavedRepository;
     private final LiveData<List<GroupFollowedItem>> followedList;
 
 
-    public GroupsHomeViewModel(@NonNull GroupRepository groupRepository, @NonNull GroupFollowingRepository groupFollowingRepository) {
+    public GroupsHomeViewModel(@NonNull GroupRepository groupRepository, @NonNull GroupsFollowedAndSavedRepository groupsFollowedAndSavedRepository) {
         super();
-        this.groupFollowingRepository = groupFollowingRepository;
+        this.groupsFollowedAndSavedRepository = groupsFollowedAndSavedRepository;
         this.followedList = createFollowedListLiveData();
         this.groupRepository = groupRepository;
 
@@ -39,7 +39,7 @@ public class GroupsHomeViewModel extends ViewModel {
 
     private LiveData<List<GroupFollowedItem>> createFollowedListLiveData() {
         MediatorLiveData<List<GroupFollowedItem>> followedListLiveData = new MediatorLiveData<>();
-        followedListLiveData.addSource(groupFollowingRepository.getFollowedIds(), new Observer<List<GroupFollowed>>() {
+        followedListLiveData.addSource(groupsFollowedAndSavedRepository.getFollowedIds(), new Observer<List<GroupFollowed>>() {
             @Override
             public void onChanged(List<GroupFollowed> groupFollowedIds) {
                 if (groupFollowedIds != null) {
@@ -77,7 +77,7 @@ public class GroupsHomeViewModel extends ViewModel {
     private LiveData<List<GroupFollowedItem>> createFollowedLiveData1() {
         MediatorLiveData<List<GroupFollowedItem>> followedListLiveData = new MediatorLiveData<>();
 
-        followedListLiveData.addSource(groupFollowingRepository.getFollowedIds(), followedIds -> {
+        followedListLiveData.addSource(groupsFollowedAndSavedRepository.getFollowedIds(), followedIds -> {
             if (followedIds != null) {
                 List<LiveData<GroupFollowedItem>> followedLiveDataList = new ArrayList<>();
                 for (int i = 0; i < followedIds.size(); i++)

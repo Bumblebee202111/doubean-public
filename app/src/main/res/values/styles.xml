@@ -11,8 +11,38 @@
         <item name="cornerSize">@dimen/corner_size_normal</item>
     </style>
 
+    <style name="Widget.Doubean.AppbarLayout" parent="Widget.MaterialComponents.AppBarLayout.PrimarySurface">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Doubean.AppBarLayout</item>
+    </style>
 
-    <style name="ThemeOverlay.Doubean.AppBar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar"></style>
+    <style name="ThemeOverlay.Doubean.AppBarLayout" parent="ThemeOverlay.MaterialComponents.ActionBar">
+        <item name="colorPrimary">@color/doubean_white</item>
+    </style>
+
+    <style name="Widget.Douban.Toolbar" parent="Widget.MaterialComponents.Toolbar.PrimarySurface">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Doubean.Toolbar</item>
+    </style>
+
+    <style name="ThemeOverlay.Doubean.Toolbar" parent="">
+        <item name="colorPrimary">@color/doubean_white</item>
+    </style>
+
+    <style name="Widget.Doubean.GroupToolbar" parent="Widget.MaterialComponents.Toolbar.PrimarySurface">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Doubean.GroupToolbar</item>
+    </style>
+
+    <style name="ThemeOverlay.Doubean.GroupToolbar" parent="">
+        <item name="colorPrimary">@color/doubean_green</item>
+        <item name="colorOnPrimary">@color/doubean_white</item>
+    </style>
+
+    <style name="Widget.Doubean.GroupCollapsingToolbar" parent="Widget.MaterialComponents.Toolbar.PrimarySurface">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Doubean.GroupCollapsingToolbar</item>
+    </style>
+
+    <style name="ThemeOverlay.Doubean.GroupCollapsingToolbar" parent="">
+        <item name="colorOnPrimary">@color/doubean_white</item>
+    </style>
 
     <style name="Widget.Doubean.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.PrimarySurface">
         <item name="materialThemeOverlay">@style/ThemeOverlay.Doubean.BottomNavigationView</item>
@@ -20,8 +50,18 @@
 
     <style name="ThemeOverlay.Doubean.BottomNavigationView" parent="">
         <item name="colorOnPrimary">@color/doubean_green</item>
+        <item name="colorPrimary">@color/white</item>
+    </style>
+
+    <style name="Widget.Doubean.MaterialButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Doubean.MaterialButton</item>
+    </style>
+
+    <style name="ThemeOverlay.Doubean.MaterialButton" parent="">
+        <item name="colorPrimary">@color/doubean_green</item>
     </style>
 
     <style name="Widget.Doubean.Chip.Action" parent="Widget.MaterialComponents.Chip.Action"></style>
+
 
 </resources>
