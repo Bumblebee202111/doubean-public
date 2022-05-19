@@ -29,11 +29,21 @@
             android:layout_marginHorizontal="@dimen/margin_normal"
             android:layout_marginVertical="@dimen/margin_smaller">
 
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/more"
+                android:layout_width="@dimen/icon_size_extra_small"
+                android:layout_height="@dimen/icon_size_extra_small"
+                android:src="@drawable/ic_more"
+                app:layout_constraintEnd_toStartOf="@id/cover"
+                app:layout_constraintStart_toEndOf="@id/first_line"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/first_line"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toStartOf="@id/cover"
+                android:layout_marginEnd="@dimen/margin_extra_small"
+                app:layout_constraintEnd_toStartOf="@id/more"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -110,7 +120,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_small"
-                app:isGone="@{post.commentCount==0&amp;&amp;post.created.equals(post.lastUpdated)}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/first_line"
                 app:layout_constraintStart_toStartOf="parent"
@@ -143,6 +152,7 @@
                     android:layout_marginStart="@dimen/margin_extra_small"
                     android:gravity="center_vertical"
                     android:text="@string/middle_dot"
+                    app:isGone="@{post.commentCount==0&amp;&amp;post.created.equals(post.lastUpdated)}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/comment_count"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -153,6 +163,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_extra_small"
                     android:text="@{@string/last_updated(DateTimeUtil.dateTimeText(post.lastUpdated,DateTimeStyle.SHORT))}"
+                    app:isGone="@{post.commentCount==0&amp;&amp;post.created.equals(post.lastUpdated)}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/last_commented_middle_dot"
                     app:layout_constraintTop_toTopOf="parent"
@@ -165,13 +176,13 @@
                 isGone="@{post.coverUrl.empty}"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:layout_marginStart="@dimen/margin_normal"
+                android:layout_marginStart="@dimen/margin_extra_small"
                 android:contentDescription="@string/a11y_group_item_image"
                 android:scaleType="centerCrop"
                 app:imageFromUrl="@{post.coverUrl}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/first_line"
+                app:layout_constraintStart_toEndOf="@id/more"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0"
                 app:shapeAppearanceOverlay="@style/normalRoundedCornersImageView" />

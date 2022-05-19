@@ -1,17 +1,13 @@
 <resources>
     <!-- Base application theme. -->
     <style name="Theme.Doubean" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/doubean_white</item>
-
-        <item name="colorAccent">@color/sunflower_green_700</item>
+        <item name="colorPrimary">@color/doubean_green</item>
         <item name="colorSurface">@color/doubean_white</item>
-
-        <item name="colorSecondary">@color/doubean_white</item>
+        <item name="colorSecondary">@color/douban_yellow</item>
         <item name="colorOnPrimary">@color/doubean_black</item>
         <item name="colorOnSecondary">@color/doubean_black</item>
         <item name="colorOnSurface">@color/doubean_black</item>
         <item name="colorOnBackground">@color/doubean_black</item>
-
     </style>
 
     <style name="Theme.Doubean.NoActionBar">
@@ -24,6 +20,8 @@
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="bottomNavigationStyle">@style/Widget.Doubean.BottomNavigationView</item>
+        <item name="appBarLayoutStyle">@style/Widget.Doubean.AppbarLayout</item>
+        <item name="toolbarStyle">@style/Widget.Douban.Toolbar</item>
     </style>
 
 

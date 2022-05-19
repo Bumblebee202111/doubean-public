@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ThemeOverlay.Doubean.BottomNavigationView" parent="">
+        <item name="colorPrimary">@color/doubean_green</item>
+    </style>
+</resources>

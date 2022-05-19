@@ -14,8 +14,24 @@
 
     <string name="empty_search_result">No results for <b>%s</b></string>
     <string name="add_to_followed">Follow</string>
-    <string name="added_group_tab_to_followed">Added group/tab to groupFollowed</string>
-    <string name="removed_group_tab_from_followed">Removed group/tab from groupFollowed</string>
+    <string name="followed_group">Followed group</string>
+    <string name="unfollowed_group">Unfollowed group</string>
+
+
+    <string name="followed_tab">Followed tab</string>
+    <string name="unfollowed_tab">Unfollowed tab</string>
+
+    <string name="new_posts">New posts</string>
+    <string name="top_posts">Top posts</string>
+    <string name="last_updated_posts">Last updated posts</string>
+
+    <string-array name="sort_posts_by_array">
+        <item>@string/new_posts</item>
+        <item>@string/last_updated_posts</item>
+        <item>@string/top_posts</item>
+    </string-array>
+    <string name="follow">Follow</string>
+    <string name="unfollow">Unfollow</string>
 
     <string name="a11y_group_item_image">Avatar of group</string>
     <string name="all">All</string>
@@ -36,5 +52,6 @@
     <string name="all_comments">All comments</string>
     <string name="middle_dot" translatable="false">·</string>
     <string name="op">OP</string>
+
 
 </resources>

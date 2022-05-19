@@ -155,9 +155,12 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
-* \[GroupsHomeFragment\]Rename "favorite" to "follow"
+Note new release is coming soon but not today because the development is slow and I don't like to
+increment of app version without adding useful features
+
+* \[GroupFragment\]Update fetching \(methods\) and preloading to prepare for new features, bring
+  back state saving for various views and maybe help decoupling DoubanService
 * \[GroupsHomeFragment\]Show groupFollowed / saved posts with group info
-* \[GroupFragment\]Remove shared follow button into each tab \(add top bar\)
 * \[GroupFragment\]\[GroupPostFragment\]Open in browser/Douban app
 * \[GroupsHomeFragment\]Add "groups of the day" list
 * \[GroupFragment\]Adjust when to hide/show toolbar

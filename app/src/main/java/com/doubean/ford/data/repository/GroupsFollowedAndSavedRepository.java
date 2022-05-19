@@ -10,25 +10,25 @@ import com.doubean.ford.util.AppExecutors;
 
 import java.util.List;
 
-public class GroupFollowingRepository {
-    private static GroupFollowingRepository instance;
+public class GroupsFollowedAndSavedRepository {
+    private static GroupsFollowedAndSavedRepository instance;
     private final AppExecutors appExecutors;
     private final GroupFollowedDao groupFollowingDao;
     private final DoubanService doubanService;
     private final AppDatabase appDatabase;
 
-    private GroupFollowingRepository(AppExecutors appExecutors, AppDatabase appDatabase, DoubanService doubanService) {
+    private GroupsFollowedAndSavedRepository(AppExecutors appExecutors, AppDatabase appDatabase, DoubanService doubanService) {
         this.appExecutors = appExecutors;
         this.groupFollowingDao = appDatabase.getGroupFollowingDao();
         this.doubanService = doubanService;
         this.appDatabase = appDatabase;
     }
 
-    public static GroupFollowingRepository getInstance(AppExecutors appExecutors, AppDatabase appDatabase, DoubanService doubanService) {
+    public static GroupsFollowedAndSavedRepository getInstance(AppExecutors appExecutors, AppDatabase appDatabase, DoubanService doubanService) {
         if (instance == null) {
-            synchronized (GroupFollowingRepository.class) {
+            synchronized (GroupsFollowedAndSavedRepository.class) {
                 if (instance == null) {
-                    instance = new GroupFollowingRepository(appExecutors, appDatabase, doubanService);
+                    instance = new GroupsFollowedAndSavedRepository(appExecutors, appDatabase, doubanService);
                 }
             }
         }
@@ -39,12 +39,12 @@ public class GroupFollowingRepository {
         return groupFollowingDao.getFollowedIds();
     }
 
-    public LiveData<Boolean> getFollowed(String groupId, String currentTabId) {
-        return groupFollowingDao.getFollowed(groupId, currentTabId);
+    public LiveData<Boolean> getFollowed(String groupId, String tabId) {
+        return groupFollowingDao.getFollowed(groupId, tabId);
     }
 
-    public void removeFollowed(String groupId, String currentTabId) {
-        appExecutors.diskIO().execute(() -> groupFollowingDao.deleteFollowed(groupId, currentTabId));
+    public void removeFollowed(String groupId, String tabId) {
+        appExecutors.diskIO().execute(() -> groupFollowingDao.deleteFollowed(groupId, tabId));
     }
 
     public void createFollowed(String groupId, String groupTabId) {
