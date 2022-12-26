@@ -7,8 +7,8 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "group_followed", indices = @Index(value = {"group_id", "group_tab_id"}, unique = true))
-public class GroupFollowed {
+@Entity(tableName = "group_follows", indices = @Index(value = {"group_id", "group_tab_id"}, unique = true))
+public class GroupFollow {
     @PrimaryKey(autoGenerate = true)
     public int id;
     @NonNull
@@ -18,7 +18,7 @@ public class GroupFollowed {
     @ColumnInfo(name = "group_tab_id")
     public String groupTabId;
 
-    public GroupFollowed(@NonNull String groupId, @Nullable String groupTabId) {
+    public GroupFollow(@NonNull String groupId, @Nullable String groupTabId) {
         this.groupId = groupId;
         this.groupTabId = groupTabId;
     }

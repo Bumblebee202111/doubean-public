@@ -3,34 +3,25 @@ package com.doubean.ford.api;
 import androidx.annotation.NonNull;
 
 import com.doubean.ford.data.vo.SearchResultItem;
-import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
 /**
  * Data class that represents a group search response from Douban.
  */
-public class GroupSearchResponse {
+public class GroupSearchResponse extends ListResponse<SearchResultItem> {
 
     private String q;
-    @SerializedName("total_count")
-    private int total;
-    @SerializedName("items")
-    private List<SearchResultItem> items;
 
-    public GroupSearchResponse(String q, List<SearchResultItem> items) {
+    public GroupSearchResponse(int start, String q, List<SearchResultItem> items) {
+        super(start, items);
         this.q = q;
-        this.items = items;
-    }
-
-    public List<SearchResultItem> getItems() {
-        return items;
     }
 
     @NonNull
     public List<String> getGroupIds() {
         List<String> groupIds = new ArrayList<>();
-        for (SearchResultItem item : items) {
+        for (SearchResultItem item : getItems()) {
             groupIds.add(item.getGroup().id);
         }
         return groupIds;

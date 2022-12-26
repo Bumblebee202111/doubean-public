@@ -58,23 +58,28 @@ public class PostCommentAdapter extends ListAdapter<GroupPostComment, PostCommen
             this.binding = binding;
             this.opId = opId;
             binding.authorOp.setTextColor(groupColor);
-            binding.repliedToOp.setTextColor(groupColor);
+            binding.repliedToAuthorOp.setTextColor(groupColor);
         }
 
         void bind(GroupPostComment item) {
             binding.setPostComment(item);
-            binding.executePendingBindings();
+            binding.setIsAuthorOp(item.author.id.equals(opId));
+
             if (!item.photos.isEmpty()) {
                 PhotoAdapter adapter = new PhotoAdapter();
                 binding.photos.setAdapter(adapter);
                 adapter.submitList(item.photos);
             }
-            if (item.repliedTo != null && !item.repliedTo.photos.isEmpty()) {
-                PhotoAdapter adapter = new PhotoAdapter();
-                binding.repliedToPhotos.setAdapter(adapter);
-                adapter.submitList(item.repliedTo.photos);
+
+            if (item.repliedTo != null) {
+                if (!item.repliedTo.photos.isEmpty()) {
+                    PhotoAdapter adapter = new PhotoAdapter();
+                    binding.repliedToPhotos.setAdapter(adapter);
+                    adapter.submitList(item.repliedTo.photos);
+                    binding.setIsRepliedToAuthorOp(item.repliedTo.id.equals(opId));
+                }
             }
-            binding.setAuthorOp(item.author.id.equals(opId));
+            binding.executePendingBindings();
         }
     }
 }

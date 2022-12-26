@@ -9,9 +9,13 @@
 
         <import type="java.util.List" />
 
+        <import type="com.doubean.ford.data.vo.Status" />
+
+        <import type="com.doubean.ford.data.vo.Resource" />
+
         <variable
-            name="groups"
-            type="List" />
+            name="searchResource"
+            type="Resource" />
 
         <variable
             name="resultCount"
@@ -49,7 +53,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/followed_list"
+            android:id="@+id/follow_list"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
@@ -63,7 +67,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/no_results_text"
-            isGone="@{groups==null||resultCount != 0}"
+            isGone="@{!(searchResource.status == Status.SUCCESS &amp;&amp; resultCount == 0)}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{@string/empty_search_result(query)}"

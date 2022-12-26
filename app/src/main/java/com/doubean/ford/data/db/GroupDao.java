@@ -32,34 +32,34 @@ import java.util.List;
 public interface GroupDao {
     @Query(value = "SELECT * FROM groups WHERE id = :groupId")
     @RewriteQueriesToDropUnusedColumns
-    LiveData<GroupDetail> getGroup(String groupId);
+    LiveData<GroupDetail> loadDetail(String groupId);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE, entity = Group.class)
     @RewriteQueriesToDropUnusedColumns
-    Long insertGroupDetailIfNotExists(GroupDetail group);
+    Long insertDetailIfNotExists(GroupDetail group);
 
     @Update(entity = Group.class)
     @RewriteQueriesToDropUnusedColumns
-    void updateGroup(GroupDetail group);
+    void updateDetail(GroupDetail group);
 
     @Transaction
-    default void upsertGroup(GroupDetail group) {
-        if (insertGroupDetailIfNotExists(group) == -1)
-            updateGroup(group);
+    default void upsertDetail(GroupDetail group) {
+        if (insertDetailIfNotExists(group) == -1)
+            updateDetail(group);
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE, entity = Group.class)
     @RewriteQueriesToDropUnusedColumns
-    Long insertGroupBriefIfNotExists(GroupBrief group);
+    Long insertBriefIfNotExists(GroupBrief group);
 
     @Update(entity = Group.class)
     @RewriteQueriesToDropUnusedColumns
-    void updateGroup(GroupBrief group);
+    void updateDetail(GroupBrief group);
 
     @Transaction
-    default void upsertGroup(GroupBrief group) {
-        if (insertGroupBriefIfNotExists(group) == -1)
-            updateGroup(group);
+    default void upsertDetail(GroupBrief group) {
+        if (insertBriefIfNotExists(group) == -1)
+            updateDetail(group);
     }
 
     @Query("SELECT * FROM groups")
@@ -87,7 +87,7 @@ public interface GroupDao {
 
 
     @Query("SELECT * FROM GroupSearchResult WHERE `query` = :query")
-    LiveData<GroupSearchResult> search(String query);
+    LiveData<GroupSearchResult> findSearchResult(String query);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertGroupSearchResult(GroupSearchResult groupSearchResult);
@@ -107,11 +107,11 @@ public interface GroupDao {
 
     @Query("SELECT * FROM group_posts WHERE groupId = :groupId AND tagId=:tagId ORDER BY created DESC LIMIT 100")
     @RewriteQueriesToDropUnusedColumns
-    LiveData<List<GroupPostItem>> getGroupPosts(String groupId, String tagId);
+    LiveData<List<GroupPostItem>> loadGroupPosts(String groupId, String tagId);
 
     @Query("SELECT * FROM group_posts WHERE groupId = :groupId ORDER BY created DESC LIMIT 100")
     @RewriteQueriesToDropUnusedColumns
-    LiveData<List<GroupPostItem>> getGroupPosts(String groupId);
+    LiveData<List<GroupPostItem>> loadGroupPosts(String groupId);
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -132,7 +132,7 @@ public interface GroupDao {
     }
 
     @Query("SELECT * FROM group_posts WHERE id=:postId")
-    LiveData<GroupPost> getGroupPost(String postId);
+    LiveData<GroupPost> loadPost(String postId);
 
     @Query("SELECT * FROM group_post_comments WHERE id IN (:commentIds)")
     LiveData<List<GroupPostComment>> loadCommentsById(List<String> commentIds);
@@ -145,10 +145,10 @@ public interface GroupDao {
     }
 
     @Query("SELECT * FROM group_post_top_comments WHERE postId = :postId")
-    LiveData<GroupPostTopComments> getPostTopComments(String postId);
+    LiveData<GroupPostTopComments> loadPostTopComments(String postId);
 
     @Query("SELECT * FROM group_post_comments WHERE post_id = :postId ORDER BY created ASC")
-    LiveData<List<GroupPostComment>> getPostComments(String postId);
+    LiveData<List<GroupPostComment>> loadPostComments(String postId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertPostComments(List<GroupPostComment> comments);

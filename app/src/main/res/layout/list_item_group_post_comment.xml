@@ -14,7 +14,11 @@
             type="com.doubean.ford.data.vo.GroupPostComment" />
 
         <variable
-            name="authorOp"
+            name="isAuthorOp"
+            type="boolean" />
+
+        <variable
+            name="isRepliedToAuthorOp"
             type="boolean" />
     </data>
 
@@ -75,7 +79,7 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/author_op"
-                    isGone="@{!authorOp}"
+                    isGone="@{!isAuthorOp}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_extra_small"
@@ -156,7 +160,7 @@
                         android:maxLines="1"
                         android:text="@{postComment.repliedTo.author.name}"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                        app:layout_constraintEnd_toStartOf="@id/replied_to_op"
+                        app:layout_constraintEnd_toStartOf="@id/replied_to_author_op"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintHorizontal_chainStyle="packed"
                         app:layout_constraintStart_toEndOf="@id/replied_to_avatar"
@@ -165,8 +169,8 @@
                         tools:text="replied to name" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/replied_to_op"
-                        isGone="@{!authorOp}"
+                        android:id="@+id/replied_to_author_op"
+                        isGone="@{!isRepliedToAuthorOp}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/margin_extra_small"
@@ -187,7 +191,7 @@
                         android:text="@string/middle_dot"
                         app:layout_constraintBottom_toBottomOf="@id/replied_to_author_name"
                         app:layout_constraintEnd_toStartOf="@id/replied_to_created"
-                        app:layout_constraintStart_toEndOf="@id/replied_to_op"
+                        app:layout_constraintStart_toEndOf="@id/replied_to_author_op"
                         app:layout_constraintTop_toTopOf="@id/replied_to_author_name" />
 
                     <com.google.android.material.textview.MaterialTextView

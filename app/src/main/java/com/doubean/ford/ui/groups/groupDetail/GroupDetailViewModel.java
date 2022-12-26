@@ -1,51 +1,41 @@
 package com.doubean.ford.ui.groups.groupDetail;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.doubean.ford.data.repository.GroupRepository;
-import com.doubean.ford.data.repository.GroupsFollowedAndSavedRepository;
+import com.doubean.ford.data.repository.GroupsFollowsAndSavesRepository;
 import com.doubean.ford.data.vo.GroupDetail;
+import com.doubean.ford.data.vo.Resource;
 
 public class GroupDetailViewModel extends ViewModel {
     private final GroupRepository groupRepository;
-    private final LiveData<GroupDetail> group;
-    private final GroupsFollowedAndSavedRepository groupsFollowedAndSavedRepository;
+    private final LiveData<Resource<GroupDetail>> group;
+    private final GroupsFollowsAndSavesRepository groupsFollowsAndSavesRepository;
     private final String groupId;
     private final LiveData<Boolean> isGroupFollowed;
-    private final MutableLiveData<Integer> currentItem = new MutableLiveData<>();
 
-    public GroupDetailViewModel(GroupRepository groupRepository, GroupsFollowedAndSavedRepository followedAndSavedRepository, String groupId, String defaultTabId) {
-        this.groupsFollowedAndSavedRepository = followedAndSavedRepository;
+    public GroupDetailViewModel(GroupRepository groupRepository, GroupsFollowsAndSavesRepository groupsFollowsAndSavesRepository, String groupId, String defaultTabId) {
+        this.groupsFollowsAndSavesRepository = groupsFollowsAndSavesRepository;
         this.groupId = groupId;
         this.groupRepository = groupRepository;
         group = groupRepository.getGroup(groupId, true);
-        this.isGroupFollowed = followedAndSavedRepository.getFollowed(groupId, null);
-
-    }
-
-    public MutableLiveData<Integer> getCurrentItem() {
-        return currentItem;
-    }
-
-    public void setCurrentItem(int position) {
-        this.currentItem.setValue(position);
+        this.isGroupFollowed = groupsFollowsAndSavesRepository.getFollowed(groupId, null);
     }
 
     public LiveData<Boolean> getFollowed() {
         return isGroupFollowed;
     }
 
-    public LiveData<GroupDetail> getGroup() {
+    public LiveData<Resource<GroupDetail>> getGroup() {
         return group;
     }
 
-    public void addFollowed() {
-        groupsFollowedAndSavedRepository.createFollowed(groupId, null);
+    public void addFollow() {
+        groupsFollowsAndSavesRepository.createFollow(groupId, null);
     }
 
-    public void removeFollowed() {
-        groupsFollowedAndSavedRepository.removeFollowed(groupId, null);
+    public void removeFollow() {
+        groupsFollowsAndSavesRepository.removeFollow(groupId, null);
     }
 }

@@ -48,7 +48,10 @@ public class GroupTabFragment extends Fragment {
         PostAdapter adapter = new PostAdapter();
         binding.postList.setAdapter(adapter);
         binding.postList.addItemDecoration(new DividerItemDecoration(binding.postList.getContext(), DividerItemDecoration.VERTICAL));
-        groupTabViewModel.getPosts().observe(getViewLifecycleOwner(), adapter::submitList);
+        groupTabViewModel.getPosts().observe(getViewLifecycleOwner(), listResource -> {
+            if (listResource != null && listResource.data != null)
+                adapter.submitList(listResource.data);
+        });
 
         MaterialButton followUnfollow = binding.followUnfollow;
 
@@ -63,17 +66,16 @@ public class GroupTabFragment extends Fragment {
                 Boolean followed = groupTabViewModel.getFollowed().getValue();
                 if (followed != null) {
                     if (followed) {
-                        groupTabViewModel.removeFollowed();
+                        groupTabViewModel.removeFollow();
                         Snackbar.make(binding.getRoot(), R.string.unfollowed_tab, Snackbar.LENGTH_LONG)
                                 .show();
                     } else {
-                        groupTabViewModel.addFollowed();
+                        groupTabViewModel.addFollow();
                         Snackbar.make(binding.getRoot(), R.string.followed_tab, Snackbar.LENGTH_LONG)
                                 .show();
                     }
                 }
             });
-
 
             groupTabViewModel.getFollowed().observe(getViewLifecycleOwner(), followed -> {
                 if (followed) {

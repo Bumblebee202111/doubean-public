@@ -5,7 +5,7 @@
     <string name="title_post_detail">帖子详情</string>
     <string name="title_home">主页</string>
     <string name="title_notifications">通知</string>
-    <string name="followed_header">关注</string>
+    <string name="follow_header">关注</string>
     <string name="settings">设置</string>
     <string name="search">搜索</string>
     <string name="last_updated">最后更新于%s</string>

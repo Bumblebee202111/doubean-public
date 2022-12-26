@@ -13,9 +13,11 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.doubean.ford.R;
-import com.doubean.ford.adapters.GroupFollowedAdapter;
+import com.doubean.ford.adapters.GroupFollowAdapter;
 import com.doubean.ford.databinding.FragmentGroupsBinding;
 import com.doubean.ford.util.InjectorUtils;
+
+import java.util.ArrayList;
 
 public class GroupsHomeFragment extends Fragment {
 
@@ -31,9 +33,9 @@ public class GroupsHomeFragment extends Fragment {
         binding = FragmentGroupsBinding.inflate(inflater, container, false);
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
-        GroupFollowedAdapter adapter = new GroupFollowedAdapter();
-        binding.followedList.setAdapter(adapter);
-        groupsHomeViewModel.getFollowedList().observe(getViewLifecycleOwner(), adapter::submitList);
+        GroupFollowAdapter adapter = new GroupFollowAdapter();
+        binding.followList.setAdapter(adapter);
+        groupsHomeViewModel.getFollowList().observe(getViewLifecycleOwner(), list -> adapter.submitList(list == null ? null : new ArrayList<>(list)));
         return binding.getRoot();
     }
 
