@@ -8,11 +8,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
@@ -20,6 +20,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.doubean.ford.R;
 import com.doubean.ford.data.vo.GroupDetail;
 import com.doubean.ford.data.vo.GroupTab;
+import com.doubean.ford.data.vo.Status;
 import com.doubean.ford.databinding.FragmentGroupDetailBinding;
 import com.doubean.ford.util.InjectorUtils;
 import com.google.android.material.button.MaterialButton;
@@ -69,48 +70,40 @@ public class GroupDetailFragment extends Fragment {
         groupDetailViewModel = new ViewModelProvider(this, factory).get(GroupDetailViewModel.class);
         binding.setViewModel(groupDetailViewModel);
 
+        getActivity().getWindow().setStatusBarColor(getContext().getColor(R.color.doubean_green));
+
         groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(), group -> {
-            if (group != null) {
-                binding.setGroup(group);
+            if (group != null && group.data != null) {
+                binding.setGroup(group.data);
 
-                final int color = group.getColor();
+                final int color = group.data.getColor();
+                if (color != 0) {
+                    binding.mask.setBackgroundColor(color);
+                    binding.toolbar.setBackgroundColor(color);
+                    getActivity().getWindow().setStatusBarColor(color);
+                    binding.tabLayout.setSelectedTabIndicatorColor(color);
+                }
 
-                binding.mask.setBackgroundColor(color);
-                binding.toolbar.setBackgroundColor(color);
-                getActivity().getWindow().setStatusBarColor(color);
-                binding.tabLayout.setSelectedTabIndicatorColor(color);
+                if (group.status == Status.SUCCESS) {
+                    List<GroupTab> tabs = group.data.tabs;
 
-                List<GroupTab> tabs = group.tabs;
+                    ViewPager2 viewPager = binding.pager;
 
-                ViewPager2 viewPager = binding.pager;
+                    //initViewPager2WithDefaultItem(viewPager, group.data);
 
-                initViewPager2WithDefaultItem(viewPager, group);
-                GroupPagerAdapter groupPagerAdapter = new GroupPagerAdapter(getChildFragmentManager(), getViewLifecycleOwner().getLifecycle(), groupId, color, tabs);
-                viewPager.setAdapter(groupPagerAdapter);
+                    GroupPagerAdapter groupPagerAdapter = new GroupPagerAdapter(getChildFragmentManager(), getViewLifecycleOwner().getLifecycle(), groupId, color, tabs);
+                    viewPager.setAdapter(groupPagerAdapter);
 
-                TabLayout tabLayout = binding.tabLayout;
-                new TabLayoutMediator(tabLayout, viewPager,
-                        (tab, position) -> {
-                            tab.setText(position == 0 ? getString(R.string.all) : tabs.get(position - 1).name);
-                        }
-                ).attach();
+                    TabLayout tabLayout = binding.tabLayout;
+                    new TabLayoutMediator(tabLayout, viewPager,
+                            (tab, position) -> {
+                                tab.setText(position == 0 ? getString(R.string.all) : tabs.get(position - 1).name);
+                            }
+                    ).attach();
 
-                viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-                    @Override
-                    public void onPageSelected(int position) {
-                        super.onPageSelected(position);
-                        groupDetailViewModel.setCurrentItem(position);
-                    }
-                });
+                    viewPager.setCurrentItem(getItemOfId(tabs, defaultTabId), false);
+                }
 
-                viewPager.setCurrentItem(getItemOfId(tabs, defaultTabId), false);
-
-                groupDetailViewModel.getCurrentItem().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-                    @Override
-                    public void onChanged(Integer integer) {
-                        //viewPager.setCurrentItem(integer,false);
-                    }
-                });
 
                 int colorSurface = getColorSurface();
                 groupDetailViewModel.getFollowed().observe(getViewLifecycleOwner(), followed -> {
@@ -133,22 +126,23 @@ public class GroupDetailFragment extends Fragment {
                     }
                 });
 
-                binding.followUnfollow.setOnClickListener(v -> {
-                    Boolean followed = groupDetailViewModel.getFollowed().getValue();
-                    if (followed != null) {
-                        if (followed) {
-                            groupDetailViewModel.removeFollowed();
-                            Snackbar.make(binding.getRoot(), R.string.unfollowed_group, Snackbar.LENGTH_LONG)
-                                    .show();
-                        } else {
-                            groupDetailViewModel.addFollowed();
-                            Snackbar.make(binding.getRoot(), R.string.followed_group, Snackbar.LENGTH_LONG)
-                                    .show();
-                        }
-                    }
-                });
             }
 
+        });
+
+        binding.followUnfollow.setOnClickListener(v -> {
+            Boolean followed = groupDetailViewModel.getFollowed().getValue();
+            if (followed != null) {
+                if (followed) {
+                    groupDetailViewModel.removeFollow();
+                    Snackbar.make(binding.getRoot(), R.string.unfollowed_group, Snackbar.LENGTH_LONG)
+                            .show();
+                } else {
+                    groupDetailViewModel.addFollow();
+                    Snackbar.make(binding.getRoot(), R.string.followed_group, Snackbar.LENGTH_LONG)
+                            .show();
+                }
+            }
         });
 
         binding.toolbarLayout.setCollapsedTitleTextColor(getContext().getColor(R.color.doubean_white));
@@ -173,11 +167,11 @@ public class GroupDetailFragment extends Fragment {
                     Boolean isFollowed = groupDetailViewModel.getFollowed().getValue();
                     if (isFollowed != null) {
                         if (isFollowed) {
-                            groupDetailViewModel.removeFollowed();
+                            groupDetailViewModel.removeFollow();
                             Snackbar.make(binding.getRoot(), R.string.unfollowed_group, Snackbar.LENGTH_LONG)
                                     .show();
                         } else {
-                            groupDetailViewModel.addFollowed();
+                            groupDetailViewModel.addFollow();
                             Snackbar.make(binding.getRoot(), R.string.followed_group, Snackbar.LENGTH_LONG)
                                     .show();
                         }
@@ -196,30 +190,44 @@ public class GroupDetailFragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
-        getActivity().getWindow().setStatusBarColor(getContext().getColor(R.color.doubean_green));
         groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(), group -> {
             if (group != null) {
-                getActivity().getWindow().setStatusBarColor(group.getColor());
+                {
+                    if (group.status == Status.SUCCESS) {
+                        if (group.data != null && group.data.colorString != null) {
+                            getActivity().getWindow().setStatusBarColor(group.data.getColor());
+                        } else {
+                            getActivity().getWindow().setStatusBarColor(getContext().getColor(R.color.doubean_green));
+                        }
+                    } else if (group.status == Status.ERROR) {
+                        getActivity().getWindow().setStatusBarColor(getContext().getColor(R.color.doubean_green));
+                    }
+                }
             }
         });
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
+
+    }
+
     private void initViewPager2WithDefaultItem(ViewPager2 viewPager, GroupDetail group) {
+        int defaultItem = getItemOfId(group.tabs, defaultTabId);
+        ;
         try {
             Field field = viewPager.getClass().getDeclaredField("mPendingCurrentItem");
             field.setAccessible(true);
             try {
-                //Toast.makeText(getContext(),field.getInt(viewPager)+" "+ getItemOfId(group.tabs, defaultTabId),Toast.LENGTH_LONG).show();
-                if (field.getInt(viewPager) == -1) { //-1: NO_POSITION
-                    //field.setInt(viewPager, getItemOfId(group.tabs, defaultTabId));
+                int mPendingCurrentItem = field.getInt(viewPager);
+                if (mPendingCurrentItem == -1) { //-1: NO_POSITION
+                    field.setInt(viewPager, defaultItem);
+                } else {
+                    Toast.makeText(getContext(), mPendingCurrentItem + " " + getItemOfId(group.tabs, defaultTabId), Toast.LENGTH_LONG).show();
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();

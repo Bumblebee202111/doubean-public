@@ -42,10 +42,10 @@ public class GroupSearchFragment extends Fragment {
         initRecyclerView();
 
         adapter = new GroupAdapter();
-        binding.followedList.setAdapter(adapter);
+        binding.followList.setAdapter(adapter);
         int spanCount = SpanCountCalculator.getSpanCount(getContext(), 500);
-        binding.followedList.setLayoutManager(new StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL));
-        binding.followedList.addItemDecoration(new DividerItemDecoration(binding.followedList.getContext(), DividerItemDecoration.VERTICAL));
+        binding.followList.setLayoutManager(new StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL));
+        binding.followList.addItemDecoration(new DividerItemDecoration(binding.followList.getContext(), DividerItemDecoration.VERTICAL));
         initSearchInputListener();
         return binding.getRoot();
     }
@@ -77,9 +77,9 @@ public class GroupSearchFragment extends Fragment {
 
     private void initRecyclerView() {
         groupSearchViewModel.getResults().observe(getViewLifecycleOwner(), result -> {
-            binding.setGroups(result);
-            binding.setResultCount(result == null ? 0 : result.size());
-            adapter.submitList(result);
+            binding.setSearchResource(result);
+            binding.setResultCount(result == null || result.data == null ? 0 : result.data.size());
+            adapter.submitList(result == null ? null : result.data);
         });
 
 

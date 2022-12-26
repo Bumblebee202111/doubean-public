@@ -24,7 +24,7 @@ import androidx.annotation.Nullable;
 import com.doubean.ford.api.DoubanService;
 import com.doubean.ford.data.db.AppDatabase;
 import com.doubean.ford.data.repository.GroupRepository;
-import com.doubean.ford.data.repository.GroupsFollowedAndSavedRepository;
+import com.doubean.ford.data.repository.GroupsFollowsAndSavesRepository;
 import com.doubean.ford.ui.groups.groupDetail.GroupDetailViewModelFactory;
 import com.doubean.ford.ui.groups.groupSearch.GroupSearchViewModelFactory;
 import com.doubean.ford.ui.groups.groupTab.GroupTabViewModelFactory;
@@ -44,16 +44,16 @@ public class InjectorUtils {
         return GroupRepository.getInstance(new AppExecutors(), AppDatabase.getInstance(context.getApplicationContext()), provideDoubanService());
     }
 
-    private static GroupsFollowedAndSavedRepository getGroupFollowedRepository(Context context) {
-        return GroupsFollowedAndSavedRepository.getInstance(new AppExecutors(), AppDatabase.getInstance(context.getApplicationContext()), provideDoubanService());
+    private static GroupsFollowsAndSavesRepository getGroupFollowsAndSavesRepository(Context context) {
+        return GroupsFollowsAndSavesRepository.getInstance(new AppExecutors(), AppDatabase.getInstance(context.getApplicationContext()), provideDoubanService());
     }
 
     public static GroupsHomeViewModelFactory provideGroupsViewModelFactory(Context context) {
-        return new GroupsHomeViewModelFactory(getGroupRepository(context), getGroupFollowedRepository(context));
+        return new GroupsHomeViewModelFactory(getGroupRepository(context), getGroupFollowsAndSavesRepository(context));
     }
 
     public static GroupDetailViewModelFactory provideGroupDetailViewModelFactory(Context context, @NonNull String groupId, String defaultTab) {
-        return new GroupDetailViewModelFactory(getGroupRepository(context), getGroupFollowedRepository(context), groupId, defaultTab);
+        return new GroupDetailViewModelFactory(getGroupRepository(context), getGroupFollowsAndSavesRepository(context), groupId, defaultTab);
     }
 
     public static PostDetailViewModelFactory providePostDetailViewModelFactory(Context context, @NonNull String postId) {
@@ -61,7 +61,7 @@ public class InjectorUtils {
     }
 
     public static GroupTabViewModelFactory provideGroupTabViewModelFactory(Context context, @NonNull String groupId, @Nullable String tagId) {
-        return new GroupTabViewModelFactory(getGroupRepository(context), getGroupFollowedRepository(context), groupId, tagId);
+        return new GroupTabViewModelFactory(getGroupRepository(context), getGroupFollowsAndSavesRepository(context), groupId, tagId);
     }
 
     public static GroupSearchViewModelFactory provideGroupSearchViewModelFactory(Context context) {

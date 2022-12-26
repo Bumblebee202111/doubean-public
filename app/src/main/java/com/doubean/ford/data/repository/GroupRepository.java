@@ -9,10 +9,12 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
+import com.doubean.ford.api.ApiResponse;
 import com.doubean.ford.api.DoubanService;
 import com.doubean.ford.api.GroupPostCommentsResponse;
 import com.doubean.ford.api.GroupPostsResponse;
 import com.doubean.ford.api.GroupSearchResponse;
+import com.doubean.ford.api.SortByRequestParamType;
 import com.doubean.ford.data.db.AppDatabase;
 import com.doubean.ford.data.db.GroupDao;
 import com.doubean.ford.data.vo.GroupDetail;
@@ -23,8 +25,11 @@ import com.doubean.ford.data.vo.GroupPostComments;
 import com.doubean.ford.data.vo.GroupPostItem;
 import com.doubean.ford.data.vo.GroupPostTopComments;
 import com.doubean.ford.data.vo.GroupSearchResult;
+import com.doubean.ford.data.vo.Resource;
 import com.doubean.ford.data.vo.SearchResultItem;
+import com.doubean.ford.data.vo.Status;
 import com.doubean.ford.util.AppExecutors;
+import com.doubean.ford.util.Constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,11 +71,11 @@ public class GroupRepository {
             final int[] i = {0};
             groupsLiveData.addSource(fetching, aBoolean -> {
                 if (!aBoolean) {
-                    LiveData<GroupDetail> groupLiveData = getGroup(groupIds.get(i[0]), false);
+                    LiveData<Resource<GroupDetail>> groupLiveData = getGroup(groupIds.get(i[0]), false);
                     fetching.setValue(true);
                     groupsLiveData.addSource(groupLiveData, group -> {
-                        if (group != null) {
-                            groups.set(i[0]++, group.toGroupItem());
+                        if (group.status == Status.SUCCESS) {
+                            groups.set(i[0]++, group.data.toGroupItem());
                             groupsLiveData.removeSource(groupLiveData);
                             if (i[0] == groups.size()) {
                                 groupsLiveData.setValue(groups);
@@ -88,11 +93,11 @@ public class GroupRepository {
         return groupsLiveData;
     }
 
-    public LiveData<GroupDetail> getGroup(String groupId, boolean forceFetch) {
+    public LiveData<Resource<GroupDetail>> getGroup(String groupId, boolean forceFetch) {
         return new NetworkBoundResource<GroupDetail, GroupDetail>(appExecutors) {
             @Override
             protected void saveCallResult(@NonNull GroupDetail group) {
-                groupDao.upsertGroup(group);
+                groupDao.upsertDetail(group);
             }
 
             @Override
@@ -103,25 +108,25 @@ public class GroupRepository {
             @NonNull
             @Override
             protected LiveData<GroupDetail> loadFromDb() {
-                return groupDao.getGroup(groupId);
+                return groupDao.loadDetail(groupId);
             }
 
             @NonNull
             @Override
-            protected LiveData<GroupDetail> createCall() {
+            protected LiveData<ApiResponse<GroupDetail>> createCall() {
                 return doubanService.getGroup(groupId, 1);
             }
         }.asLiveData();
     }
 
-    public LiveData<List<GroupItem>> search(String query) {
+    public LiveData<Resource<List<GroupItem>>> search(String query) {
         return new NetworkBoundResource<List<GroupItem>, GroupSearchResponse>(appExecutors) {
 
             @Override
             protected void saveCallResult(@NonNull GroupSearchResponse item) {
                 List<String> groupIds = item.getGroupIds();
                 GroupSearchResult groupSearchResult = new GroupSearchResult(
-                        query, groupIds);
+                        query, groupIds, item.getTotal(), item.getNextPageStart());
                 List<GroupItem> groups = new ArrayList<>();
                 for (SearchResultItem searchResultItem : item.getItems()) {
                     groups.add(searchResultItem.getGroup());
@@ -143,27 +148,27 @@ public class GroupRepository {
             @NonNull
             @Override
             protected LiveData<List<GroupItem>> loadFromDb() {
-                return Transformations.switchMap(groupDao.search(query), searchData -> {
+                return Transformations.switchMap(groupDao.findSearchResult(query), searchData -> {
                     if (searchData == null) {
                         return new LiveData<List<GroupItem>>(null) {
                         };
                     } else {
-                        return groupDao.loadOrdered(searchData.groupIds, (g1, g2) -> g2.memberCount - g1.memberCount);
+                        return groupDao.loadOrdered(searchData.ids, (g1, g2) -> g2.memberCount - g1.memberCount);
                     }
                 });
             }
 
             @NonNull
             @Override
-            protected LiveData<GroupSearchResponse> createCall() {
-                return doubanService.searchGroups(query);
+            protected LiveData<ApiResponse<GroupSearchResponse>> createCall() {
+                return doubanService.searchGroups(query, Constants.RESUlT_GROUPS_COUNT);
             }
 
 
         }.asLiveData();
     }
 
-    public LiveData<List<GroupPostItem>> getGroupPosts(String groupId, String tagId) {
+    public LiveData<Resource<List<GroupPostItem>>> getGroupPosts(String groupId, String tagId) {
         return new NetworkBoundResource<List<GroupPostItem>, GroupPostsResponse>(appExecutors) {
             @Override
             protected void saveCallResult(@NonNull GroupPostsResponse item) {
@@ -188,23 +193,23 @@ public class GroupRepository {
             @Override
             protected LiveData<List<GroupPostItem>> loadFromDb() {
                 if (TextUtils.isEmpty(tagId)) {
-                    return groupDao.getGroupPosts(groupId);
+                    return groupDao.loadGroupPosts(groupId);
                 }
-                return groupDao.getGroupPosts(groupId, tagId);
+                return groupDao.loadGroupPosts(groupId, tagId);
             }
 
             @NonNull
             @Override
-            protected LiveData<GroupPostsResponse> createCall() {
+            protected LiveData<ApiResponse<GroupPostsResponse>> createCall() {
                 if (TextUtils.isEmpty(tagId)) {
-                    return doubanService.getGroupPosts(groupId);
+                    return doubanService.getGroupPosts(groupId, SortByRequestParamType.NEW.getParam(), Constants.RESULT_POSTS_COUNT);
                 }
-                return doubanService.getGroupPostsOfTag(groupId, tagId);
+                return doubanService.getGroupPostsOfTag(groupId, tagId, SortByRequestParamType.NEW.getParam(), Constants.RESULT_POSTS_COUNT);
             }
         }.asLiveData();
     }
 
-    public LiveData<GroupPost> getGroupPost(String postId) {
+    public LiveData<Resource<GroupPost>> getGroupPost(String postId) {
         return new NetworkBoundResource<GroupPost, GroupPost>(appExecutors) {
 
             @Override
@@ -215,7 +220,7 @@ public class GroupRepository {
 
                 appDatabase.runInTransaction(() -> {
                     groupDao.insertPost(item);
-                    groupDao.upsertGroup(item.group);
+                    groupDao.upsertDetail(item.group);
                 });
 
             }
@@ -228,18 +233,18 @@ public class GroupRepository {
             @NonNull
             @Override
             protected LiveData<GroupPost> loadFromDb() {
-                return groupDao.getGroupPost(postId);
+                return groupDao.loadPost(postId);
             }
 
             @NonNull
             @Override
-            protected LiveData<GroupPost> createCall() {
+            protected LiveData<ApiResponse<GroupPost>> createCall() {
                 return doubanService.getGroupPost(postId);
             }
         }.asLiveData();
     }
 
-    public LiveData<GroupPostComments> getGroupPostComments(String postId) {
+    public LiveData<Resource<GroupPostComments>> getGroupPostComments(String postId) {
         return new NetworkBoundResource<GroupPostComments, GroupPostCommentsResponse>(appExecutors) {
             @Override
             protected void saveCallResult(@NonNull GroupPostCommentsResponse item) {
@@ -270,11 +275,11 @@ public class GroupRepository {
                 MediatorLiveData<GroupPostComments> result = new MediatorLiveData<>();
 
                 GroupPostComments groupPostCommePnts = new GroupPostComments();
-                result.addSource(groupDao.getPostComments(postId), comments -> {
+                result.addSource(groupDao.loadPostComments(postId), comments -> {
                     if (comments != null && !comments.isEmpty()) {
                         groupPostCommePnts.setAllComments(comments);
                         //result.setValue(groupPostCommePnts);
-                        LiveData<List<GroupPostComment>> topComments = Transformations.switchMap(groupDao.getPostTopComments(postId), data -> {
+                        LiveData<List<GroupPostComment>> topComments = Transformations.switchMap(groupDao.loadPostTopComments(postId), data -> {
                             if (data == null)
                                 return new LiveData<List<GroupPostComment>>(null) {
                                 };
@@ -301,8 +306,8 @@ public class GroupRepository {
 
             @NonNull
             @Override
-            protected LiveData<GroupPostCommentsResponse> createCall() {
-                return doubanService.getGroupPostComments(postId);
+            protected LiveData<ApiResponse<GroupPostCommentsResponse>> createCall() {
+                return doubanService.getGroupPostComments(postId, 0, Constants.RESULT_POSTS_COUNT);
             }
         }.asLiveData();
     }

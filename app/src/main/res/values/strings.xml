@@ -3,7 +3,7 @@
     <string name="title_home">Home</string>
     <string name="title_groups">Groups</string>
     <string name="title_notifications">Notifications</string>
-    <string name="followed_header">Followed</string>
+    <string name="follow_header">Follows</string>
 
     <string name="title_group" />
     <string name="title_post_detail">Post Detail</string>

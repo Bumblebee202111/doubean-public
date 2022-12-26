@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -26,7 +25,8 @@ import com.doubean.ford.MobileNavigationDirections;
 import com.doubean.ford.R;
 import com.doubean.ford.adapters.PostCommentAdapter;
 import com.doubean.ford.data.vo.GroupPost;
-import com.doubean.ford.data.vo.GroupPostComments;
+import com.doubean.ford.data.vo.Resource;
+import com.doubean.ford.data.vo.Status;
 import com.doubean.ford.databinding.FragmentPostDetailBinding;
 import com.doubean.ford.ui.common.DoubeanWebView;
 import com.doubean.ford.ui.common.DoubeanWebViewClient;
@@ -39,7 +39,7 @@ public class PostDetailFragment extends Fragment {
     final Boolean[] isToolbarShown = {false};
     private PostDetailViewModel postDetailViewModel;
     private FragmentPostDetailBinding binding;
-    private int groupColor;
+
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -74,35 +74,41 @@ public class PostDetailFragment extends Fragment {
         DoubeanWebViewClient webViewClient = new DoubeanWebViewClient(Constants.POST_CONTENT_CSS_FILENAME);
         content.setWebViewClient(webViewClient);
 
+        getActivity().getWindow().setStatusBarColor(getContext().getColor(R.color.doubean_green));
+
         postDetailViewModel.getPost().observe(getViewLifecycleOwner(), post -> {
-            if (post != null) {
-                if (!TextUtils.isEmpty(post.content)) {
-                    String encodedContent = Base64.encodeToString(post.content.getBytes(),
+            if (post != null && post.data != null) {
+                if (!TextUtils.isEmpty(post.data.content)) {
+                    String encodedContent = Base64.encodeToString(post.data.content.getBytes(),
                             Base64.NO_PADDING);
                     binding.content.loadData(encodedContent, "text/html", "base64");
                 }
-                if (post.postTags != null) {
-                    binding.postTag.setOnClickListener(v -> navigateToGroupTab(v, post));
+                if (post.data.postTags != null) {
+                    binding.postTag.setOnClickListener(v -> navigateToGroupTab(v, post.data));
                 }
 
-                binding.groupName.setOnClickListener(v -> navigateToGroup(v, post));
+                binding.groupName.setOnClickListener(v -> navigateToGroup(v, post.data));
 
-                binding.groupName.setOnClickListener(v -> navigateToGroup(v, post));
+                binding.groupAvatar.setOnClickListener(v -> navigateToGroup(v, post.data));
 
-                groupColor = post.group.getColor();
+                if (post.data.group != null) {
+                    int groupColor = post.data.group.getColor();
 
-                int color = groupColor == 0 ? getContext().getColor(R.color.doubean_green) : groupColor;
-                getActivity().getWindow().setStatusBarColor(color);
-                binding.toolbar.setBackgroundColor(color);
+                    if (groupColor != 0) {
+                        getActivity().getWindow().setStatusBarColor(groupColor);
+                        binding.toolbar.setBackgroundColor(groupColor);
+                        PostCommentAdapter topCommentAdapter = new PostCommentAdapter(post.data.author.id, groupColor);
+                        PostCommentAdapter allCommentAdapter = new PostCommentAdapter(post.data.author.id, groupColor);
+                        binding.topComments.setAdapter(topCommentAdapter);
+                        binding.allComments.setAdapter(allCommentAdapter);
+                        subscribeUi(topCommentAdapter, allCommentAdapter);
 
-                PostCommentAdapter topCommentAdapter = new PostCommentAdapter(post.author.id, groupColor);
-                PostCommentAdapter allCommentAdapter = new PostCommentAdapter(post.author.id, groupColor);
-                binding.topComments.setAdapter(topCommentAdapter);
-                binding.allComments.setAdapter(allCommentAdapter);
-                subscribeUi(topCommentAdapter, allCommentAdapter);
+                        binding.topComments.addItemDecoration(new DividerItemDecoration(binding.topComments.getContext(), DividerItemDecoration.VERTICAL));
+                        binding.allComments.addItemDecoration(new DividerItemDecoration(binding.allComments.getContext(), DividerItemDecoration.VERTICAL));
+                    }
 
-                binding.topComments.addItemDecoration(new DividerItemDecoration(binding.topComments.getContext(), DividerItemDecoration.VERTICAL));
-                binding.allComments.addItemDecoration(new DividerItemDecoration(binding.allComments.getContext(), DividerItemDecoration.VERTICAL));
+                }
+
 
             }
 
@@ -114,9 +120,9 @@ public class PostDetailFragment extends Fragment {
             //noinspection SwitchStatementWithTooFewBranches
             switch (item.getItemId()) {
                 case R.id.action_view_in_web:
-                    GroupPost post = postDetailViewModel.getPost().getValue();
-                    if (post != null) {
-                        navigateToWebView(requireView(), post);
+                    Resource<GroupPost> post = postDetailViewModel.getPost().getValue();
+                    if (post != null && post.data != null) {
+                        navigateToWebView(requireView(), post.data);
                     }
                     return true;
                 default:
@@ -132,11 +138,21 @@ public class PostDetailFragment extends Fragment {
         return binding.getRoot();
     }
 
-    @Override
     public void onResume() {
         super.onResume();
-
-
+        postDetailViewModel.getPost().observe(getViewLifecycleOwner(), post -> {
+            if (post != null) {
+                if (post.status == Status.SUCCESS) {
+                    if (post.data.group != null && post.data.group.colorString != null) {
+                        getActivity().getWindow().setStatusBarColor(post.data.group.getColor());
+                    } else {
+                        getActivity().getWindow().setStatusBarColor(getContext().getColor(R.color.doubean_green));
+                    }
+                } else if (post.status == Status.ERROR) {
+                    getActivity().getWindow().setStatusBarColor(getContext().getColor(R.color.doubean_green));
+                }
+            }
+        });
     }
 
     @Override
@@ -146,15 +162,12 @@ public class PostDetailFragment extends Fragment {
     }
 
     private void subscribeUi(PostCommentAdapter topCommentAdapter, PostCommentAdapter allCommentAdapter) {
-        postDetailViewModel.getPostComments().observe(getViewLifecycleOwner(), new Observer<GroupPostComments>() {
-            @Override
-            public void onChanged(GroupPostComments groupPostComments) {
-                if (groupPostComments != null && groupPostComments.getAllComments() != null && !groupPostComments.getAllComments().isEmpty()) {
-                    topCommentAdapter.submitList(groupPostComments.getTopComments());
-                    allCommentAdapter.submitList(groupPostComments.getAllComments());
-                }
-
+        postDetailViewModel.getPostComments().observe(getViewLifecycleOwner(), groupPostComments -> {
+            if (groupPostComments.data != null && groupPostComments.data.getAllComments() != null) {
+                topCommentAdapter.submitList(groupPostComments.data.getTopComments());
+                allCommentAdapter.submitList(groupPostComments.data.getAllComments());
             }
+
         });
     }
 

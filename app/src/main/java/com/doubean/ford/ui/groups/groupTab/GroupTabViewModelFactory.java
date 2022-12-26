@@ -5,18 +5,18 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.doubean.ford.data.repository.GroupRepository;
-import com.doubean.ford.data.repository.GroupsFollowedAndSavedRepository;
+import com.doubean.ford.data.repository.GroupsFollowsAndSavesRepository;
 
 public class GroupTabViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private GroupRepository repository;
     private String groupId;
     private String tagId;
-    GroupsFollowedAndSavedRepository groupsFollowedAndSavedRepository;
+    GroupsFollowsAndSavesRepository groupsFollowsAndSavesRepository;
 
-    public GroupTabViewModelFactory(@NonNull GroupRepository groupRepository, GroupsFollowedAndSavedRepository groupsFollowedAndSavedRepository, String groupId, String tagId) {
+    public GroupTabViewModelFactory(@NonNull GroupRepository groupRepository, GroupsFollowsAndSavesRepository groupsFollowsAndSavesRepository, String groupId, String tagId) {
         super();
         this.repository = groupRepository;
-        this.groupsFollowedAndSavedRepository = groupsFollowedAndSavedRepository;
+        this.groupsFollowsAndSavesRepository = groupsFollowsAndSavesRepository;
         this.groupId = groupId;
         this.tagId = tagId;
     }
@@ -25,6 +25,6 @@ public class GroupTabViewModelFactory extends ViewModelProvider.NewInstanceFacto
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
 
-        return (T) new GroupTabViewModel(repository, groupsFollowedAndSavedRepository, groupId, tagId);
+        return (T) new GroupTabViewModel(repository, groupsFollowsAndSavesRepository, groupId, tagId);
     }
 }

@@ -4,8 +4,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.doubean.ford.data.repository.GroupRepository;
-import com.doubean.ford.data.repository.GroupsFollowedAndSavedRepository;
+import com.doubean.ford.data.repository.GroupsFollowsAndSavesRepository;
 import com.doubean.ford.data.vo.GroupPostItem;
+import com.doubean.ford.data.vo.Resource;
 
 import java.util.List;
 
@@ -15,22 +16,22 @@ public class GroupTabViewModel extends ViewModel {
     private final LiveData<Boolean> followed;
     private String groupId;
     private String tagId;
-    private LiveData<List<GroupPostItem>> posts;
-    private GroupsFollowedAndSavedRepository groupsFollowedAndSavedRepository;
+    private LiveData<Resource<List<GroupPostItem>>> posts;
+    private GroupsFollowsAndSavesRepository groupsFollowsAndSavesRepository;
 
 
-    public GroupTabViewModel(GroupRepository repository, GroupsFollowedAndSavedRepository groupsFollowedAndSavedRepository, String groupId, String tagId) {
+    public GroupTabViewModel(GroupRepository repository, GroupsFollowsAndSavesRepository groupsFollowsAndSavesRepository, String groupId, String tagId) {
         this.repository = repository;
-        this.groupsFollowedAndSavedRepository = groupsFollowedAndSavedRepository;
+        this.groupsFollowsAndSavesRepository = groupsFollowsAndSavesRepository;
         this.groupId = groupId;
         this.tagId = tagId;
         posts = repository.getGroupPosts(groupId, tagId);
-        this.followed = groupsFollowedAndSavedRepository.getFollowed(groupId, tagId);
+        this.followed = groupsFollowsAndSavesRepository.getFollowed(groupId, tagId);
 
     }
 
 
-    public LiveData<List<GroupPostItem>> getPosts() {
+    public LiveData<Resource<List<GroupPostItem>>> getPosts() {
         return posts;
     }
 
@@ -38,11 +39,11 @@ public class GroupTabViewModel extends ViewModel {
         return followed;
     }
 
-    public void addFollowed() {
-        groupsFollowedAndSavedRepository.createFollowed(groupId, tagId);
+    public void addFollow() {
+        groupsFollowsAndSavesRepository.createFollow(groupId, tagId);
     }
 
-    public void removeFollowed() {
-        groupsFollowedAndSavedRepository.removeFollowed(groupId, tagId);
+    public void removeFollow() {
+        groupsFollowsAndSavesRepository.removeFollow(groupId, tagId);
     }
 }

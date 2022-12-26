@@ -26,18 +26,18 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/groupFollowed"
+                android:id="@+id/groupFollow"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_normal"
-                android:text="@string/followed_header"
+                android:text="@string/follow_header"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/followed_list"
+                android:id="@+id/follow_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_normal"
@@ -47,7 +47,7 @@
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/groupFollowed"
+                app:layout_constraintTop_toBottomOf="@id/groupFollow"
                 tools:context="com.google.samples.apps.sunflower.GardenActivity"
                 tools:listitem="@layout/list_item_group" />
         </androidx.constraintlayout.widget.ConstraintLayout>

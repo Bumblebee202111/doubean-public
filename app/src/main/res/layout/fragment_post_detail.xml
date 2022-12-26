@@ -29,7 +29,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/menu_post_detail"
             app:navigationIcon="@drawable/ic_detail_back"
-            app:title="@{viewModel.post.title}"
+            app:title="@{viewModel.post.data.title}"
             style="@style/Widget.Doubean.GroupToolbar"
             tools:title="title title title title " />
         <!--todo: app:subtitle="@{viewModel.post.abstract}"-->
@@ -56,7 +56,7 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/group_avatar"
-                    imageFromUrl="@{viewModel.post.group.avatarUrl}"
+                    imageFromUrl="@{viewModel.post.data.group.avatarUrl}"
                     android:layout_width="@dimen/icon_size_extra_small"
                     android:layout_height="@dimen/icon_size_extra_small"
                     app:layout_constraintBottom_toBottomOf="@id/group_name"
@@ -72,7 +72,7 @@
                     android:layout_marginTop="@dimen/margin_small"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@{viewModel.post.group.name}"
+                    android:text="@{viewModel.post.data.group.name}"
                     app:layout_constraintStart_toEndOf="@id/group_avatar"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -84,7 +84,7 @@
                     android:layout_height="@dimen/icon_size_large"
                     android:layout_marginStart="@dimen/margin_normal"
                     android:layout_marginTop="@dimen/margin_small"
-                    app:avatarFromUrl="@{viewModel.post.author.avatarUrl}"
+                    app:avatarFromUrl="@{viewModel.post.data.author.avatarUrl}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/group_name"
                     app:shapeAppearanceOverlay="@style/smallRoundedCornersImageView" />
@@ -95,7 +95,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_small"
                     android:layout_marginEnd="@dimen/margin_small"
-                    android:text="@{viewModel.post.author.name}"
+                    android:text="@{viewModel.post.data.author.name}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                     app:layout_constraintEnd_toStartOf="@id/more"
                     app:layout_constraintStart_toEndOf="@id/author_avatar"
@@ -117,7 +117,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/margin_small"
                     android:layout_marginTop="@dimen/margin_extra_small"
-                    android:text="@{DateTimeUtil.dateTimeText(viewModel.post.created,DateTimeStyle.LONG)}"
+                    android:text="@{DateTimeUtil.dateTimeText(viewModel.post.data.created,DateTimeStyle.LONG)}"
                     app:layout_constraintStart_toEndOf="@id/author_avatar"
                     app:layout_constraintTop_toBottomOf="@id/author_name"
                     tools:text="1999" />
@@ -129,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/margin_normal"
                     android:layout_marginTop="@dimen/margin_small"
-                    android:text="@{viewModel.post.title}"
+                    android:text="@{viewModel.post.data.title}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/post_created"
@@ -138,12 +138,12 @@
                 <com.google.android.material.chip.Chip
                     android:id="@+id/post_tag"
                     style="@style/Widget.MaterialComponents.Chip.Action"
-                    isGone="@{viewModel.post.tagId==null}"
+                    isGone="@{viewModel.post.data.tagId==null}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_normal"
                     android:layout_marginTop="@dimen/margin_small"
-                    android:text="@{viewModel.post.tagName}"
+                    android:text="@{viewModel.post.data.tagName}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/post_title"
                     tools:text="标签tag" />
@@ -171,32 +171,32 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/repost_count"
-                        isGone="@{viewModel.post.repostCount==null}"
+                        isGone="@{viewModel.post.data.repostCount==null}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.post.repostCount==null?``:@plurals/reposts(viewModel.post.repostCount,viewModel.post.repostCount)}"
+                        android:text="@{viewModel.post.data.repostCount==null?``:@plurals/reposts(viewModel.post.data.repostCount,viewModel.post.data.repostCount)}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/like_count"
-                        isGone="@{viewModel.post.likeCount==null}"
+                        isGone="@{viewModel.post.data.likeCount==null}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/margin_normal"
-                        android:text="@{viewModel.post.likeCount==null?``:@plurals/likes(viewModel.post.likeCount,viewModel.post.likeCount)}"
+                        android:text="@{viewModel.post.data.likeCount==null?``:@plurals/likes(viewModel.post.data.likeCount,viewModel.post.data.likeCount)}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@id/repost_count"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/save_count"
-                        isGone="@{viewModel.post.saveCount==null}"
+                        isGone="@{viewModel.post.data.saveCount==null}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/margin_normal"
-                        android:text="@{viewModel.post.saveCount==null?``:@plurals/saves(viewModel.post.saveCount,viewModel.post.saveCount)}"
+                        android:text="@{viewModel.post.data.saveCount==null?``:@plurals/saves(viewModel.post.data.saveCount,viewModel.post.data.saveCount)}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/like_count"
@@ -207,7 +207,7 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/top_comments_header"
-                    isGone="@{viewModel.postComments.topComments==null||viewModel.postComments.topComments.empty}"
+                    isGone="@{viewModel.postComments.data.topComments==null||viewModel.postComments.data.topComments.empty}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/margin_normal"
@@ -220,11 +220,11 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/top_comment_count"
-                    isGone="@{viewModel.postComments.topComments==null||viewModel.postComments.topComments.empty}"
+                    isGone="@{viewModel.postComments.data.topComments==null||viewModel.postComments.data.topComments.empty}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/margin_normal"
-                    android:text="@{``+viewModel.postComments.topComments.size()}"
+                    android:text="@{``+viewModel.postComments.data.topComments.size()}"
                     android:textAppearance="?attr/textAppearanceSubtitle2"
                     android:textColor="?attr/colorAccent"
                     android:textStyle="bold"
@@ -249,7 +249,7 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/all_comments_header"
-                    isGone="@{viewModel.postComments.allComments==null||viewModel.postComments.allComments.empty}"
+                    isGone="@{viewModel.postComments.data.allComments==null||viewModel.postComments.data.allComments.empty}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/margin_normal"
@@ -262,11 +262,11 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/all_comment_count"
-                    isGone="@{viewModel.postComments.allComments==null||viewModel.postComments.allComments.empty}"
+                    isGone="@{viewModel.postComments.data.allComments==null||viewModel.postComments.data.allComments.empty}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/margin_normal"
-                    android:text="@{``+viewModel.postComments.allComments.size()}"
+                    android:text="@{``+viewModel.postComments.data.allComments.size()}"
                     android:textAppearance="?attr/textAppearanceSubtitle2"
                     android:textColor="?attr/colorAccent"
                     android:textStyle="bold"

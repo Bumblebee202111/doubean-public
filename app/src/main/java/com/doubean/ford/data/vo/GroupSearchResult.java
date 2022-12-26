@@ -12,15 +12,16 @@ import java.util.List;
 
 @Entity
 @TypeConverters(Converters.class)
-public class GroupSearchResult {
+public class GroupSearchResult extends ListResult {
     @PrimaryKey
     @NonNull
     public String query;
-    @Nullable
-    public List<String> groupIds;
 
-    public GroupSearchResult(@NonNull String query, @Nullable List<String> groupIds) {
+    public GroupSearchResult(@NonNull String query, @Nullable List<String> ids, int totalCount,
+                             @Nullable Integer next) {
+        super(ids, totalCount, next);
         this.query = query;
-        this.groupIds = groupIds;
     }
+
+
 }
