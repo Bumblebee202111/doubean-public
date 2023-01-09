@@ -46,6 +46,8 @@ public abstract class AppDatabase extends RoomDatabase {
             super.onCreate(db);
             new AppExecutors().diskIO().execute(() -> {
                 GroupFollowsAndSavesDao dao = instance.getGroupFollowsAndSavesDao();
+                dao.insertFollow(new GroupFollow("679784", null));
+                dao.insertFollow(new GroupFollow("385172", "56374"));
                 dao.insertFollow(new GroupFollow("665372", null));
                 dao.insertFollow(new GroupFollow("644960", "53959"));
             });
