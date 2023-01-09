@@ -13,8 +13,8 @@ public class GroupSearchResponse extends ListResponse<SearchResultItem> {
 
     private String q;
 
-    public GroupSearchResponse(int start, String q, List<SearchResultItem> items) {
-        super(start, items);
+    public GroupSearchResponse(int start, int count, int total, String q, List<SearchResultItem> items) {
+        super(start, count, total, items);
         this.q = q;
     }
 

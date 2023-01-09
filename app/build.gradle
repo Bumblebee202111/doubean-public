@@ -68,6 +68,7 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$rootProject.testExtJunit"
     testImplementation "junit:junit:$rootProject.junitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.espressoVersion"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$rootProject.swipeRefreshLayoutVersion"
 }
 
 def getDoubanAccess() {

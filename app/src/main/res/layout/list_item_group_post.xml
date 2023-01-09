@@ -8,7 +8,7 @@
         <import type="com.doubean.ford.util.DateTimeStyle" />
         <variable
             name="post"
-            type="com.doubean.ford.data.vo.GroupPostItem" />
+            type="com.doubean.ford.data.vo.PostItem" />
 
         <variable
             name="clickListener"

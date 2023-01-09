@@ -11,6 +11,7 @@ public class Constants {
 
     public static final String DATETIME_PATTERN_DEFAULT = "yyyy-MM-dd HH:mm:ss";
 
-    public static final Integer RESUlT_GROUPS_COUNT = 100;
-    public static final Integer RESULT_POSTS_COUNT = 100;
+    public static final Integer RESULT_GROUPS_COUNT = 50;
+    public static final Integer RESULT_POSTS_COUNT = 50;
+    public static final Integer RESULT_COMMENTS_COUNT = 50;
 }

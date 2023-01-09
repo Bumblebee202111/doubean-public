@@ -7,13 +7,17 @@ import androidx.room.util.StringUtil;
 
 import com.doubean.ford.data.vo.Group;
 import com.doubean.ford.data.vo.GroupBrief;
-import com.doubean.ford.data.vo.GroupPostComment;
 import com.doubean.ford.data.vo.GroupPostTag;
 import com.doubean.ford.data.vo.GroupTab;
+import com.doubean.ford.data.vo.PostComment;
 import com.doubean.ford.data.vo.SizedPhoto;
 import com.doubean.ford.data.vo.User;
 import com.doubean.ford.util.Constants;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
 import java.time.LocalDateTime;
@@ -25,11 +29,13 @@ import java.util.List;
 public class Converters {
     @TypeConverter
     public static LocalDateTime stringToLocalDateTime(String text) {
+        //return text == null ? null : new Gson().fromJson(text,LocalDateTime.class);
         return text == null ? null : LocalDateTime.parse(text, DateTimeFormatter.ofPattern(Constants.DATETIME_PATTERN_DEFAULT));
     }
 
     @TypeConverter
     public static String dateToTimestamp(LocalDateTime localDateTime) {
+        //return localDateTime == null ? null : new Gson().toJson(localDateTime);
         return localDateTime == null ? null : localDateTime.format(DateTimeFormatter.ofPattern(Constants.DATETIME_PATTERN_DEFAULT));
     }
 
@@ -49,16 +55,24 @@ public class Converters {
     }
 
     @TypeConverter
-    public static String groupPostCommentToString(GroupPostComment groupPostComment) {
-        return new Gson().toJson(groupPostComment);
+    public static String postCommentToString(PostComment postComment) {
+        Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
+                (JsonSerializer<LocalDateTime>) (localDateTime, type, jsonSerializationContext) ->
+                        new JsonPrimitive(localDateTime.format(DateTimeFormatter.ofPattern(Constants.DATETIME_PATTERN_DEFAULT)))).create();
+
+        return gson.toJson(postComment);
     }
 
     @TypeConverter
-    public static GroupPostComment stringToGroupPostComment(String data) {
+    public static PostComment stringToPostComment(String data) {
         if (data == null) {
             return null;
         }
-        return new Gson().fromJson(data, GroupPostComment.class);
+        Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
+                (JsonDeserializer<LocalDateTime>) (json, typeOfT, context) ->
+                        LocalDateTime.parse(json.getAsJsonPrimitive().getAsString(),
+                                DateTimeFormatter.ofPattern(Constants.DATETIME_PATTERN_DEFAULT))).create();
+        return gson.fromJson(data, PostComment.class);
     }
 
     @TypeConverter

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class GroupPostItem {
+public class PostItem extends Item {
 
     @SerializedName("id")
     public String id;
@@ -45,5 +45,10 @@ public class GroupPostItem {
     public String getTagName() {
         if (postTags.isEmpty()) return null;
         return postTags.get(0).name;
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 }

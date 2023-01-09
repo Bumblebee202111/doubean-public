@@ -12,8 +12,8 @@ import java.util.List;
 /**
  * Class officially known as topic/话题
  */
-@Entity(tableName = "group_posts")
-public class GroupPost {
+@Entity
+public class Post {
     @NonNull
     @PrimaryKey
     @SerializedName("id")

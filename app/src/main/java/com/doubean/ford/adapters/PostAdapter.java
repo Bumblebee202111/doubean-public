@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.doubean.ford.data.vo.GroupPostItem;
+import com.doubean.ford.data.vo.PostItem;
 import com.doubean.ford.databinding.ListItemGroupPostBinding;
 import com.doubean.ford.ui.groups.groupDetail.GroupDetailFragmentDirections;
 
-public class PostAdapter extends ListAdapter<GroupPostItem, PostAdapter.ViewHolder> {
+public class PostAdapter extends ListAdapter<PostItem, PostAdapter.ViewHolder> {
 
     public PostAdapter() {
         super(new PostAdapter.GroupDiffCallback());
@@ -29,19 +29,19 @@ public class PostAdapter extends ListAdapter<GroupPostItem, PostAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull PostAdapter.ViewHolder holder, int position) {
-        GroupPostItem post = getItem(position);
+        PostItem post = getItem(position);
         holder.bind(post);
     }
 
-    private static class GroupDiffCallback extends DiffUtil.ItemCallback<GroupPostItem> {
+    private static class GroupDiffCallback extends DiffUtil.ItemCallback<PostItem> {
         @Override
-        public boolean areItemsTheSame(@NonNull GroupPostItem oldItem, @NonNull GroupPostItem newItem) {
+        public boolean areItemsTheSame(@NonNull PostItem oldItem, @NonNull PostItem newItem) {
             return oldItem.id.equals(newItem.id);
         }
 
         @SuppressLint("DiffUtilEquals")
         @Override
-        public boolean areContentsTheSame(@NonNull GroupPostItem oldItem, @NonNull GroupPostItem newItem) {
+        public boolean areContentsTheSame(@NonNull PostItem oldItem, @NonNull PostItem newItem) {
             return oldItem == newItem;
         }
     }
@@ -56,13 +56,14 @@ public class PostAdapter extends ListAdapter<GroupPostItem, PostAdapter.ViewHold
             binding.setClickListener(v -> navigateToPost(binding.getPost(), v));
         }
 
-        private void navigateToPost(@NonNull GroupPostItem post, View itemView) {
+        private void navigateToPost(@NonNull PostItem post, View itemView) {
             GroupDetailFragmentDirections.ActionNavigationGroupDetailToNavigationPostDetail direction =
                     GroupDetailFragmentDirections.actionNavigationGroupDetailToNavigationPostDetail(post.id);
             Navigation.findNavController(itemView).navigate(direction);
         }
 
-        void bind(GroupPostItem item) {
+        void bind(PostItem item) {
+
             binding.setPost(item);
             binding.executePendingBindings();
         }
