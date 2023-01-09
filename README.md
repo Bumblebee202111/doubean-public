@@ -4,10 +4,12 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
 
-From now on, this repo will not be updated frequently due to my personal situation. Note I am a
-beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete
-and features you need may be missing. Pretty much of my work is copy and paste from the official
-documentation and samples of Google Android.
+From now on, this repo will not be updated frequently as I am getting tired and bored of its
+development as the app grows larger. Note I am an inexperienced beginner and the only developer of
+it. Occasional crashes may happen, UI design may be incomplete and features you need may be missing.
+Pretty much of my work is copy and paste from the official documentation and samples of Google
+Android. I am trying my best only to ensure that the app will function normally on my Xiaomi devices
+with Android version varying from 8.1 to 12.
 
 [douban]: https://www.douban.com/
 
@@ -18,7 +20,7 @@ Introduction
 
 ### Functionality
 
-The app is composed of 3 main screens, two of which are left blank for future development.
+The app is composed of 3 main screens, two of which are blank and left for future development.
 
 #### GroupFragment
 
@@ -80,8 +82,9 @@ list. However, the latest release is always available.
 
 ### Features
 
-It not only implements the very basic features of Douban app, but also has its own features, which
-may resist the trend of Douban community to being walled \(or closed\).
+It not only implements the very basic features of Douban app, but also has its own features, some of
+which react to the trend of Douban community to being unfriendly and closed to non-members. Examples
+are abuse of power, "apply to follow or to talk" and etc.
 
 * Inherent advantages leading to good performance and simple coding | Design Aspect | Choice\(s\) |
   | --- | --- | | Language | Java | | Libraries | Jetpack and authoritative third party libraries |
@@ -92,6 +95,7 @@ may resist the trend of Douban community to being walled \(or closed\).
 * Ad-free, lite \(~30MB\)
 * Support URL deep links
 * Basic support for dark theme and tablets/landscape
+* Basic paging support
 * Support creating categories consisting of group/tab/search posts by multiple user-defined
   conditions \(TODO\)
 
@@ -155,25 +159,22 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
-Note new release is coming soon but not today because the development is slow and I don't like to
-increment app version without adding useful features
-
-* \[GroupFragment\]Update fetching \(methods\) and preloading to prepare for new features, bring
-  back state saving for various views and maybe help decoupling DoubanService
-* SnackbarUtils from todo app
-* \[GroupsHomeFragment\]Show groupFollow / saved posts with group info
+* \[GroupsHomeFragment\]Update default follows
+* \[GroupFragment\]\[GroupPostFragment\]Share
+* \[GroupFragment\]Post order: date created \(not real cuz no such API\), last updated and top
 * \[GroupFragment\]\[GroupPostFragment\]Open in browser/Douban app
 * \[GroupsHomeFragment\]Add "groups of the day" list
+* SnackbarUtils from todo app
+* \[GroupFragment\] Update implementation of CollapsingToolBar – do not use the Sunflower logic
+  * 🛠 Title not shown on recreate
+* Rate limit
+* \[GroupsHomeFragment\]Show groupFollow / saved posts with group info
 * \[GroupFragment\]Adjust when to hide/show toolbar
-* 🛠 \[GroupFragment\]Title not shown on recreate
 * \[GroupPostFragment\]Save WebView images
-* \[GroupFragment\]Post order: date created \(not real cuz no such API\), last updated and top
-* \[Lists\]SwipeRefreshLayout and Pagination
 * \[GroupFragment\]Search group/tab posts
 * \[GroupsFragment\]Search posts of all groups
-* \[GroupFragment\]\[GroupPostFragment\]Share
 * Use Twitter-like date formatting
-* \[Lists\]Add follow/save button for each item
+* \[Lists\]Allow follow/save for each item
 * \[GroupFragment\]\[GroupPostFragment\]Track/mark/revert read
 * \[GroupsHomeFragment\]Unfollow/reorder items
 * \[GroupFragment\]WebView for group
@@ -182,11 +183,6 @@ increment app version without adding useful features
 * \[GroupFragment\]\[GroupPostFragment\]Save various types of searches, posts and comments
 * \[WebView\]Complete CSS of content WebView: find official CSS source or write on my own
 * \[GroupFragment\]Group/tab/post shortcuts
-* Add views for fields currently unused
-* Color
-* Typography
-* Decouple DoubanInterface and expose as much code to VC as possible \(Make anything but keys
-  open-source\)
 * \[Lists\]Reddit-like item expand/collapse
 * \[GroupFragment\]For post items, optimize tag display, e.g., assign color to each tag mapped from
   name
@@ -195,11 +191,21 @@ increment app version without adding useful features
 * \[GroupsHomeFragment\]Recommendations using SharedPref
 * \[Lists\]Post order: custom rules taking multiple conditions into account
 * Widgets
-* Optimize landscape experience
 * Notifications and push services \(delayed in consideration of its difficulty and unimportance\)
 * 🛠 Views on top of WebView become invisible after scroll on my MIUI 10 Android 8.1 device
   \(reasons unknown, may never be fixed\)
+* Uploads copies of responses to some place and reuses it among users to prevent frequent Douban
+  visits.
 * Other modules, e.g., books
+
+General goals:
+
+* Color
+* Typography
+* Optimize landscape experience
+* Add views for fields currently unused
+* Decouple DoubanInterface and expose as much code to VC as possible \(Make anything but keys
+  open-source\)
 
 ### References
 
