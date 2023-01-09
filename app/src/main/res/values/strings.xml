@@ -5,7 +5,7 @@
     <string name="title_notifications">Notifications</string>
     <string name="follow_header">Follows</string>
 
-    <string name="title_group" />
+    <string name="title_group">Group</string>
     <string name="title_post_detail">Post Detail</string>
     <string name="settings">Settings</string>
     <string name="search">Search</string>
@@ -52,6 +52,7 @@
     <string name="all_comments">All comments</string>
     <string name="middle_dot" translatable="false">·</string>
     <string name="op">OP</string>
-
+    <string name="retry">Retry</string>
+    <string name="unknown_error">Unknown Error</string>
 
 </resources>

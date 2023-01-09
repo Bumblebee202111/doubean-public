@@ -1,6 +1,7 @@
 package com.doubean.ford.adapters;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -9,10 +10,10 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.doubean.ford.data.vo.GroupPostComment;
+import com.doubean.ford.data.vo.PostComment;
 import com.doubean.ford.databinding.ListItemGroupPostCommentBinding;
 
-public class PostCommentAdapter extends ListAdapter<GroupPostComment, PostCommentAdapter.ViewHolder> {
+public class PostCommentAdapter extends ListAdapter<PostComment, PostCommentAdapter.ViewHolder> {
 
     private String op;
     private Integer groupColor;
@@ -31,19 +32,19 @@ public class PostCommentAdapter extends ListAdapter<GroupPostComment, PostCommen
 
     @Override
     public void onBindViewHolder(@NonNull PostCommentAdapter.ViewHolder holder, int position) {
-        GroupPostComment comment = getItem(position);
+        PostComment comment = getItem(position);
         holder.bind(comment);
     }
 
-    private static class PostCommentDiffCallback extends DiffUtil.ItemCallback<GroupPostComment> {
+    private static class PostCommentDiffCallback extends DiffUtil.ItemCallback<PostComment> {
         @Override
-        public boolean areItemsTheSame(@NonNull GroupPostComment oldItem, @NonNull GroupPostComment newItem) {
+        public boolean areItemsTheSame(@NonNull PostComment oldItem, @NonNull PostComment newItem) {
             return oldItem.id.equals(newItem.id);
         }
 
         @SuppressLint("DiffUtilEquals")
         @Override
-        public boolean areContentsTheSame(@NonNull GroupPostComment oldItem, @NonNull GroupPostComment newItem) {
+        public boolean areContentsTheSame(@NonNull PostComment oldItem, @NonNull PostComment newItem) {
             return oldItem == newItem;
         }
     }
@@ -61,7 +62,10 @@ public class PostCommentAdapter extends ListAdapter<GroupPostComment, PostCommen
             binding.repliedToAuthorOp.setTextColor(groupColor);
         }
 
-        void bind(GroupPostComment item) {
+        void bind(PostComment item) {
+            if (item.created.toLocalDate() == null) {
+                Log.d("doubean123", item.toString());
+            }
             binding.setPostComment(item);
             binding.setIsAuthorOp(item.author.id.equals(opId));
 
@@ -72,6 +76,9 @@ public class PostCommentAdapter extends ListAdapter<GroupPostComment, PostCommen
             }
 
             if (item.repliedTo != null) {
+                if (item.repliedTo.created.toLocalDate() == null) {
+                    Log.d("doubean", item.toString());
+                }
                 if (!item.repliedTo.photos.isEmpty()) {
                     PhotoAdapter adapter = new PhotoAdapter();
                     binding.repliedToPhotos.setAdapter(adapter);

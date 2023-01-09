@@ -3,16 +3,13 @@ package com.doubean.ford.data.vo;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
 
-import com.doubean.ford.data.db.Converters;
 import com.google.gson.annotations.SerializedName;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity(tableName = "groups")
-@TypeConverters(Converters.class)
 public class Group {
 
     @PrimaryKey

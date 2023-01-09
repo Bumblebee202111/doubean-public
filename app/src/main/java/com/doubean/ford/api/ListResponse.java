@@ -11,13 +11,15 @@ import java.util.List;
 public class ListResponse<ItemType extends Item> {
 
     private int start;
-    @SerializedName("total_count")
+    private int count;
     private int total;
-    @SerializedName("items")
+    @SerializedName(value = "items", alternate = {"topics", "comments"})
     private List<ItemType> items;
 
-    public ListResponse(int start, List<ItemType> items) {
+    public ListResponse(int start, int count, int total, List<ItemType> items) {
         this.start = start;
+        this.count = count;
+        this.total = total;
         this.items = items;
     }
 
@@ -60,4 +62,11 @@ public class ListResponse<ItemType extends Item> {
     }
 
 
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 }

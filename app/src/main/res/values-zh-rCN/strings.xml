@@ -36,4 +36,6 @@
     <string name="last_updated_posts">最后更新发帖</string>
     <string name="followed_tab">关注标签</string>
     <string name="unfollowed_tab">取消关注标签</string>
+    <string name="retry">重试</string>
+    <string name="unknown_error">未知错误</string>
 </resources>

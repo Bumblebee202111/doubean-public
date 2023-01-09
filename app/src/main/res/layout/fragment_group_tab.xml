@@ -8,62 +8,138 @@
         <variable
             name="viewModel"
             type="com.doubean.ford.ui.groups.groupTab.GroupTabViewModel" />
+
+        <import type="com.doubean.ford.data.vo.PostItem" />
+
+        <import type="java.util.List" />
+
+        <import type="com.doubean.ford.data.vo.Status" />
+
+        <import type="com.doubean.ford.data.vo.Resource" />
+
+        <variable
+            name="findResource"
+            type="Resource" />
+
+        <variable
+            name="resultCount"
+            type="int" />
+
+
+        <variable
+            name="loadingMore"
+            type="boolean" />
+
+        <variable
+            name="callback"
+            type="com.doubean.ford.ui.common.RetryCallback" />
     </data>
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scroll_view"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraint_layout"
+        <ProgressBar
+            android:id="@+id/load_more_bar"
+            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            app:isGone="@{!loadingMore}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/top_bar"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swiperefresh"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@id/load_more_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0">
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scroll_view"
                 android:layout_width="match_parent"
-                android:layout_height="?actionBarSize"
-                android:paddingHorizontal="@dimen/margin_normal"
-                android:paddingVertical="@dimen/margin_extra_small"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_height="match_parent">
 
-                <Spinner
-                    android:id="@+id/sort_posts_by_spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraint_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/follow_unfollow"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAllCaps="false"
-                    app:icon="@drawable/ic_add"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Follow" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/top_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:paddingHorizontal="@dimen/margin_normal"
+                        android:paddingVertical="@dimen/margin_extra_small"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/post_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:nestedScrollingEnabled="false"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/top_bar" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+                        <Spinner
+                            android:id="@+id/sort_posts_by_spinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/follow_unfollow"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAllCaps="false"
+                            app:icon="@drawable/ic_add"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="Follow" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/post_list"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:clipToPadding="false"
+                        android:nestedScrollingEnabled="false"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/top_bar"
+                        app:layout_constraintVertical_bias="0"
+                        tools:listitem="@layout/list_item_group_post" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.core.widget.NestedScrollView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <include
+            layout="@layout/loading_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:callback="@{() -> callback.retry()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:resource="@{findResource}" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </layout>

@@ -12,6 +12,7 @@ import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -48,9 +49,31 @@ public class GroupTabFragment extends Fragment {
         PostAdapter adapter = new PostAdapter();
         binding.postList.setAdapter(adapter);
         binding.postList.addItemDecoration(new DividerItemDecoration(binding.postList.getContext(), DividerItemDecoration.VERTICAL));
-        groupTabViewModel.getPosts().observe(getViewLifecycleOwner(), listResource -> {
-            if (listResource != null && listResource.data != null)
-                adapter.submitList(listResource.data);
+
+        binding.scrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
+                groupTabViewModel.loadNextPage();
+            }
+        });
+        groupTabViewModel.getPosts().observe(getViewLifecycleOwner(), result -> {
+            binding.setFindResource(result);
+            binding.setResultCount(result == null || result.data == null ? 0 : result.data.size());
+            adapter.submitList(result == null ? null : result.data);
+            if (result != null)
+                binding.swiperefresh.setRefreshing(false);
+
+        });
+        groupTabViewModel.getLoadMoreStatus().observe(getViewLifecycleOwner(), loadingMore -> {
+            if (loadingMore == null) {
+                binding.setLoadingMore(false);
+            } else {
+                binding.setLoadingMore(loadingMore.isRunning());
+                String error = loadingMore.getErrorMessageIfNotHandled();
+                if (error != null) {
+                    Snackbar.make(binding.loadMoreBar, error, Snackbar.LENGTH_LONG).show();
+                }
+            }
+            binding.executePendingBindings();
         });
 
         MaterialButton followUnfollow = binding.followUnfollow;
@@ -104,6 +127,10 @@ public class GroupTabFragment extends Fragment {
 
             }
         });
+
+        binding.setCallback(groupTabViewModel::refreshPosts);
+        binding.swiperefresh.setOnRefreshListener(groupTabViewModel::refreshPosts);
+
         return binding.getRoot();
     }
 

@@ -70,7 +70,7 @@ public abstract class FetchNextPageTask<ItemType extends Item, ResultType extend
                 ids.addAll(current.ids);
                 //noinspection ConstantConditions
                 ids.addAll(apiResponse.body.getIds());
-                ResultType merged = merge(ids, apiResponse.body.getTotal(), apiResponse.body.getNextPageStart());
+                ResultType merged = merge(ids, current, apiResponse.body.getTotal(), apiResponse.body.getNextPageStart());
                 db.runInTransaction(() -> {
                     saveMergedResult(merged, apiResponse.body.getItems());
                 });
@@ -91,7 +91,8 @@ public abstract class FetchNextPageTask<ItemType extends Item, ResultType extend
 
     protected abstract Call<RequestType> createCall(Integer nextPageStart);
 
+    protected abstract ResultType merge(List<String> ids, ResultType current, int total, Integer nextPageStart);
+
     protected abstract void saveMergedResult(@NonNull ResultType item, List<ItemType> items);
 
-    protected abstract ResultType merge(List<String> ids, int total, Integer nextPageStart);
 }

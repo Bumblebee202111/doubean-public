@@ -11,7 +11,7 @@
 
         <variable
             name="postComment"
-            type="com.doubean.ford.data.vo.GroupPostComment" />
+            type="com.doubean.ford.data.vo.PostComment" />
 
         <variable
             name="isAuthorOp"

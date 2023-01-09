@@ -24,7 +24,7 @@ import androidx.webkit.WebViewFeature;
 import com.doubean.ford.MobileNavigationDirections;
 import com.doubean.ford.R;
 import com.doubean.ford.adapters.PostCommentAdapter;
-import com.doubean.ford.data.vo.GroupPost;
+import com.doubean.ford.data.vo.Post;
 import com.doubean.ford.data.vo.Resource;
 import com.doubean.ford.data.vo.Status;
 import com.doubean.ford.databinding.FragmentPostDetailBinding;
@@ -32,6 +32,7 @@ import com.doubean.ford.ui.common.DoubeanWebView;
 import com.doubean.ford.ui.common.DoubeanWebViewClient;
 import com.doubean.ford.util.Constants;
 import com.doubean.ford.util.InjectorUtils;
+import com.google.android.material.snackbar.Snackbar;
 
 
 public class PostDetailFragment extends Fragment {
@@ -47,8 +48,10 @@ public class PostDetailFragment extends Fragment {
 
         binding = FragmentPostDetailBinding.inflate(inflater, container, false);
         binding.setLifecycleOwner(getViewLifecycleOwner());
+
         PostDetailFragmentArgs args = PostDetailFragmentArgs.fromBundle(getArguments());
         PostDetailViewModelFactory factory = InjectorUtils.providePostDetailViewModelFactory(requireContext(), args.getPostId());
+
         postDetailViewModel = new ViewModelProvider(this, factory).get(PostDetailViewModel.class);
         binding.setViewModel(postDetailViewModel);
 
@@ -120,7 +123,7 @@ public class PostDetailFragment extends Fragment {
             //noinspection SwitchStatementWithTooFewBranches
             switch (item.getItemId()) {
                 case R.id.action_view_in_web:
-                    Resource<GroupPost> post = postDetailViewModel.getPost().getValue();
+                    Resource<Post> post = postDetailViewModel.getPost().getValue();
                     if (post != null && post.data != null) {
                         navigateToWebView(requireView(), post.data);
                     }
@@ -133,8 +136,24 @@ public class PostDetailFragment extends Fragment {
         setHasOptionsMenu(true);
 
         binding.postDetailScrollview.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
+                postDetailViewModel.loadNextPage();
+            }
         });
-
+        postDetailViewModel.getLoadMoreStatus().observe(getViewLifecycleOwner(), loadingMore -> {
+            if (loadingMore == null) {
+                binding.setLoadingMore(false);
+            } else {
+                binding.setLoadingMore(loadingMore.isRunning());
+                String error = loadingMore.getErrorMessageIfNotHandled();
+                if (error != null) {
+                    Snackbar.make(binding.loadMoreBar, error, Snackbar.LENGTH_LONG).show();
+                }
+            }
+            binding.executePendingBindings();
+        });
+        binding.setCallback(postDetailViewModel::refreshPostComments);
+        binding.swiperefresh.setOnRefreshListener(postDetailViewModel::refreshPostComments);
         return binding.getRoot();
     }
 
@@ -162,27 +181,31 @@ public class PostDetailFragment extends Fragment {
     }
 
     private void subscribeUi(PostCommentAdapter topCommentAdapter, PostCommentAdapter allCommentAdapter) {
-        postDetailViewModel.getPostComments().observe(getViewLifecycleOwner(), groupPostComments -> {
-            if (groupPostComments.data != null && groupPostComments.data.getAllComments() != null) {
-                topCommentAdapter.submitList(groupPostComments.data.getTopComments());
-                allCommentAdapter.submitList(groupPostComments.data.getAllComments());
+        postDetailViewModel.getPostComments().observe(getViewLifecycleOwner(), result -> {
+            binding.setFindResource(result);
+            binding.setResultCount(result == null || result.data == null || result.data.getAllComments() == null ? 0 : result.data.getAllComments().size());
+            if (result != null && result.data != null) {
+                topCommentAdapter.submitList(result == null || result.data == null ? null : result.data.getTopComments());
+                allCommentAdapter.submitList(result == null || result.data == null ? null : result.data.getAllComments());
             }
 
+            if (result != null)
+                binding.swiperefresh.setRefreshing(false);
         });
     }
 
 
-    private void navigateToWebView(View v, GroupPost post) {
+    private void navigateToWebView(View v, Post post) {
         MobileNavigationDirections.ActionGlobalNavigationWebView direction = MobileNavigationDirections.actionGlobalNavigationWebView(post.url);
         Navigation.findNavController(requireView()).navigate(direction);
     }
 
-    private void navigateToGroupTab(View v, GroupPost post) {
+    private void navigateToGroupTab(View v, Post post) {
         PostDetailFragmentDirections.ActionNavigationPostDetailToNavigationGroupDetail direction = PostDetailFragmentDirections.actionNavigationPostDetailToNavigationGroupDetail(post.groupId).setDefaultTabId(post.tagId);
         Navigation.findNavController(v).navigate(direction);
     }
 
-    private void navigateToGroup(View v, GroupPost post) {
+    private void navigateToGroup(View v, Post post) {
         PostDetailFragmentDirections.ActionNavigationPostDetailToNavigationGroupDetail direction = PostDetailFragmentDirections.actionNavigationPostDetailToNavigationGroupDetail(post.groupId);
         Navigation.findNavController(v).navigate(direction);
     }

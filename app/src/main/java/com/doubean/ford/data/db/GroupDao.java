@@ -14,11 +14,14 @@ import com.doubean.ford.data.vo.Group;
 import com.doubean.ford.data.vo.GroupBrief;
 import com.doubean.ford.data.vo.GroupDetail;
 import com.doubean.ford.data.vo.GroupItem;
-import com.doubean.ford.data.vo.GroupPost;
-import com.doubean.ford.data.vo.GroupPostComment;
-import com.doubean.ford.data.vo.GroupPostItem;
-import com.doubean.ford.data.vo.GroupPostTopComments;
+import com.doubean.ford.data.vo.GroupPostsResult;
 import com.doubean.ford.data.vo.GroupSearchResult;
+import com.doubean.ford.data.vo.GroupTagPostsResult;
+import com.doubean.ford.data.vo.Post;
+import com.doubean.ford.data.vo.PostComment;
+import com.doubean.ford.data.vo.PostCommentsResult;
+import com.doubean.ford.data.vo.PostItem;
+import com.doubean.ford.data.vo.PostTopComments;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -85,13 +88,14 @@ public interface GroupDao {
         updateGroups(updateList);
     }
 
+    @Query("SELECT * FROM GroupSearchResult WHERE `query` = :query")
+    LiveData<GroupSearchResult> search(String query);
 
     @Query("SELECT * FROM GroupSearchResult WHERE `query` = :query")
-    LiveData<GroupSearchResult> findSearchResult(String query);
+    GroupSearchResult findSearchResult(String query);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertGroupSearchResult(GroupSearchResult groupSearchResult);
-
 
     @Query("SELECT * FROM groups WHERE id IN (:groupIds)")
     @RewriteQueriesToDropUnusedColumns
@@ -99,60 +103,135 @@ public interface GroupDao {
 
     default LiveData<List<GroupItem>> loadOrdered(List<String> groupIds, Comparator<GroupItem> c) {
         return Transformations.map(loadGroupsById(groupIds), groups -> {
-            groups.sort(c);
+            if (c == null) {
+                groups.sort(Comparator.comparingInt(o -> groupIds.indexOf(o.id)));
+            } else groups.sort(c);
             return groups;
         });
     }
 
+    default LiveData<List<GroupItem>> loadOrdered(List<String> groupIds) {
+        return loadOrdered(groupIds, null);
+    }
 
-    @Query("SELECT * FROM group_posts WHERE groupId = :groupId AND tagId=:tagId ORDER BY created DESC LIMIT 100")
-    @RewriteQueriesToDropUnusedColumns
-    LiveData<List<GroupPostItem>> loadGroupPosts(String groupId, String tagId);
+    /* Posts-related operations start */
 
-    @Query("SELECT * FROM group_posts WHERE groupId = :groupId ORDER BY created DESC LIMIT 100")
+    @Query("SELECT * FROM Post WHERE groupId = :groupId ORDER BY created DESC")
     @RewriteQueriesToDropUnusedColumns
-    LiveData<List<GroupPostItem>> loadGroupPosts(String groupId);
+    LiveData<List<PostItem>> loadGroupPosts(String groupId);
+
+    @Query("SELECT * FROM Post WHERE groupId = :groupId AND tagId=:tagId ORDER BY created DESC")
+    @RewriteQueriesToDropUnusedColumns
+    LiveData<List<PostItem>> loadGroupTagPosts(String groupId, String tagId);
+
+    @Query("SELECT * FROM Post WHERE id IN (:postIds)")
+    @RewriteQueriesToDropUnusedColumns
+    LiveData<List<PostItem>> loadPostsById(List<String> postIds);
+
+    default LiveData<List<PostItem>> loadPosts(List<String> postIds) {
+        return Transformations.map(loadPostsById(postIds), posts -> {
+            posts.sort(Comparator.comparingInt(o -> postIds.indexOf(o.id)));
+            return posts;
+        });
+    }
+
+    @Query("SELECT * FROM GroupPostsResult WHERE groupId = :groupId")
+    @RewriteQueriesToDropUnusedColumns
+    LiveData<GroupPostsResult> getGroupPosts(String groupId);
+
+
+    @Query("SELECT * FROM GroupPostsResult WHERE groupId = :groupId")
+    @RewriteQueriesToDropUnusedColumns
+    GroupPostsResult findGroupPosts(String groupId);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertGroupPostsResult(GroupPostsResult groupPostsResult);
+
+
+    @Query("SELECT * FROM GroupTagPostsResult WHERE groupId = :groupId AND tagId=:tagId")
+    @RewriteQueriesToDropUnusedColumns
+    LiveData<GroupTagPostsResult> getGroupTagPosts(String groupId, String tagId);
+
+    @Query("SELECT * FROM GroupTagPostsResult WHERE groupId = :groupId AND tagId=:tagId")
+    @RewriteQueriesToDropUnusedColumns
+    GroupTagPostsResult findGroupTagPosts(String groupId, String tagId);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertGroupTagPostsResult(GroupTagPostsResult groupTagPostsResult);
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertPost(GroupPost post);
+    void insertPost(Post post);
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE, entity = GroupPost.class)
+    @Insert(onConflict = OnConflictStrategy.IGNORE, entity = Post.class)
     @RewriteQueriesToDropUnusedColumns
-    long insertPostItemIfNotExists(GroupPostItem post);
+    long insertPostItemIfNotExists(PostItem post);
 
-    @Update(entity = GroupPost.class)
+    @Update(entity = Post.class)
     @RewriteQueriesToDropUnusedColumns
-    void updatePostItem(GroupPostItem post);
+    void updatePostItem(PostItem post);
 
     @Transaction
-    default void upsertPostItem(GroupPostItem group) {
-        if (insertPostItemIfNotExists(group) == -1)
-            updatePostItem(group);
+    default void upsertPostItem(PostItem post) {
+        if (insertPostItemIfNotExists(post) == -1)
+            updatePostItem(post);
     }
 
-    @Query("SELECT * FROM group_posts WHERE id=:postId")
-    LiveData<GroupPost> loadPost(String postId);
+    @Insert(onConflict = OnConflictStrategy.IGNORE, entity = Post.class)
+    @RewriteQueriesToDropUnusedColumns
+    List<Long> insertPostsIfNotExist(List<PostItem> postList);
 
-    @Query("SELECT * FROM group_post_comments WHERE id IN (:commentIds)")
-    LiveData<List<GroupPostComment>> loadCommentsById(List<String> commentIds);
+    @Update(entity = Post.class)
+    @RewriteQueriesToDropUnusedColumns
+    void updatePosts(List<PostItem> List);
 
-    default LiveData<List<GroupPostComment>> loadOrderedComments(List<String> commentIds, Comparator<GroupPostComment> c) {
+    @Transaction
+    default void upsertPosts(List<PostItem> postList) {
+        List<PostItem> updateList = new ArrayList<>();
+        List<Long> insertPosts = insertPostsIfNotExist(postList);
+        for (int i = 0; i < insertPosts.size(); i++) {
+            if (insertPosts.get(i) == -1)
+                updateList.add(postList.get(i));
+        }
+        updatePosts(updateList);
+    }
+
+    @Query("SELECT * FROM Post WHERE id=:postId")
+    LiveData<Post> loadPost(String postId);
+
+
+    @Query("SELECT * FROM post_top_comments WHERE postId = :postId")
+    LiveData<PostTopComments> loadPostTopComments(String postId);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertPostTopComments(PostTopComments topComments);
+
+    default LiveData<List<PostComment>> loadOrderedComments(List<String> commentIds, Comparator<PostComment> c) {
         return Transformations.map(loadCommentsById(commentIds), comments -> {
-            comments.sort(c);
+            if (c != null)
+                comments.sort(c);
+            else
+                comments.sort(Comparator.comparingInt(o -> commentIds.indexOf(o.id)));
             return comments;
         });
     }
 
-    @Query("SELECT * FROM group_post_top_comments WHERE postId = :postId")
-    LiveData<GroupPostTopComments> loadPostTopComments(String postId);
+    default LiveData<List<PostComment>> loadOrderedComments(List<String> commentIds) {
+        return loadOrderedComments(commentIds, null);
+    }
 
-    @Query("SELECT * FROM group_post_comments WHERE post_id = :postId ORDER BY created ASC")
-    LiveData<List<GroupPostComment>> loadPostComments(String postId);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertPostComments(List<GroupPostComment> comments);
+    @Query("SELECT * FROM post_comments WHERE id IN (:commentIds)")
+    LiveData<List<PostComment>> loadCommentsById(List<String> commentIds);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertPostTopComments(GroupPostTopComments topComments);
+    void insertPostComments(List<PostComment> comments);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertPostCommentsResult(PostCommentsResult postCommentsResult);
+
+    @Query("SELECT * FROM PostCommentsResult WHERE postId=:postId")
+    LiveData<PostCommentsResult> getPostComments(String postId);
+
+    @Query("SELECT * FROM PostCommentsResult WHERE postId=:postId")
+    PostCommentsResult findPostComments(String postId);
 }

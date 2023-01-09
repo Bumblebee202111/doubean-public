@@ -1,9 +1,8 @@
 package com.doubean.ford.data.repository;
 
-import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -11,20 +10,23 @@ import androidx.lifecycle.Transformations;
 
 import com.doubean.ford.api.ApiResponse;
 import com.doubean.ford.api.DoubanService;
-import com.doubean.ford.api.GroupPostCommentsResponse;
-import com.doubean.ford.api.GroupPostsResponse;
 import com.doubean.ford.api.GroupSearchResponse;
+import com.doubean.ford.api.PostCommentsResponse;
+import com.doubean.ford.api.PostsResponse;
 import com.doubean.ford.api.SortByRequestParamType;
 import com.doubean.ford.data.db.AppDatabase;
 import com.doubean.ford.data.db.GroupDao;
 import com.doubean.ford.data.vo.GroupDetail;
 import com.doubean.ford.data.vo.GroupItem;
-import com.doubean.ford.data.vo.GroupPost;
-import com.doubean.ford.data.vo.GroupPostComment;
-import com.doubean.ford.data.vo.GroupPostComments;
-import com.doubean.ford.data.vo.GroupPostItem;
-import com.doubean.ford.data.vo.GroupPostTopComments;
+import com.doubean.ford.data.vo.GroupPostsResult;
 import com.doubean.ford.data.vo.GroupSearchResult;
+import com.doubean.ford.data.vo.GroupTagPostsResult;
+import com.doubean.ford.data.vo.Post;
+import com.doubean.ford.data.vo.PostComment;
+import com.doubean.ford.data.vo.PostComments;
+import com.doubean.ford.data.vo.PostCommentsResult;
+import com.doubean.ford.data.vo.PostItem;
+import com.doubean.ford.data.vo.PostTopComments;
 import com.doubean.ford.data.vo.Resource;
 import com.doubean.ford.data.vo.SearchResultItem;
 import com.doubean.ford.data.vo.Status;
@@ -33,8 +35,9 @@ import com.doubean.ford.util.Constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
+
+import retrofit2.Call;
 
 public class GroupRepository {
     private static GroupRepository instance;
@@ -61,7 +64,6 @@ public class GroupRepository {
         }
         return instance;
     }
-
 
     public LiveData<List<GroupItem>> getGroups(@NonNull List<String> groupIds) {
         MediatorLiveData<List<GroupItem>> groupsLiveData = new MediatorLiveData<>();
@@ -119,6 +121,41 @@ public class GroupRepository {
         }.asLiveData();
     }
 
+    public LiveData<Resource<Boolean>> searchNextPage(String query) {
+        FetchNextPageTask<SearchResultItem, GroupSearchResult, GroupSearchResponse> fetchNextSearchPageTask = new FetchNextPageTask<SearchResultItem, GroupSearchResult, GroupSearchResponse>(
+                doubanService, appDatabase) {
+
+            @Override
+            protected GroupSearchResult loadFromDb() {
+                return appDatabase.getGroupDao().findSearchResult(query);
+            }
+
+            @Override
+            protected Call<GroupSearchResponse> createCall(Integer nextPageStart) {
+                return doubanService.searchGroups(query, Constants.RESULT_GROUPS_COUNT, nextPageStart);
+            }
+
+            @Override
+            protected void saveMergedResult(@NonNull GroupSearchResult item, List<SearchResultItem> items) {
+                appDatabase.getGroupDao().insertGroupSearchResult(item);
+                List<GroupItem> groups = new ArrayList<>();
+                for (SearchResultItem i : items) {
+                    groups.add(i.getGroup());
+                }
+                appDatabase.getGroupDao().upsertGroups(groups);
+            }
+
+            @Override
+            protected GroupSearchResult merge(List<String> ids, GroupSearchResult current, int total, Integer nextPageStart) {
+                return new GroupSearchResult(query, ids,
+                        total, nextPageStart);
+            }
+
+        };
+        appExecutors.networkIO().execute(fetchNextSearchPageTask);
+        return fetchNextSearchPageTask.getLiveData();
+    }
+
     public LiveData<Resource<List<GroupItem>>> search(String query) {
         return new NetworkBoundResource<List<GroupItem>, GroupSearchResponse>(appExecutors) {
 
@@ -148,12 +185,12 @@ public class GroupRepository {
             @NonNull
             @Override
             protected LiveData<List<GroupItem>> loadFromDb() {
-                return Transformations.switchMap(groupDao.findSearchResult(query), searchData -> {
+                return Transformations.switchMap(groupDao.search(query), searchData -> {
                     if (searchData == null) {
                         return new LiveData<List<GroupItem>>(null) {
                         };
                     } else {
-                        return groupDao.loadOrdered(searchData.ids, (g1, g2) -> g2.memberCount - g1.memberCount);
+                        return groupDao.loadOrdered(searchData.ids);
                     }
                 });
             }
@@ -161,59 +198,172 @@ public class GroupRepository {
             @NonNull
             @Override
             protected LiveData<ApiResponse<GroupSearchResponse>> createCall() {
-                return doubanService.searchGroups(query, Constants.RESUlT_GROUPS_COUNT);
+                return doubanService.searchGroups(query, Constants.RESULT_GROUPS_COUNT);
             }
-
 
         }.asLiveData();
     }
 
-    public LiveData<Resource<List<GroupPostItem>>> getGroupPosts(String groupId, String tagId) {
-        return new NetworkBoundResource<List<GroupPostItem>, GroupPostsResponse>(appExecutors) {
+    public LiveData<Resource<List<PostItem>>> getGroupPosts(String groupId) {
+        return new NetworkBoundResource<List<PostItem>, PostsResponse>(appExecutors) {
             @Override
-            protected void saveCallResult(@NonNull GroupPostsResponse item) {
-                List<GroupPostItem> posts = item.getPosts();
-                for (GroupPostItem post : posts) {
+            protected void saveCallResult(@NonNull PostsResponse item) {
+                List<String> postIds = item.getPostIds();
+                List<PostItem> posts = item.getItems();
+                GroupPostsResult groupPostsResult = new GroupPostsResult(groupId, postIds, item.getTotal(), item.getNextPageStart());
+                for (PostItem post : posts) {
                     post.groupId = groupId;
                     if (post.postTags != null && !post.postTags.isEmpty()) {
                         post.tagId = post.postTags.get(0).id;
                     }
-                    groupDao.upsertPostItem(post);
                 }
-
+                appDatabase.runInTransaction(() -> {
+                    groupDao.upsertPosts(posts);
+                    groupDao.insertGroupPostsResult(groupPostsResult);
+                });
             }
 
             @Override
-            protected boolean shouldFetch(@Nullable List<GroupPostItem> data) {
+            protected boolean shouldFetch(@Nullable List<PostItem> data) {
                 //return data==null||data.isEmpty();
                 return true;
             }
 
             @NonNull
             @Override
-            protected LiveData<List<GroupPostItem>> loadFromDb() {
-                if (TextUtils.isEmpty(tagId)) {
-                    return groupDao.loadGroupPosts(groupId);
-                }
-                return groupDao.loadGroupPosts(groupId, tagId);
+            protected LiveData<List<PostItem>> loadFromDb() {
+                return Transformations.switchMap(groupDao.getGroupPosts(groupId), findData -> {
+                    if (findData == null) {
+                        return new LiveData<List<PostItem>>(null) {
+                        };
+                    } else {
+                        return groupDao.loadPosts(findData.ids);
+                    }
+                });
             }
 
             @NonNull
             @Override
-            protected LiveData<ApiResponse<GroupPostsResponse>> createCall() {
-                if (TextUtils.isEmpty(tagId)) {
-                    return doubanService.getGroupPosts(groupId, SortByRequestParamType.NEW.getParam(), Constants.RESULT_POSTS_COUNT);
-                }
-                return doubanService.getGroupPostsOfTag(groupId, tagId, SortByRequestParamType.NEW.getParam(), Constants.RESULT_POSTS_COUNT);
+            protected LiveData<ApiResponse<PostsResponse>> createCall() {
+                return doubanService.getGroupPosts(groupId, SortByRequestParamType.NEW.getParam(), Constants.RESULT_POSTS_COUNT);
+
             }
         }.asLiveData();
     }
 
-    public LiveData<Resource<GroupPost>> getGroupPost(String postId) {
-        return new NetworkBoundResource<GroupPost, GroupPost>(appExecutors) {
+    public LiveData<Resource<Boolean>> getNextPageGroupPosts(String groupId) {
+        FetchNextPageTask<PostItem, GroupPostsResult, PostsResponse> fetchNextPageTask = new FetchNextPageTask<PostItem, GroupPostsResult, PostsResponse>(
+                doubanService, appDatabase) {
 
             @Override
-            protected void saveCallResult(@NonNull GroupPost item) {
+            protected GroupPostsResult loadFromDb() {
+                return appDatabase.getGroupDao().findGroupPosts(groupId);
+            }
+
+            @Override
+            protected Call<PostsResponse> createCall(Integer nextPageStart) {
+                return doubanService.getGroupPosts(groupId, SortByRequestParamType.NEW.getParam(), Constants.RESULT_POSTS_COUNT, nextPageStart);
+            }
+
+            @Override
+            protected void saveMergedResult(@NonNull GroupPostsResult item, List<PostItem> items) {
+                appDatabase.getGroupDao().insertGroupPostsResult(item);
+                appDatabase.getGroupDao().upsertPosts(items);
+            }
+
+            @Override
+            protected GroupPostsResult merge(List<String> ids, GroupPostsResult current, int total, Integer nextPageStart) {
+                return new GroupPostsResult(groupId, ids, total, nextPageStart);
+            }
+
+        };
+        appExecutors.networkIO().execute(fetchNextPageTask);
+        return fetchNextPageTask.getLiveData();
+    }
+
+    public LiveData<Resource<List<PostItem>>> getGroupTagPosts(String groupId, String tagId) {
+        return new NetworkBoundResource<List<PostItem>, PostsResponse>(appExecutors) {
+            @Override
+            protected void saveCallResult(@NonNull PostsResponse item) {
+                List<String> postIds = item.getPostIds();
+                List<PostItem> posts = item.getItems();
+                GroupTagPostsResult groupTagPostsResult = new GroupTagPostsResult(groupId, tagId, postIds, item.getTotal(), item.getNextPageStart());
+                for (PostItem post : posts) {
+                    post.groupId = groupId;
+                    if (post.postTags != null && !post.postTags.isEmpty()) {
+                        post.tagId = post.postTags.get(0).id;
+                    }
+                }
+                appDatabase.runInTransaction(() -> {
+                    groupDao.upsertPosts(posts);
+                    groupDao.insertGroupTagPostsResult(groupTagPostsResult);
+                });
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable List<PostItem> data) {
+                //return data==null||data.isEmpty();
+                return true;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<List<PostItem>> loadFromDb() {
+                return Transformations.switchMap(appDatabase.getGroupDao().getGroupTagPosts(groupId, tagId), findData -> {
+                    if (findData == null) {
+                        return new LiveData<List<PostItem>>(null) {
+                        };
+                    } else {
+                        return appDatabase.getGroupDao().loadPosts(findData.ids);
+                    }
+                });
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<ApiResponse<PostsResponse>> createCall() {
+                return doubanService.getGroupTagPosts(groupId, tagId, SortByRequestParamType.NEW.getParam(), Constants.RESULT_POSTS_COUNT);
+
+            }
+        }.asLiveData();
+    }
+
+    public LiveData<Resource<Boolean>> getNextPageGroupTagPosts(String groupId, String tagId) {
+        FetchNextPageTask<PostItem, GroupTagPostsResult, PostsResponse> fetchNextPageTask = new FetchNextPageTask<PostItem, GroupTagPostsResult, PostsResponse>(
+                doubanService, appDatabase) {
+
+            @Override
+            protected GroupTagPostsResult loadFromDb() {
+                return appDatabase.getGroupDao().findGroupTagPosts(groupId, tagId);
+            }
+
+            @Override
+            protected Call<PostsResponse> createCall(Integer nextPageStart) {
+                return doubanService.getGroupTagPosts(groupId, tagId, SortByRequestParamType.NEW.getParam(), Constants.RESULT_POSTS_COUNT, nextPageStart);
+            }
+
+            @Override
+            protected void saveMergedResult(@NonNull GroupTagPostsResult item, List<PostItem> items) {
+                appDatabase.getGroupDao().insertGroupTagPostsResult(item);
+                appDatabase.getGroupDao().upsertPosts(items);
+            }
+
+            @Override
+            protected GroupTagPostsResult merge(List<String> ids, GroupTagPostsResult current, int total, Integer nextPageStart) {
+                return new GroupTagPostsResult(groupId, tagId, ids,
+                        total, nextPageStart);
+            }
+
+        };
+        appExecutors.networkIO().execute(fetchNextPageTask);
+        return fetchNextPageTask.getLiveData();
+    }
+
+    public LiveData<Resource<Post>> getPost(String postId) {
+        return new NetworkBoundResource<Post, Post>(appExecutors) {
+
+            @Override
+            protected void saveCallResult(@NonNull Post item) {
                 item.groupId = item.group.id;
                 if (!item.postTags.isEmpty())
                     item.tagId = item.postTags.get(0).id;
@@ -226,89 +376,120 @@ public class GroupRepository {
             }
 
             @Override
-            protected boolean shouldFetch(@Nullable GroupPost data) {
+            protected boolean shouldFetch(@Nullable Post data) {
                 return true;
             }
 
             @NonNull
             @Override
-            protected LiveData<GroupPost> loadFromDb() {
+            protected LiveData<Post> loadFromDb() {
                 return groupDao.loadPost(postId);
             }
 
             @NonNull
             @Override
-            protected LiveData<ApiResponse<GroupPost>> createCall() {
+            protected LiveData<ApiResponse<Post>> createCall() {
                 return doubanService.getGroupPost(postId);
             }
         }.asLiveData();
     }
 
-    public LiveData<Resource<GroupPostComments>> getGroupPostComments(String postId) {
-        return new NetworkBoundResource<GroupPostComments, GroupPostCommentsResponse>(appExecutors) {
+    public LiveData<Resource<PostComments>> getPostComments(String postId) {
+        return new NetworkBoundResource<PostComments, PostCommentsResponse>(appExecutors) {
             @Override
-            protected void saveCallResult(@NonNull GroupPostCommentsResponse item) {
-                for (GroupPostComment comment : item.getComments()) {
+            protected void saveCallResult(@NonNull PostCommentsResponse item) {
+                for (PostComment comment : item.getItems()) {
                     comment.postId = postId;
                 }
-                for (GroupPostComment comment : item.getTopComments()) {
+                for (PostComment comment : item.getTopComments()) {
                     comment.postId = postId;
                 }
-                List<String> commentIds = item.getTopCommentIds();
-                GroupPostTopComments topCommentsResult = new GroupPostTopComments(
-                        postId, commentIds);
+                List<String> topCommentIds = item.getTopCommentIds();
+                PostTopComments topCommentsResult = new PostTopComments(
+                        postId, topCommentIds);
+                List<String> commentIds = item.getIds();
+                PostCommentsResult commentsResult = new PostCommentsResult(postId, commentIds,
+                        item.getTotal(), item.getNextPageStart());
                 appDatabase.runInTransaction(() -> {
-                    groupDao.insertPostComments(item.getComments());
+                    groupDao.insertPostComments(item.getItems());
                     groupDao.insertPostComments(item.getTopComments());
+                    groupDao.insertPostCommentsResult(commentsResult);
                     groupDao.insertPostTopComments(topCommentsResult);
                 });
             }
 
             @Override
-            protected boolean shouldFetch(@Nullable GroupPostComments data) {
+            protected boolean shouldFetch(@Nullable PostComments data) {
                 return true;
             }
 
             @NonNull
             @Override
-            protected LiveData<GroupPostComments> loadFromDb() {
-                MediatorLiveData<GroupPostComments> result = new MediatorLiveData<>();
+            protected LiveData<PostComments> loadFromDb() {
 
-                GroupPostComments groupPostCommePnts = new GroupPostComments();
-                result.addSource(groupDao.loadPostComments(postId), comments -> {
-                    if (comments != null && !comments.isEmpty()) {
-                        groupPostCommePnts.setAllComments(comments);
-                        //result.setValue(groupPostCommePnts);
-                        LiveData<List<GroupPostComment>> topComments = Transformations.switchMap(groupDao.loadPostTopComments(postId), data -> {
-                            if (data == null)
-                                return new LiveData<List<GroupPostComment>>(null) {
-                                };
-                            else
-                                return groupDao.loadOrderedComments(data.commentIds, new Comparator<GroupPostComment>() {
-                                    @Override
-                                    public int compare(GroupPostComment o1, GroupPostComment o2) {
-                                        return o2.voteCount - o1.voteCount;
-                                    }
-                                });
-                        });
-                        result.addSource(topComments, data -> {
-                            groupPostCommePnts.setTopComments(data);
-                            result.setValue(groupPostCommePnts);
-                        });
-                    } else {
-                        result.setValue(groupPostCommePnts);
+                LiveData<List<PostComment>> allComments = Transformations.switchMap(groupDao.getPostComments(postId), new Function<PostCommentsResult, LiveData<List<PostComment>>>() {
+                    @Override
+                    public LiveData<List<PostComment>> apply(PostCommentsResult data) {
+                        if (data == null) {
+                            return new LiveData<List<PostComment>>(null) {
+                            };
+                        } else {
+                            return groupDao.loadOrderedComments(data.ids);
+                        }
                     }
                 });
 
+                LiveData<List<PostComment>> topComments = Transformations.switchMap(groupDao.loadPostTopComments(postId), data -> {
+                    if (data == null) {
+                        return new LiveData<List<PostComment>>(null) {
+                        };
+                    } else {
+                        return groupDao.loadOrderedComments(data.commentIds);
+                    }
 
-                return result;
+                });
+
+                return Transformations.switchMap(topComments, input1 -> Transformations.map(allComments, input2 -> new PostComments(input1, input2)));
             }
 
             @NonNull
             @Override
-            protected LiveData<ApiResponse<GroupPostCommentsResponse>> createCall() {
-                return doubanService.getGroupPostComments(postId, 0, Constants.RESULT_POSTS_COUNT);
+            protected LiveData<ApiResponse<PostCommentsResponse>> createCall() {
+                return doubanService.getPostComments(postId, Constants.RESULT_POSTS_COUNT);
             }
         }.asLiveData();
+
+    }
+
+    public LiveData<Resource<Boolean>> getNextPagePostComments(String postId) {
+        FetchNextPageTask<PostComment, PostCommentsResult, PostCommentsResponse> fetchNextPageTask = new FetchNextPageTask<PostComment, PostCommentsResult, PostCommentsResponse>(
+                doubanService, appDatabase) {
+
+            @Override
+            protected PostCommentsResult loadFromDb() {
+                return appDatabase.getGroupDao().findPostComments(postId);
+            }
+
+            @Override
+            protected Call<PostCommentsResponse> createCall(Integer nextPageStart) {
+                return doubanService.getPostComments(postId, nextPageStart, Constants.RESULT_COMMENTS_COUNT);
+            }
+
+            @Override
+            protected void saveMergedResult(@NonNull PostCommentsResult item, List<PostComment> items) {
+                appDatabase.getGroupDao().insertPostCommentsResult(item);
+                appDatabase.getGroupDao().insertPostComments(items);
+            }
+
+            @NonNull
+            @Override
+            protected PostCommentsResult merge(List<String> ids, PostCommentsResult current, int total, Integer nextPageStart) {
+                return new PostCommentsResult(postId, ids,
+                        total, nextPageStart);
+            }
+
+        };
+        appExecutors.networkIO().execute(fetchNextPageTask);
+        return fetchNextPageTask.getLiveData();
     }
 }

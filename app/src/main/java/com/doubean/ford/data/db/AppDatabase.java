@@ -11,17 +11,20 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.doubean.ford.data.vo.Group;
 import com.doubean.ford.data.vo.GroupFollow;
-import com.doubean.ford.data.vo.GroupPost;
-import com.doubean.ford.data.vo.GroupPostComment;
-import com.doubean.ford.data.vo.GroupPostTopComments;
+import com.doubean.ford.data.vo.GroupPostsResult;
 import com.doubean.ford.data.vo.GroupSearchResult;
+import com.doubean.ford.data.vo.GroupTagPostsResult;
+import com.doubean.ford.data.vo.Post;
+import com.doubean.ford.data.vo.PostComment;
+import com.doubean.ford.data.vo.PostCommentsResult;
+import com.doubean.ford.data.vo.PostTopComments;
 import com.doubean.ford.util.AppExecutors;
 import com.doubean.ford.util.Constants;
 
 /**
  * The Room database for this app
  */
-@Database(entities = {Group.class, GroupPost.class, GroupFollow.class, GroupSearchResult.class, GroupPostComment.class, GroupPostTopComments.class},
+@Database(entities = {Group.class, Post.class, GroupFollow.class, GroupSearchResult.class, GroupPostsResult.class, GroupTagPostsResult.class, PostComment.class, PostCommentsResult.class, PostTopComments.class},
         version = 1,
         exportSchema = false)
 @TypeConverters(Converters.class)
