@@ -159,7 +159,6 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
-* \[GroupsHomeFragment\]Update default follows
 * \[GroupFragment\]\[GroupPostFragment\]Share
 * \[GroupFragment\]Post order: date created \(not real cuz no such API\), last updated and top
 * \[GroupFragment\]\[GroupPostFragment\]Open in browser/Douban app
@@ -171,8 +170,8 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 * \[GroupsHomeFragment\]Show groupFollow / saved posts with group info
 * \[GroupFragment\]Adjust when to hide/show toolbar
 * \[GroupPostFragment\]Save WebView images
-* \[GroupFragment\]Search group/tab posts
-* \[GroupsFragment\]Search posts of all groups
+* \[SearchFragment\]GroupSearchFragment -> SearchFragment / Search group/tab posts / Search posts of
+  all groups
 * Use Twitter-like date formatting
 * \[Lists\]Allow follow/save for each item
 * \[GroupFragment\]\[GroupPostFragment\]Track/mark/revert read
