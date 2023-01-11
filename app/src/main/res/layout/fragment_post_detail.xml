@@ -42,7 +42,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        tools:context=".ui.groups.postDetail.PostDetailFragment">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -86,8 +87,7 @@
                 android:id="@+id/post_detail_scrollview"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:clipToPadding="false"
-                tools:context=".ui.groups.postDetail.groupPostFragment">
+                android:clipToPadding="false">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/post"
@@ -141,19 +141,10 @@
                         android:layout_marginEnd="@dimen/margin_small"
                         android:text="@{viewModel.post.data.author.name}"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                        app:layout_constraintEnd_toStartOf="@id/more"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/author_avatar"
                         app:layout_constraintTop_toTopOf="@id/author_avatar"
                         tools:text="Li Ming" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/more"
-                        android:layout_width="@dimen/icon_size_extra_small"
-                        android:layout_height="@dimen/icon_size_extra_small"
-                        android:layout_marginEnd="@dimen/margin_extra_small"
-                        android:src="@drawable/ic_more"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/author_name" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/post_created"
@@ -289,7 +280,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/top_comments_header"
-                        tools:listitem="@layout/list_item_group_post_comment" />
+                        tools:listitem="@layout/list_item_post_comment" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/all_comments_header"
@@ -330,7 +321,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/all_comments_header"
-                        tools:listitem="@layout/list_item_group_post_comment" />
+                        tools:listitem="@layout/list_item_post_comment" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

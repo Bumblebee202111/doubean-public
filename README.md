@@ -86,9 +86,15 @@ It not only implements the very basic features of Douban app, but also has its o
 which react to the trend of Douban community to being unfriendly and closed to non-members. Examples
 are abuse of power, "apply to follow or to talk" and etc.
 
-* Inherent advantages leading to good performance and simple coding | Design Aspect | Choice\(s\) |
-  | --- | --- | | Language | Java | | Libraries | Jetpack and authoritative third party libraries |
-  | Architecture | MVVM | | Design philosophy | Android Jetpack |
+* Inherent advantages leading to good performance and simple coding
+
+  | Design Aspect | Choice\(s\) |
+    | --- | --- |
+  | Language | Java |
+  | Libraries | Jetpack and authoritative third party libraries |
+  | Architecture | MVVM |
+  | Design philosophy | Android Jetpack |
+
 * Support for viewing content in Douban WebView optimized for mobile reading
 * Support for loading cache as alternative when connection is off
 * Bilingual support for UI strings
@@ -159,12 +165,13 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
-* \[GroupFragment\]\[GroupPostFragment\]Share
+* ProGuard
 * \[GroupFragment\]Post order: date created \(not real cuz no such API\), last updated and top
 * \[GroupFragment\]\[GroupPostFragment\]Open in browser/Douban app
 * \[GroupsHomeFragment\]Add "groups of the day" list
 * SnackbarUtils from todo app
-* \[GroupFragment\] Update implementation of CollapsingToolBar – do not use the Sunflower logic
+* \[GroupFragment\] Update implementation of CollapsingToolBar – do not use the weird and obscure
+  Sunflower logic
   * 🛠 Title not shown on recreate
 * Rate limit
 * \[GroupsHomeFragment\]Show groupFollow / saved posts with group info
@@ -173,11 +180,12 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 * \[SearchFragment\]GroupSearchFragment -> SearchFragment / Search group/tab posts / Search posts of
   all groups
 * Use Twitter-like date formatting
+* 🛠 Status bar color is reset when starting a share intent
 * \[Lists\]Allow follow/save for each item
 * \[GroupFragment\]\[GroupPostFragment\]Track/mark/revert read
 * \[GroupsHomeFragment\]Unfollow/reorder items
 * \[GroupFragment\]WebView for group
-* \[GroupFragment\]Refactor following, support following groups, tags and search which can
+* \[GroupFragment\]Refactor following, support following groups, tags and searches which can
   constitute custom posts categories/groups with filters available
 * \[GroupFragment\]\[GroupPostFragment\]Save various types of searches, posts and comments
 * \[WebView\]Complete CSS of content WebView: find official CSS source or write on my own

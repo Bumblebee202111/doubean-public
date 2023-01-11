@@ -32,6 +32,7 @@ import com.doubean.ford.ui.common.DoubeanWebView;
 import com.doubean.ford.ui.common.DoubeanWebViewClient;
 import com.doubean.ford.util.Constants;
 import com.doubean.ford.util.InjectorUtils;
+import com.doubean.ford.util.ShareUtil;
 import com.google.android.material.snackbar.Snackbar;
 
 
@@ -40,6 +41,7 @@ public class PostDetailFragment extends Fragment {
     final Boolean[] isToolbarShown = {false};
     private PostDetailViewModel postDetailViewModel;
     private FragmentPostDetailBinding binding;
+    private String shareText = "";
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -100,8 +102,8 @@ public class PostDetailFragment extends Fragment {
                     if (groupColor != 0) {
                         getActivity().getWindow().setStatusBarColor(groupColor);
                         binding.toolbar.setBackgroundColor(groupColor);
-                        PostCommentAdapter topCommentAdapter = new PostCommentAdapter(post.data.author.id, groupColor);
-                        PostCommentAdapter allCommentAdapter = new PostCommentAdapter(post.data.author.id, groupColor);
+                        PostCommentAdapter topCommentAdapter = new PostCommentAdapter(post.data);
+                        PostCommentAdapter allCommentAdapter = new PostCommentAdapter(post.data);
                         binding.topComments.setAdapter(topCommentAdapter);
                         binding.allComments.setAdapter(allCommentAdapter);
                         subscribeUi(topCommentAdapter, allCommentAdapter);
@@ -120,18 +122,29 @@ public class PostDetailFragment extends Fragment {
 
         binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).navigateUp());
         binding.toolbar.setOnMenuItemClickListener(item -> {
-            //noinspection SwitchStatementWithTooFewBranches
-            switch (item.getItemId()) {
-                case R.id.action_view_in_web:
-                    Resource<Post> post = postDetailViewModel.getPost().getValue();
-                    if (post != null && post.data != null) {
-                        navigateToWebView(requireView(), post.data);
+            Resource<Post> postResource = postDetailViewModel.getPost().getValue();
+            if (postResource != null) {
+                Post post = postResource.data;
+                if (post != null) {
+                    switch (item.getItemId()) {
+                        case R.id.action_view_in_web:
+                            navigateToWebView(requireView(), post);
+                            return true;
+                        case R.id.action_share:
+                            shareText = post.group.name;
+                            if (post.tagId != null) {
+                                shareText += "|" + post.getTagName();
+                            }
+                            shareText += '@' + post.author.name + "： " +
+                                    post.title + "\r\n" +
+                                    post.url + "\r\n" +
+                                    post.content;
+                            ShareUtil.Share(getContext(), shareText);
+                            return true;
                     }
-                    return true;
-                default:
-                    return false;
+                }
             }
-
+            return false;
         });
         setHasOptionsMenu(true);
 
@@ -162,7 +175,7 @@ public class PostDetailFragment extends Fragment {
         postDetailViewModel.getPost().observe(getViewLifecycleOwner(), post -> {
             if (post != null) {
                 if (post.status == Status.SUCCESS) {
-                    if (post.data.group != null && post.data.group.colorString != null) {
+                    if (post.data != null && post.data.group != null && post.data.group.colorString != null) {
                         getActivity().getWindow().setStatusBarColor(post.data.group.getColor());
                     } else {
                         getActivity().getWindow().setStatusBarColor(getContext().getColor(R.color.doubean_green));

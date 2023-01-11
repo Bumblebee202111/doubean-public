@@ -97,13 +97,22 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAllCaps="false"
+                            android:layout_marginEnd="@dimen/margin_smaller"
                             app:icon="@drawable/ic_add"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/more"
                             app:layout_constraintTop_toTopOf="parent"
                             tools:text="Follow" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
 
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/more"
+                            android:layout_width="@dimen/icon_size_extra_small"
+                            android:layout_height="@dimen/icon_size_extra_small"
+                            android:src="@drawable/ic_more"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/post_list"
@@ -120,7 +129,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/top_bar"
                         app:layout_constraintVertical_bias="0"
-                        tools:listitem="@layout/list_item_group_post" />
+                        tools:listitem="@layout/list_item_post" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.core.widget.NestedScrollView>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

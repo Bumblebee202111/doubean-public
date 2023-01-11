@@ -4,6 +4,10 @@
     <item
         android:id="@+id/action_view_in_web"
         android:icon="@drawable/ic_baseline_web_24"
-        android:title="View full content"
-        app:showAsAction="always" />
+        android:title="@string/view_in_web"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_share"
+        android:title="@string/share"
+        app:showAsAction="never"></item>
 </menu>

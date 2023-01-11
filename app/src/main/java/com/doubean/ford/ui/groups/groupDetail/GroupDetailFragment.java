@@ -23,6 +23,7 @@ import com.doubean.ford.data.vo.GroupTab;
 import com.doubean.ford.data.vo.Status;
 import com.doubean.ford.databinding.FragmentGroupDetailBinding;
 import com.doubean.ford.util.InjectorUtils;
+import com.doubean.ford.util.ShareUtil;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -42,6 +43,7 @@ public class GroupDetailFragment extends Fragment {
     String defaultTabId;
     FragmentGroupDetailBinding binding;
     private GroupDetailViewModel groupDetailViewModel;
+    private String shareText = "";
 
     public static int getItemOfId(List<GroupTab> groupTabs, String tabId) {
         if (tabId != null) {
@@ -73,7 +75,10 @@ public class GroupDetailFragment extends Fragment {
         getActivity().getWindow().setStatusBarColor(getContext().getColor(R.color.doubean_green));
 
         groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(), group -> {
+
             if (group != null && group.data != null) {
+                this.shareText = group.data.name + ' ' + group.data.url + "\r\n";
+
                 binding.setGroup(group.data);
 
                 final int color = group.data.getColor();
@@ -91,7 +96,7 @@ public class GroupDetailFragment extends Fragment {
 
                     //initViewPager2WithDefaultItem(viewPager, group.data);
 
-                    GroupPagerAdapter groupPagerAdapter = new GroupPagerAdapter(getChildFragmentManager(), getViewLifecycleOwner().getLifecycle(), groupId, color, tabs);
+                    GroupPagerAdapter groupPagerAdapter = new GroupPagerAdapter(getChildFragmentManager(), getViewLifecycleOwner().getLifecycle(), groupId, tabs);
                     viewPager.setAdapter(groupPagerAdapter);
 
                     TabLayout tabLayout = binding.tabLayout;
@@ -176,7 +181,9 @@ public class GroupDetailFragment extends Fragment {
                                     .show();
                         }
                     }
-
+                    return true;
+                case R.id.action_share:
+                    ShareUtil.Share(getContext(), shareText);
                     return true;
                 default:
                     return false;
