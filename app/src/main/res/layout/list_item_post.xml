@@ -4,14 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="com.doubean.ford.util.DateTimeUtil" />
+
         <import type="com.doubean.ford.util.DateTimeStyle" />
+
         <variable
             name="post"
             type="com.doubean.ford.data.vo.PostItem" />
 
         <variable
             name="clickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="showPopup"
             type="android.view.View.OnClickListener" />
     </data>
 
@@ -36,6 +43,7 @@
                 android:src="@drawable/ic_more"
                 app:layout_constraintEnd_toStartOf="@id/cover"
                 app:layout_constraintStart_toEndOf="@id/first_line"
+                android:onClickListener="@{showPopup}"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout

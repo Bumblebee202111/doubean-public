@@ -19,15 +19,16 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 
 import com.doubean.ford.R;
 import com.doubean.ford.adapters.PostAdapter;
+import com.doubean.ford.data.vo.GroupTab;
 import com.doubean.ford.databinding.FragmentGroupTabBinding;
 import com.doubean.ford.util.InjectorUtils;
+import com.doubean.ford.util.ShareUtil;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 
 public class GroupTabFragment extends Fragment {
     public static final String ARG_GROUP_ID = "group_id";
     public static final String ARG_TAG_ID = "tag_id";
-    public static final String ARG_GROUP_COLOR = "group_color";
     FragmentGroupTabBinding binding;
 
     @Nullable
@@ -41,13 +42,12 @@ public class GroupTabFragment extends Fragment {
         Bundle args = requireArguments();
         String groupId = args.getString(ARG_GROUP_ID);
         String tagId = args.getString(ARG_TAG_ID);
-        int groupColor = args.getInt(ARG_GROUP_COLOR);
 
         GroupTabViewModelFactory factory = InjectorUtils.provideGroupTabViewModelFactory(getContext(), groupId, tagId);
         GroupTabViewModel groupTabViewModel = new ViewModelProvider(this, factory).get(GroupTabViewModel.class);
 
-        PostAdapter adapter = new PostAdapter();
-        binding.postList.setAdapter(adapter);
+        MaterialButton followUnfollow = binding.followUnfollow;
+
         binding.postList.addItemDecoration(new DividerItemDecoration(binding.postList.getContext(), DividerItemDecoration.VERTICAL));
 
         binding.scrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -55,14 +55,38 @@ public class GroupTabFragment extends Fragment {
                 groupTabViewModel.loadNextPage();
             }
         });
-        groupTabViewModel.getPosts().observe(getViewLifecycleOwner(), result -> {
-            binding.setFindResource(result);
-            binding.setResultCount(result == null || result.data == null ? 0 : result.data.size());
-            adapter.submitList(result == null ? null : result.data);
-            if (result != null)
-                binding.swiperefresh.setRefreshing(false);
+        groupTabViewModel.getGroup().observe(getViewLifecycleOwner(), group -> {
+            if (group != null && group.data != null) {
+                if (binding.postList.getAdapter() == null) {
+                    PostAdapter adapter = new PostAdapter(group.data);
+                    binding.postList.setAdapter(adapter);
+                    groupTabViewModel.getPosts().observe(getViewLifecycleOwner(), result -> {
+                        binding.setFindResource(result);
+                        binding.setResultCount(result == null || result.data == null ? 0 : result.data.size());
+                        adapter.submitList(result == null ? null : result.data);
+                        if (result != null)
+                            binding.swiperefresh.setRefreshing(false);
 
+                    });
+                }
+                int groupColor = group.data.getColor();
+                followUnfollow.setIconTint(ColorStateList.valueOf(groupColor));
+                followUnfollow.setTextColor(groupColor);
+
+                binding.more.setOnClickListener(v -> {
+                    for (GroupTab tab : group.data.tabs) {
+                        if (tab.id.equals(tagId)) {
+                            String shareText = group.data.name + "|" + tab.name + ' ' + group.data.url + "\r\n";
+                            ShareUtil.Share(getContext(), shareText);
+                            break;
+                        }
+                    }
+
+                });
+            }
         });
+
+
         groupTabViewModel.getLoadMoreStatus().observe(getViewLifecycleOwner(), loadingMore -> {
             if (loadingMore == null) {
                 binding.setLoadingMore(false);
@@ -76,10 +100,6 @@ public class GroupTabFragment extends Fragment {
             binding.executePendingBindings();
         });
 
-        MaterialButton followUnfollow = binding.followUnfollow;
-
-        followUnfollow.setIconTint(ColorStateList.valueOf(groupColor));
-        followUnfollow.setTextColor(groupColor);
 
         if (tagId == null) //All
             binding.followUnfollow.setVisibility(View.GONE);

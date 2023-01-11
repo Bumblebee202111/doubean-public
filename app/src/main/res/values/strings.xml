@@ -54,5 +54,10 @@
     <string name="op">OP</string>
     <string name="retry">Retry</string>
     <string name="unknown_error">Unknown Error</string>
+    <string name="share">Share</string>
+    <string name="view_in_web">View in Web</string>
+    <string name="repliedTo">Replied to</string>
+    <string name="post">Post</string>
+    <string name="colon">:</string>
 
 </resources>

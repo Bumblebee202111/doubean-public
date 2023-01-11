@@ -38,4 +38,9 @@
     <string name="unfollowed_tab">取消关注标签</string>
     <string name="retry">重试</string>
     <string name="unknown_error">未知错误</string>
+    <string name="share">分享</string>
+    <string name="view_in_web">在Web中查看</string>
+    <string name="repliedTo">回复</string>
+    <string name="post">帖子</string>
+    <string name="colon">：</string>
 </resources>

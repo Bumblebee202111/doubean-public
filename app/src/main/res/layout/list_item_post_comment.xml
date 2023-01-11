@@ -20,6 +20,10 @@
         <variable
             name="isRepliedToAuthorOp"
             type="boolean" />
+
+        <variable
+            name="showPopup"
+            type="android.view.View.OnClickListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -48,6 +52,7 @@
                 android:layout_marginEnd="@dimen/margin_extra_small"
                 android:src="@drawable/ic_more"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:onClickListener="@{showPopup}"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout

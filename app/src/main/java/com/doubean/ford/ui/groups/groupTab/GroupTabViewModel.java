@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.doubean.ford.data.repository.GroupRepository;
 import com.doubean.ford.data.repository.GroupsFollowsAndSavesRepository;
+import com.doubean.ford.data.vo.GroupDetail;
 import com.doubean.ford.data.vo.PostItem;
 import com.doubean.ford.data.vo.Resource;
 import com.doubean.ford.ui.common.LoadMoreState;
@@ -25,6 +26,7 @@ public class GroupTabViewModel extends ViewModel {
     private final String groupId;
     private final String tagId;
     private final LiveData<Resource<List<PostItem>>> posts;
+    private final LiveData<Resource<GroupDetail>> group;
     private final GroupsFollowsAndSavesRepository groupsFollowsAndSavesRepository;
     private final MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
 
@@ -38,6 +40,7 @@ public class GroupTabViewModel extends ViewModel {
         this.repository = groupRepository;
         this.groupsFollowsAndSavesRepository = groupsFollowsAndSavesRepository;
         this.groupId = groupId;
+        this.group = repository.getGroup(groupId, false);
         this.tagId = tagId;
         posts = Transformations.switchMap(reloadTrigger, i -> tagId == null ? repository.getGroupPosts(groupId) : repository.getGroupTagPosts(groupId, tagId));
         this.followed = groupsFollowsAndSavesRepository.getFollowed(groupId, tagId);
@@ -50,6 +53,10 @@ public class GroupTabViewModel extends ViewModel {
 
     public LiveData<Resource<List<PostItem>>> getPosts() {
         return posts;
+    }
+
+    public LiveData<Resource<GroupDetail>> getGroup() {
+        return group;
     }
 
     public LiveData<Boolean> getFollowed() {
