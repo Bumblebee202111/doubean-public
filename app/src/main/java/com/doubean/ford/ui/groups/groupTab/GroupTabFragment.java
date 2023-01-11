@@ -101,9 +101,10 @@ public class GroupTabFragment extends Fragment {
         });
 
 
-        if (tagId == null) //All
+        if (tagId == null) {//All
             binding.followUnfollow.setVisibility(View.GONE);
-        else { //Non-all tab
+            binding.more.setVisibility(View.GONE);
+        } else { //Non-all tab
             int colorSurface = getBackgroundColor();
             followUnfollow.setOnClickListener(v -> {
                 Boolean followed = groupTabViewModel.getFollowed().getValue();
