@@ -84,12 +84,15 @@ list. However, the latest release is always available.
 
 It not only implements the very basic features of Douban app, but also has its own features, some of
 which react to the trend of Douban community to being unfriendly and closed to non-members. Examples
-are abuse of power, "apply to follow or to talk" and etc.
+are abuse of power , "apply ~~to follow or~~ to talk" and etc.
+
+\* In more recent (after mid-2022) versions of the Douban app, the feature of following unjoined
+groups is finally added by them.
 
 * Inherent advantages leading to good performance and simple coding
 
   | Design Aspect | Choice\(s\) |
-    | --- | --- |
+        | --- | --- |
   | Language | Java |
   | Libraries | Jetpack and authoritative third party libraries |
   | Architecture | MVVM |
@@ -97,11 +100,11 @@ are abuse of power, "apply to follow or to talk" and etc.
 
 * Support for viewing content in Douban WebView optimized for mobile reading
 * Support for loading cache as alternative when connection is off
-* Bilingual support for UI strings
-* Ad-free, lite \(~30MB\)
+* Ad-free, lite \(~4MB\)
 * Support URL deep links
 * Basic support for dark theme and tablets/landscape
-* Basic paging support
+* Bilingual support for UI strings
+* Paging & swipe refresh support
 * Support creating categories consisting of group/tab/search posts by multiple user-defined
   conditions \(TODO\)
 
@@ -165,34 +168,33 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
-* ProGuard
-* \[GroupFragment\]Post order: date created \(not real cuz no such API\), last updated and top
-* \[GroupFragment\]\[GroupPostFragment\]Open in browser/Douban app
+* \[GroupDetailFragment\]Post order: date created \(not real cuz no such API\), last updated and top
+* \[GroupDetailFragment\]\[GroupPostFragment\]Open in browser/Douban app
 * \[GroupsHomeFragment\]Add "groups of the day" list
 * SnackbarUtils from todo app
-* \[GroupFragment\] Update implementation of CollapsingToolBar – do not use the weird and obscure
-  Sunflower logic
+* \[GroupDetailFragment\] Update implementation of CollapsingToolBar – do not use the weird and
+  obscure Sunflower logic
   * 🛠 Title not shown on recreate
 * Rate limit
+* \[SearchFragment\]GroupSearchFragment -> SearchFragment / Search group/tab posts (in-group) /
+  Search posts of all groups (global)
 * \[GroupsHomeFragment\]Show groupFollow / saved posts with group info
-* \[GroupFragment\]Adjust when to hide/show toolbar
+* \[GroupDetailFragment\]Adjust when to hide/show toolbar
 * \[GroupPostFragment\]Save WebView images
-* \[SearchFragment\]GroupSearchFragment -> SearchFragment / Search group/tab posts / Search posts of
-  all groups
 * Use Twitter-like date formatting
 * 🛠 Status bar color is reset when starting a share intent
-* \[Lists\]Allow follow/save for each item
-* \[GroupFragment\]\[GroupPostFragment\]Track/mark/revert read
+* \[Lists\]Allow follow/save for every type of item
+* \[GroupDetailFragment\]\[GroupPostFragment\]Track/mark/revert read
 * \[GroupsHomeFragment\]Unfollow/reorder items
-* \[GroupFragment\]WebView for group
-* \[GroupFragment\]Refactor following, support following groups, tags and searches which can
+* \[GroupDetailFragment\]WebView for group
+* \[GroupDetailFragment\]Refactor following, support following groups, tags and searches which can
   constitute custom posts categories/groups with filters available
-* \[GroupFragment\]\[GroupPostFragment\]Save various types of searches, posts and comments
+* \[GroupDetailFragment\]\[GroupPostFragment\]Save various types of searches, posts and comments
 * \[WebView\]Complete CSS of content WebView: find official CSS source or write on my own
-* \[GroupFragment\]Group/tab/post shortcuts
+* \[GroupDetailFragment\]Group/tab/post shortcuts
 * \[Lists\]Reddit-like item expand/collapse
-* \[GroupFragment\]For post items, optimize tag display, e.g., assign color to each tag mapped from
-  name
+* \[GroupDetailFragment\]For post items, optimize tag display, e.g., assign color to each tag mapped
+  from name
 * 🛠\[GroupPostFragment\]Dealing with post URL click - new page should not show in WebView
 * Support blocking unfriendly content
 * \[GroupsHomeFragment\]Recommendations using SharedPref
