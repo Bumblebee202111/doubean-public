@@ -9,10 +9,11 @@ import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class GroupDetail {
+public class GroupDetail implements Serializable {
     @PrimaryKey
     @NonNull
     @SerializedName("id")

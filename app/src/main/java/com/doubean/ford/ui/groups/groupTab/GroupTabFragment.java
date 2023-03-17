@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 
 import com.doubean.ford.R;
 import com.doubean.ford.adapters.PostAdapter;
+import com.doubean.ford.data.vo.GroupDetail;
 import com.doubean.ford.data.vo.GroupTab;
 import com.doubean.ford.databinding.FragmentGroupTabBinding;
 import com.doubean.ford.util.InjectorUtils;
@@ -29,7 +30,19 @@ import com.google.android.material.snackbar.Snackbar;
 public class GroupTabFragment extends Fragment {
     public static final String ARG_GROUP_ID = "group_id";
     public static final String ARG_TAG_ID = "tag_id";
+    private static final String ARG_GROUP = "group";
     FragmentGroupTabBinding binding;
+
+    public static GroupTabFragment newInstance(String groupId, String tagId, GroupDetail groupDetail) {
+
+        Bundle args = new Bundle();
+        args.putString(GroupTabFragment.ARG_GROUP_ID, groupId);
+        args.putString(GroupTabFragment.ARG_TAG_ID, tagId);
+        args.putSerializable(GroupTabFragment.ARG_GROUP, groupDetail);
+        GroupTabFragment fragment = new GroupTabFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -42,6 +55,7 @@ public class GroupTabFragment extends Fragment {
         Bundle args = requireArguments();
         String groupId = args.getString(ARG_GROUP_ID);
         String tagId = args.getString(ARG_TAG_ID);
+        GroupDetail group = (GroupDetail) args.getSerializable(ARG_GROUP);
 
         GroupTabViewModelFactory factory = InjectorUtils.provideGroupTabViewModelFactory(getContext(), groupId, tagId);
         GroupTabViewModel groupTabViewModel = new ViewModelProvider(this, factory).get(GroupTabViewModel.class);
@@ -55,37 +69,33 @@ public class GroupTabFragment extends Fragment {
                 groupTabViewModel.loadNextPage();
             }
         });
-        groupTabViewModel.getGroup().observe(getViewLifecycleOwner(), group -> {
-            if (group != null && group.data != null) {
-                if (binding.postList.getAdapter() == null) {
-                    PostAdapter adapter = new PostAdapter(group.data);
-                    binding.postList.setAdapter(adapter);
-                    groupTabViewModel.getPosts().observe(getViewLifecycleOwner(), result -> {
-                        binding.setFindResource(result);
-                        binding.setResultCount(result == null || result.data == null ? 0 : result.data.size());
-                        adapter.submitList(result == null ? null : result.data);
-                        if (result != null)
-                            binding.swiperefresh.setRefreshing(false);
 
-                    });
-                }
-                int groupColor = group.data.getColor();
-                followUnfollow.setIconTint(ColorStateList.valueOf(groupColor));
-                followUnfollow.setTextColor(groupColor);
 
-                binding.more.setOnClickListener(v -> {
-                    for (GroupTab tab : group.data.tabs) {
-                        if (tab.id.equals(tagId)) {
-                            String shareText = group.data.name + "|" + tab.name + ' ' + group.data.url + "\r\n";
-                            ShareUtil.Share(getContext(), shareText);
-                            break;
-                        }
-                    }
+        PostAdapter adapter = new PostAdapter(group);
+        binding.postList.setAdapter(adapter);
+        groupTabViewModel.getPosts().observe(getViewLifecycleOwner(), result -> {
+            binding.setFindResource(result);
+            binding.setResultCount(result == null || result.data == null ? 0 : result.data.size());
+            adapter.submitList(result == null ? null : result.data);
+            if (result != null)
+                binding.swiperefresh.setRefreshing(false);
 
-                });
-            }
         });
 
+        int groupColor = group.getColor();
+        followUnfollow.setIconTint(ColorStateList.valueOf(groupColor));
+        followUnfollow.setTextColor(groupColor);
+
+        binding.more.setOnClickListener(v -> {
+            for (GroupTab tab : group.tabs) {
+                if (tab.id.equals(tagId)) {
+                    String shareText = group.name + "|" + tab.name + ' ' + group.url + "\r\n";
+                    ShareUtil.Share(getContext(), shareText);
+                    break;
+                }
+            }
+
+        });
 
         groupTabViewModel.getLoadMoreStatus().observe(getViewLifecycleOwner(), loadingMore -> {
             if (loadingMore == null) {

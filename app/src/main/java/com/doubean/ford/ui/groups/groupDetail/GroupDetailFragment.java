@@ -74,6 +74,10 @@ public class GroupDetailFragment extends Fragment {
 
         getActivity().getWindow().setStatusBarColor(getContext().getColor(R.color.doubean_green));
 
+
+        //initViewPager2WithDefaultItem(viewPager, group.data);
+
+
         groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(), group -> {
 
             if (group != null && group.data != null) {
@@ -90,23 +94,18 @@ public class GroupDetailFragment extends Fragment {
                 }
 
                 if (group.status == Status.SUCCESS) {
-                    List<GroupTab> tabs = group.data.tabs;
-
                     ViewPager2 viewPager = binding.pager;
-
-                    //initViewPager2WithDefaultItem(viewPager, group.data);
-
-                    GroupPagerAdapter groupPagerAdapter = new GroupPagerAdapter(getChildFragmentManager(), getViewLifecycleOwner().getLifecycle(), groupId, tabs);
+                    GroupPagerAdapter groupPagerAdapter = new GroupPagerAdapter(getChildFragmentManager(), getViewLifecycleOwner().getLifecycle(), group.data);
                     viewPager.setAdapter(groupPagerAdapter);
-
                     TabLayout tabLayout = binding.tabLayout;
                     new TabLayoutMediator(tabLayout, viewPager,
                             (tab, position) -> {
-                                tab.setText(position == 0 ? getString(R.string.all) : tabs.get(position - 1).name);
+                                tab.setText(position == 0 ? getString(R.string.all) : group.data.tabs.get(position - 1).name);
                             }
                     ).attach();
 
-                    viewPager.setCurrentItem(getItemOfId(tabs, defaultTabId), false);
+                    viewPager.setCurrentItem(getItemOfId(group.data.tabs, defaultTabId), false);
+
                 }
 
 
@@ -214,6 +213,13 @@ public class GroupDetailFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        binding.pager.setAdapter(null);
+        binding = null;
+        super.onDestroyView();
     }
 
     @Override

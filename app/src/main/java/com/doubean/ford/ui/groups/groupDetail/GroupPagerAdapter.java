@@ -1,49 +1,33 @@
 package com.doubean.ford.ui.groups.groupDetail;
 
-import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.doubean.ford.data.vo.GroupTab;
+import com.doubean.ford.data.vo.GroupDetail;
 import com.doubean.ford.ui.groups.groupTab.GroupTabFragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class GroupPagerAdapter extends FragmentStateAdapter {
-    private String groupId;
-    private List<GroupTab> tabs;
+    private final GroupDetail group;
 
-    public GroupPagerAdapter(Fragment fragment, String groupId, List<GroupTab> tabs) {
-        super(fragment);
-        this.groupId = groupId;
-        this.tabs = tabs == null ? new ArrayList<>() : tabs;
-    }
-
-    public GroupPagerAdapter(FragmentManager fragmentManager, Lifecycle lifecycle, String groupId, List<GroupTab> tabs) {
+    public GroupPagerAdapter(FragmentManager fragmentManager, Lifecycle lifecycle, GroupDetail group) {
         super(fragmentManager, lifecycle);
-        this.groupId = groupId;
-        this.tabs = tabs == null ? new ArrayList<>() : tabs;
+        this.group = group;
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        Fragment fragment = new GroupTabFragment();
-        Bundle args = new Bundle();
-        args.putString(GroupTabFragment.ARG_GROUP_ID, groupId);
-        if (position > 0)
-            args.putString(GroupTabFragment.ARG_TAG_ID, tabs.get(position - 1).id);
-        fragment.setArguments(args);
-        return fragment;
+        String tagId = null;
+        if (position > 0) tagId = group.tabs.get(position - 1).id;
+        return GroupTabFragment.newInstance(group.id, tagId, group);
     }
 
     @Override
     public int getItemCount() {
-        return tabs.size() + 1;
+        if (group == null) return 0;
+        return group.tabs.size() + 1;
     }
 }
