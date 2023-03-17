@@ -64,7 +64,7 @@ This project uses the Gradle build system. To build this project, use the
 
 #### Douban access
 
-To not get myself into trouble, I have added detailed implementation of accessing data to .gitignore
+To not get myself into trouble, I have added detailed implementation of data access to .gitignore
 list. However, the latest release is always available.
 
 ### Who is it for?
@@ -82,9 +82,9 @@ list. However, the latest release is always available.
 
 ### Features
 
-It not only implements the very basic features of Douban app, but also has its own features, some of
-which react to the trend of Douban community to being unfriendly and closed to non-members. Examples
-are abuse of power , "apply ~~to follow or~~ to talk" and etc.
+It not only implements the very basic features of Douban app, but also has its own features. Some of
+which react to the fact that Douban community is somewhat unfriendly and closed to non-members;
+examples are power abuse of some group mods, "apply ~~to follow or~~ to talk" and etc.
 
 \* In more recent (after mid-2022) versions of the Douban app, the feature of following unjoined
 groups is finally added by them.
@@ -103,7 +103,7 @@ groups is finally added by them.
 * Ad-free, lite \(~4MB\)
 * Support URL deep links
 * Basic support for dark theme and tablets/landscape
-* Bilingual support for UI strings
+* Bilingual UI strings support
 * Paging & swipe refresh support
 * Support creating categories consisting of group/tab/search posts by multiple user-defined
   conditions \(TODO\)
@@ -168,9 +168,11 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
+* \[Room\] Use Room @upsert instead
 * \[GroupDetailFragment\]Post order: date created \(not real cuz no such API\), last updated and top
 * \[GroupDetailFragment\]\[GroupPostFragment\]Open in browser/Douban app
 * \[GroupsHomeFragment\]Add "groups of the day" list
+* \[SettingsFragment] Add
 * SnackbarUtils from todo app
 * \[GroupDetailFragment\] Update implementation of CollapsingToolBar – do not use the weird and
   obscure Sunflower logic
@@ -205,6 +207,10 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
   \(reasons unknown, may never be fixed\)
 * Uploads copies of responses to some place and reuses it among users to prevent frequent Douban
   visits.
+* 🛠\[Need help\]\[GroupDetailFragment\]The last position won't be restored when the pager is being
+  recreated
+  * When using ViewPager2, the restore problem arises if the list of page IDs are asynchronously
+    loaded and submitted from LiveData
 * Other modules, e.g., books
 
 General goals:
