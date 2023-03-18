@@ -171,7 +171,6 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 * \[GroupDetailFragment\]Post order: date created \(not real cuz no such API\), last updated and top
 * \[GroupDetailFragment\]\[GroupPostFragment\]Open in browser/Douban app
 * \[GroupsHomeFragment\]Add "groups of the day" list
-* Use YouTube-like way of showing posts and their details
 * \[SettingsFragment] Add
 * SnackbarUtils from todo app
 * \[GroupDetailFragment\] Update implementation of CollapsingToolBar – do not use the weird and
