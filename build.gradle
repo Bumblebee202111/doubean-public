@@ -19,7 +19,7 @@ buildscript {
         gradleVersion = '7.3.1'
         gsonVersion = '2.9.1'
         junitVersion = '4.13.2'
-        lifecycleVersion = '2.5.1'
+        lifecycleVersion = '2.4.1'
         materialVersion = '1.6.0'
         navigationVersion = '2.4.2'
         okhttpLoggingVersion = '4.10.0'
