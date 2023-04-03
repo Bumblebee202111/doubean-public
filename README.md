@@ -4,12 +4,12 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
 
-From now on, this repo will not be updated frequently as I am getting tired and bored of its
-development as the app grows larger. Note I am an inexperienced beginner and the only developer of
-it. Occasional crashes may happen, UI design may be incomplete and features you need may be missing.
-Pretty much of my work is copy and paste from the official documentation and samples of Google
-Android. I am trying my best only to ensure that the app will function normally on my Xiaomi devices
-with Android version varying from 8.1 to 12.
+From now on, this repo will be updated slightly more frequently as I will probably use it as a '
+' to my first Android job. Note I am an inexperienced Android beginner and the only developer
+of it. Occasional crashes may happen, UI design may be incomplete and features you need may be
+missing. Pretty much of my work is copy and paste from the official documentation and samples of
+Google Android. I am trying my best only to ensure that the app will function normally on my Xiaomi
+devices with Android version varying from 8.1 to 12.
 
 [douban]: https://www.douban.com/
 
@@ -32,6 +32,7 @@ The app is composed of 3 main screens, two of which are blank and left for futur
 
 * Group information
 * Group tabs
+  * Sort by: Last updated, new and top
 
 ##### Post Detail
 
@@ -168,8 +169,10 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
-* \[GroupDetailFragment\]Post order: date created \(not real cuz no such API\), last updated and top
-* \[GroupDetailFragment\]\[GroupPostFragment\]Open in browser/Douban app
+* Bump compile SDK to 33, followed by the introduction of @upsert
+  * Also update versions of MD, lifecycle libraries, etc
+
+* \[GroupDetailFragment\]\[PostDetailFragment\]Open in Browser/Douban app
 * \[GroupsHomeFragment\]Add "groups of the day" list
 * \[SettingsFragment] Add
 * SnackbarUtils from todo app
