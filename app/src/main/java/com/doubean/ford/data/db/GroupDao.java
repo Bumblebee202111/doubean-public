@@ -22,6 +22,7 @@ import com.doubean.ford.data.vo.PostComment;
 import com.doubean.ford.data.vo.PostCommentsResult;
 import com.doubean.ford.data.vo.PostItem;
 import com.doubean.ford.data.vo.PostTopComments;
+import com.doubean.ford.data.vo.SortBy;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -135,26 +136,26 @@ public interface GroupDao {
         });
     }
 
-    @Query("SELECT * FROM GroupPostsResult WHERE groupId = :groupId")
+    @Query("SELECT * FROM GroupPostsResult WHERE groupId = :groupId AND sortBy = :sortBy")
     @RewriteQueriesToDropUnusedColumns
-    LiveData<GroupPostsResult> getGroupPosts(String groupId);
+    LiveData<GroupPostsResult> getGroupPosts(String groupId, SortBy sortBy);
 
 
-    @Query("SELECT * FROM GroupPostsResult WHERE groupId = :groupId")
+    @Query("SELECT * FROM GroupPostsResult WHERE groupId = :groupId AND sortBy = :sortBy")
     @RewriteQueriesToDropUnusedColumns
-    GroupPostsResult findGroupPosts(String groupId);
+    GroupPostsResult findGroupPosts(String groupId, SortBy sortBy);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertGroupPostsResult(GroupPostsResult groupPostsResult);
 
 
-    @Query("SELECT * FROM GroupTagPostsResult WHERE groupId = :groupId AND tagId=:tagId")
+    @Query("SELECT * FROM GroupTagPostsResult WHERE groupId = :groupId AND tagId=:tagId AND sortBy = :sortBy")
     @RewriteQueriesToDropUnusedColumns
-    LiveData<GroupTagPostsResult> getGroupTagPosts(String groupId, String tagId);
+    LiveData<GroupTagPostsResult> getGroupTagPosts(String groupId, String tagId, SortBy sortBy);
 
-    @Query("SELECT * FROM GroupTagPostsResult WHERE groupId = :groupId AND tagId=:tagId")
+    @Query("SELECT * FROM GroupTagPostsResult WHERE groupId = :groupId AND tagId=:tagId AND sortBy = :sortBy")
     @RewriteQueriesToDropUnusedColumns
-    GroupTagPostsResult findGroupTagPosts(String groupId, String tagId);
+    GroupTagPostsResult findGroupTagPosts(String groupId, String tagId, SortBy sortBy);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertGroupTagPostsResult(GroupTagPostsResult groupTagPostsResult);

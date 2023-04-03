@@ -12,7 +12,7 @@ import java.util.Arrays;
 public abstract class NextPageHandler implements Observer<Resource<Boolean>> {
     private final MutableLiveData<LoadMoreState> loadMoreState = new MutableLiveData<>();
     boolean hasMore;
-    private String[] params;
+    private Object[] params;
     @Nullable
     private LiveData<Resource<Boolean>> nextPageLiveData;
 
@@ -20,9 +20,9 @@ public abstract class NextPageHandler implements Observer<Resource<Boolean>> {
         reset();
     }
 
-    public abstract LiveData<Resource<Boolean>> loadNextPageFromRepo(String... params);
+    public abstract LiveData<Resource<Boolean>> loadNextPageFromRepo(Object... params);
 
-    public void loadNextPage(String... params) {
+    public void loadNextPage(Object... params) {
         if (Arrays.equals(this.params, params)) {
             return;
         }
