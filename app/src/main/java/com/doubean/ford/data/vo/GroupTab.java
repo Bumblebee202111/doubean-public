@@ -2,7 +2,9 @@ package com.doubean.ford.data.vo;
 
 import androidx.annotation.Nullable;
 
-public class GroupTab extends GroupPostTag {
+import java.io.Serializable;
+
+public class GroupTab extends GroupPostTag implements Serializable {
     public final int seq;
 
     public GroupTab(@Nullable String id, String name, int seq) {
