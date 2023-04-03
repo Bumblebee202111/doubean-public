@@ -1,5 +1,6 @@
 package com.doubean.ford.ui.groups.groupTab;
 
+import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
@@ -10,6 +11,7 @@ import com.doubean.ford.data.repository.GroupsFollowsAndSavesRepository;
 import com.doubean.ford.data.vo.GroupDetail;
 import com.doubean.ford.data.vo.PostItem;
 import com.doubean.ford.data.vo.Resource;
+import com.doubean.ford.data.vo.SortBy;
 import com.doubean.ford.ui.common.LoadMoreState;
 import com.doubean.ford.ui.common.NextPageHandler;
 
@@ -26,6 +28,7 @@ public class GroupTabViewModel extends ViewModel {
     private final String groupId;
     private final String tagId;
     private final LiveData<Resource<List<PostItem>>> posts;
+    private final MutableLiveData<SortBy> sortBy = new MutableLiveData<>();
     private final LiveData<Resource<GroupDetail>> group;
     private final GroupsFollowsAndSavesRepository groupsFollowsAndSavesRepository;
     private final MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
@@ -33,8 +36,8 @@ public class GroupTabViewModel extends ViewModel {
     public GroupTabViewModel(GroupRepository groupRepository, GroupsFollowsAndSavesRepository groupsFollowsAndSavesRepository, String groupId, String tagId) {
         nextPageHandler = new NextPageHandler() {
             @Override
-            public LiveData<Resource<Boolean>> loadNextPageFromRepo(String... params) {
-                return params[1] == null ? repository.getNextPageGroupPosts(params[0]) : repository.getNextPageGroupTagPosts(params[0], params[1]);
+            public LiveData<Resource<Boolean>> loadNextPageFromRepo(Object... params) {
+                return params[1] == null ? repository.getNextPageGroupPosts((String) params[0], (SortBy) params[2]) : repository.getNextPageGroupTagPosts((String) params[0], (String) params[1], (SortBy) params[2]);
             }
         };
         this.repository = groupRepository;
@@ -42,9 +45,22 @@ public class GroupTabViewModel extends ViewModel {
         this.groupId = groupId;
         this.group = repository.getGroup(groupId, false);
         this.tagId = tagId;
-        posts = Transformations.switchMap(reloadTrigger, i -> tagId == null ? repository.getGroupPosts(groupId) : repository.getGroupTagPosts(groupId, tagId));
+        posts = Transformations.switchMap(reloadTrigger, rt -> Transformations.switchMap(sortBy, new Function<SortBy, LiveData<Resource<List<PostItem>>>>() {
+            @Override
+            public LiveData<Resource<List<PostItem>>> apply(SortBy type) {
+                return tagId == null ? repository.getGroupPosts(groupId, type) : repository.getGroupTagPosts(groupId, tagId, type);
+            }
+        }));
         this.followed = groupsFollowsAndSavesRepository.getFollowed(groupId, tagId);
         refreshPosts();
+    }
+
+    public void setSortBy(SortBy sortBy) {
+        nextPageHandler.reset();
+        if (sortBy == this.sortBy.getValue()) {
+            return;
+        }
+        this.sortBy.setValue(sortBy);
     }
 
     public void refreshPosts() {
@@ -77,7 +93,7 @@ public class GroupTabViewModel extends ViewModel {
 
 
     public void loadNextPage() {
-        nextPageHandler.loadNextPage(groupId, tagId);
+        nextPageHandler.loadNextPage(groupId, tagId, sortBy.getValue());
     }
 
 }

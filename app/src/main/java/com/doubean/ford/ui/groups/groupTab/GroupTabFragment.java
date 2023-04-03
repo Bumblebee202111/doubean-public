@@ -21,6 +21,7 @@ import com.doubean.ford.R;
 import com.doubean.ford.adapters.PostAdapter;
 import com.doubean.ford.data.vo.GroupDetail;
 import com.doubean.ford.data.vo.GroupTab;
+import com.doubean.ford.data.vo.SortBy;
 import com.doubean.ford.databinding.FragmentGroupTabBinding;
 import com.doubean.ford.util.InjectorUtils;
 import com.doubean.ford.util.ShareUtil;
@@ -150,7 +151,7 @@ public class GroupTabFragment extends Fragment {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                groupTabViewModel.setSortBy(getSortByResultType(position));
             }
 
             @Override
@@ -169,5 +170,17 @@ public class GroupTabFragment extends Fragment {
         TypedValue typedValue = new TypedValue();
         getContext().getTheme().resolveAttribute(R.attr.backgroundColor, typedValue, true);
         return typedValue.data;
+    }
+
+    private SortBy getSortByResultType(int position) {
+        switch (position) {
+            case 0:
+                return SortBy.LAST_UPDATED;
+            case 1:
+                return SortBy.NEW;
+            case 2:
+                return SortBy.TOP;
+        }
+        return null;
     }
 }

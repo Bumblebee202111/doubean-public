@@ -21,13 +21,13 @@
     <string name="followed_tab">Followed tab</string>
     <string name="unfollowed_tab">Unfollowed tab</string>
 
-    <string name="new_posts">New posts</string>
+    <string name="new_posts">New posts (in each page)</string>
     <string name="top_posts">Top posts</string>
     <string name="last_updated_posts">Last updated posts</string>
 
     <string-array name="sort_posts_by_array">
-        <item>@string/new_posts</item>
         <item>@string/last_updated_posts</item>
+        <item>@string/new_posts</item>
         <item>@string/top_posts</item>
     </string-array>
     <string name="follow">Follow</string>

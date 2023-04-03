@@ -25,8 +25,8 @@ public class PostDetailViewModel extends ViewModel {
     public PostDetailViewModel(GroupRepository groupRepository, String postId) {
         nextPageHandler = new NextPageHandler() {
             @Override
-            public LiveData<Resource<Boolean>> loadNextPageFromRepo(String... params) {
-                return groupRepository.getNextPagePostComments(params[0]);
+            public LiveData<Resource<Boolean>> loadNextPageFromRepo(Object... params) {
+                return groupRepository.getNextPagePostComments((String) params[0]);
             }
         };
         this.groupRepository = groupRepository;

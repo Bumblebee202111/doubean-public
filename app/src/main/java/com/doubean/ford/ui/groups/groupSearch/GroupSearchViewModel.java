@@ -26,8 +26,8 @@ public class GroupSearchViewModel extends ViewModel {
     public GroupSearchViewModel(GroupRepository groupRepository) {
         nextPageHandler = new NextPageHandler() {
             @Override
-            public LiveData<Resource<Boolean>> loadNextPageFromRepo(String... params) {
-                return groupRepository.searchNextPage(params[0]);
+            public LiveData<Resource<Boolean>> loadNextPageFromRepo(Object... params) {
+                return groupRepository.searchNextPage((String) params[0]);
             }
         };
         this.groupRepository = groupRepository;
