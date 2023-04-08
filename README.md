@@ -169,21 +169,21 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
-* Bump compile SDK to 33, followed by the introduction of @upsert
+* \[GroupDetailFragment\]Collapse on entrance for the followed group/tab
+* Use the Now In Android naming convention for follow-related variables
+* Bump compile SDK to 33, followed by the introduction of ROOM @upsert
   * Also update versions of MD, lifecycle libraries, etc
-
 * \[GroupDetailFragment\]\[PostDetailFragment\]Open in Browser/Douban app
 * \[GroupsHomeFragment\]Add "groups of the day" list
 * \[SettingsFragment] Add
 * SnackbarUtils from todo app
-* \[GroupDetailFragment\] Update implementation of CollapsingToolBar – do not use the weird and
-  obscure Sunflower logic
+* \[GroupDetailFragment\] Change implementation of title of CollapsingToolBar – do not use the weird
+  and obscure Sunflower logic
   * 🛠 Title not shown on recreate
 * Rate limit
 * \[SearchFragment\]GroupSearchFragment -> SearchFragment / Search group/tab posts (in-group) /
   Search posts of all groups (global)
 * \[GroupsHomeFragment\]Show groupFollow / saved posts with group info
-* \[GroupDetailFragment\]Adjust when to hide/show toolbar
 * \[GroupPostFragment\]Save WebView images
 * Use Twitter-like date formatting
 * 🛠 Status bar color is reset when starting a share intent
@@ -202,20 +202,19 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 * 🛠\[GroupPostFragment\]Dealing with post URL click - new page should not show in WebView
 * Support blocking unfriendly content
 * \[GroupsHomeFragment\]Recommendations using SharedPref
-* \[Lists\]Post order: custom rules taking multiple conditions into account
 * Widgets
 * Notifications and push services \(delayed in consideration of its difficulty and unimportance\)
-* 🛠 Views on top of WebView become invisible after scroll on my MIUI 10 Android 8.1 device
-  \(reasons unknown, may never be fixed\)
-* Uploads copies of responses to some place and reuses it among users to prevent frequent Douban
-  visits.
-* 🛠\[Need help\]\[GroupDetailFragment\]The last position won't be restored when the pager is being
-  recreated
+
+* \[GroupDetailFragment\]🛠\[Need help\]\[GroupDetailFragment\]The last position won't be restored
+  when the pager is being recreated
   * When using ViewPager2, the restore problem arises if the list of page IDs are asynchronously
     loaded and submitted from LiveData
 * Other modules, e.g., books
-
-General goals:
+* 🛠 Views on top of WebView become invisible after scroll on my MIUI 10 Android 8.1 device \(causes
+  unknown, may never be fixed\)
+* \[Lists\]Post order: custom rules based on multiple factors
+* Uploads copies of responses to some place and reuses it among users to prevent frequent Douban
+  visits. General goals:
 
 * Color
 * Typography

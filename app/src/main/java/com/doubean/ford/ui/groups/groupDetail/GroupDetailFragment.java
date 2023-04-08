@@ -93,7 +93,7 @@ public class GroupDetailFragment extends Fragment {
                     binding.tabLayout.setSelectedTabIndicatorColor(color);
                 }
 
-                if (group.status == Status.SUCCESS) {
+                if (group.status == Status.SUCCESS || group.status == Status.ERROR) {//Ensures that pager will only be loaded once
                     ViewPager2 viewPager = binding.pager;
                     GroupPagerAdapter groupPagerAdapter = new GroupPagerAdapter(getChildFragmentManager(), getViewLifecycleOwner().getLifecycle(), group.data);
                     viewPager.setAdapter(groupPagerAdapter);
