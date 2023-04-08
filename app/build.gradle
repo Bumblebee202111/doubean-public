@@ -14,6 +14,7 @@ android {
         targetSdk 31
         versionCode 1
         versionName "0.2.1"
+        setProperty("archivesBaseName", "doubean_$versionName")
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
