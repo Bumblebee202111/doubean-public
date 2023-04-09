@@ -169,17 +169,18 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
+* 🛠 \[GroupDetailFragment\]Author name is gone after data is fetched from network
 * \[GroupDetailFragment\]Collapse on entrance for the followed group/tab
-* Use the Now In Android naming convention for follow-related variables
-* Bump compile SDK to 33, followed by the introduction of ROOM @upsert
-  * Also update versions of MD, lifecycle libraries, etc
-* \[GroupDetailFragment\]\[PostDetailFragment\]Open in Browser/Douban app
-* \[GroupsHomeFragment\]Add "groups of the day" list
-* \[SettingsFragment] Add
-* SnackbarUtils from todo app
 * \[GroupDetailFragment\] Change implementation of title of CollapsingToolBar – do not use the weird
   and obscure Sunflower logic
-  * 🛠 Title not shown on recreate
+* 🛠 Title not shown on recreate
+* Use the Now In Android naming convention for follow-related variables
+* Use new features of the updated dependencies
+* \[GroupDetailFragment\]\[PostDetailFragment\]Open in Browser/Douban app
+* \[GroupsHomeFragment\]Add "groups of the day" list
+* \[SettingsFragment] Add, which may contain author info, WebView enabled by default option, etc
+* \[Lists\]Migrate GithubBrowserSample's way of paging to Paging3/Guava
+* SnackbarUtils from todo app
 * Rate limit
 * \[SearchFragment\]GroupSearchFragment -> SearchFragment / Search group/tab posts (in-group) /
   Search posts of all groups (global)
@@ -204,7 +205,6 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 * \[GroupsHomeFragment\]Recommendations using SharedPref
 * Widgets
 * Notifications and push services \(delayed in consideration of its difficulty and unimportance\)
-
 * \[GroupDetailFragment\]🛠\[Need help\]\[GroupDetailFragment\]The last position won't be restored
   when the pager is being recreated
   * When using ViewPager2, the restore problem arises if the list of page IDs are asynchronously
@@ -214,7 +214,9 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
   unknown, may never be fixed\)
 * \[Lists\]Post order: custom rules based on multiple factors
 * Uploads copies of responses to some place and reuses it among users to prevent frequent Douban
-  visits. General goals:
+  visits.
+
+More general plans:
 
 * Color
 * Typography
