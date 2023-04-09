@@ -191,7 +191,7 @@ public class GroupRepository {
                         return new LiveData<List<GroupItem>>(null) {
                         };
                     } else {
-                        return groupDao.loadOrdered(searchData.ids);
+                        return groupDao.loadOrderedGroups(searchData.ids);
                     }
                 });
             }
@@ -379,7 +379,7 @@ public class GroupRepository {
 
                 appDatabase.runInTransaction(() -> {
                     groupDao.insertPost(item);
-                    groupDao.upsertDetail(item.group);
+                    groupDao.upsertGroupBrief(item.group);
                 });
 
             }

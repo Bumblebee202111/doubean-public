@@ -7,8 +7,8 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.RewriteQueriesToDropUnusedColumns;
-import androidx.room.Transaction;
 import androidx.room.Update;
+import androidx.room.Upsert;
 
 import com.doubean.ford.data.vo.Group;
 import com.doubean.ford.data.vo.GroupBrief;
@@ -24,7 +24,6 @@ import com.doubean.ford.data.vo.PostItem;
 import com.doubean.ford.data.vo.PostTopComments;
 import com.doubean.ford.data.vo.SortBy;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -38,56 +37,21 @@ public interface GroupDao {
     @RewriteQueriesToDropUnusedColumns
     LiveData<GroupDetail> loadDetail(String groupId);
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE, entity = Group.class)
+    @Upsert(entity = Group.class)
     @RewriteQueriesToDropUnusedColumns
-    Long insertDetailIfNotExists(GroupDetail group);
+    void upsertDetail(GroupDetail group);
 
     @Update(entity = Group.class)
     @RewriteQueriesToDropUnusedColumns
-    void updateDetail(GroupDetail group);
-
-    @Transaction
-    default void upsertDetail(GroupDetail group) {
-        if (insertDetailIfNotExists(group) == -1)
-            updateDetail(group);
-    }
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE, entity = Group.class)
-    @RewriteQueriesToDropUnusedColumns
-    Long insertBriefIfNotExists(GroupBrief group);
-
-    @Update(entity = Group.class)
-    @RewriteQueriesToDropUnusedColumns
-    void updateDetail(GroupBrief group);
-
-    @Transaction
-    default void upsertDetail(GroupBrief group) {
-        if (insertBriefIfNotExists(group) == -1)
-            updateDetail(group);
-    }
+    void upsertGroupBrief(GroupBrief group);
 
     @Query("SELECT * FROM groups")
     @RewriteQueriesToDropUnusedColumns
     LiveData<List<GroupItem>> getGroups();
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE, entity = Group.class)
+    @Upsert(entity = Group.class)
     @RewriteQueriesToDropUnusedColumns
-    List<Long> insertGroupsIfNotExist(List<GroupItem> groupList);
-
-    @Update(entity = Group.class)
-    @RewriteQueriesToDropUnusedColumns
-    void updateGroups(List<GroupItem> groupList);
-
-    @Transaction
-    default void upsertGroups(List<GroupItem> groupList) {
-        List<GroupItem> updateList = new ArrayList<>();
-        List<Long> insertGroups = insertGroupsIfNotExist(groupList);
-        for (int i = 0; i < insertGroups.size(); i++) {
-            if (insertGroups.get(i) == -1)
-                updateList.add(groupList.get(i));
-        }
-        updateGroups(updateList);
-    }
+    void upsertGroups(List<GroupItem> groupList);
 
     @Query("SELECT * FROM GroupSearchResult WHERE `query` = :query")
     LiveData<GroupSearchResult> search(String query);
@@ -102,7 +66,7 @@ public interface GroupDao {
     @RewriteQueriesToDropUnusedColumns
     LiveData<List<GroupItem>> loadGroupsById(List<String> groupIds);
 
-    default LiveData<List<GroupItem>> loadOrdered(List<String> groupIds, Comparator<GroupItem> c) {
+    default LiveData<List<GroupItem>> loadOrderedGroups(List<String> groupIds, Comparator<GroupItem> c) {
         return Transformations.map(loadGroupsById(groupIds), groups -> {
             if (c == null) {
                 groups.sort(Comparator.comparingInt(o -> groupIds.indexOf(o.id)));
@@ -111,8 +75,8 @@ public interface GroupDao {
         });
     }
 
-    default LiveData<List<GroupItem>> loadOrdered(List<String> groupIds) {
-        return loadOrdered(groupIds, null);
+    default LiveData<List<GroupItem>> loadOrderedGroups(List<String> groupIds) {
+        return loadOrderedGroups(groupIds, null);
     }
 
     /* Posts-related operations start */
@@ -160,42 +124,12 @@ public interface GroupDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertGroupTagPostsResult(GroupTagPostsResult groupTagPostsResult);
 
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertPost(Post post);
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE, entity = Post.class)
+    @Upsert(entity = Post.class)
     @RewriteQueriesToDropUnusedColumns
-    long insertPostItemIfNotExists(PostItem post);
-
-    @Update(entity = Post.class)
-    @RewriteQueriesToDropUnusedColumns
-    void updatePostItem(PostItem post);
-
-    @Transaction
-    default void upsertPostItem(PostItem post) {
-        if (insertPostItemIfNotExists(post) == -1)
-            updatePostItem(post);
-    }
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE, entity = Post.class)
-    @RewriteQueriesToDropUnusedColumns
-    List<Long> insertPostsIfNotExist(List<PostItem> postList);
-
-    @Update(entity = Post.class)
-    @RewriteQueriesToDropUnusedColumns
-    void updatePosts(List<PostItem> List);
-
-    @Transaction
-    default void upsertPosts(List<PostItem> postList) {
-        List<PostItem> updateList = new ArrayList<>();
-        List<Long> insertPosts = insertPostsIfNotExist(postList);
-        for (int i = 0; i < insertPosts.size(); i++) {
-            if (insertPosts.get(i) == -1)
-                updateList.add(postList.get(i));
-        }
-        updatePosts(updateList);
-    }
+    void upsertPosts(List<PostItem> List);
 
     @Query("SELECT * FROM Post WHERE id=:postId")
     LiveData<Post> loadPost(String postId);
