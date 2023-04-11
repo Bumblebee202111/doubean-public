@@ -93,7 +93,7 @@ groups is finally added by them.
 * Inherent advantages leading to good performance and simple coding
 
   | Design Aspect | Choice\(s\) |
-        | --- | --- |
+                    | --- | --- |
   | Language | Java |
   | Libraries | Jetpack and authoritative third party libraries |
   | Architecture | MVVM |
@@ -169,7 +169,6 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
-* 🛠 \[GroupDetailFragment\]Author name is gone after data is fetched from network
 * \[GroupDetailFragment\]Collapse on entrance for the followed group/tab
 * \[GroupDetailFragment\] Change implementation of title of CollapsingToolBar – do not use the weird
   and obscure Sunflower logic
@@ -286,3 +285,32 @@ More general plans:
 [jadx]:https://github.com/skylot/jadx/releases
 
 [google-chrome]:https://www.google.com/chrome/
+
+License
+------------
+Unfortunately, I know little about licensing. However, I wish that you use it for learning/personal
+purposes only, and won't propagate it on other websites/apps, out of concern for potential copyright
+violations.
+
+Anecdotes
+------------
+
+### Efforts to Solve the dynamic ViewPager2 problem
+
+The problem is that when an ViewPager2 is asynchronously loaded via its FragmentStateAdapter from a
+LiveData containing info of its tabs \(pages\), either the pager position or the page position will
+never be saved, unlike the behavior of a RecycleView with its customized ListAdapter. LiveData +
+ViewPager2 seemed to be a very unpopular combination, and there is little info about it online.
+Hence, the issue had obsessed me for months and discouraged me to continue the development. On April
+10th in 2023, I decided to have my last fight against it. What I did:
+
+1. Download Douban APK version 6.40.0 \(less obscuration, faster decompilation\)
+2. Decompile it via JADX-GUI and export it to gradle project
+3. Open the project in Android Studio and research on what the Douban implementation is. \(Brief
+   conclusion: GroupDetailActivity + FragmentStatePagerAdapter + Intent/Bundle\)
+
+I repeated these steps on version 7 & 8, only to find that the ugly and lengthy code is still almost
+unchanged. It really surprised me. What I should do: pass tab info to the constructor / newInstance
+method / Bundle of a tab/page Fragment so it is always known to the tab. In my opinion, loading of
+tab info should happen \(be implemented\) inside the GroupDetailFragment \(autonomy\). I still
+haven't find an elegant solution to it.

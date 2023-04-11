@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -14,13 +13,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class GroupDetail implements Serializable {
-    @PrimaryKey
     @NonNull
-    @SerializedName("id")
     public String id;
 
     @NonNull
-    @SerializedName("name")
     public String name;
 
     @SerializedName("member_count")
