@@ -115,8 +115,8 @@ public class Converters {
     }
 
     @TypeConverter
-    public static User stringToUser(String strings) {
-        return new Gson().fromJson(strings, User.class);
+    public static User stringToUser(String string) {
+        return new Gson().fromJson(string, User.class);
     }
 
     @TypeConverter
@@ -125,8 +125,8 @@ public class Converters {
     }
 
     @TypeConverter
-    public static Group stringToGroup(String strings) {
-        return new Gson().fromJson(strings, Group.class);
+    public static Group stringToGroup(String string) {
+        return new Gson().fromJson(string, Group.class);
     }
 
     @TypeConverter
