@@ -17,11 +17,17 @@ public class DoubeanWebView extends WebView {
 
     public DoubeanWebView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        if (isInEditMode()) {
+            return;
+        }
         initWebView();
     }
 
     public DoubeanWebView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        if (isInEditMode()) {
+            return;
+        }
         initWebView();
     }
 

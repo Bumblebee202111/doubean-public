@@ -20,13 +20,9 @@
         android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="false">
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:fitsSystemWindows="true"
+        tools:context="com.doubean.ford.ui.MainActivity"
+        tools:ignore="MergeRootFrame">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
@@ -38,32 +34,34 @@
                 android:id="@+id/toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
+                android:fitsSystemWindows="false"
                 app:collapsedTitleGravity="center"
                 app:contentScrim="?attr/colorSurface"
-                app:statusBarScrim="?attr/colorSurface"
+                app:expandedTitleGravity="top"
+                app:expandedTitleMarginStart="16dp"
+                app:expandedTitleMarginTop="135dp"
+                app:expandedTitleTextAppearance="?attr/textAppearanceHeadline6"
+                app:layout_collapseMode="parallax"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:title="@{group.name}"
-                app:titleEnabled="false"
+                app:titleEnabled="true"
                 app:toolbarId="@id/toolbar"
-
-                tools:title="123"
-                tools:titleEnabled="true">
+                tools:title="group">
 
                 <View
                     android:id="@+id/mask"
                     android:layout_width="match_parent"
-                    android:layout_height="92dp"
-                    android:fitsSystemWindows="false" />
+                    android:layout_height="116dp"
+                    android:fitsSystemWindows="true"
+                    app:layout_collapseMode="parallax" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/group_info"
                     isGone="@{group==null}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fitsSystemWindows="false"
                     android:paddingHorizontal="@dimen/margin_normal"
-                    android:paddingTop="68dp"
+                    android:paddingTop="60dp"
                     android:paddingBottom="@dimen/margin_normal">
 
                     <com.google.android.material.imageview.ShapeableImageView
@@ -75,6 +73,8 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:shapeAppearanceOverlay="@style/smallRoundedCornersImageView"
                         tools:src="@drawable/ic_baseline_web_24" />
+
+                    <!--placeholder-->
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/group_name"
                         android:layout_width="0dp"
@@ -82,6 +82,7 @@
                         android:layout_marginTop="@dimen/margin_small"
                         android:text="@{group.name}"
                         android:textAppearance="?attr/textAppearanceHeadline6"
+                        android:textColor="@android:color/transparent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/group_avatar"
@@ -125,14 +126,16 @@
 
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/toolbar"
+                    style="@style/Widget.Doubean.GroupToolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    style="@style/Widget.Doubean.GroupToolbar"
+                    android:background="@android:color/transparent"
+                    android:elevation="0dp"
                     app:contentInsetStartWithNavigation="0dp"
                     app:layout_collapseMode="pin"
                     app:menu="@menu/menu_group_detail"
-                    android:elevation="0dp"
                     app:navigationIcon="@drawable/ic_detail_back" />
+
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -141,14 +144,18 @@
                 style="@style/Widget.MaterialComponents.TabLayout.PrimarySurface"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:layout_collapseMode="parallax"
                 app:tabGravity="start"
                 app:tabMaxWidth="0dp"
-                app:layout_collapseMode="parallax"
                 app:tabMode="scrollable"
                 app:tabPadding="0dp" />
         </com.google.android.material.appbar.AppBarLayout>
 
-
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>
