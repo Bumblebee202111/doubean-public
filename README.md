@@ -76,7 +76,7 @@ list. However, the latest release is always available.
 ### Non-Goals
 
 * Login-based features
-* Kotlin
+* Jetpack Compose
 * Dagger2/Hilt
 * RxAndroid
 * Heavy use of Material Design
@@ -103,7 +103,7 @@ groups is finally added by them.
 * Support for loading cache as alternative when connection is off
 * Ad-free, lite \(~4MB\)
 * Support URL deep links
-* Basic support for dark theme and tablets/landscape
+* Basic support for MD \(dark theme included\) and tablets/landscape
 * Bilingual UI strings support
 * Paging & swipe refresh support
 * Support creating categories consisting of group/tab/search posts by multiple user-defined
@@ -169,28 +169,22 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
-* \[GroupDetailFragment\]Collapse on entrance for the followed group/tab
-* \[GroupDetailFragment\] Change implementation of title of CollapsingToolBar – do not use the weird
-  and obscure Sunflower logic
-* 🛠 Title not shown on recreate
+* \[PostDetailFragment\]Add comment sort-by spinner
 * Use the Now In Android naming convention for follow-related variables
-* Use new features of the updated dependencies
 * \[GroupDetailFragment\]\[PostDetailFragment\]Open in Browser/Douban app
-* \[GroupsHomeFragment\]Add "groups of the day" list
-* \[SettingsFragment] Add, which may contain author info, WebView enabled by default option, etc
-* \[Lists\]Migrate GithubBrowserSample's way of paging to Paging3/Guava
+* \[GroupsHomeFragment\]Add "groups of the day" list & remove prepopulated followed items
+* \[SettingsFragment] Add, which may contain author info, WebView enabled by default toggle, etc
+* \[Lists\]Migrate GithubBrowserSample's way of paging to Paging3 + Guava/Coroutine + LiveData/Flow
 * SnackbarUtils from todo app
 * Rate limit
 * \[SearchFragment\]GroupSearchFragment -> SearchFragment / Search group/tab posts (in-group) /
   Search posts of all groups (global)
 * \[GroupsHomeFragment\]Show groupFollow / saved posts with group info
 * \[GroupPostFragment\]Save WebView images
-* Use Twitter-like date formatting
-* 🛠 Status bar color is reset when starting a share intent
-* \[Lists\]Allow follow/save for every type of item
 * \[GroupDetailFragment\]\[GroupPostFragment\]Track/mark/revert read
 * \[GroupsHomeFragment\]Unfollow/reorder items
 * \[GroupDetailFragment\]WebView for group
+* \[Lists\]Allow follow/save for every type of item
 * \[GroupDetailFragment\]Refactor following, support following groups, tags and searches which can
   constitute custom posts categories/groups with filters available
 * \[GroupDetailFragment\]\[GroupPostFragment\]Save various types of searches, posts and comments
@@ -202,23 +196,27 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 * 🛠\[GroupPostFragment\]Dealing with post URL click - new page should not show in WebView
 * Support blocking unfriendly content
 * \[GroupsHomeFragment\]Recommendations using SharedPref
+* Use Twitter-like date formatting
 * Widgets
 * Notifications and push services \(delayed in consideration of its difficulty and unimportance\)
 * \[GroupDetailFragment\]🛠\[Need help\]\[GroupDetailFragment\]The last position won't be restored
   when the pager is being recreated
   * When using ViewPager2, the restore problem arises if the list of page IDs are asynchronously
     loaded and submitted from LiveData
+* \[GroupDetailFragment\]Collapse on entrance for the followed group/tab
 * Other modules, e.g., books
 * 🛠 Views on top of WebView become invisible after scroll on my MIUI 10 Android 8.1 device \(causes
   unknown, may never be fixed\)
+* \[Data layer\] Migrate to Kotlin Flow
 * \[Lists\]Post order: custom rules based on multiple factors
 * Uploads copies of responses to some place and reuses it among users to prevent frequent Douban
   visits.
 
 More general plans:
 
-* Color
-* Typography
+* Use MD3
+* Use Kotlin/Flow in repositories
+* Use new features of the updated dependencies
 * Optimize landscape experience
 * Add views for fields currently unused
 * Decouple DoubanInterface and expose as much code to VC as possible \(Make anything but keys

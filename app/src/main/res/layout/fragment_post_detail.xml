@@ -42,23 +42,32 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        tools:context=".ui.groups.postDetail.PostDetailFragment">
+        tools:context="com.doubean.ford.ui.MainActivity">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            style="@style/Widget.Doubean.GroupToolbar"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:contentInsetStartWithNavigation="0dp"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:menu="@menu/menu_post_detail"
-            app:navigationIcon="@drawable/ic_detail_back"
-            app:title="@{viewModel.post.data.title}"
-            tools:title="title title title title " />
-        <!--todo: app:subtitle="@{viewModel.post.abstract}"-->
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                style="@style/Widget.Doubean.GroupToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                android:elevation="0dp"
+
+                app:menu="@menu/menu_post_detail"
+                app:navigationIcon="@drawable/ic_detail_back"
+                app:title="@{viewModel.post.data.title}"
+                tools:title="title title title title " />
+            <!--todo: app:subtitle="@{viewModel.post.abstract}"-->
+        </com.google.android.material.appbar.AppBarLayout>
+
         <ProgressBar
             android:id="@+id/load_more_bar"
             style="?android:attr/progressBarStyleHorizontal"
@@ -80,7 +89,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintTop_toBottomOf="@id/appbar"
             app:layout_constraintVertical_bias="0">
 
             <androidx.core.widget.NestedScrollView
@@ -93,10 +102,7 @@
                     android:id="@+id/post"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:descendantFocusability="blocksDescendants"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:descendantFocusability="blocksDescendants">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/group_avatar"
@@ -344,4 +350,6 @@
             app:resource="@{findResource}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </layout>
