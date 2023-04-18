@@ -169,42 +169,47 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
-* \[PostDetailFragment\]Add comment sort-by spinner
-* Use the Now In Android naming convention for follow-related variables
+#### To-dos for next release
+
 * \[GroupDetailFragment\]\[PostDetailFragment\]Open in Browser/Douban app
 * \[GroupsHomeFragment\]Add "groups of the day" list & remove prepopulated followed items
 * \[SettingsFragment] Add, which may contain author info, WebView enabled by default toggle, etc
+
+#### Future plans
+
 * \[Lists\]Migrate GithubBrowserSample's way of paging to Paging3 + Guava/Coroutine + LiveData/Flow
 * SnackbarUtils from todo app
 * Rate limit
 * \[SearchFragment\]GroupSearchFragment -> SearchFragment / Search group/tab posts (in-group) /
   Search posts of all groups (global)
-* \[GroupsHomeFragment\]Show groupFollow / saved posts with group info
-* \[GroupPostFragment\]Save WebView images
-* \[GroupDetailFragment\]\[GroupPostFragment\]Track/mark/revert read
+* \[PostDetailFragment\]Save WebView images
+* \[GroupDetailFragment\]\[PostDetailFragment\]Track/mark/revert read
 * \[GroupsHomeFragment\]Unfollow/reorder items
 * \[GroupDetailFragment\]WebView for group
-* \[Lists\]Allow follow/save for every type of item
-* \[GroupDetailFragment\]Refactor following, support following groups, tags and searches which can
-  constitute custom posts categories/groups with filters available
-* \[GroupDetailFragment\]\[GroupPostFragment\]Save various types of searches, posts and comments
+* Allow following/saving every type of item
+  * \[GroupsHomeFragment\]Show followed groups/tabs/searches / saved posts / saved comments with
+    group info
+  * \[Lists\]Add item action
+* \[GroupDetailFragment\]Allow custom groups/tabs/posts categories/groups with filters available
 * \[WebView\]Complete CSS of content WebView: find official CSS source or write on my own
 * \[GroupDetailFragment\]Group/tab/post shortcuts
 * \[Lists\]Reddit-like item expand/collapse
 * \[GroupDetailFragment\]For post items, optimize tag display, e.g., assign color to each tag mapped
   from name
-* 🛠\[GroupPostFragment\]Dealing with post URL click - new page should not show in WebView
+* 🛠\[GroupPostFragment\]Dealing with post URL click - new page should not show in the old WebView
 * Support blocking unfriendly content
 * \[GroupsHomeFragment\]Recommendations using SharedPref
 * Use Twitter-like date formatting
-* Widgets
+* Widgets*
+* \[PostDetailFragment\]Show saves and reposts
+* \[Sortby\]Migrate Spinner to `singleSelection` `ChipGroup`
 * Notifications and push services \(delayed in consideration of its difficulty and unimportance\)
-* \[GroupDetailFragment\]🛠\[Need help\]\[GroupDetailFragment\]The last position won't be restored
-  when the pager is being recreated
+* 🛠\[Need help\]\[GroupDetailFragment\]The last position won't be restored when the pager is being
+  recreated
   * When using ViewPager2, the restore problem arises if the list of page IDs are asynchronously
-    loaded and submitted from LiveData
+    submitted by LiveData
 * \[GroupDetailFragment\]Collapse on entrance for the followed group/tab
-* Other modules, e.g., books
+* Other modules, e.g., books, movies
 * 🛠 Views on top of WebView become invisible after scroll on my MIUI 10 Android 8.1 device \(causes
   unknown, may never be fixed\)
 * \[Data layer\] Migrate to Kotlin Flow
@@ -212,8 +217,7 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 * Uploads copies of responses to some place and reuses it among users to prevent frequent Douban
   visits.
 
-More general plans:
-
+#### More general plans
 * Use MD3
 * Use Kotlin/Flow in repositories
 * Use new features of the updated dependencies
@@ -310,5 +314,5 @@ Hence, the issue had obsessed me for months and discouraged me to continue the d
 I repeated these steps on version 7 & 8, only to find that the ugly and lengthy code is still almost
 unchanged. It really surprised me. What I should do: pass tab info to the constructor / newInstance
 method / Bundle of a tab/page Fragment so it is always known to the tab. In my opinion, loading of
-tab info should happen \(be implemented\) inside the GroupDetailFragment \(autonomy\). I still
-haven't find an elegant solution to it.
+tab info should happen \(be implemented\) inside the GroupDetailFragment \(autonomy\). Till now, I
+still haven't find an elegant solution to it.
