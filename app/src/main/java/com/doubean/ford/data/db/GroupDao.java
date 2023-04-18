@@ -21,8 +21,8 @@ import com.doubean.ford.data.vo.Post;
 import com.doubean.ford.data.vo.PostComment;
 import com.doubean.ford.data.vo.PostCommentsResult;
 import com.doubean.ford.data.vo.PostItem;
+import com.doubean.ford.data.vo.PostSortBy;
 import com.doubean.ford.data.vo.PostTopComments;
-import com.doubean.ford.data.vo.SortBy;
 
 import java.util.Comparator;
 import java.util.List;
@@ -102,12 +102,12 @@ public interface GroupDao {
 
     @Query("SELECT * FROM GroupPostsResult WHERE groupId = :groupId AND sortBy = :sortBy")
     @RewriteQueriesToDropUnusedColumns
-    LiveData<GroupPostsResult> getGroupPosts(String groupId, SortBy sortBy);
+    LiveData<GroupPostsResult> getGroupPosts(String groupId, PostSortBy sortBy);
 
 
     @Query("SELECT * FROM GroupPostsResult WHERE groupId = :groupId AND sortBy = :sortBy")
     @RewriteQueriesToDropUnusedColumns
-    GroupPostsResult findGroupPosts(String groupId, SortBy sortBy);
+    GroupPostsResult findGroupPosts(String groupId, PostSortBy sortBy);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertGroupPostsResult(GroupPostsResult groupPostsResult);
@@ -115,11 +115,11 @@ public interface GroupDao {
 
     @Query("SELECT * FROM GroupTagPostsResult WHERE groupId = :groupId AND tagId=:tagId AND sortBy = :sortBy")
     @RewriteQueriesToDropUnusedColumns
-    LiveData<GroupTagPostsResult> getGroupTagPosts(String groupId, String tagId, SortBy sortBy);
+    LiveData<GroupTagPostsResult> getGroupTagPosts(String groupId, String tagId, PostSortBy sortBy);
 
     @Query("SELECT * FROM GroupTagPostsResult WHERE groupId = :groupId AND tagId=:tagId AND sortBy = :sortBy")
     @RewriteQueriesToDropUnusedColumns
-    GroupTagPostsResult findGroupTagPosts(String groupId, String tagId, SortBy sortBy);
+    GroupTagPostsResult findGroupTagPosts(String groupId, String tagId, PostSortBy sortBy);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertGroupTagPostsResult(GroupTagPostsResult groupTagPostsResult);

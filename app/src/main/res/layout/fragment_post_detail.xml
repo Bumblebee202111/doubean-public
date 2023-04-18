@@ -211,13 +211,24 @@
                         app:layout_constraintTop_toBottomOf="@id/content">
 
                         <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/comment_count"
+                            isGone="@{viewModel.post.data.commentCount==null}"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.post.data.commentCount==null?``:@plurals/comments(viewModel.post.data.commentCount,viewModel.post.data.commentCount)}"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/repost_count"
                             isGone="@{viewModel.post.data.repostCount==null}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{viewModel.post.data.repostCount==null?``:@plurals/reposts(viewModel.post.data.repostCount,viewModel.post.data.repostCount)}"
+                            android:layout_marginStart="@dimen/margin_normal"
+                            android:text="@{viewModel.post.data.repostCount==null?``:@plurals/reposts(viewModel.post.data.commentCount,viewModel.post.data.repostCount)}"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/comment_count"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <com.google.android.material.textview.MaterialTextView
@@ -242,91 +253,28 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@id/like_count"
                             app:layout_constraintTop_toTopOf="parent" />
-
-
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/top_comments_header"
-                        isGone="@{viewModel.postComments.data.topComments==null||viewModel.postComments.data.topComments.empty}"
+                    <Spinner
+                        android:id="@+id/sort_comments_by_spinner"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_marginHorizontal="@dimen/margin_normal"
-                        android:layout_marginTop="@dimen/margin_normal"
-                        android:text="@string/top_comments"
-                        android:textAppearance="?attr/textAppearanceSubtitle2"
-                        android:textColor="?attr/colorAccent"
+                        android:layout_marginTop="@dimen/margin_small"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/counts" />
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/top_comment_count"
-                        isGone="@{viewModel.postComments.data.topComments==null||viewModel.postComments.data.topComments.empty}"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="@dimen/margin_normal"
-                        android:text="@{``+viewModel.postComments.data.topComments.size()}"
-                        android:textAppearance="?attr/textAppearanceSubtitle2"
-                        android:textColor="?attr/colorAccent"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="@id/top_comments_header"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/top_comments_header"
-                        app:layout_constraintTop_toTopOf="@id/top_comments_header"
-                        tools:text="101111" />
-
-
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/top_comments"
+                        android:id="@+id/comments"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_small"
                         android:nestedScrollingEnabled="false"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/top_comments_header"
-                        tools:listitem="@layout/list_item_post_comment" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/all_comments_header"
-                        isGone="@{viewModel.post.data.commentCount==null}"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="@dimen/margin_normal"
-                        android:layout_marginTop="@dimen/margin_normal"
-                        android:text="@string/all_comments"
-                        android:textAppearance="?attr/textAppearanceSubtitle2"
-                        android:textColor="?attr/colorAccent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/top_comments" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/all_comment_count"
-                        isGone="@{viewModel.post.data.commentCount==null}"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="@dimen/margin_normal"
-                        android:text="@{``+viewModel.post.data.commentCount}"
-                        android:textAppearance="?attr/textAppearanceSubtitle2"
-                        android:textColor="?attr/colorAccent"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="@id/all_comments_header"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/all_comments_header"
-                        app:layout_constraintTop_toTopOf="@id/all_comments_header"
-                        tools:text="11010111" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/all_comments"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_small"
-                        android:nestedScrollingEnabled="false"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/all_comments_header"
+                        app:layout_constraintTop_toBottomOf="@id/sort_comments_by_spinner"
                         tools:listitem="@layout/list_item_post_comment" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

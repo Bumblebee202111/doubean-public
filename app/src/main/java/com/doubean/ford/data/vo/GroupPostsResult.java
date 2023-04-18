@@ -16,9 +16,9 @@ public class GroupPostsResult extends ListResult {
     public String groupId;
 
     @NonNull
-    public SortBy sortBy;
+    public PostSortBy sortBy;
 
-    public GroupPostsResult(@NonNull String groupId, @NonNull SortBy sortBy, @Nullable List<String> ids, int totalCount, @Nullable Integer next) {
+    public GroupPostsResult(@NonNull String groupId, @NonNull PostSortBy sortBy, @Nullable List<String> ids, int totalCount, @Nullable Integer next) {
         super(ids, totalCount, next);
         this.groupId = groupId;
         this.sortBy = sortBy;
