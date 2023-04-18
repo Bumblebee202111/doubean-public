@@ -1,5 +1,8 @@
 package com.doubean.ford.ui.groups.postDetail;
 
+import static com.doubean.ford.data.vo.PostCommentSortBy.ALL;
+import static com.doubean.ford.data.vo.PostCommentSortBy.TOP;
+
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -9,6 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +30,7 @@ import com.doubean.ford.MobileNavigationDirections;
 import com.doubean.ford.R;
 import com.doubean.ford.adapters.PostCommentAdapter;
 import com.doubean.ford.data.vo.Post;
+import com.doubean.ford.data.vo.PostCommentSortBy;
 import com.doubean.ford.data.vo.Resource;
 import com.doubean.ford.databinding.FragmentPostDetailBinding;
 import com.doubean.ford.ui.common.DoubeanWebView;
@@ -98,19 +105,16 @@ public class PostDetailFragment extends Fragment {
                     if (groupColor != 0) {
                         binding.toolbar.setBackgroundColor(groupColor);
                         binding.appbar.setBackgroundColor(groupColor);
-                        PostCommentAdapter topCommentAdapter = new PostCommentAdapter(post.data);
-                        PostCommentAdapter allCommentAdapter = new PostCommentAdapter(post.data);
-                        binding.topComments.setAdapter(topCommentAdapter);
-                        binding.allComments.setAdapter(allCommentAdapter);
-                        subscribeUi(topCommentAdapter, allCommentAdapter);
-
-                        binding.topComments.addItemDecoration(new DividerItemDecoration(binding.topComments.getContext(), DividerItemDecoration.VERTICAL));
-                        binding.allComments.addItemDecoration(new DividerItemDecoration(binding.allComments.getContext(), DividerItemDecoration.VERTICAL));
+                        PostCommentAdapter commentAdapter = new PostCommentAdapter(post.data);
+                        binding.comments.setAdapter(commentAdapter);
+                        binding.comments.addItemDecoration(new DividerItemDecoration(binding.comments.getContext(), DividerItemDecoration.VERTICAL));
+                        subscribeUi(commentAdapter, (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                            if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
+                                postDetailViewModel.loadNextPage();
+                            }
+                        });
                     }
-
                 }
-
-
             }
 
         });
@@ -144,11 +148,7 @@ public class PostDetailFragment extends Fragment {
         });
         setHasOptionsMenu(true);
 
-        binding.postDetailScrollview.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
-                postDetailViewModel.loadNextPage();
-            }
-        });
+
         postDetailViewModel.getLoadMoreStatus().observe(getViewLifecycleOwner(), loadingMore -> {
             if (loadingMore == null) {
                 binding.setLoadingMore(false);
@@ -167,13 +167,39 @@ public class PostDetailFragment extends Fragment {
     }
 
 
-    private void subscribeUi(PostCommentAdapter topCommentAdapter, PostCommentAdapter allCommentAdapter) {
+    private void subscribeUi(PostCommentAdapter commentAdapter, NestedScrollView.OnScrollChangeListener postDetailScrollViewListener) {
         postDetailViewModel.getPostComments().observe(getViewLifecycleOwner(), result -> {
             binding.setFindResource(result);
             binding.setResultCount(result == null || result.data == null || result.data.getAllComments() == null ? 0 : result.data.getAllComments().size());
             if (result != null && result.data != null) {
-                topCommentAdapter.submitList(result == null || result.data == null ? null : result.data.getTopComments());
-                allCommentAdapter.submitList(result == null || result.data == null ? null : result.data.getAllComments());
+                Spinner spinner = binding.sortCommentsBySpinner;
+                ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(getContext(),
+                        R.array.sort_comments_by_array, android.R.layout.simple_spinner_item);
+                arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(arrayAdapter);
+                if (result.data.getTopComments() != null && result.data.getTopComments().isEmpty())
+                    spinner.setSelection(1);
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        switch (getSortByAt(position)) {
+                            case TOP:
+                                commentAdapter.submitList(result.data.getTopComments());
+                                binding.postDetailScrollview.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) null);
+                                break;
+                            case ALL:
+                                commentAdapter.submitList(result.data.getAllComments());
+                                binding.postDetailScrollview.setOnScrollChangeListener(postDetailScrollViewListener);
+                        }
+
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+
             }
 
             if (result != null)
@@ -195,5 +221,15 @@ public class PostDetailFragment extends Fragment {
     private void navigateToGroup(View v, Post post) {
         PostDetailFragmentDirections.ActionNavigationPostDetailToNavigationGroupDetail direction = PostDetailFragmentDirections.actionNavigationPostDetailToNavigationGroupDetail(post.groupId);
         Navigation.findNavController(v).navigate(direction);
+    }
+
+    private PostCommentSortBy getSortByAt(int position) {
+        switch (position) {
+            case 0:
+                return TOP;
+            case 1:
+                return ALL;
+        }
+        return null;
     }
 }

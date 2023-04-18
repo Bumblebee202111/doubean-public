@@ -19,9 +19,9 @@ public class GroupTagPostsResult extends ListResult {
     public String tagId;
 
     @NonNull
-    public SortBy sortBy;
+    public PostSortBy sortBy;
 
-    public GroupTagPostsResult(@NonNull String groupId, @NonNull String tagId, @NonNull SortBy sortBy, @Nullable List<String> ids, int totalCount, @Nullable Integer next) {
+    public GroupTagPostsResult(@NonNull String groupId, @NonNull String tagId, @NonNull PostSortBy sortBy, @Nullable List<String> ids, int totalCount, @Nullable Integer next) {
         super(ids, totalCount, next);
         this.groupId = groupId;
         this.tagId = tagId;

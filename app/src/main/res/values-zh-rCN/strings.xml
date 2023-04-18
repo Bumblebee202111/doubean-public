@@ -12,6 +12,9 @@
     <string name="search_hint">搜索小组</string>
     <string name="empty_search_result">暂无 <b>%s</b> 的搜索结果</string>
 
+    <plurals name="comments">
+        <item quantity="other">%d 评论</item>
+    </plurals>
     <plurals name="reposts">
         <item quantity="other">%d 转发</item>
     </plurals>

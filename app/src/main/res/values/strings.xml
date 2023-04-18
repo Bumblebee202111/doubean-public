@@ -30,12 +30,22 @@
         <item>@string/new_posts</item>
         <item>@string/top_posts</item>
     </string-array>
+
+    <string-array name="sort_comments_by_array">
+        <item>@string/top_comments</item>
+        <item>@string/all_comments</item>
+    </string-array>
+
     <string name="follow">Follow</string>
     <string name="unfollow">Unfollow</string>
 
     <string name="a11y_group_item_image">Avatar of group</string>
     <string name="all">All</string>
 
+    <plurals name="comments">
+        <item quantity="one">%d comment</item>
+        <item quantity="other">%d comments</item>
+    </plurals>
     <plurals name="reposts">
         <item quantity="one">%d repost</item>
         <item quantity="other">%d reposts</item>
