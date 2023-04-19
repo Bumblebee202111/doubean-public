@@ -26,13 +26,12 @@ The app is composed of 3 main screens, two of which are blank and left for futur
 
 ##### Groups Home
 
-* Following groups and tabs
+* Followed groups and tabs
 
 ##### Group Detail
 
 * Group information
 * Group tabs
-  * Sort by: Last updated, new and top
 
 ##### Post Detail
 
@@ -93,7 +92,7 @@ groups is finally added by them.
 * Inherent advantages leading to good performance and simple coding
 
   | Design Aspect | Choice\(s\) |
-                    | --- | --- |
+                        | --- | --- |
   | Language | Java |
   | Libraries | Jetpack and authoritative third party libraries |
   | Architecture | MVVM |
@@ -171,9 +170,17 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
 #### To-dos for next release
 
-* \[GroupDetailFragment\]\[PostDetailFragment\]Open in Browser/Douban app
-* \[GroupsHomeFragment\]Add "groups of the day" list & remove prepopulated followed items
+* \[GroupsHomeFragment\]Add "groups of the day" list & remove prepopulated followed items \(and
+  extra repository logic\)
 * \[SettingsFragment] Add, which may contain author info, WebView enabled by default toggle, etc
+* 🛠\[GroupTabFragment\] A more click should pop up a menu instead of directly starting a share
+  action
+* 🛠\[Need help\]\[GroupDetailFragment\]The last position won't be restored when the pager is being
+  recreated
+  * When using ViewPager2, the restore problem arises if the list of page IDs are asynchronously
+    submitted by LiveData
+  * Try to ask ChatGPT for help
+  * It is reallyyyyyyyyy annoying \(SEE the anecdote\)
 
 #### Future plans
 
@@ -204,10 +211,6 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 * \[PostDetailFragment\]Show saves and reposts
 * \[Sortby\]Migrate Spinner to `singleSelection` `ChipGroup`
 * Notifications and push services \(delayed in consideration of its difficulty and unimportance\)
-* 🛠\[Need help\]\[GroupDetailFragment\]The last position won't be restored when the pager is being
-  recreated
-  * When using ViewPager2, the restore problem arises if the list of page IDs are asynchronously
-    submitted by LiveData
 * \[GroupDetailFragment\]Collapse on entrance for the followed group/tab
 * Other modules, e.g., books, movies
 * 🛠 Views on top of WebView become invisible after scroll on my MIUI 10 Android 8.1 device \(causes
@@ -218,9 +221,14 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
   visits.
 
 #### More general plans
+
+* Migration to Kotlin
+  * New class files should be written in Kotlin
+  * Use Kotlin/Flow first in repository/data layer and paging, while the UI layer should keep using
+    LiveData even with the Kotlin migration
 * Use MD3
-* Use Kotlin/Flow in repositories
 * Use new features of the updated dependencies
+  * CreationExtras?
 * Optimize landscape experience
 * Add views for fields currently unused
 * Decouple DoubanInterface and expose as much code to VC as possible \(Make anything but keys
