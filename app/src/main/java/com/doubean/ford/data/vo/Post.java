@@ -63,6 +63,8 @@ public class Post {
 
     public GroupBrief group;
 
+    public String uri;
+
     public String getTagName() {
         if (postTags.isEmpty()) return null;
         return postTags.get(0).name;

@@ -9,5 +9,21 @@
     <item
         android:id="@+id/action_share"
         android:title="@string/share"
-        app:showAsAction="never"></item>
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/view_in"
+        android:title="@string/view_in"
+        app:showAsAction="never">
+        <menu>
+            <item
+                android:id="@+id/action_view_in_douban"
+                android:title="@string/view_in_douban"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_view_in_browser"
+                android:title="@string/view_in_browser"
+                app:showAsAction="never" />
+        </menu>
+    </item>
+
 </menu>

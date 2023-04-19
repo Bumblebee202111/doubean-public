@@ -46,6 +46,8 @@ public class GroupDetail implements Serializable {
     @SerializedName("background_mask_color")
     public String colorString;
 
+    public String uri;
+
     @Ignore
     public int getColor() {
         return Color.parseColor(TextUtils.isEmpty(colorString) ? "#FFFFFF" : colorString);
