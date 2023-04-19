@@ -4,8 +4,8 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
 
-From now on, this repo will be updated slightly more frequently as I will probably use it as a '
-ticket' to my first Android job. Note I am an inexperienced Android beginner and the only developer
+From now on, this repo will be updated slightly more frequently as I will probably use it as a
+'ticket' to my first Android job. Note I am an inexperienced Android beginner and the only developer
 of it. Occasional crashes may happen, UI design may be incomplete and features you need may be
 missing. Pretty much of my work is copy and paste from the official documentation and samples of
 Google Android. I am trying my best only to ensure that the app will function normally on my Xiaomi
@@ -169,18 +169,16 @@ Libraries Used
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
 #### To-dos for next release
-
 * \[GroupsHomeFragment\]Add "groups of the day" list & remove prepopulated followed items \(and
-  extra repository logic\)
+  related repository logic\)
 * \[SettingsFragment] Add, which may contain author info, WebView enabled by default toggle, etc
-* 🛠\[GroupTabFragment\] A more click should pop up a menu instead of directly starting a share
-  action
 * 🛠\[Need help\]\[GroupDetailFragment\]The last position won't be restored when the pager is being
   recreated
   * When using ViewPager2, the restore problem arises if the list of page IDs are asynchronously
     submitted by LiveData
   * Try to ask ChatGPT for help
   * It is reallyyyyyyyyy annoying \(SEE the anecdote\)
+* \[Room] Try to setup "auto no migration" for the convenience of debugging
 
 #### Future plans
 
@@ -206,9 +204,9 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 * 🛠\[GroupPostFragment\]Dealing with post URL click - new page should not show in the old WebView
 * Support blocking unfriendly content
 * \[GroupsHomeFragment\]Recommendations using SharedPref
-* Use Twitter-like date formatting
-* Widgets*
 * \[PostDetailFragment\]Show saves and reposts
+* Allow another option of using Twitter-like date formatting
+* Widgets*
 * \[Sortby\]Migrate Spinner to `singleSelection` `ChipGroup`
 * Notifications and push services \(delayed in consideration of its difficulty and unimportance\)
 * \[GroupDetailFragment\]Collapse on entrance for the followed group/tab

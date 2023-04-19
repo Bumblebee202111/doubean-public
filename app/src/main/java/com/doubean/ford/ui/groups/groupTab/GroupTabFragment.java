@@ -12,6 +12,7 @@ import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -88,14 +89,26 @@ public class GroupTabFragment extends Fragment {
         followUnfollow.setTextColor(groupColor);
 
         binding.more.setOnClickListener(v -> {
-            for (GroupTab tab : group.tabs) {
-                if (tab.id.equals(tagId)) {
-                    String shareText = group.name + "|" + tab.name + ' ' + group.url + "\r\n";
-                    ShareUtil.Share(getContext(), shareText);
-                    break;
-                }
-            }
+            PopupMenu popup = new PopupMenu(getContext(), v);
 
+            popup.setOnMenuItemClickListener(item -> {
+                        //noinspection SwitchStatementWithTooFewBranches
+                        switch (item.getItemId()) {
+                            case R.id.action_share:
+                                for (GroupTab tab : group.tabs) {
+                                    if (tab.id.equals(tagId)) {
+                                        String shareText = group.name + "|" + tab.name + ' ' + group.url + "\r\n";
+                                        ShareUtil.Share(getContext(), shareText);
+                                        break;
+                                    }
+                                }
+                                break;
+                        }
+                        return false;
+                    }
+            );
+            popup.inflate(R.menu.menu_group_tab);
+            popup.show();
         });
 
         groupTabViewModel.getLoadMoreStatus().observe(getViewLifecycleOwner(), loadingMore -> {
