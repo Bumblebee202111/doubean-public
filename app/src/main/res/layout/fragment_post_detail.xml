@@ -226,7 +226,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/margin_normal"
-                            android:text="@{viewModel.post.data.repostCount==null?``:@plurals/reposts(viewModel.post.data.commentCount,viewModel.post.data.repostCount)}"
+                            android:text="@{viewModel.post.data.repostCount==null?``:@plurals/reposts(viewModel.post.data.repostCount,viewModel.post.data.repostCount)}"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toEndOf="@id/comment_count"
                             app:layout_constraintTop_toTopOf="parent" />
