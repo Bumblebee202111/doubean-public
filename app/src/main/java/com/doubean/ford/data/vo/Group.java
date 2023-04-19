@@ -31,6 +31,8 @@ public class Group {
     @SerializedName("sharing_url")
     public String url;
 
+    public String uri;
+
     @SerializedName("avatar")
     public String avatarUrl;
 

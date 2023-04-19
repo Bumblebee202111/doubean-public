@@ -66,6 +66,9 @@
     <string name="unknown_error">Unknown Error</string>
     <string name="share">Share</string>
     <string name="view_in_web">View in Web</string>
+    <string name="view_in">View in ...</string>
+    <string name="view_in_douban">View in Douban</string>
+    <string name="view_in_browser">View in Browser</string>
     <string name="repliedTo">Replied to</string>
     <string name="post">Post</string>
     <string name="colon">:</string>

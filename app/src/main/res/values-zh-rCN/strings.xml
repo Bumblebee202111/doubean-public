@@ -43,7 +43,10 @@
     <string name="unknown_error">未知错误</string>
     <string name="share">分享</string>
     <string name="view_in_web">在Web中查看</string>
+    <string name="view_in_browser">在浏览器中查看</string>
     <string name="repliedTo">回复</string>
     <string name="post">帖子</string>
     <string name="colon">：</string>
+    <string name="view_in_douban">在豆瓣中查看</string>
+    <string name="view_in">在……中查看</string>
 </resources>

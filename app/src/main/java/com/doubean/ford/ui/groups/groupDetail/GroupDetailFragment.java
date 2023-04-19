@@ -16,10 +16,13 @@ import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.doubean.ford.R;
+import com.doubean.ford.data.vo.GroupDetail;
 import com.doubean.ford.data.vo.GroupTab;
+import com.doubean.ford.data.vo.Resource;
 import com.doubean.ford.data.vo.Status;
 import com.doubean.ford.databinding.FragmentGroupDetailBinding;
 import com.doubean.ford.util.InjectorUtils;
+import com.doubean.ford.util.OpenInUtil;
 import com.doubean.ford.util.ShareUtil;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -140,10 +143,25 @@ public class GroupDetailFragment extends Fragment {
             //ref: https://stackoverflow.com/a/33891727
             boolean shouldShowToolbar = verticalOffset + appBarLayout.getTotalScrollRange() == 0;
             binding.appbar.setActivated(shouldShowToolbar);
-
         });
-        binding.toolbar.setOnMenuItemClickListener(item -> {
-            //noinspection SwitchStatementWithTooFewBranches
+        binding.toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
+        setHasOptionsMenu(true);
+
+        binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).navigateUp());
+
+        return binding.getRoot();
+    }
+
+    private int getColorSurface() {
+        TypedValue typedValue = new TypedValue();
+        getContext().getTheme().resolveAttribute(R.attr.colorSurface, typedValue, true);
+        return typedValue.data;
+    }
+
+    private boolean onMenuItemClick(MenuItem item) {
+        Resource<GroupDetail> groupResource = groupDetailViewModel.getGroup().getValue();
+        if (groupResource != null && groupResource.data != null) {
+            GroupDetail group = groupResource.data;
             switch (item.getItemId()) {
                 case R.id.action_follow:
                     Boolean isFollowed = groupDetailViewModel.getFollowed().getValue();
@@ -162,22 +180,20 @@ public class GroupDetailFragment extends Fragment {
                 case R.id.action_share:
                     ShareUtil.Share(getContext(), shareText);
                     return true;
-                default:
-                    return false;
+                case R.id.action_view_in_douban:
+                    if (group.uri != null) {
+                        String urlString = group.uri;
+                        OpenInUtil.openInDouban(getContext(), urlString);
+                    }
+                    return true;
+                case R.id.action_view_in_browser:
+                    if (group.url != null) {
+                        String urlString = group.url;
+                        OpenInUtil.openInBrowser(getContext(), urlString);
+                    }
+                    return true;
             }
-        });
-        setHasOptionsMenu(true);
-
-        binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).navigateUp());
-
-        return binding.getRoot();
-    }
-
-
-
-    private int getColorSurface() {
-        TypedValue typedValue = new TypedValue();
-        getContext().getTheme().resolveAttribute(R.attr.colorSurface, typedValue, true);
-        return typedValue.data;
+        }
+        return false;
     }
 }

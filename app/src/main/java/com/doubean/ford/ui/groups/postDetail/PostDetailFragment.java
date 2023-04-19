@@ -37,6 +37,7 @@ import com.doubean.ford.ui.common.DoubeanWebView;
 import com.doubean.ford.ui.common.DoubeanWebViewClient;
 import com.doubean.ford.util.Constants;
 import com.doubean.ford.util.InjectorUtils;
+import com.doubean.ford.util.OpenInUtil;
 import com.doubean.ford.util.ShareUtil;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -123,25 +124,37 @@ public class PostDetailFragment extends Fragment {
         binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).navigateUp());
         binding.toolbar.setOnMenuItemClickListener(item -> {
             Resource<Post> postResource = postDetailViewModel.getPost().getValue();
-            if (postResource != null) {
+            if (postResource != null && postResource.data != null) {
                 Post post = postResource.data;
-                if (post != null) {
-                    switch (item.getItemId()) {
-                        case R.id.action_view_in_web:
-                            navigateToWebView(requireView(), post);
-                            return true;
-                        case R.id.action_share:
-                            shareText = post.group.name;
-                            if (post.tagId != null) {
-                                shareText += "|" + post.getTagName();
-                            }
-                            shareText += '@' + post.author.name + "： " +
-                                    post.title + "\r\n" +
-                                    post.url + "\r\n" +
-                                    post.content;
-                            ShareUtil.Share(getContext(), shareText);
-                            return true;
-                    }
+                switch (item.getItemId()) {
+                    case R.id.action_view_in_web:
+                        navigateToWebView(requireView(), post);
+                        return true;
+                    case R.id.action_share:
+                        shareText = post.group.name;
+                        if (post.tagId != null) {
+                            shareText += "|" + post.getTagName();
+                        }
+                        shareText += '@' + post.author.name + "： " +
+                                post.title + "\r\n" +
+                                post.url + "\r\n" +
+                                post.content;
+                        ShareUtil.Share(getContext(), shareText);
+                        return true;
+                    case R.id.action_view_in_douban:
+                        if (post.uri != null) {
+                            String urlString = post.uri;
+                            OpenInUtil.openInDouban(getContext(), urlString);
+                        }
+                        return true;
+                    case R.id.action_view_in_browser:
+                        if (post.url != null) {
+                            String urlString = post.url;
+                            OpenInUtil.openInBrowser(getContext(), urlString);
+                        }
+                        return true;
+                    default:
+                        return false;
                 }
             }
             return false;
