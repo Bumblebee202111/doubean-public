@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Class officially known as topic/话题
  */
-@Entity
+@Entity(tableName = "posts")
 public class Post {
     @NonNull
     @PrimaryKey

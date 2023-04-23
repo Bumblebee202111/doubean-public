@@ -3,14 +3,10 @@ package com.doubean.ford.data.vo;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.Entity;
-import androidx.room.TypeConverters;
-
-import com.doubean.ford.data.db.Converters;
 
 import java.util.List;
 
-@Entity(primaryKeys = {"tagId", "sortBy"})
-@TypeConverters(Converters.class)
+@Entity(tableName = "group_tag_posts_results", primaryKeys = {"tagId", "sortBy"})
 public class GroupTagPostsResult extends ListResult {
     @NonNull
     public String groupId;

@@ -14,6 +14,7 @@ import androidx.navigation.Navigation;
 
 import com.doubean.ford.R;
 import com.doubean.ford.adapters.GroupFollowAdapter;
+import com.doubean.ford.adapters.RecommendedGroupAdapter;
 import com.doubean.ford.databinding.FragmentGroupsBinding;
 import com.doubean.ford.util.InjectorUtils;
 
@@ -31,11 +32,16 @@ public class GroupsHomeFragment extends Fragment {
         groupsHomeViewModel =
                 new ViewModelProvider(this, factory).get(GroupsHomeViewModel.class);
         binding = FragmentGroupsBinding.inflate(inflater, container, false);
+        binding.setViewModel(groupsHomeViewModel);
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
         GroupFollowAdapter adapter = new GroupFollowAdapter();
         binding.followList.setAdapter(adapter);
         groupsHomeViewModel.getFollowList().observe(getViewLifecycleOwner(), list -> adapter.submitList(list == null ? null : new ArrayList<>(list)));
+
+        RecommendedGroupAdapter recommendedGroupAdapter = new RecommendedGroupAdapter(getContext());
+        binding.groupsOfTheDayList.setAdapter(recommendedGroupAdapter);
+        groupsHomeViewModel.getGroupsOfTheDay().observe(getViewLifecycleOwner(), groups -> recommendedGroupAdapter.submitList(groups == null || groups.data == null ? null : new ArrayList<>(groups.data)));
         return binding.getRoot();
     }
 

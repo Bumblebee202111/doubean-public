@@ -13,12 +13,15 @@ import com.doubean.ford.api.DoubanService;
 import com.doubean.ford.api.GroupSearchResponse;
 import com.doubean.ford.api.PostCommentsResponse;
 import com.doubean.ford.api.PostsResponse;
+import com.doubean.ford.api.RecommendedGroupResponseItem;
+import com.doubean.ford.api.RecommendedGroupsResponse;
 import com.doubean.ford.api.SortByRequestParam;
 import com.doubean.ford.data.db.AppDatabase;
 import com.doubean.ford.data.db.GroupDao;
 import com.doubean.ford.data.vo.GroupDetail;
 import com.doubean.ford.data.vo.GroupItem;
 import com.doubean.ford.data.vo.GroupPostsResult;
+import com.doubean.ford.data.vo.GroupRecommendationType;
 import com.doubean.ford.data.vo.GroupSearchResult;
 import com.doubean.ford.data.vo.GroupTagPostsResult;
 import com.doubean.ford.data.vo.Post;
@@ -28,6 +31,9 @@ import com.doubean.ford.data.vo.PostCommentsResult;
 import com.doubean.ford.data.vo.PostItem;
 import com.doubean.ford.data.vo.PostSortBy;
 import com.doubean.ford.data.vo.PostTopComments;
+import com.doubean.ford.data.vo.RecommendedGroup;
+import com.doubean.ford.data.vo.RecommendedGroupResult;
+import com.doubean.ford.data.vo.RecommendedGroupsResult;
 import com.doubean.ford.data.vo.Resource;
 import com.doubean.ford.data.vo.SearchResultItem;
 import com.doubean.ford.data.vo.Status;
@@ -250,7 +256,7 @@ public class GroupRepository {
             @NonNull
             @Override
             protected LiveData<ApiResponse<PostsResponse>> createCall() {
-                SortByRequestParam sortByRequestParam = getSortByRequestParam(postSortBy);
+                SortByRequestParam sortByRequestParam = getPostSortByRequestParam(postSortBy);
                 return doubanService.getGroupPosts(groupId, sortByRequestParam.toString(), Constants.RESULT_POSTS_COUNT);
 
             }
@@ -268,7 +274,7 @@ public class GroupRepository {
 
             @Override
             protected Call<PostsResponse> createCall(Integer nextPageStart) {
-                return doubanService.getGroupPosts(groupId, getSortByRequestParam(postSortBy).toString(), Constants.RESULT_POSTS_COUNT, nextPageStart);
+                return doubanService.getGroupPosts(groupId, getPostSortByRequestParam(postSortBy).toString(), Constants.RESULT_POSTS_COUNT, nextPageStart);
             }
 
             @Override
@@ -331,7 +337,7 @@ public class GroupRepository {
             @NonNull
             @Override
             protected LiveData<ApiResponse<PostsResponse>> createCall() {
-                return doubanService.getGroupTagPosts(groupId, tagId, getSortByRequestParam(postSortBy).toString(), Constants.RESULT_POSTS_COUNT);
+                return doubanService.getGroupTagPosts(groupId, tagId, getPostSortByRequestParam(postSortBy).toString(), Constants.RESULT_POSTS_COUNT);
 
             }
         }.asLiveData();
@@ -348,7 +354,7 @@ public class GroupRepository {
 
             @Override
             protected Call<PostsResponse> createCall(Integer nextPageStart) {
-                return doubanService.getGroupTagPosts(groupId, tagId, getSortByRequestParam(postSortBy).toString(), Constants.RESULT_POSTS_COUNT, nextPageStart);
+                return doubanService.getGroupTagPosts(groupId, tagId, getPostSortByRequestParam(postSortBy).toString(), Constants.RESULT_POSTS_COUNT, nextPageStart);
             }
 
             @Override
@@ -502,7 +508,7 @@ public class GroupRepository {
         return fetchNextPageTask.getLiveData();
     }
 
-    private SortByRequestParam getSortByRequestParam(PostSortBy postSortBy) {
+    private SortByRequestParam getPostSortByRequestParam(PostSortBy postSortBy) {
         switch (postSortBy) {
             case LAST_UPDATED:
             case NEW:
@@ -512,5 +518,60 @@ public class GroupRepository {
             default:
                 return null;
         }
+    }
+
+    public LiveData<Resource<List<RecommendedGroup>>> getGroupRecommendation(GroupRecommendationType type) {
+        return new NetworkBoundResource<List<RecommendedGroup>, RecommendedGroupsResponse>(appExecutors) {
+
+            @Override
+            protected void saveCallResult(@NonNull RecommendedGroupsResponse item) {
+
+                List<GroupItem> groups = new ArrayList<>();
+                List<PostItem> posts = new ArrayList<>();
+                List<RecommendedGroupResult> recommendedGroupResults = new ArrayList<>();
+                int no = 1;
+                for (RecommendedGroupResponseItem groupItem : item.getItems()) {
+                    groups.add(groupItem.getGroup());
+                    posts.add(groupItem.getPosts().get(0));
+                    recommendedGroupResults.add(new RecommendedGroupResult(no++, groupItem.getGroup().id, groupItem.getPosts().get(0).id));
+                }
+
+                appDatabase.runInTransaction(() -> {
+                    groupDao.upsertGroups(groups);
+                    groupDao.upsertPosts(posts);
+                    List<Long> ids = groupDao.upsertRecommendedGroups(recommendedGroupResults);
+                    RecommendedGroupsResult recommendedGroupsResult = new RecommendedGroupsResult(
+                            type, ids);
+                    groupDao.insertRecommendedGroupsResult(recommendedGroupsResult);
+                });
+
+
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable List<RecommendedGroup> data) {
+                return true;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<List<RecommendedGroup>> loadFromDb() {
+                return Transformations.switchMap(groupDao.getRecommendedGroups(type), data -> {
+                    if (data == null) {
+                        return new LiveData<List<RecommendedGroup>>(null) {
+                        };
+                    } else {
+                        return groupDao.loadRecommendedGroupsByIds(data.ids);
+                    }
+                });
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<ApiResponse<RecommendedGroupsResponse>> createCall() {
+                return doubanService.getGroupsOfTheDay();
+            }
+
+        }.asLiveData();
     }
 }

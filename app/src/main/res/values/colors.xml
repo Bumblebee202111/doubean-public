@@ -19,6 +19,7 @@
     <color name="douban_yellow">@color/douban_apricot_100</color>
     <color name="douban_apricot_100">#ff9900</color>
 
+    <color name="top_item">#FFFF0000</color>
 
     <color name="sunflower_black">#de000000</color>
     <color name="sunflower_gray_50">#fafafa</color>

@@ -54,6 +54,22 @@ public class Converters {
         return StringUtil.joinIntoString(ints);
     }
 
+    @SuppressLint("RestrictedApi")
+    @TypeConverter
+    public static List<Long> stringToLongList(String data) {
+        if (data == null) {
+            return null;
+        }
+        return new Gson().fromJson(data, new TypeToken<ArrayList<Long>>() {
+        }.getType());
+    }
+
+    @SuppressLint("RestrictedApi")
+    @TypeConverter
+    public static String longListToString(List<Long> longs) {
+        return new Gson().toJson(longs);
+    }
+
     @TypeConverter
     public static String postCommentToString(PostComment postComment) {
         Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
