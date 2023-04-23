@@ -83,7 +83,6 @@ public class GroupDetailFragment extends Fragment {
                     binding.mask.setBackgroundColor(color);
                     binding.toolbarLayout.setContentScrimColor(color);
                     binding.toolbarLayout.setStatusBarScrimColor(color);
-                    //getActivity().getWindow().setStatusBarColor(color);
                     binding.tabLayout.setSelectedTabIndicatorColor(color);
                 }
 

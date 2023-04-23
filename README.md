@@ -160,12 +160,7 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
-#### To-dos for next release \(0.3.0\)
-
-* 🛠\[GroupDetailFragment\] content scrim may be unnecessary and makes the collapse look weird
-
-#### To-dos for 2nd next release \(0.3.1\)
-
+#### To-dos for next release \(0.3.1\)
 * \[SettingsFragment] Add, which may contain author info, WebView enabled by default toggle, etc
 * 🛠\[Need help\]\[GroupDetailFragment\]The last position won't be restored when the pager is being
   recreated
@@ -175,8 +170,7 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
   * It is reallyyyyyyyyy annoying \(SEE the anecdote\)
 * Simplify names of navigation actions
 
-#### To-dos for 3rd next release \(0.4.0\)
-
+#### To-dos for 2nd next release \(0.4.0\)
 * Directly translate the whole project into Kotlin
 * Use Kotlin sugar/DSL/Flows/Coroutines
   * Use Flows instead of `LiveData`s in data layer only
