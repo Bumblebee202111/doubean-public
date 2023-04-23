@@ -18,13 +18,15 @@ import com.doubean.ford.data.vo.Post;
 import com.doubean.ford.data.vo.PostComment;
 import com.doubean.ford.data.vo.PostCommentsResult;
 import com.doubean.ford.data.vo.PostTopComments;
+import com.doubean.ford.data.vo.RecommendedGroupResult;
+import com.doubean.ford.data.vo.RecommendedGroupsResult;
 import com.doubean.ford.util.AppExecutors;
 import com.doubean.ford.util.Constants;
 
 /**
  * The Room database for this app
  */
-@Database(entities = {Group.class, Post.class, GroupFollow.class, GroupSearchResult.class, GroupPostsResult.class, GroupTagPostsResult.class, PostComment.class, PostCommentsResult.class, PostTopComments.class},
+@Database(entities = {Group.class, Post.class, GroupFollow.class, GroupSearchResult.class, GroupPostsResult.class, GroupTagPostsResult.class, PostComment.class, PostCommentsResult.class, PostTopComments.class, RecommendedGroupsResult.class, RecommendedGroupResult.class},
         version = 1,
         exportSchema = false)
 @TypeConverters(Converters.class)
@@ -44,13 +46,7 @@ public abstract class AppDatabase extends RoomDatabase {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
-            new AppExecutors().diskIO().execute(() -> {
-                GroupFollowsAndSavesDao dao = instance.getGroupFollowsAndSavesDao();
-                dao.insertFollow(new GroupFollow("679784", null));
-                dao.insertFollow(new GroupFollow("385172", "56374"));
-                dao.insertFollow(new GroupFollow("665372", null));
-                dao.insertFollow(new GroupFollow("644960", "53959"));
-            });
+            new AppExecutors().diskIO().execute(AppDatabase::prepopulate);
         }
     };
 
@@ -62,5 +58,9 @@ public abstract class AppDatabase extends RoomDatabase {
         return Room.databaseBuilder(context, AppDatabase.class, Constants.DATABASE_NAME)
                 .addCallback(sRoomDatabaseCallback)
                 .build();
+    }
+
+    private static void prepopulate() {
+
     }
 }

@@ -13,7 +13,7 @@ public class ListResponse<ItemType extends Item> {
     private int start;
     private int count;
     private int total;
-    @SerializedName(value = "items", alternate = {"topics", "comments"})
+    @SerializedName(value = "items", alternate = {"topics", "comments", "groups"})
     private List<ItemType> items;
 
     public ListResponse(int start, int count, int total, List<ItemType> items) {
@@ -49,11 +49,11 @@ public class ListResponse<ItemType extends Item> {
 
     @NonNull
     public List<String> getIds() {
-        List<String> groupIds = new ArrayList<>();
+        List<String> ids = new ArrayList<>();
         for (ItemType item : items) {
-            groupIds.add(item.getId());
+            ids.add(item.getId());
         }
-        return groupIds;
+        return ids;
     }
 
     public Integer getNextPageStart() {

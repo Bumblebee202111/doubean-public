@@ -72,14 +72,6 @@ list. However, the latest release is always available.
 * Me and other developers who are learning Android, Java and version control
 * Me and other users who want easier access to Douban groups
 
-### Non-Goals
-
-* Login-based features
-* Jetpack Compose
-* Dagger2/Hilt
-* RxAndroid
-* Heavy use of Material Design
-
 ### Features
 
 It not only implements the very basic features of Douban app, but also has its own features. Some of
@@ -168,9 +160,12 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
-#### To-dos for next release
-* \[GroupsHomeFragment\]Add "groups of the day" list & remove prepopulated followed items \(and
-  related repository logic\)
+#### To-dos for next release \(0.3.0\)
+
+* 🛠\[GroupDetailFragment\] content scrim may be unnecessary and makes the collapse look weird
+
+#### To-dos for 2nd next release \(0.3.1\)
+
 * \[SettingsFragment] Add, which may contain author info, WebView enabled by default toggle, etc
 * 🛠\[Need help\]\[GroupDetailFragment\]The last position won't be restored when the pager is being
   recreated
@@ -178,11 +173,22 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
     submitted by LiveData
   * Try to ask ChatGPT for help
   * It is reallyyyyyyyyy annoying \(SEE the anecdote\)
-* \[Room] Try to setup "auto no migration" for the convenience of debugging
+* Simplify names of navigation actions
+
+#### To-dos for 3rd next release \(0.4.0\)
+
+* Directly translate the whole project into Kotlin
+* Use Kotlin sugar/DSL/Flows/Coroutines
+  * Use Flows instead of `LiveData`s in data layer only
+* Optimize architecture
+  * Learn from the architecture of NiA/iosched/Sunflower
+    * For example, distinguish among `XApiModel` \(`NetworkX`\), `XEntity` and `X` \(external\)
+  * Fix the disastrous implementation of the "follow" feature
+    * 🛠 Also it's buggy now
+  * Migrate GithubBrowserSample's way of paging to Paging3 + Coroutine + LiveData/Flow
 
 #### Future plans
 
-* \[Lists\]Migrate GithubBrowserSample's way of paging to Paging3 + Guava/Coroutine + LiveData/Flow
 * SnackbarUtils from todo app
 * Rate limit
 * \[SearchFragment\]GroupSearchFragment -> SearchFragment / Search group/tab posts (in-group) /
@@ -217,6 +223,7 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 * \[Lists\]Post order: custom rules based on multiple factors
 * Uploads copies of responses to some place and reuses it among users to prevent frequent Douban
   visits.
+* Login-based features \(if possible\)
 
 #### More general plans
 
@@ -231,6 +238,14 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 * Add views for fields currently unused
 * Decouple DoubanInterface and expose as much code to VC as possible \(Make anything but keys
   open-source\)
+
+### Non-Todos
+
+* Jetpack Compose
+* Dagger2/Hilt
+* RxAndroid
+* Heavy use of Material Design
+* Kotlin Flows in UI layer
 
 ### References
 

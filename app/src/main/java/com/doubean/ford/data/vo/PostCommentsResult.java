@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 
 import java.util.List;
 
-@Entity
+@Entity(tableName = "post_comments_results")
 public class PostCommentsResult extends ListResult {
     @PrimaryKey
     @NonNull

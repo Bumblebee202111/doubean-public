@@ -9,6 +9,8 @@ import com.doubean.ford.data.repository.GroupRepository;
 import com.doubean.ford.data.repository.GroupsFollowsAndSavesRepository;
 import com.doubean.ford.data.vo.GroupDetail;
 import com.doubean.ford.data.vo.GroupFollowItem;
+import com.doubean.ford.data.vo.GroupRecommendationType;
+import com.doubean.ford.data.vo.RecommendedGroup;
 import com.doubean.ford.data.vo.Resource;
 import com.doubean.ford.util.LiveDataUtil;
 
@@ -51,4 +53,7 @@ public class GroupsHomeViewModel extends ViewModel {
     }
 
 
+    public LiveData<Resource<List<RecommendedGroup>>> getGroupsOfTheDay() {
+        return groupRepository.getGroupRecommendation(GroupRecommendationType.DAILY);
+    }
 }

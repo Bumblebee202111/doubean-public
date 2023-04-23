@@ -7,6 +7,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.RewriteQueriesToDropUnusedColumns;
+import androidx.room.Transaction;
 import androidx.room.Update;
 import androidx.room.Upsert;
 
@@ -15,6 +16,7 @@ import com.doubean.ford.data.vo.GroupBrief;
 import com.doubean.ford.data.vo.GroupDetail;
 import com.doubean.ford.data.vo.GroupItem;
 import com.doubean.ford.data.vo.GroupPostsResult;
+import com.doubean.ford.data.vo.GroupRecommendationType;
 import com.doubean.ford.data.vo.GroupSearchResult;
 import com.doubean.ford.data.vo.GroupTagPostsResult;
 import com.doubean.ford.data.vo.Post;
@@ -23,13 +25,15 @@ import com.doubean.ford.data.vo.PostCommentsResult;
 import com.doubean.ford.data.vo.PostItem;
 import com.doubean.ford.data.vo.PostSortBy;
 import com.doubean.ford.data.vo.PostTopComments;
+import com.doubean.ford.data.vo.RecommendedGroup;
+import com.doubean.ford.data.vo.RecommendedGroupResult;
+import com.doubean.ford.data.vo.RecommendedGroupsResult;
 
 import java.util.Comparator;
 import java.util.List;
 
 /**
  * The Data Access Object for the [Group] class.
- * TODO: create base dao?
  */
 @Dao
 public interface GroupDao {
@@ -53,10 +57,10 @@ public interface GroupDao {
     @RewriteQueriesToDropUnusedColumns
     void upsertGroups(List<GroupItem> groupList);
 
-    @Query("SELECT * FROM GroupSearchResult WHERE `query` = :query")
+    @Query("SELECT * FROM group_search_results WHERE `query` = :query")
     LiveData<GroupSearchResult> search(String query);
 
-    @Query("SELECT * FROM GroupSearchResult WHERE `query` = :query")
+    @Query("SELECT * FROM group_search_results WHERE `query` = :query")
     GroupSearchResult findSearchResult(String query);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -81,15 +85,15 @@ public interface GroupDao {
 
     /* Posts-related operations start */
 
-    @Query("SELECT * FROM Post WHERE groupId = :groupId ORDER BY created DESC")
+    @Query("SELECT * FROM posts WHERE groupId = :groupId ORDER BY created DESC")
     @RewriteQueriesToDropUnusedColumns
     LiveData<List<PostItem>> loadGroupPosts(String groupId);
 
-    @Query("SELECT * FROM Post WHERE groupId = :groupId AND tagId=:tagId ORDER BY created DESC")
+    @Query("SELECT * FROM posts WHERE groupId = :groupId AND tagId=:tagId ORDER BY created DESC")
     @RewriteQueriesToDropUnusedColumns
     LiveData<List<PostItem>> loadGroupTagPosts(String groupId, String tagId);
 
-    @Query("SELECT * FROM Post WHERE id IN (:postIds)")
+    @Query("SELECT * FROM posts WHERE id IN (:postIds)")
     @RewriteQueriesToDropUnusedColumns
     LiveData<List<PostItem>> loadPostsById(List<String> postIds);
 
@@ -113,11 +117,11 @@ public interface GroupDao {
     void insertGroupPostsResult(GroupPostsResult groupPostsResult);
 
 
-    @Query("SELECT * FROM GroupTagPostsResult WHERE groupId = :groupId AND tagId=:tagId AND sortBy = :sortBy")
+    @Query("SELECT * FROM group_tag_posts_results WHERE groupId = :groupId AND tagId=:tagId AND sortBy = :sortBy")
     @RewriteQueriesToDropUnusedColumns
     LiveData<GroupTagPostsResult> getGroupTagPosts(String groupId, String tagId, PostSortBy sortBy);
 
-    @Query("SELECT * FROM GroupTagPostsResult WHERE groupId = :groupId AND tagId=:tagId AND sortBy = :sortBy")
+    @Query("SELECT * FROM group_tag_posts_results WHERE groupId = :groupId AND tagId=:tagId AND sortBy = :sortBy")
     @RewriteQueriesToDropUnusedColumns
     GroupTagPostsResult findGroupTagPosts(String groupId, String tagId, PostSortBy sortBy);
 
@@ -131,7 +135,7 @@ public interface GroupDao {
     @RewriteQueriesToDropUnusedColumns
     void upsertPosts(List<PostItem> List);
 
-    @Query("SELECT * FROM Post WHERE id=:postId")
+    @Query("SELECT * FROM posts WHERE id=:postId")
     LiveData<Post> loadPost(String postId);
 
 
@@ -164,9 +168,23 @@ public interface GroupDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertPostCommentsResult(PostCommentsResult postCommentsResult);
 
-    @Query("SELECT * FROM PostCommentsResult WHERE postId=:postId")
+    @Query("SELECT * FROM post_comments_results WHERE postId=:postId")
     LiveData<PostCommentsResult> getPostComments(String postId);
 
-    @Query("SELECT * FROM PostCommentsResult WHERE postId=:postId")
+    @Query("SELECT * FROM post_comments_results WHERE postId=:postId")
     PostCommentsResult findPostComments(String postId);
+
+    @Query("SELECT * FROM recommended_groups_result WHERE type=:type")
+    LiveData<RecommendedGroupsResult> getRecommendedGroups(GroupRecommendationType type);
+
+    @Upsert(entity = RecommendedGroupResult.class)
+    List<Long> upsertRecommendedGroups(List<RecommendedGroupResult> recommendedGroupResults);
+
+    @Transaction
+    @Query("SELECT * FROM recommended_groups_results WHERE id IN (:ids)")
+    @RewriteQueriesToDropUnusedColumns
+    LiveData<List<RecommendedGroup>> loadRecommendedGroupsByIds(List<Long> ids);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertRecommendedGroupsResult(RecommendedGroupsResult recommendedGroupsResult);
 }
