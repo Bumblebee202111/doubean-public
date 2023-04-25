@@ -135,7 +135,7 @@
                     app:contentInsetStartWithNavigation="0dp"
                     app:layout_collapseMode="pin"
                     app:menu="@menu/menu_group_detail"
-                    app:navigationIcon="@drawable/ic_detail_back" />
+                    app:navigationIcon="@drawable/ic_back" />
 
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>

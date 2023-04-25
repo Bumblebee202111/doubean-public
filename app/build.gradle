@@ -69,6 +69,7 @@ dependencies {
     implementation "com.google.code.gson:gson:$rootProject.gsonVersion"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
+    implementation 'androidx.preference:preference:1.2.0'
     annotationProcessor "androidx.room:room-compiler:$rootProject.roomVersion"
     annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
     testImplementation "junit:junit:$rootProject.junitVersion"

@@ -75,5 +75,14 @@
     <string name="colon">:</string>
     <string name="groups_of_the_day_header">Groups of the Day</string>
 
+    <!-- Preference Titles -->
+    <string name="about_header">About</string>
+
+    <!-- About Preferences -->
+    <string name="app_version_title">App version</string>
+    <string name="send_feedback_title">Send feedback</string>
+    <string name="app_author_title">App author</string>
+    <string name="app_author" translatable="false">Bumblebee202111</string>
+
 
 </resources>
