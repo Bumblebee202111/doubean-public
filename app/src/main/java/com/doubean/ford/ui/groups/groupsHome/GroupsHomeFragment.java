@@ -52,12 +52,12 @@ public class GroupsHomeFragment extends Fragment {
         binding.toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_search: {
-                    NavDirections action = GroupsHomeFragmentDirections.actionNavigationGroupsToNavigationGroupSearch();
+                    NavDirections action = GroupsHomeFragmentDirections.actionGroupsToGroupSearch();
                     Navigation.findNavController(view).navigate(action);
                     return true;
                 }
                 case R.id.action_settings:
-                    Navigation.findNavController(view).navigate(R.id.navigation_settings_fragment);
+                    Navigation.findNavController(view).navigate(R.id.navigation_settings);
                     return true;
                 default:
                     return false;

@@ -160,13 +160,12 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
-#### To-dos for next release \(0.3.1\)
-
-* Simplify names of navigation actions
-
-#### To-dos for 2nd next release \(0.4.0\)
+#### To-dos for next release \(0.4.0\)
 
 * Directly translate the whole project into Kotlin
+
+#### To-dos for 2nd next release \(0.4.1\)
+
 * Adopt Kotlin sugar/DSL/Flows/Coroutines
   * Use Flows instead of `LiveData`s in data layer only
 * Optimize architecture

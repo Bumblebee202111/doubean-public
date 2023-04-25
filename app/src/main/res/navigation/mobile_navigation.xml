@@ -26,10 +26,10 @@
             android:label="@string/title_groups"
             tools:layout="@layout/fragment_groups">
             <action
-                android:id="@+id/action_navigation_groups_to_navigation_group_detail"
+                android:id="@+id/action_groups_to_group_detail"
                 app:destination="@id/navigation_group_detail" />
             <action
-                android:id="@+id/action_navigation_groups_to_navigation_group_search"
+                android:id="@+id/action_groups_to_group_search"
                 app:destination="@id/navigation_group_search" />
             <deepLink app:uri="https://m.douban.com/group" />
             <deepLink app:uri="https://www.douban.com/group/explore" />
@@ -48,7 +48,7 @@
                 app:argType="string"
                 app:nullable="true" />
             <action
-                android:id="@+id/action_navigation_group_detail_to_navigation_post_detail"
+                android:id="@+id/action_group_detail_to_post_detail"
                 app:destination="@id/navigation_post_detail" />
             <deepLink app:uri="https://m.douban.com/group/{groupId}/" />
             <deepLink app:uri="https://www.douban.com/group/{groupId}/" />
@@ -58,7 +58,7 @@
             android:name="com.doubean.ford.ui.groups.groupSearch.GroupSearchFragment">
 
             <action
-                android:id="@+id/action_navigation_group_search_to_navigation_group_detail"
+                android:id="@+id/action_group_search_to_group_detail"
                 app:destination="@id/navigation_group_detail" />
         </fragment>
         <fragment
@@ -77,7 +77,7 @@
                 android:name="postId"
                 app:argType="string" />
             <action
-                android:id="@+id/action_navigation_post_detail_to_navigation_group_detail"
+                android:id="@+id/action_post_detail_to_group_detail"
                 app:destination="@id/navigation_group_detail" />
         </fragment>
     </navigation>
@@ -93,10 +93,10 @@
         android:id="@+id/action_global_navigation_web_view"
         app:destination="@id/navigation_web_view" />
     <fragment
-        android:id="@+id/navigation_settings_fragment"
+        android:id="@+id/navigation_settings"
         android:name="com.doubean.ford.ui.settings.SettingsFragment"
         android:label="@string/settings" />
     <action
         android:id="@+id/action_global_navigation_settings"
-        app:destination="@id/navigation_settings_fragment" />
+        app:destination="@id/navigation_settings" />
 </navigation>
