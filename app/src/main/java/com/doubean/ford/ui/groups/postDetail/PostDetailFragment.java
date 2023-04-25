@@ -227,12 +227,12 @@ public class PostDetailFragment extends Fragment {
     }
 
     private void navigateToGroupTab(View v, Post post) {
-        PostDetailFragmentDirections.ActionNavigationPostDetailToNavigationGroupDetail direction = PostDetailFragmentDirections.actionNavigationPostDetailToNavigationGroupDetail(post.groupId).setDefaultTabId(post.tagId);
+        PostDetailFragmentDirections.ActionPostDetailToGroupDetail direction = PostDetailFragmentDirections.actionPostDetailToGroupDetail(post.groupId).setDefaultTabId(post.tagId);
         Navigation.findNavController(v).navigate(direction);
     }
 
     private void navigateToGroup(View v, Post post) {
-        PostDetailFragmentDirections.ActionNavigationPostDetailToNavigationGroupDetail direction = PostDetailFragmentDirections.actionNavigationPostDetailToNavigationGroupDetail(post.groupId);
+        PostDetailFragmentDirections.ActionPostDetailToGroupDetail direction = PostDetailFragmentDirections.actionPostDetailToGroupDetail(post.groupId);
         Navigation.findNavController(v).navigate(direction);
     }
 

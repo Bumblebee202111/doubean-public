@@ -61,7 +61,7 @@ public class GroupFollowAdapter extends ListAdapter<GroupFollowItem, GroupFollow
         }
 
         private void navigateToGroup(@NonNull GroupFollowItem followItem, View itemView) {
-            GroupsHomeFragmentDirections.ActionNavigationGroupsToNavigationGroupDetail direction = GroupsHomeFragmentDirections.actionNavigationGroupsToNavigationGroupDetail(followItem.getGroupId()).setDefaultTabId(followItem.getGroupTabId());
+            GroupsHomeFragmentDirections.ActionGroupsToGroupDetail direction = GroupsHomeFragmentDirections.actionGroupsToGroupDetail(followItem.getGroupId()).setDefaultTabId(followItem.getGroupTabId());
             Navigation.findNavController(itemView).navigate(direction);
         }
 

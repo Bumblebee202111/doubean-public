@@ -90,8 +90,8 @@ public class PostAdapter extends ListAdapter<PostItem, PostAdapter.ViewHolder> {
         }
 
         private void navigateToPost(@NonNull PostItem post, View itemView) {
-            GroupDetailFragmentDirections.ActionNavigationGroupDetailToNavigationPostDetail direction =
-                    GroupDetailFragmentDirections.actionNavigationGroupDetailToNavigationPostDetail(post.id);
+            GroupDetailFragmentDirections.ActionGroupDetailToPostDetail direction =
+                    GroupDetailFragmentDirections.actionGroupDetailToPostDetail(post.id);
             Navigation.findNavController(itemView).navigate(direction);
         }
 

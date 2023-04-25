@@ -67,7 +67,7 @@ public class RecommendedGroupAdapter extends ListAdapter<RecommendedGroup, Recom
         }
 
         private void navigateToGroup(@NonNull GroupItem group, View itemView) {
-            GroupsHomeFragmentDirections.ActionNavigationGroupsToNavigationGroupDetail direction = GroupsHomeFragmentDirections.actionNavigationGroupsToNavigationGroupDetail(group.id);
+            GroupsHomeFragmentDirections.ActionGroupsToGroupDetail direction = GroupsHomeFragmentDirections.actionGroupsToGroupDetail(group.id);
             Navigation.findNavController(itemView).navigate(direction);
 
         }
