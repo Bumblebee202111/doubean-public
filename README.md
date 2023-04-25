@@ -84,7 +84,7 @@ groups is finally added by them.
 * Inherent advantages leading to good performance and simple coding
 
   | Design Aspect | Choice\(s\) |
-                        | --- | --- |
+                          | --- | --- |
   | Language | Java |
   | Libraries | Jetpack and authoritative third party libraries |
   | Architecture | MVVM |
@@ -161,7 +161,7 @@ Libraries Used
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
 #### To-dos for next release \(0.3.1\)
-* \[SettingsFragment] Add, which may contain author info, WebView enabled by default toggle, etc
+
 * 🛠\[Need help\]\[GroupDetailFragment\]The last position won't be restored when the pager is being
   recreated
   * When using ViewPager2, the restore problem arises if the list of page IDs are asynchronously
@@ -171,33 +171,40 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 * Simplify names of navigation actions
 
 #### To-dos for 2nd next release \(0.4.0\)
+
 * Directly translate the whole project into Kotlin
-* Use Kotlin sugar/DSL/Flows/Coroutines
+* Adopt Kotlin sugar/DSL/Flows/Coroutines
   * Use Flows instead of `LiveData`s in data layer only
 * Optimize architecture
-  * Learn from the architecture of NiA/iosched/Sunflower
-    * For example, distinguish among `XApiModel` \(`NetworkX`\), `XEntity` and `X` \(external\)
+  * Learn from the architectures of NiA/iosched/Sunflower
+    * For example, distinguish among `XApiModel` \(`NetworkX`\), `XEntity` and `X` \(external
+      model\)
   * Fix the disastrous implementation of the "follow" feature
     * 🛠 Also it's buggy now
+    * Still store follow data in Room instead of data stores
+  * Prepare \(add empty directories etc\) for modules \(feature-wise, not modules in multi-modules\)
+    of books and movies
   * Migrate GithubBrowserSample's way of paging to Paging3 + Coroutine + LiveData/Flow
 
 #### Future plans
 
+* \[SettingsFragment] Add WebView enabled by default preference, nav start destination etc with
+  DataStore
 * SnackbarUtils from todo app
-* Rate limit
 * \[SearchFragment\]GroupSearchFragment -> SearchFragment / Search group/tab posts (in-group) /
   Search posts of all groups (global)
 * \[PostDetailFragment\]Save WebView images
-* \[GroupDetailFragment\]\[PostDetailFragment\]Track/mark/revert read
-* \[GroupsHomeFragment\]Unfollow/reorder items
 * \[GroupDetailFragment\]WebView for group
+* \[WebView\]Complete CSS of content WebView: find official CSS source or write on my own
+* \[GroupDetailFragment\]\[PostDetailFragment\]Track/mark/revert/todo read
+* \[GroupsHomeFragment\]Unfollow/reorder items
 * Allow following/saving every type of item
   * \[GroupsHomeFragment\]Show followed groups/tabs/searches / saved posts / saved comments with
     group info
-  * \[Lists\]Add item action
+  * \[Lists\]Add corresponding item action
 * \[GroupDetailFragment\]Allow custom groups/tabs/posts categories/groups with filters available
-* \[WebView\]Complete CSS of content WebView: find official CSS source or write on my own
 * \[GroupDetailFragment\]Group/tab/post shortcuts
+* Rate limit
 * \[Lists\]Reddit-like item expand/collapse
 * \[GroupDetailFragment\]For post items, optimize tag display, e.g., assign color to each tag mapped
   from name
