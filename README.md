@@ -84,7 +84,7 @@ groups is finally added by them.
 * Inherent advantages leading to good performance and simple coding
 
   | Design Aspect | Choice\(s\) |
-                          | --- | --- |
+  | --- | --- |
   | Language | Java |
   | Libraries | Jetpack and authoritative third party libraries |
   | Architecture | MVVM |
@@ -162,12 +162,6 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
 #### To-dos for next release \(0.3.1\)
 
-* 🛠\[Need help\]\[GroupDetailFragment\]The last position won't be restored when the pager is being
-  recreated
-  * When using ViewPager2, the restore problem arises if the list of page IDs are asynchronously
-    submitted by LiveData
-  * Try to ask ChatGPT for help
-  * It is reallyyyyyyyyy annoying \(SEE the anecdote\)
 * Simplify names of navigation actions
 
 #### To-dos for 2nd next release \(0.4.0\)
@@ -215,6 +209,12 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 * Allow another option of using Twitter-like date formatting
 * Widgets*
 * \[Sortby\]Migrate Spinner to `singleSelection` `ChipGroup`
+* 🛠\[Need help\]\[GroupDetailFragment\]The last position won't be restored when the pager is being
+  recreated
+  * When using ViewPager2, the restore problem arises if the list of page IDs are asynchronously
+    submitted by LiveData
+  * Try to ask ChatGPT for help
+  * It is really annoying \(SEE the anecdote\)
 * Notifications and push services \(delayed in consideration of its difficulty and unimportance\)
 * \[GroupDetailFragment\]Collapse on entrance for the followed group/tab
 * Other modules, e.g., books, movies
@@ -312,9 +312,24 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
 License
 ------------
-Unfortunately, I know little about licensing. However, I wish that you use it for learning/personal
-purposes only, and won't propagate it on other websites/apps, out of concern for potential copyright
-violations.
+
+    Copyright 2023 Bumblebee202111. All rights reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+Besides adhering to the license, I wish that you will use it only for
+learning/personal/non-commercial purposes, and won't propagate it on other websites/apps, out of
+concern for potential copyright violations.
 
 Anecdotes
 ------------
