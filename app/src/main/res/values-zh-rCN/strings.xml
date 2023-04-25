@@ -51,4 +51,13 @@
     <string name="view_in">在……中查看</string>
     <string name="groups_of_the_day_header">小组日榜</string>
     <string name="empty_follows">你还没有任何关注，可以搜索小组或查看小组日榜</string>
+
+    <!-- Preference Titles -->
+    <string name="about_header">关于</string>
+
+    <!-- About Preferences -->
+    <string name="app_version_title">App版本</string>
+    <string name="send_feedback_title">发送反馈</string>
+    <string name="app_author_title">App作者</string>
+
 </resources>

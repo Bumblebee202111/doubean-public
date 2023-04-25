@@ -92,4 +92,11 @@
     <action
         android:id="@+id/action_global_navigation_web_view"
         app:destination="@id/navigation_web_view" />
+    <fragment
+        android:id="@+id/navigation_settings_fragment"
+        android:name="com.doubean.ford.ui.settings.SettingsFragment"
+        android:label="@string/settings" />
+    <action
+        android:id="@+id/action_global_navigation_settings"
+        app:destination="@id/navigation_settings_fragment" />
 </navigation>

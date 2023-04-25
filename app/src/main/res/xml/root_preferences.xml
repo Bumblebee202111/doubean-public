@@ -1,0 +1,31 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory app:title="@string/about_header">
+
+        <Preference
+            app:key="app_version"
+            app:title="@string/app_version_title">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/Bumblebee202111/doubean" />
+        </Preference>
+
+        <Preference
+            app:key="author"
+            app:summary="@string/app_author"
+            app:title="@string/app_author_title">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/Bumblebee202111" />
+        </Preference>
+        <Preference
+            app:key="send_feedback"
+            app:title="@string/send_feedback_title">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/Bumblebee202111/doubean/issues" />
+        </Preference>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -51,12 +51,13 @@ public class GroupsHomeFragment extends Fragment {
         binding.toolbar.inflateMenu(R.menu.groups_menu);
         binding.toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
-                case R.id.action_search:
-                    NavDirections direction = GroupsHomeFragmentDirections.actionNavigationGroupsToNavigationGroupSearch();
-                    Navigation.findNavController(view).navigate(direction);
+                case R.id.action_search: {
+                    NavDirections action = GroupsHomeFragmentDirections.actionNavigationGroupsToNavigationGroupSearch();
+                    Navigation.findNavController(view).navigate(action);
                     return true;
+                }
                 case R.id.action_settings:
-
+                    Navigation.findNavController(view).navigate(R.id.navigation_settings_fragment);
                     return true;
                 default:
                     return false;
@@ -64,9 +65,4 @@ public class GroupsHomeFragment extends Fragment {
         });
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        //binding = null;
-    }
 }

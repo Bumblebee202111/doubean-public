@@ -62,7 +62,7 @@
                 android:elevation="0dp"
 
                 app:menu="@menu/menu_post_detail"
-                app:navigationIcon="@drawable/ic_detail_back"
+                app:navigationIcon="@drawable/ic_back"
                 app:title="@{viewModel.post.data.title}"
                 tools:title="title title title title " />
             <!--todo: app:subtitle="@{viewModel.post.abstract}"-->

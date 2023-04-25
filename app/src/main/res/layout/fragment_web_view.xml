@@ -19,7 +19,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:navigationIcon="@drawable/ic_detail_back" />
+            app:navigationIcon="@drawable/ic_back" />
 
         <com.doubean.ford.ui.common.DoubeanWebView
             android:id="@+id/webView"
