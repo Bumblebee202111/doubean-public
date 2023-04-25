@@ -9,7 +9,7 @@ From now on, this repo will be updated slightly more frequently as I will probab
 of it. Occasional crashes may happen, UI design may be incomplete and features you need may be
 missing. Pretty much of my work is copy and paste from the official documentation and samples of
 Google Android. I am trying my best only to ensure that the app will function normally on my Xiaomi
-devices with Android version varying from 8.1 to 12.
+devices with the Android version varying from 8.1 to 12.
 
 [douban]: https://www.douban.com/
 
@@ -167,7 +167,8 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 #### To-dos for 2nd next release \(0.4.1\)
 
 * Adopt Kotlin sugar/DSL/Flows/Coroutines
-  * Use Flows instead of `LiveData`s in data layer only
+  *
+    * \[Data layer\] Migrate to Kotlin Flow \(for data layer only!\)
 * Optimize architecture
   * Learn from the architectures of NiA/iosched/Sunflower
     * For example, distinguish among `XApiModel` \(`NetworkX`\), `XEntity` and `X` \(external
@@ -205,8 +206,7 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 * Support blocking unfriendly content
 * \[GroupsHomeFragment\]Recommendations using SharedPref
 * \[PostDetailFragment\]Show saves and reposts
-* Allow another option of using Twitter-like date formatting
-* Widgets*
+* \[GroupDetailFragment\]Collapse on entrance for the followed group/tab
 * \[Sortby\]Migrate Spinner to `singleSelection` `ChipGroup`
 * 🛠\[Need help\]\[GroupDetailFragment\]The last position won't be restored when the pager is being
   recreated
@@ -215,15 +215,15 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
   * Try to ask ChatGPT for help
   * It is really annoying \(SEE the anecdote\)
 * Notifications and push services \(delayed in consideration of its difficulty and unimportance\)
-* \[GroupDetailFragment\]Collapse on entrance for the followed group/tab
+* Allow another option of using Twitter-like date formatting
+* Widgets
 * Other modules, e.g., books, movies
+* Login-based features \(if possible\)
 * 🛠 Views on top of WebView become invisible after scroll on my MIUI 10 Android 8.1 device \(causes
   unknown, may never be fixed\)
-* \[Data layer\] Migrate to Kotlin Flow
 * \[Lists\]Post order: custom rules based on multiple factors
 * Uploads copies of responses to some place and reuses it among users to prevent frequent Douban
   visits.
-* Login-based features \(if possible\)
 
 #### More general plans
 
