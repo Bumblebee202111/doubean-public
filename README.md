@@ -165,10 +165,10 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 * Performs the last changes to paging before the migration
   * 🛠 Sort IDs of locally "new" posts before saving them
   * Remove ugly use of args from loadNextPageFromRepo
+* Migrate build to version catalogs
 
 #### To-dos for 2nd next release \(0.4.1\)
 
-* Follow hint: "check"->"browse"
 * Optimize architecture by studying NiA/iosched/Sunflower/GithubBrowserSample, adopt more Kotlin sugar/Flows/Coroutines
   * Rearrange packages, prepare \(add empty directories etc\) for modules \(feature-wise, not modules in "multi-modules"\)
     of books and movies
@@ -182,7 +182,6 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
   
 #### Future plans
 
-* Migrate build to version catalogs
 * \[SettingsFragment] Add WebView enabled by default preference, nav start destination etc with
   DataStore
 * SnackbarUtils from todo app
