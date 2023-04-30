@@ -120,6 +120,7 @@ class GroupRepository private constructor(
             override fun createCall(): LiveData<ApiResponse<GroupSearchResponse>> {
                 return doubanService.searchGroups(query, Constants.RESULT_GROUPS_COUNT)
             }
+
         }.asLiveData()
     }
 
@@ -130,15 +131,8 @@ class GroupRepository private constructor(
             appExecutors
         ) {
             override fun saveCallResult(item: PostsResponse) {
-                if (postSortBy == PostSortBy.NEW) {
-                    item.items.sortedWith { o1: PostItem, o2: PostItem ->
-                        -o1.created.compareTo(
-                            o2.created
-                        )
-                    }
-                }
-                val postIds = item.postIds
                 val posts = item.items
+                val postIds = posts.map { it.id }
                 val groupPostsResult =
                     GroupPostsResult(groupId, postSortBy, postIds, item.total, item.nextPageStart)
                 posts.forEach {
@@ -178,6 +172,10 @@ class GroupRepository private constructor(
                     groupId, sortByRequestParam.toString(), Constants.RESULT_POSTS_COUNT
                 )
             }
+
+            override fun processResponse(response: ApiResponse<PostsResponse>): PostsResponse {
+                return processPostsResponse(postSortBy, response)
+            }
         }.asLiveData()
     }
 
@@ -211,6 +209,10 @@ class GroupRepository private constructor(
                 ): GroupPostsResult {
                     return GroupPostsResult(groupId, postSortBy, ids, total, nextPageStart)
                 }
+
+                override fun processResponse(response: ApiResponse<PostsResponse>): PostsResponse {
+                    return processPostsResponse(postSortBy, response)
+                }
             }
         appExecutors.networkIO().execute(fetchNextPageTask)
         return fetchNextPageTask.getLiveData()
@@ -223,15 +225,9 @@ class GroupRepository private constructor(
             appExecutors
         ) {
             override fun saveCallResult(item: PostsResponse) {
-                if (postSortBy == PostSortBy.NEW) {
-                    item.items.sortedWith { o1: PostItem, o2: PostItem ->
-                        -o1.created.compareTo(
-                            o2.created
-                        )
-                    }
-                }
-                val postIds = item.postIds
                 val posts = item.items
+                val postIds = posts.map { it.id }
+
                 val groupTagPostsResult = GroupTagPostsResult(
                     groupId, tagId, postSortBy, postIds, item.total, item.nextPageStart
                 )
@@ -274,6 +270,10 @@ class GroupRepository private constructor(
                     Constants.RESULT_POSTS_COUNT
                 )
             }
+
+            override fun processResponse(response: ApiResponse<PostsResponse>): PostsResponse {
+                return processPostsResponse(postSortBy, response)
+            }
         }.asLiveData()
     }
 
@@ -299,6 +299,7 @@ class GroupRepository private constructor(
                 }
 
                 override fun saveMergedResult(item: GroupTagPostsResult, items: List<PostItem>) {
+
                     appDatabase.groupDao().insertGroupTagPostsResult(item)
                     appDatabase.groupDao().upsertPosts(items)
                 }
@@ -309,6 +310,10 @@ class GroupRepository private constructor(
                     return GroupTagPostsResult(
                         groupId, tagId, postSortBy, ids, total, nextPageStart
                     )
+                }
+
+                override fun processResponse(response: ApiResponse<PostsResponse>): PostsResponse {
+                    return processPostsResponse(postSortBy, response)
                 }
             }
         appExecutors.networkIO().execute(fetchNextPageTask)
@@ -353,7 +358,7 @@ class GroupRepository private constructor(
                 val topCommentsResult = PostTopComments(
                     postId, topCommentIds
                 )
-                val commentIds = item.ids
+                val commentIds = item.items.map { it.id }
                 val commentsResult = PostCommentsResult(
                     postId, commentIds, item.total, item.nextPageStart
                 )
@@ -495,6 +500,16 @@ class GroupRepository private constructor(
         }.asLiveData()
     }
 
+    private fun processPostsResponse(
+        postSortBy: PostSortBy,
+        response: ApiResponse<PostsResponse>
+    ): PostsResponse {
+        return with(response.body!!) {
+            if (postSortBy != PostSortBy.NEW) this
+            else PostsResponse(start, count, total, items.sortedByDescending { it.created })
+        }
+    }
+
     companion object {
         private var instance: GroupRepository? = null
 
@@ -512,4 +527,5 @@ class GroupRepository private constructor(
             return instance
         }
     }
+
 }

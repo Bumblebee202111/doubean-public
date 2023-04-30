@@ -97,7 +97,7 @@ abstract class NetworkBoundResource<ResultType, RequestType> @MainThread constru
     }
 
     @WorkerThread
-    protected fun processResponse(response: ApiResponse<RequestType>): RequestType {
+    protected open fun processResponse(response: ApiResponse<RequestType>): RequestType {
         return response.body!!
     }
 
