@@ -20,8 +20,8 @@ class GroupSearchViewModel(groupRepository: GroupRepository) : ViewModel() {
 
     init {
         nextPageHandler = object : NextPageHandler() {
-            override fun loadNextPageFromRepo(params: Array<out Any?>): LiveData<Resource<Boolean>?> {
-                return groupRepository.searchNextPage((params[0]) as String)
+            override fun loadNextPageFromRepo(vararg params: Any?): LiveData<Resource<Boolean>?> {
+                return groupRepository.searchNextPage(params[0]!! as String)
             }
         }
         this.groupRepository = groupRepository

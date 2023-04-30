@@ -6,17 +6,17 @@ import androidx.lifecycle.Observer
 import com.doubean.ford.data.vo.Resource
 import com.doubean.ford.data.vo.Status
 
-abstract class NextPageHandler : Observer<Resource<Boolean>?> {
+abstract class NextPageHandler() : Observer<Resource<Boolean>?> {
     private var nextPageLiveData: LiveData<Resource<Boolean>?>? = null
     val loadMoreState = MutableLiveData<LoadMoreState>()
     var hasMore = false
-    private var params: Array<out Any?>?=null
+    private var params: Array<out Any?>? = null
 
     init {
         reset()
     }
 
-    abstract fun loadNextPageFromRepo(params:Array<out Any?>): LiveData<Resource<Boolean>?>
+    abstract fun loadNextPageFromRepo(params: Array<out Any?>): LiveData<Resource<Boolean>?>
     fun loadNextPage(params: Array<out Any?>) {
         if (this.params.contentEquals(params)) {
             return

@@ -15,6 +15,7 @@
  */
 package com.doubean.ford.data.repository
 
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.doubean.ford.api.ApiResponse
@@ -49,16 +50,17 @@ abstract class FetchNextPageTask<ItemType : Item, ResultType : ListResult?, Requ
             val response = createCall(nextPageStart).execute()
             val apiResponse = ApiResponse(response)
             if (apiResponse.isSuccessful) {
-                // we merge all repo ids into 1 list so that it is easier to fetch the result list.
+                val apiResponseBody = processResponse(apiResponse)
+                // we merge all item ids into 1 list so that it is easier to fetch the result list.
                 val ids: MutableList<String> = ArrayList()
                 ids.addAll(current.ids)
-                ids.addAll(apiResponse.body!!.ids)
+                ids.addAll(apiResponseBody.items.map { it.id })
                 val merged =
-                    merge(ids, current, apiResponse.body.total, apiResponse.body.nextPageStart)
-                db.runInTransaction { saveMergedResult(merged, apiResponse.body.items) }
+                    merge(ids, current, apiResponseBody.total, apiResponseBody.nextPageStart)
+                db.runInTransaction { saveMergedResult(merged, apiResponseBody.items) }
                 liveData.postValue(
                     Resource.success(
-                        apiResponse.body.nextPageStart != null
+                        apiResponseBody.nextPageStart != null
                     )
                 )
             } else {
@@ -83,4 +85,9 @@ abstract class FetchNextPageTask<ItemType : Item, ResultType : ListResult?, Requ
     ): ResultType
 
     protected abstract fun saveMergedResult(item: ResultType, items: List<ItemType>)
+
+    @WorkerThread
+    protected open fun processResponse(response: ApiResponse<RequestType>): RequestType {
+        return response.body!!
+    }
 }
