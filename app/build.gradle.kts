@@ -1,21 +1,23 @@
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("com.android.application")
-    id("androidx.navigation.safeargs")
-    id("kotlin-android")
-    id("kotlin-kapt")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.androidx.navigation.safeargs.kotlin)
+    //alias(libs.androidx.navigation.ui.safe.args.gradle.plugin)
+    alias(libs.plugins.kapt)
 }
 
 android {
-    compileSdk=33
+    compileSdk = libs.versions.compileSdk.get().toInt()
     buildFeatures {
         dataBinding = true
     }
     defaultConfig {
         applicationId = "com.doubean.ford"
-        minSdk=27
-        targetSdk=31
-        versionCode=1
-        versionName="0.4.0"
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
+        versionCode = 1
+        versionName = "0.4.0"
         setProperty("archivesBaseName", "doubean_$versionName")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -51,37 +53,38 @@ android {
     }
 }
 
-
 dependencies {
-    implementation ("androidx.appcompat:appcompat:${rootProject.extra.get("appCompatVersion")}")
-    implementation ("androidx.constraintlayout:constraintlayout:${rootProject.extra.get("constraintLayoutVersion")}")
-    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:${rootProject.extra.get("lifecycleVersion")}")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:${rootProject.extra.get("lifecycleVersion")}")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-savedstate:${rootProject.extra.get("lifecycleVersion")}")
-    implementation ("androidx.navigation:navigation-fragment:${rootProject.extra.get("navigationVersion")}")
-    implementation ("androidx.navigation:navigation-ui:${rootProject.extra.get("navigationVersion")}")
-    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:${rootProject.extra.get("swipeRefreshLayoutVersion")}")
-    implementation ("androidx.preference:preference-ktx:${rootProject.extra.get("preferenceVersion")}")
-    implementation ("androidx.room:room-runtime:${rootProject.extra.get("roomVersion")}")
-    implementation ("androidx.webkit:webkit:${rootProject.extra.get("webkitVersion")}")
-    implementation ("androidx.work:work-runtime:${rootProject.extra.get("workVersion")}")
-    implementation ("androidx.viewpager2:viewpager2:${rootProject.extra.get("viewPagerVersion")}")
-    implementation ("commons-codec:commons-codec:${rootProject.extra.get("commonsCodecVersion")}")
-    implementation ("com.github.bumptech.glide:glide:${rootProject.extra.get("glideVersion")}")
-    implementation ("com.github.zjupure:webpdecoder:2.3.${rootProject.extra.get("glideVersion")}")
-    implementation ("com.google.android.material:material:${rootProject.extra.get("materialVersion")}")
-    implementation ("com.google.code.gson:gson:${rootProject.extra.get("gsonVersion")}")
-    implementation ("com.squareup.retrofit2:converter-gson:${rootProject.extra.get("retrofitVersion")}")
-    implementation ("com.squareup.retrofit2:retrofit:${rootProject.extra.get("retrofitVersion")}")
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.savedstate)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+    //implementation(libs.androidx.navigation.ui.safe.args.gradle.plugin)
+    implementation(libs.androidx.preference.ktx)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.webkit)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.viewpager2)
+    implementation(libs.commons.codec)
+    implementation(libs.material)
+    implementation(libs.glide)
+    kapt(libs.glide.compiler)
+    implementation(libs.webpdecoder)
+    implementation(libs.gson)
+    implementation(libs.okhttp3.logging.interceptor)
+    implementation(libs.retrofit2)
+    implementation(libs.retrofit2.converter.gson)
 
-    kapt ("androidx.room:room-compiler:${rootProject.extra.get("roomVersion")}")
-
-    annotationProcessor ("com.github.bumptech.glide:compiler:${rootProject.extra.get("glideVersion")}")
-
-    testImplementation ("junit:junit:${rootProject.extra.get("junitVersion")}")
-    androidTestImplementation ("androidx.test.espresso:espresso-core:${rootProject.extra.get("espressoVersion")}")
+    //Testing
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.espresso)
 }
 
-fun getDoubanAccess ():String? {
-    return project.findProperty("douban_access_key")as? String
+fun getDoubanAccess(): String? {
+    return project.findProperty("douban_access_key") as? String
 }
