@@ -83,12 +83,9 @@ groups is finally added by them.
 
 * Inherent advantages leading to good performance and simple coding
 
-  | Design Aspect | Choice\(s\) |
-  | --- | --- |
-  | Language | Java |
-  | Libraries | Jetpack and authoritative third party libraries |
-  | Architecture | MVVM |
-  | Design philosophy | Android Jetpack |
+  | Design Aspect | Choice\(s\) | | -- | --- | | Language | Kotlin | | Libraries | Jetpack and
+  authoritative third party libraries | | Architecture | MVVM | | Design philosophy | Android
+  Jetpack |
 
 * Support for viewing content in Douban WebView optimized for mobile reading
 * Support for loading cache as alternative when connection is off
@@ -160,29 +157,24 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
-#### To-dos for next release \(0.4.0\)
+#### To-dos for next release \(0.4.1\)
 
-* Performs the last changes to paging before the migration
-  * 🛠 Sort IDs of locally "new" posts before saving them
-  * Remove ugly use of args from loadNextPageFromRepo
-* Migrate build to version catalogs
-
-#### To-dos for 2nd next release \(0.4.1\)
-
-* Optimize architecture by studying NiA/iosched/Sunflower/GithubBrowserSample, adopt more Kotlin sugar/Flows/Coroutines
-  * Rearrange packages, prepare \(add empty directories etc\) for modules \(feature-wise, not modules in "multi-modules"\)
-    of books and movies
-  * Distinguish among `XApiModel` \(`NetworkX`\), `XEntity` and `X` \(external
-    model\)  
+* Optimize architecture by studying NiA/iosched/Sunflower/GithubBrowserSample, adopt more Kotlin
+  sugar/Flows/Coroutines
+  * Rearrange packages, prepare \(add empty directories etc\) for modules \(feature-wise, not
+    modules in "multi-modules"\) of books and movies
+  * Distinguish among `XApiModel` \(`NetworkX`\), `XEntity` and `X` \(external model\)
+  * Extract methods from large blocks of code in fragments
   * Fix the disastrous implementation of the "follow" feature
+    * 🛠 It's ugly & buggy now
     * Still store follow data in Room instead of data stores
-    * 🛠 Also it's buggy now
   * \[Data layer\] Migrate to Kotlin Flow \(for data layer only!\)
-  * Migrate GithubBrowserSample's way of paging to Paging3 + Coroutine + LiveData/Flow
-  
+  * Migrate GithubBrowserSample's way of paging to Paging3 + Coroutine + LiveData/
+  * Add very basic testing if possible
+
 #### Future plans
 
-* \[SettingsFragment] Add WebView enabled by default preference, nav start destination etc with
+* \[SettingsFragment\] Add WebView enabled by default preference, nav start destination etc with
   DataStore
 * SnackbarUtils from todo app
 * \[SearchFragment\]GroupSearchFragment -> SearchFragment / Search group/tab posts (in-group) /
