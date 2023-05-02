@@ -157,7 +157,7 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
-#### To-dos for next release \(0.4.1\)
+#### To-dos for next release \(0.4.2\)
 
 * Optimize architecture by studying NiA/iosched/Sunflower/GithubBrowserSample, adopt more Kotlin
   sugar/Flows/Coroutines
@@ -171,6 +171,7 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
   * \[Data layer\] Migrate to Kotlin Flow \(for data layer only!\)
   * Migrate GithubBrowserSample's way of paging to Paging3 + Coroutine + LiveData/
   * Add very basic testing if possible
+  * ...
 
 #### Future plans
 
