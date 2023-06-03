@@ -13,7 +13,7 @@
 
         <variable
             name="group"
-            type="com.doubean.ford.data.vo.GroupItem" />
+            type="com.doubean.ford.model.GroupSearchResultGroupItem" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

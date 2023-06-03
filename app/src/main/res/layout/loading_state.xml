@@ -19,9 +19,9 @@
 
     <data>
 
-        <import type="com.doubean.ford.data.vo.Resource" />
+        <import type="com.doubean.ford.model.Resource" />
 
-        <import type="com.doubean.ford.data.vo.Status" />
+        <import type="com.doubean.ford.model.Status" />
 
         <variable
             name="resource"

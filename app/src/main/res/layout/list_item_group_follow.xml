@@ -15,7 +15,7 @@
 
         <variable
             name="groupFollow"
-            type="com.doubean.ford.data.vo.GroupFollowItem" />
+            type="com.doubean.ford.model.GroupFollowItem" />
     </data>
 
 
@@ -86,7 +86,7 @@
             android:id="@+id/group_tab"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            isGone="@{groupFollow.groupTabId==null}"
+            isGone="@{groupFollow.tabId==null}"
             android:layout_marginTop="@dimen/margin_extra_small"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

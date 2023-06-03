@@ -1,48 +1,48 @@
 package com.doubean.ford.ui.groups.postDetail
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.doubean.ford.data.repository.GroupRepository
-import com.doubean.ford.data.vo.Post
-import com.doubean.ford.data.vo.PostComments
-import com.doubean.ford.data.vo.Resource
+import com.doubean.ford.model.Resource
 import com.doubean.ford.ui.common.LoadMoreState
 import com.doubean.ford.ui.common.NextPageHandler
 
-class PostDetailViewModel(groupRepository: GroupRepository, postId: String) : ViewModel() {
-    private val nextPageHandler: NextPageHandler
-    private val reloadTrigger = MutableLiveData<Boolean>()
-    private val postId: String
-    private val groupRepository: GroupRepository
-    val post: LiveData<Resource<Post>>
-    val postComments: LiveData<Resource<PostComments>>
+class PostDetailViewModel(
+    private val groupRepository: GroupRepository,
+    private val postId: String,
+) : ViewModel() {
 
-    init {
-        nextPageHandler = object : NextPageHandler() {
-            override fun loadNextPageFromRepo(params:Array<out Any?>): LiveData<Resource<Boolean>?> {
-                return groupRepository.getNextPagePostComments(params[0] as String)
-            }
+    private val reloadTrigger = MutableLiveData(Unit)
+    private val nextPageHandler = object : NextPageHandler() {
+        override fun loadNextPageFromRepo(): LiveData<Resource<Boolean>?> {
+            return groupRepository.getNextPagePostComments(postId)
+        }
 
-        }
-        this.groupRepository = groupRepository
-        this.postId = postId
-        post = groupRepository.getPost(postId)
-        postComments = Transformations.switchMap(reloadTrigger) {
-            groupRepository.getPostComments(postId)
-        }
-        refreshPostComments()
+    }
+    val post = groupRepository.getPost(postId)
+    val postComments = reloadTrigger.switchMap {
+        groupRepository.getPostComments(postId)
     }
 
     fun refreshPostComments() {
-        reloadTrigger.value = true
+        reloadTrigger.value = Unit
     }
 
     val loadMoreStatus: LiveData<LoadMoreState>
         get() = nextPageHandler.loadMoreState
 
     fun loadNextPage() {
-        nextPageHandler.loadNextPage(arrayOf(postId))
+        nextPageHandler.loadNextPage()
+    }
+
+    companion object {
+        class Factory(
+            private val repository: GroupRepository,
+            private val postId: String,
+        ) : ViewModelProvider.NewInstanceFactory() {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return PostDetailViewModel(repository, postId) as T
+            }
+        }
     }
 }

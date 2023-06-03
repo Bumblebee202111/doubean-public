@@ -13,7 +13,7 @@
 
         <variable
             name="recommendedGroup"
-            type="com.doubean.ford.data.vo.RecommendedGroup" />
+            type="com.doubean.ford.model.RecommendedGroupItem" />
 
         <variable
             name="noBackground"
@@ -39,7 +39,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@{noBackground}"
-                android:text="@{``+recommendedGroup.recommendedGroupResult.no}"
+                android:text="@{``+recommendedGroup.no}"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 app:layout_constraintDimensionRatio="1"

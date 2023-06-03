@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.core.app.ShareCompat.IntentBuilder
 
 object ShareUtil {
-    fun Share(context: Context, shareText: String?) {
+    fun share(context: Context, shareText: CharSequence) {
         val shareIntent = IntentBuilder(context)
             .setText(shareText)
             .setType("text/plain")

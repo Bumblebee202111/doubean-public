@@ -36,7 +36,7 @@ class DoubeanWebView : WebView {
         useDayNightThemes()
     }
 
-    fun useDayNightThemes() {
+    private fun useDayNightThemes() {
         if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
             when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
                 Configuration.UI_MODE_NIGHT_YES -> WebSettingsCompat.setForceDark(
@@ -51,11 +51,12 @@ class DoubeanWebView : WebView {
 
     @SuppressLint("SetJavaScriptEnabled")
     fun initWebSettings() {
-        val settings = settings
-        settings.javaScriptEnabled = true
-        settings.builtInZoomControls = true
-        settings.displayZoomControls = false
-        settings.builtInZoomControls = true
-        settings.displayZoomControls = false
+        settings.apply {
+            javaScriptEnabled = true
+            builtInZoomControls = true
+            displayZoomControls = false
+            builtInZoomControls = true
+            displayZoomControls = false
+        }
     }
 }

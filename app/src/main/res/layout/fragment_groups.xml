@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.doubean.ford.ui.groups.groupsHome.GroupsHomeViewModel" />
@@ -44,7 +43,7 @@
                 app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
             <androidx.recyclerview.widget.RecyclerView
-                isGone="@{viewModel.followList==null||viewModel.followList.empty}"
+                isGone="@{viewModel.follows==null||viewModel.follows.empty}"
                 android:id="@+id/follow_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -55,12 +54,11 @@
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintTop_toBottomOf="@id/follows_header"
-                tools:context="com.google.samples.apps.sunflower.GardenActivity"
                 tools:listitem="@layout/list_item_group_follow" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/no_follows_text"
-                isGone="@{viewModel.followList!=null&amp;&amp;!viewModel.followList.empty}"
+                isGone="@{viewModel.follows!=null&amp;&amp;!viewModel.follows.empty}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_normal"
@@ -92,7 +90,6 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/groups_of_the_day_header"
-                tools:context="com.google.samples.apps.sunflower.GardenActivity"
                 tools:listitem="@layout/list_item_group" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

@@ -19,12 +19,12 @@ import android.content.Context
 import com.doubean.ford.api.DoubanService
 import com.doubean.ford.data.db.AppDatabase.Companion.getInstance
 import com.doubean.ford.data.repository.GroupRepository
-import com.doubean.ford.data.repository.GroupsFollowsAndSavesRepository
-import com.doubean.ford.ui.groups.groupDetail.GroupDetailViewModelFactory
-import com.doubean.ford.ui.groups.groupSearch.GroupSearchViewModelFactory
-import com.doubean.ford.ui.groups.groupTab.GroupTabViewModelFactory
-import com.doubean.ford.ui.groups.groupsHome.GroupsHomeViewModelFactory
-import com.doubean.ford.ui.groups.postDetail.PostDetailViewModelFactory
+import com.doubean.ford.data.repository.GroupUserDataRepository
+import com.doubean.ford.ui.groups.groupDetail.GroupDetailViewModel
+import com.doubean.ford.ui.groups.groupSearch.GroupSearchViewModel
+import com.doubean.ford.ui.groups.groupTab.GroupTabViewModel
+import com.doubean.ford.ui.groups.groupsHome.GroupsHomeViewModel
+import com.doubean.ford.ui.groups.postDetail.PostDetailViewModel
 
 /**
  * Static methods used to inject classes needed for various Activities and Fragments.
@@ -42,55 +42,46 @@ object InjectorUtils {
         )
     }
 
-    private fun getGroupFollowsAndSavesRepository(context: Context): GroupsFollowsAndSavesRepository? {
-        return GroupsFollowsAndSavesRepository.getInstance(
+    private fun getGroupFollowsAndSavesRepository(context: Context): GroupUserDataRepository? {
+        return GroupUserDataRepository.getInstance(
             AppExecutors(),
-            getInstance(context.applicationContext)!!,
-            provideDoubanService()
+            getInstance(context.applicationContext)!!
         )
     }
 
-    fun provideGroupsViewModelFactory(context: Context): GroupsHomeViewModelFactory {
-        return GroupsHomeViewModelFactory(
-            getGroupRepository(context)!!,
-            getGroupFollowsAndSavesRepository(context)!!
-        )
-    }
+    fun provideGroupsViewModelFactory(context: Context) = GroupsHomeViewModel.Companion.Factory(
+        getGroupRepository(context)!!,
+        getGroupFollowsAndSavesRepository(context)!!
+    )
 
     fun provideGroupDetailViewModelFactory(
         context: Context,
         groupId: String,
-        defaultTab: String?
-    ): GroupDetailViewModelFactory {
-        return GroupDetailViewModelFactory(
-            getGroupRepository(context)!!,
-            getGroupFollowsAndSavesRepository(context)!!,
-            groupId,
-            defaultTab
-        )
-    }
+        defaultTab: String?,
+    ) = GroupDetailViewModel.Companion.Factory(
+        getGroupRepository(context)!!,
+        getGroupFollowsAndSavesRepository(context)!!,
+        groupId,
+        defaultTab
+    )
 
     fun providePostDetailViewModelFactory(
         context: Context,
-        postId: String
-    ): PostDetailViewModelFactory {
-        return PostDetailViewModelFactory(getGroupRepository(context)!!, postId)
-    }
+        postId: String,
+    ) = PostDetailViewModel.Companion.Factory(getGroupRepository(context)!!, postId)
 
     fun provideGroupTabViewModelFactory(
         context: Context,
         groupId: String,
-        tagId: String?
-    ): GroupTabViewModelFactory {
-        return GroupTabViewModelFactory(
-            getGroupRepository(context)!!,
-            getGroupFollowsAndSavesRepository(context)!!,
-            groupId,
-            tagId
-        )
-    }
+        tagId: String?,
+    ) = GroupTabViewModel.Companion.Factory(
+        getGroupRepository(context)!!,
+        getGroupFollowsAndSavesRepository(context)!!,
+        groupId,
+        tagId
+    )
 
-    fun provideGroupSearchViewModelFactory(context: Context): GroupSearchViewModelFactory {
-        return GroupSearchViewModelFactory(getGroupRepository(context)!!)
-    }
+    fun provideGroupSearchViewModelFactory(context: Context) =
+        GroupSearchViewModel.Companion.Factory(getGroupRepository(context)!!)
+
 }

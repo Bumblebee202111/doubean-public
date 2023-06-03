@@ -22,7 +22,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val linearLayout =
             super.onCreateView(inflater, container, savedInstanceState) as LinearLayout
@@ -35,10 +35,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // https://blog.csdn.net/m0_46958584/article/details/105663403
         val toolbar = LayoutInflater.from(context)
             .inflate(R.layout.toolbar_settings, linearLayout, false) as MaterialToolbar
-        toolbar.setNavigationOnClickListener { v: View? ->
-            findNavController(
-                v!!
-            ).navigateUp()
+        toolbar.setNavigationOnClickListener { v ->
+            findNavController(v!!).navigateUp()
         }
         linearLayout.addView(toolbar, 0)
     }

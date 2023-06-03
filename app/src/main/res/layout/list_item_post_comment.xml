@@ -5,13 +5,11 @@
 
     <data>
 
-        <import type="com.doubean.ford.util.DateTimeUtil" />
-
         <import type="com.doubean.ford.util.DateTimeStyle" />
 
         <variable
             name="postComment"
-            type="com.doubean.ford.data.vo.PostComment" />
+            type="com.doubean.ford.model.PostComment" />
 
         <variable
             name="isAuthorOp"
@@ -115,7 +113,8 @@
                     android:layout_marginStart="@dimen/margin_extra_small"
                     android:layout_marginEnd="@dimen/margin_small"
                     android:gravity="center_vertical"
-                    android:text="@{DateTimeUtil.dateTimeText(postComment.created,DateTimeStyle.NORMAL)}"
+                    app:dateTime="@{postComment.created}"
+                    app:dateTimeStyle="@{DateTimeStyle.Normal}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/author_middle_dot"
@@ -205,7 +204,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/margin_extra_small"
                         android:gravity="center_vertical"
-                        android:text="@{DateTimeUtil.dateTimeText(postComment.repliedTo.created,DateTimeStyle.NORMAL)}"
+                        app:dateTime="@{postComment.repliedTo.created}"
+                        app:dateTimeStyle="@{DateTimeStyle.Normal}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/replied_to_middle_dot"
                         app:layout_constraintTop_toTopOf="@id/replied_to_author_name"

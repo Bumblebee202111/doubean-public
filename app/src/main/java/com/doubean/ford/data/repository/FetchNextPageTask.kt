@@ -15,79 +15,67 @@
  */
 package com.doubean.ford.data.repository
 
+import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.doubean.ford.api.ApiResponse
-import com.doubean.ford.api.DoubanService
-import com.doubean.ford.api.ListResponse
+import com.doubean.ford.api.*
+import com.doubean.ford.api.model.NetworkPagedList
 import com.doubean.ford.data.db.AppDatabase
-import com.doubean.ford.data.vo.Item
-import com.doubean.ford.data.vo.ListResult
-import com.doubean.ford.data.vo.Resource
+import com.doubean.ford.data.db.model.PagedListResult
+import com.doubean.ford.model.Resource
 import retrofit2.Call
 import java.io.IOException
 
 /**
  * A task that reads the result in the database and fetches the next page, if it has one.
  */
-abstract class FetchNextPageTask<ItemType : Item, ResultType : ListResult?, RequestType : ListResponse<ItemType>> internal constructor(//private final String query;
-    private val doubanService: DoubanService, private val db: AppDatabase
+abstract class FetchNextPageTask<ResultEntityType : PagedListResult, RequestType : NetworkPagedList<out Any>> internal constructor(
+//private final String query;
+    private val doubanService: DoubanService, private val db: AppDatabase,
 ) : Runnable {
-    private val liveData = MutableLiveData<Resource<Boolean>?>()
+    private val _liveData = MutableLiveData<Resource<Boolean>?>()
+    val liveData: MutableLiveData<Resource<Boolean>?> = _liveData
     override fun run() {
-        val current: ResultType? = loadFromDb()
+        val current = loadCurrentFromDb()
         if (current == null) {
-            liveData.postValue(null)
+            _liveData.postValue(null)
             return
         }
         val nextPageStart = current.next
         if (nextPageStart == null) {
-            liveData.postValue(Resource.success(false))
+            _liveData.postValue(Resource.success(false))
             return
         }
-        try {
+        val newValue = try {
             val response = createCall(nextPageStart).execute()
-            val apiResponse = ApiResponse(response)
-            if (apiResponse.isSuccessful) {
-                val apiResponseBody = processResponse(apiResponse)
-                // we merge all item ids into 1 list so that it is easier to fetch the result list.
-                val ids: MutableList<String> = ArrayList()
-                ids.addAll(current.ids)
-                ids.addAll(apiResponseBody.items.map { it.id })
-                val merged =
-                    merge(ids, current, apiResponseBody.total, apiResponseBody.nextPageStart)
-                db.runInTransaction { saveMergedResult(merged, apiResponseBody.items) }
-                liveData.postValue(
-                    Resource.success(
-                        apiResponseBody.nextPageStart != null
-                    )
-                )
-            } else {
-                liveData.postValue(Resource.error(apiResponse.errorMessage!!, true))
+            when (val apiResponse = ApiResponse.create(response)) {
+                is ApiSuccessResponse -> {
+                    // we merge all item ids into 1 list so that it is easier to fetch the result list.
+                    //val ids = arrayListOf<String>()
+                    //ids.addAll(current.ids)
+                    //ids.addAll(apiResponseBody.items.map { it.id })
+                    mergeAndSaveCallResult(current, apiResponse.body)
+                    Resource.success(apiResponse.body.nextPageStart != null)
+                }
+                is ApiEmptyResponse -> {
+                    Resource.success(false)
+                }
+                is ApiErrorResponse -> {
+                    Resource.error(apiResponse.errorMessage, true)
+                }
             }
         } catch (e: IOException) {
-            liveData.postValue(Resource.error(e.message!!, true))
+            Resource.error(e.message!!, true)
         }
+        _liveData.postValue(newValue)
     }
 
-    fun getLiveData(): LiveData<Resource<Boolean>?> {
-        return liveData
-    }
+    @MainThread
+    protected abstract fun loadCurrentFromDb(): ResultEntityType?
 
-    protected abstract fun loadFromDb(): ResultType?
+    @MainThread
     protected abstract fun createCall(nextPageStart: Int?): Call<RequestType>
-    protected abstract fun merge(
-        ids: List<String>,
-        current: ResultType,//TODO: remove
-        total: Int,
-        nextPageStart: Int?
-    ): ResultType
-
-    protected abstract fun saveMergedResult(item: ResultType, items: List<ItemType>)
 
     @WorkerThread
-    protected open fun processResponse(response: ApiResponse<RequestType>): RequestType {
-        return response.body!!
-    }
+    protected abstract fun mergeAndSaveCallResult(current: ResultEntityType, item: RequestType)
 }

@@ -1,26 +1,35 @@
 package com.doubean.ford.ui.groups.groupDetail
 
-import androidx.fragment.app.Fragment
+import android.annotation.SuppressLint
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.doubean.ford.data.vo.GroupDetail
 import com.doubean.ford.ui.groups.groupTab.GroupTabFragment
 
 class GroupPagerAdapter(
     fragmentManager: FragmentManager,
-    lifecycle: Lifecycle?,
-    private val group: GroupDetail?
+    lifecycle: Lifecycle,
+    val groupId: String,
+    taggedTabIds: List<String>?,
 ) : FragmentStateAdapter(
-    fragmentManager, lifecycle!!
+    fragmentManager, lifecycle
 ) {
-    override fun createFragment(position: Int): Fragment {
-        var tagId: String? = null
-        if (position > 0) tagId = group!!.tabs!![position - 1].id
-        return GroupTabFragment.newInstance(group!!.id, tagId, group)
-    }
+    var taggedTabIds = taggedTabIds ?: emptyList()
+        @SuppressLint("NotifyDataSetChanged")
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
-    override fun getItemCount(): Int {
-        return if (group == null) 0 else group.tabs!!.size + 1
-    }
+    override fun createFragment(position: Int) =
+        if (position == 0) GroupTabFragment.newInstance(groupId)
+        else GroupTabFragment.newInstance(groupId, taggedTabIds[position - 1])
+
+    override fun getItemCount(): Int = taggedTabIds.size + 1
+
+    override fun getItemId(position: Int) =
+        (if (position == 0) groupId else taggedTabIds[position - 1]).toLong()
+
+    override fun containsItem(itemId: Long) =
+        itemId.toString() == groupId || taggedTabIds.contains(itemId.toString())
 }

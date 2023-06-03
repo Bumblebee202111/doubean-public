@@ -3,27 +3,26 @@ package com.doubean.ford.ui.common
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.doubean.ford.data.vo.Resource
-import com.doubean.ford.data.vo.Status
+import com.doubean.ford.model.Resource
+import com.doubean.ford.model.Status
 
-abstract class NextPageHandler() : Observer<Resource<Boolean>?> {
+abstract class NextPageHandler : Observer<Resource<Boolean>?> {
     private var nextPageLiveData: LiveData<Resource<Boolean>?>? = null
     val loadMoreState = MutableLiveData<LoadMoreState>()
     var hasMore = false
-    private var params: Array<out Any?>? = null
+    private var listId: Array<out Any?>? = null
 
     init {
         reset()
     }
 
-    abstract fun loadNextPageFromRepo(params: Array<out Any?>): LiveData<Resource<Boolean>?>
-    fun loadNextPage(params: Array<out Any?>) {
-        if (this.params.contentEquals(params)) {
+    fun loadNextPage(vararg listId: Any?) {
+        if (this.listId.contentEquals(listId)) {
             return
         }
-        this.params = params
+        this.listId = listId
         unregister()
-        nextPageLiveData = loadNextPageFromRepo(params)
+        nextPageLiveData = loadNextPageFromRepo()
         loadMoreState.value = LoadMoreState(true, null)
         nextPageLiveData?.observeForever(this)
     }
@@ -48,18 +47,18 @@ abstract class NextPageHandler() : Observer<Resource<Boolean>?> {
                         )
                     )
                 }
-                else -> {}
+                Status.LOADING -> {
+                    // ignore
+                }
             }
         }
     }
 
     private fun unregister() {
-        if (nextPageLiveData != null) {
-            nextPageLiveData!!.removeObserver(this)
+        nextPageLiveData?.removeObserver(this)
             nextPageLiveData = null
-            if (hasMore) {
-                params = null
-            }
+        if (hasMore) {
+            listId = null
         }
     }
 
@@ -68,4 +67,7 @@ abstract class NextPageHandler() : Observer<Resource<Boolean>?> {
         hasMore = true
         loadMoreState.value = LoadMoreState(false, null)
     }
+
+    abstract fun loadNextPageFromRepo(): LiveData<Resource<Boolean>?>
+
 }

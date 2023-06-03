@@ -1,44 +1,34 @@
 package com.doubean.ford.ui.groups.groupSearch
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.*
 import com.doubean.ford.data.repository.GroupRepository
-import com.doubean.ford.data.vo.GroupItem
-import com.doubean.ford.data.vo.Resource
+import com.doubean.ford.model.GroupSearchResultGroupItem
+import com.doubean.ford.model.Resource
 import com.doubean.ford.ui.common.LoadMoreState
 import com.doubean.ford.ui.common.NextPageHandler
 import java.util.*
 
-class GroupSearchViewModel(groupRepository: GroupRepository) : ViewModel() {
-    val results: LiveData<Resource<List<GroupItem>>>
+class GroupSearchViewModel(private val groupRepository: GroupRepository) : ViewModel() {
     private val query = MutableLiveData<String>()
-    private val groupRepository: GroupRepository
-    private val nextPageHandler: NextPageHandler
-    private val reloadTrigger = MutableLiveData<Boolean>()
-
-    init {
-        nextPageHandler = object : NextPageHandler() {
-            override fun loadNextPageFromRepo(vararg params: Any?): LiveData<Resource<Boolean>?> {
-                return groupRepository.searchNextPage(params[0]!! as String)
+    private val nextPageHandler = object : NextPageHandler() {
+        override fun loadNextPageFromRepo(): LiveData<Resource<Boolean>?> {
+            return groupRepository.searchNextPage(query.value!!)
+        }
+    }
+    private val reloadTrigger = MutableLiveData(Unit)
+    val results: LiveData<Resource<List<GroupSearchResultGroupItem>>> = reloadTrigger.switchMap {
+        query.switchMap { search ->
+            if (search.isBlank()) {
+                MutableLiveData<Resource<List<GroupSearchResultGroupItem>>>(null)
+            } else {
+                groupRepository.search(search)
             }
         }
-        this.groupRepository = groupRepository
-        results = reloadTrigger.switchMap {
-            query.switchMap { search ->
-                if (search.isBlank()) {
-                    MutableLiveData<Resource<List<GroupItem>>>(null)
-                } else {
-                    groupRepository.search(search)
-                }
-            }
-        }
-        refreshResults()
     }
 
+
     fun refreshResults() {
-        reloadTrigger.value = true
+        reloadTrigger.value = Unit
     }
 
     fun setQuery(originalInput: String) {
@@ -56,12 +46,22 @@ class GroupSearchViewModel(groupRepository: GroupRepository) : ViewModel() {
     fun loadNextPage() {
         query.value?.let {
             if (it.isNotBlank()) {
-                nextPageHandler.loadNextPage(arrayOf(it))
+                nextPageHandler.loadNextPage(it)
             }
         }
     }
 
     fun refresh() {
         query.value?.let { query.value = it }
+    }
+
+    companion object {
+        class Factory(private val groupRepository: GroupRepository) :
+            ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return GroupSearchViewModel(groupRepository) as T
+            }
+        }
     }
 }

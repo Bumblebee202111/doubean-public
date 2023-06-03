@@ -1,445 +1,455 @@
 package com.doubean.ford.data.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
-import com.doubean.ford.api.*
+import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
+import com.doubean.ford.api.ApiResponse
+import com.doubean.ford.api.DoubanService
+import com.doubean.ford.api.model.*
 import com.doubean.ford.data.db.AppDatabase
-import com.doubean.ford.data.db.GroupDao
-import com.doubean.ford.data.vo.*
+import com.doubean.ford.data.db.model.*
+import com.doubean.ford.model.*
 import com.doubean.ford.util.AppExecutors
-import com.doubean.ford.util.Constants
+import com.doubean.ford.util.LiveDataUtils.combine
+import com.doubean.ford.util.RESULT_COMMENTS_COUNT
+import com.doubean.ford.util.RESULT_GROUPS_COUNT
+import com.doubean.ford.util.RESULT_POSTS_COUNT
 import retrofit2.Call
 
 class GroupRepository private constructor(
-    private val appExecutors: AppExecutors, appDatabase: AppDatabase, doubanService: DoubanService
+    private val appExecutors: AppExecutors,
+    private val appDatabase: AppDatabase,
+    private val doubanService: DoubanService,
 ) {
-    private val groupDao: GroupDao
-    private val doubanService: DoubanService
-    private val appDatabase: AppDatabase
-
-    init {
-        groupDao = appDatabase.groupDao()
-        this.doubanService = doubanService
-        this.appDatabase = appDatabase
-    }
+    private val groupDao = appDatabase.groupDao()
+    private val userDao = appDatabase.userDao()
 
     fun getGroup(groupId: String, forceFetch: Boolean): LiveData<Resource<GroupDetail>> {
-        return object : NetworkBoundResource<GroupDetail, GroupDetail>(appExecutors) {
-            override fun saveCallResult(item: GroupDetail) {
-                groupDao.upsertDetail(item)
+        return object : NetworkBoundResource<GroupDetail, NetworkGroupDetail>(appExecutors) {
+            override fun saveCallResult(item: NetworkGroupDetail) {
+                val groupDetails = item.asPartialEntity()
+                val groupTabs = item.tabs.map { it.asEntity(groupId) }
+                val groupPostTags = item.postTags.map { it.asEntity(groupId) }
+                appDatabase.runInTransaction {
+                    groupDao.upsertGroupDetail(groupDetails)
+                    groupDao.insertGroupTabs(groupTabs)
+                    groupDao.insertGroupPostTags(groupPostTags)
+                }
             }
 
-            override fun shouldFetch(data: GroupDetail?): Boolean {
-                return data == null || forceFetch
-            }
+            override fun shouldFetch(data: GroupDetail?): Boolean = data == null || forceFetch
 
-            override fun loadFromDb(): LiveData<GroupDetail> {
-                return groupDao.loadDetail(groupId)
-            }
+            override fun loadFromDb() =
+                groupDao.loadGroupDetail(groupId).map { it.asExternalModel() }
 
-            override fun createCall(): LiveData<ApiResponse<GroupDetail>> {
-                return doubanService.getGroup(groupId, 1)
-            }
+            override fun createCall() = doubanService.getGroup(groupId, 1)
         }.asLiveData()
     }
 
     fun searchNextPage(query: String): LiveData<Resource<Boolean>?> {
-        val fetchNextSearchPageTask: FetchNextPageTask<SearchResultItem, GroupSearchResult, GroupSearchResponse> =
-            object : FetchNextPageTask<SearchResultItem, GroupSearchResult, GroupSearchResponse>(
-                doubanService, appDatabase
-            ) {
-                override fun loadFromDb(): GroupSearchResult {
-                    return appDatabase.groupDao().findSearchResult(query)!!
-                }
-
-                override fun createCall(nextPageStart: Int?): Call<GroupSearchResponse> {
-                    return doubanService.searchGroups(
-                        query, Constants.RESULT_GROUPS_COUNT, nextPageStart!!
-                    )
-                }
-
-                override fun saveMergedResult(
-                    item: GroupSearchResult, items: List<SearchResultItem>
+        val fetchNextSearchPageTask: FetchNextPageTask<GroupSearchResult, NetworkGroupSearch> =
+            object :
+                FetchNextPageTask<GroupSearchResult, NetworkGroupSearch>(
+                    doubanService, appDatabase
                 ) {
-                    appDatabase.groupDao().insertGroupSearchResult(item)
-                    val groups: MutableList<GroupItem> = ArrayList()
-                    for (i in items) {
-                        groups.add(i.group)
-                    }
-                    appDatabase.groupDao().upsertGroups(groups)
-                }
+                override fun loadCurrentFromDb() = groupDao.findSearchResult(query)
 
-                override fun merge(
-                    ids: List<String>, current: GroupSearchResult, total: Int, nextPageStart: Int?
-                ): GroupSearchResult {
-                    return GroupSearchResult(
-                        query, ids, total, nextPageStart
-                    )
+                override fun createCall(nextPageStart: Int?) = doubanService.searchGroups(
+                    query, RESULT_GROUPS_COUNT, nextPageStart!!
+                )
+
+                override fun mergeAndSaveCallResult(
+                    current: GroupSearchResult,
+                    item: NetworkGroupSearch,
+                ) {
+                    val ids = current.ids + item.items.map { it.group.id }
+                    val merged = GroupSearchResult(query,
+                        ids,
+                        item.total,
+                        item.nextPageStart)
+                    val groups = item.items.map { it.group.asPartialEntity() }
+                    appDatabase.runInTransaction {
+                        groupDao.insertGroupSearchResult(merged)
+                        groupDao.upsertSearchResultGroups(groups)
+                    }
                 }
             }
         appExecutors.networkIO().execute(fetchNextSearchPageTask)
-        return fetchNextSearchPageTask.getLiveData()
+        return fetchNextSearchPageTask.liveData
     }
 
-    fun search(query: String): LiveData<Resource<List<GroupItem>>> {
-        return object : NetworkBoundResource<List<GroupItem>, GroupSearchResponse>(
+    fun search(query: String): LiveData<Resource<List<GroupSearchResultGroupItem>>> {
+        return object : NetworkBoundResource<List<GroupSearchResultGroupItem>, NetworkGroupSearch>(
             appExecutors
         ) {
-            override fun saveCallResult(item: GroupSearchResponse) {
-                val groupIds = item.groupIds
+            override fun saveCallResult(item: NetworkGroupSearch) {
+                val groupIds = item.items.map { it.group.id }
                 val groupSearchResult = GroupSearchResult(
                     query, groupIds, item.total, item.nextPageStart
                 )
-                val groups: MutableList<GroupItem> = ArrayList()
-                for (searchResultItem in item.items) {
-                    groups.add(searchResultItem.group)
-                }
+                val searchResultGroups = item.items.map { it.group.asPartialEntity() }
                 appDatabase.runInTransaction {
-                    groupDao.upsertGroups(groups)
+                    groupDao.upsertSearchResultGroups(searchResultGroups)
                     groupDao.insertGroupSearchResult(groupSearchResult)
                 }
             }
 
-            override fun shouldFetch(data: List<GroupItem>?): Boolean {
-                //return data == null;
-                return true
-            }
+            override fun shouldFetch(data: List<GroupSearchResultGroupItem>?): Boolean = true
 
-            override fun loadFromDb(): LiveData<List<GroupItem>> {
-                return Transformations.switchMap(
-                    groupDao.search(query)
-                ) { searchData: GroupSearchResult? ->
+            override fun loadFromDb(): LiveData<List<GroupSearchResultGroupItem>> {
+                return groupDao.search(query).switchMap { searchData ->
                     if (searchData == null) {
-                        return@switchMap object : LiveData<List<GroupItem>>(null) {}
+                        object : LiveData<List<GroupSearchResultGroupItem>>(null) {}
                     } else {
-                        return@switchMap groupDao.loadOrderedGroups(searchData.ids)
+                        groupDao.loadOrderedSearchResultGroups(searchData.ids).map {
+                            it.map(GroupSearchResultGroupItemPartialEntity::asExternalModel)
+                        }
                     }
                 }
             }
 
-            override fun createCall(): LiveData<ApiResponse<GroupSearchResponse>> {
-                return doubanService.searchGroups(query, Constants.RESULT_GROUPS_COUNT)
-            }
-
+            override fun createCall() =
+                doubanService.searchGroups(query, RESULT_GROUPS_COUNT)
         }.asLiveData()
     }
 
     fun getGroupPosts(
-        groupId: String, postSortBy: PostSortBy
+        groupId: String, postSortBy: PostSortBy,
     ): LiveData<Resource<List<PostItem>>> {
-        return object : NetworkBoundResource<List<PostItem>, PostsResponse>(
+        return object : NetworkBoundResource<List<PostItem>, NetworkPosts>(
             appExecutors
         ) {
-            override fun saveCallResult(item: PostsResponse) {
-                val posts = item.items
-                val postIds = posts.map { it.id }
+            override fun saveCallResult(item: NetworkPosts) {
+                val posts = item.items.map { it.asPartialEntity(groupId) }
+                val postIds = item.items.apply {
+                    if (postSortBy === PostSortBy.NEW)
+                        sortedByDescending(NetworkPostItem::created)
+                }.map(NetworkPostItem::id)
+                val postTagCrossRefs = item.items.flatMap(NetworkPostItem::tagCrossRefs)
                 val groupPostsResult =
                     GroupPostsResult(groupId, postSortBy, postIds, item.total, item.nextPageStart)
-                posts.forEach {
-                    it.groupId = groupId
-                    if (!it.postTags.isNullOrEmpty()) {
-                        it.tagId = it.postTags[0].id
-                    }
-                }
+                val authors = item.items.map { it.author.asEntity() }
                 appDatabase.runInTransaction {
                     groupDao.upsertPosts(posts)
+                    groupDao.deletePostTagCrossRefsByPostIds(postIds)
+                    groupDao.insertPostTagCrossRefs(postTagCrossRefs)
                     groupDao.insertGroupPostsResult(groupPostsResult)
+                    userDao.insertUsers(authors)
                 }
             }
 
-            override fun shouldFetch(data: List<PostItem>?): Boolean {
-                //return data==null||data.isEmpty();
-                return true
-            }
+            override fun shouldFetch(data: List<PostItem>?) = true
 
             override fun loadFromDb(): LiveData<List<PostItem>> {
-                return Transformations.switchMap(
-                    groupDao.getGroupPosts(
-                        groupId, postSortBy
-                    )
-                ) { findData: GroupPostsResult? ->
+                return groupDao.getGroupPosts(
+                    groupId, postSortBy
+                ).switchMap { findData ->
                     if (findData == null) {
-                        return@switchMap object : LiveData<List<PostItem>?>(null) {}
+                        object : LiveData<List<PostItem>>(null) {}
                     } else {
-                        return@switchMap groupDao.loadPosts(findData.ids)
+                        groupDao.loadPosts(findData.ids).map {
+                            it.map(PopulatedPostItem::asExternalModel)
+                        }
                     }
                 }
             }
 
-            override fun createCall(): LiveData<ApiResponse<PostsResponse>> {
+            override fun createCall(): LiveData<ApiResponse<NetworkPosts>> {
                 val sortByRequestParam = getPostSortByRequestParam(postSortBy)
                 return doubanService.getGroupPosts(
-                    groupId, sortByRequestParam.toString(), Constants.RESULT_POSTS_COUNT
+                    groupId, sortByRequestParam.toString(), RESULT_POSTS_COUNT
                 )
-            }
-
-            override fun processResponse(response: ApiResponse<PostsResponse>): PostsResponse {
-                return processPostsResponse(postSortBy, response)
             }
         }.asLiveData()
     }
 
     fun getNextPageGroupPosts(
-        groupId: String, postSortBy: PostSortBy
+        groupId: String, postSortBy: PostSortBy,
     ): LiveData<Resource<Boolean>?> {
-        val fetchNextPageTask: FetchNextPageTask<PostItem, GroupPostsResult, PostsResponse> =
-            object : FetchNextPageTask<PostItem, GroupPostsResult, PostsResponse>(
-                doubanService, appDatabase
-            ) {
-                override fun loadFromDb(): GroupPostsResult {
-                    return appDatabase.groupDao().findGroupPosts(groupId, postSortBy)!!
-                }
+        val fetchNextPageTask: FetchNextPageTask<GroupPostsResult, NetworkPosts> =
+            object :
+                FetchNextPageTask<GroupPostsResult, NetworkPosts>(
+                    doubanService, appDatabase
+                ) {
+                override fun loadCurrentFromDb(): GroupPostsResult =
+                    groupDao.findGroupPosts(groupId, postSortBy)!!
 
-                override fun createCall(nextPageStart: Int?): Call<PostsResponse> {
+                override fun createCall(nextPageStart: Int?): Call<NetworkPosts> {
                     return doubanService.getGroupPosts(
                         groupId,
                         getPostSortByRequestParam(postSortBy).toString(),
-                        Constants.RESULT_POSTS_COUNT,
-                        nextPageStart!!
+                        nextPageStart!!,
+                        RESULT_POSTS_COUNT
                     )
                 }
 
-                override fun saveMergedResult(item: GroupPostsResult, items: List<PostItem>) {
-                    appDatabase.groupDao().insertGroupPostsResult(item)
-                    appDatabase.groupDao().upsertPosts(items)
-                }
+                override fun mergeAndSaveCallResult(
+                    current: GroupPostsResult,
+                    item: NetworkPosts,
+                ) {
+                    val ids = current.ids + item.items.apply {
+                        if (postSortBy === PostSortBy.NEW)
+                            sortedByDescending(NetworkPostItem::created)
+                    }.map(NetworkPostItem::id)
+                    val merged = GroupPostsResult(groupId,
+                        postSortBy,
+                        ids,
+                        item.total,
+                        item.nextPageStart)
+                    val posts = item.items.map { it.asPartialEntity(groupId) }
+                    val postTagCrossRefs =
+                        item.items.flatMap(NetworkPostItem::tagCrossRefs)
+                    val authors = item.items.map { it.author.asEntity() }
+                    appDatabase.runInTransaction {
+                        groupDao.insertGroupPostsResult(merged)
+                        groupDao.deletePostTagCrossRefsByPostIds(ids)
+                        groupDao.insertPostTagCrossRefs(postTagCrossRefs)
+                        groupDao.upsertPosts(posts)
+                        userDao.insertUsers(authors)
+                    }
 
-                override fun merge(
-                    ids: List<String>, current: GroupPostsResult, total: Int, nextPageStart: Int?
-                ): GroupPostsResult {
-                    return GroupPostsResult(groupId, postSortBy, ids, total, nextPageStart)
-                }
-
-                override fun processResponse(response: ApiResponse<PostsResponse>): PostsResponse {
-                    return processPostsResponse(postSortBy, response)
                 }
             }
         appExecutors.networkIO().execute(fetchNextPageTask)
-        return fetchNextPageTask.getLiveData()
+        return fetchNextPageTask.liveData
     }
 
     fun getGroupTagPosts(
-        groupId: String, tagId: String, postSortBy: PostSortBy
+        groupId: String, tagId: String, postSortBy: PostSortBy,
     ): LiveData<Resource<List<PostItem>>> {
-        return object : NetworkBoundResource<List<PostItem>, PostsResponse>(
+        return object : NetworkBoundResource<List<PostItem>, NetworkPosts>(
             appExecutors
         ) {
-            override fun saveCallResult(item: PostsResponse) {
-                val posts = item.items
-                val postIds = posts.map { it.id }
-
+            override fun saveCallResult(item: NetworkPosts) {
+                val posts = item.items.map { it.asPartialEntity(groupId) }
+                val postIds = item.items.apply {
+                    if (postSortBy === PostSortBy.NEW)
+                        sortedByDescending(NetworkPostItem::created)
+                }.map(NetworkPostItem::id)
+                val postTagCrossRefs = item.items.flatMap(NetworkPostItem::tagCrossRefs)
                 val groupTagPostsResult = GroupTagPostsResult(
                     groupId, tagId, postSortBy, postIds, item.total, item.nextPageStart
                 )
-                for (post in posts) {
-                    post.groupId = groupId
-                    if (post.postTags != null && post.postTags.isNotEmpty()) {
-                        post.tagId = post.postTags[0].id
-                    }
-                }
+                val authors = item.items.map { it.author.asEntity() }
                 appDatabase.runInTransaction {
                     groupDao.upsertPosts(posts)
+                    groupDao.deletePostTagCrossRefsByPostIds(postIds)
+                    groupDao.insertPostTagCrossRefs(postTagCrossRefs)
                     groupDao.insertGroupTagPostsResult(groupTagPostsResult)
+                    userDao.insertUsers(authors)
                 }
             }
 
-            override fun shouldFetch(data: List<PostItem>?): Boolean {
-                //return data==null||data.isEmpty();
-                return true
-            }
+            override fun shouldFetch(data: List<PostItem>?) = true
 
             override fun loadFromDb(): LiveData<List<PostItem>> {
-                return Transformations.switchMap(
-                    appDatabase.groupDao().getGroupTagPosts(
-                        groupId, tagId, postSortBy
-                    )
-                ) { findData: GroupTagPostsResult? ->
+                return groupDao.getGroupTagPosts(
+                    groupId, tagId, postSortBy
+                ).switchMap { findData ->
                     if (findData == null) {
-                        return@switchMap object : LiveData<List<PostItem>>(null) {}
+                        object : LiveData<List<PostItem>>(null) {}
                     } else {
-                        return@switchMap appDatabase.groupDao().loadPosts(findData.ids)
+                        groupDao.loadPosts(findData.ids).map {
+                            it.map(
+                                PopulatedPostItem::asExternalModel)
+                        }
                     }
                 }
             }
 
-            override fun createCall(): LiveData<ApiResponse<PostsResponse>> {
+            override fun createCall(): LiveData<ApiResponse<NetworkPosts>> {
                 return doubanService.getGroupTagPosts(
                     groupId,
                     tagId,
                     getPostSortByRequestParam(postSortBy).toString(),
-                    Constants.RESULT_POSTS_COUNT
+                    RESULT_POSTS_COUNT
                 )
-            }
-
-            override fun processResponse(response: ApiResponse<PostsResponse>): PostsResponse {
-                return processPostsResponse(postSortBy, response)
             }
         }.asLiveData()
     }
 
     fun getNextPageGroupTagPosts(
-        groupId: String, tagId: String, postSortBy: PostSortBy
+        groupId: String, tagId: String, postSortBy: PostSortBy,
     ): LiveData<Resource<Boolean>?> {
-        val fetchNextPageTask: FetchNextPageTask<PostItem, GroupTagPostsResult, PostsResponse> =
-            object : FetchNextPageTask<PostItem, GroupTagPostsResult, PostsResponse>(
-                doubanService, appDatabase
-            ) {
-                override fun loadFromDb(): GroupTagPostsResult {
-                    return appDatabase.groupDao().findGroupTagPosts(groupId, tagId, postSortBy)!!
-                }
+        val fetchNextPageTask: FetchNextPageTask<GroupTagPostsResult, NetworkPosts> =
+            object :
+                FetchNextPageTask<GroupTagPostsResult, NetworkPosts>(
+                    doubanService, appDatabase
+                ) {
+                override fun loadCurrentFromDb() =
+                    groupDao.findGroupTagPosts(groupId, tagId, postSortBy)!!
 
-                override fun createCall(nextPageStart: Int?): Call<PostsResponse> {
-                    return doubanService.getGroupTagPosts(
+                override fun createCall(nextPageStart: Int?) = doubanService.getGroupTagPosts(
+                    groupId,
+                    tagId,
+                    getPostSortByRequestParam(postSortBy).toString(),
+                    nextPageStart!!,
+                    RESULT_POSTS_COUNT,
+                )
+
+                override fun mergeAndSaveCallResult(
+                    current: GroupTagPostsResult,
+                    item: NetworkPosts,
+                ) {
+                    val ids = current.ids + item.items.apply {
+                        if (postSortBy === PostSortBy.NEW)
+                            sortedByDescending(NetworkPostItem::created)
+                    }.map(NetworkPostItem::id)
+                    val merged = GroupTagPostsResult(
                         groupId,
                         tagId,
-                        getPostSortByRequestParam(postSortBy).toString(),
-                        Constants.RESULT_POSTS_COUNT,
-                        nextPageStart!!
-                    )
-                }
-
-                override fun saveMergedResult(item: GroupTagPostsResult, items: List<PostItem>) {
-
-                    appDatabase.groupDao().insertGroupTagPostsResult(item)
-                    appDatabase.groupDao().upsertPosts(items)
-                }
-
-                override fun merge(
-                    ids: List<String>, current: GroupTagPostsResult, total: Int, nextPageStart: Int?
-                ): GroupTagPostsResult {
-                    return GroupTagPostsResult(
-                        groupId, tagId, postSortBy, ids, total, nextPageStart
-                    )
-                }
-
-                override fun processResponse(response: ApiResponse<PostsResponse>): PostsResponse {
-                    return processPostsResponse(postSortBy, response)
+                        postSortBy,
+                        ids,
+                        item.total,
+                        item.nextPageStart)
+                    val posts = item.items.map { it.asPartialEntity(groupId) }
+                    val postTagCrossRefs =
+                        item.items.flatMap(NetworkPostItem::tagCrossRefs)
+                    val authors = item.items.map { it.author.asEntity() }
+                    appDatabase.runInTransaction {
+                        groupDao.insertGroupTagPostsResult(merged)
+                        groupDao.deletePostTagCrossRefsByPostIds(ids)
+                        groupDao.insertPostTagCrossRefs(postTagCrossRefs)
+                        groupDao.upsertPosts(posts)
+                        userDao.insertUsers(authors)
+                    }
                 }
             }
         appExecutors.networkIO().execute(fetchNextPageTask)
-        return fetchNextPageTask.getLiveData()
+        return fetchNextPageTask.liveData
     }
 
-    fun getPost(postId: String): LiveData<Resource<Post>> {
-        return object : NetworkBoundResource<Post, Post>(appExecutors) {
-            override fun saveCallResult(item: Post) {
-                item.groupId = item.group!!.id
-                if (!item.postTags.isNullOrEmpty()) item.tagId = item.postTags[0].id
+    fun getPost(postId: String): LiveData<Resource<PostDetail>> {
+        return object : NetworkBoundResource<PostDetail, NetworkPostDetail>(appExecutors) {
+            override fun saveCallResult(item: NetworkPostDetail) {
+                val postDetail = item.asPartialEntity()
+                val postTagCrossRefs = item.tagCrossRefs()
+                val group = item.group.asPartialEntity()
+                val author = item.author.asEntity()
                 appDatabase.runInTransaction {
-                    groupDao.insertPost(item)
-                    groupDao.upsertGroupBrief(item.group)
+                    groupDao.insertPostDetail(postDetail)
+                    groupDao.deletePostTagCrossRefsByPostId(postId)
+                    groupDao.insertPostTagCrossRefs(postTagCrossRefs)
+                    groupDao.upsertPostGroup(group)
+                    userDao.insertUser(author)
                 }
             }
 
-            override fun shouldFetch(data: Post?): Boolean {
-                return true
-            }
+            override fun shouldFetch(data: PostDetail?) = true
 
-            override fun loadFromDb(): LiveData<Post> {
-                return groupDao.loadPost(postId)
-            }
+            override fun loadFromDb() = groupDao.loadPost(postId).map { it.asExternalModel() }
 
-            override fun createCall(): LiveData<ApiResponse<Post>> {
-                return doubanService.getGroupPost(postId)
-            }
+            override fun createCall() =
+                doubanService.getGroupPost(postId)
         }.asLiveData()
     }
 
     fun getPostComments(postId: String): LiveData<Resource<PostComments>> {
-        return object : NetworkBoundResource<PostComments, PostCommentsResponse>(appExecutors) {
-            override fun saveCallResult(item: PostCommentsResponse) {
-                for (comment in item.items) {
-                    comment.postId = postId
-                }
-                for (comment in item.topComments!!) {
-                    comment.postId = postId
-                }
-                val topCommentIds = item.topCommentIds
-                val topCommentsResult = PostTopComments(
-                    postId, topCommentIds
-                )
-                val commentIds = item.items.map { it.id }
+        return object : NetworkBoundResource<PostComments, NetworkPostComments>(appExecutors) {
+            override fun saveCallResult(item: NetworkPostComments) {
+                val topIds = item.topComments.map(NetworkPostComment::id)
+                val allIds = item.allComments.map(NetworkPostComment::id)
                 val commentsResult = PostCommentsResult(
-                    postId, commentIds, item.total, item.nextPageStart
+                    postId, topIds, allIds, item.total, item.nextPageStart
                 )
+                val allComments = item.allComments.map { it.asEntity(postId) }
+                val topComments = item.topComments.map { it.asEntity(postId) }
+                val repliedToComments = (item.items + item.topComments).mapNotNull(
+                    NetworkPostComment::repliedTo)
+                    .map { it.asEntity(postId) }
+                val comments = (allComments + topComments + repliedToComments).distinctBy(
+                    PostCommentEntity::id)
+                val allCommentsAuthors = item.items.map { it.author.asEntity() }
+                val topCommentsAuthors = item.topComments.map { it.author.asEntity() }
+                val repliedToAuthors = (item.items + item.topComments).mapNotNull { it.repliedTo }
+                    .map { it.author.asEntity() }
+                val authors =
+                    (allCommentsAuthors + topCommentsAuthors + repliedToAuthors).distinctBy(
+                        UserEntity::id)
                 appDatabase.runInTransaction {
-                    groupDao.insertPostComments(item.items)
-                    groupDao.insertPostComments(item.topComments)
+                    groupDao.insertPostComments(comments)
                     groupDao.insertPostCommentsResult(commentsResult)
-                    groupDao.insertPostTopComments(topCommentsResult)
+                    userDao.insertUsers(authors)
                 }
             }
 
-            override fun shouldFetch(data: PostComments?): Boolean {
-                return true
-            }
+            override fun shouldFetch(data: PostComments?) = true
 
             override fun loadFromDb(): LiveData<PostComments> {
-                val allComments = Transformations.switchMap(
-                    groupDao.getPostComments(postId)
-                ) { data ->
+                return groupDao.getPostComments(postId).switchMap { data ->
                     if (data == null) {
-                        object : LiveData<List<PostComment>?>(null) {}
+                        object : LiveData<PostComments>(null) {}
                     } else {
-                        groupDao.loadOrderedComments(data.ids)
+                        val allComments = groupDao.loadOrderedComments(data.allIds)
+                            .map { it.map(PopulatedPostComment::asExternalModel) }
+                        val topComments = groupDao.loadOrderedComments(data.topIds).map {
+                            it.map(PopulatedPostComment::asExternalModel)
+                        }
+                        topComments.combine(allComments) { t, a ->
+                            PostComments(t, a)
+                        }
                     }
-                }
-                val topComments = Transformations.switchMap(
-                    groupDao.loadPostTopComments(postId)
-                ) { data ->
-                    if (data == null) {
-                        object : LiveData<List<PostComment>>(null) {}
-                    } else {
-                        groupDao.loadOrderedComments(data.commentIds)
-                    }
-                }
-                return Transformations.switchMap(topComments) { input1: List<PostComment>? ->
-                    Transformations.map(
-                        allComments
-                    ) { input2: List<PostComment>? -> PostComments(input1, input2) }
                 }
             }
 
-            override fun createCall(): LiveData<ApiResponse<PostCommentsResponse>> {
-                return doubanService.getPostComments(postId, Constants.RESULT_POSTS_COUNT)
-            }
+            override fun createCall() =
+                doubanService.getPostComments(postId, RESULT_COMMENTS_COUNT)
         }.asLiveData()
     }
 
     fun getNextPagePostComments(postId: String): LiveData<Resource<Boolean>?> {
-        val fetchNextPageTask: FetchNextPageTask<PostComment, PostCommentsResult, PostCommentsResponse> =
-            object : FetchNextPageTask<PostComment, PostCommentsResult, PostCommentsResponse>(
-                doubanService, appDatabase
-            ) {
-                override fun loadFromDb(): PostCommentsResult {
-                    return appDatabase.groupDao().findPostComments(postId)!!
-                }
+        val fetchNextPageTask: FetchNextPageTask<PostCommentsResult, NetworkPostComments> =
+            object :
+                FetchNextPageTask<PostCommentsResult, NetworkPostComments>(
+                    doubanService, appDatabase
+                ) {
+                override fun loadCurrentFromDb() = groupDao.findPostComments(postId)
 
-                override fun createCall(nextPageStart: Int?): Call<PostCommentsResponse> {
-                    return doubanService.getPostComments(
-                        postId, nextPageStart!!, Constants.RESULT_COMMENTS_COUNT
+                override fun createCall(nextPageStart: Int?) =
+                    doubanService.getPostComments(
+                        postId, nextPageStart!!, RESULT_COMMENTS_COUNT
                     )
-                }
 
-                override fun saveMergedResult(item: PostCommentsResult, items: List<PostComment>) {
-                    for (comment in items) {
-                        comment.postId = postId
+                override fun mergeAndSaveCallResult(
+                    current: PostCommentsResult,
+                    item: NetworkPostComments,
+                ) {
+                    val topCommentIds =
+                        current.topIds + item.topComments.map(NetworkPostComment::id)
+                    val allCommentIds =
+                        current.allIds + item.items.map(NetworkPostComment::id)
+                    val merged = PostCommentsResult(
+                        postId,
+                        topCommentIds,
+                        allCommentIds,
+                        item.total,
+                        item.nextPageStart
+                    )
+                    val allComments = item.items.map { it.asEntity(postId) }
+                    val topComments = item.topComments.map { it.asEntity(postId) }
+                    val repliedToComments =
+                        (item.items + item.topComments).mapNotNull(
+                            NetworkPostComment::repliedTo)
+                            .map { it.asEntity(postId) }
+                    val allCommentsAuthors = item.items.map { it.author.asEntity() }
+                    val topCommentsAuthors = item.topComments.map { it.author.asEntity() }
+                    val repliedToAuthors =
+                        (item.items + item.topComments).mapNotNull { it.repliedTo }
+                            .map { it.author.asEntity() }
+                    val authors =
+                        (allCommentsAuthors + topCommentsAuthors + repliedToAuthors).distinctBy(
+                            UserEntity::id)
+                    appDatabase.runInTransaction {
+                        groupDao.insertPostCommentsResult(merged)
+                        groupDao.insertPostComments(allComments + topComments + repliedToComments)
+                        userDao.insertUsers(authors)
                     }
-                    appDatabase.groupDao().insertPostCommentsResult(item)
-                    appDatabase.groupDao().insertPostComments(items)
                 }
 
-                override fun merge(
-                    ids: List<String>, current: PostCommentsResult, total: Int, nextPageStart: Int?
-                ): PostCommentsResult {
-                    return PostCommentsResult(
-                        postId, ids, total, nextPageStart
-                    )
-                }
 
             }
         appExecutors.networkIO().execute(fetchNextPageTask)
-        return fetchNextPageTask.getLiveData()
+        return fetchNextPageTask.liveData
     }
 
     private fun getPostSortByRequestParam(postSortBy: PostSortBy): SortByRequestParam {
@@ -449,76 +459,75 @@ class GroupRepository private constructor(
         }
     }
 
-    fun getGroupRecommendation(type: GroupRecommendationType): LiveData<Resource<List<RecommendedGroup>>> {
-        return object : NetworkBoundResource<List<RecommendedGroup>, RecommendedGroupsResponse>(
-            appExecutors
-        ) {
-            override fun saveCallResult(item: RecommendedGroupsResponse) {
-                val groups: MutableList<GroupItem> = ArrayList()
-                val posts: MutableList<PostItem> = ArrayList()
-                val recommendedGroupResults: MutableList<RecommendedGroupResult?> = ArrayList()
-                var no = 1
-                for (groupItem in item.items) {
-                    groups.add(groupItem.group)
-                    posts.add(groupItem.posts[0])
-                    recommendedGroupResults.add(
-                        RecommendedGroupResult(
-                            no++, groupItem.group.id, groupItem.posts[0].id, 0
-                        )
-                    )
+    fun getGroupRecommendation(type: GroupRecommendationType): LiveData<Resource<List<RecommendedGroupItem>>> {
+        return object :
+            NetworkBoundResource<List<RecommendedGroupItem>, NetworkRecommendedGroups>(
+                appExecutors
+            ) {
+            override fun saveCallResult(item: NetworkRecommendedGroups) {
+                val recommendedGroupItemGroups =
+                    item.items.map { it.group.asPartialEntity() }
+                val recommendedGroups = item.items.mapIndexed { index, recommendedGroupApiModel ->
+                    recommendedGroupApiModel.asEntity(type,
+                        index + 1)
                 }
+                val posts = item.items.flatMap { g ->
+                    g.posts.map { p -> p.asPartialEntity(g.group.id) }
+                }
+                val postIds =
+                    item.items.flatMap { it.posts.map(NetworkPostItem::id) }
+                val postTagCrossRefs =
+                    item.items.flatMap { it.posts.map(NetworkPostItem::tagCrossRefs) }
+                        .flatten()
+                val postsAuthors =
+                    item.items.flatMap { g -> g.posts.map { p -> p.author.asEntity() } }
+                        .distinctBy(UserEntity::id)
+                val recommendedGroupsResult = RecommendedGroupsResult(
+                    type, item.items.map { it.group.id }
+                )
+                val recommendedGroupPostRefs =
+                    item.items.flatMap(NetworkRecommendedGroup::postRefs)
                 appDatabase.runInTransaction {
-                    groupDao.upsertGroups(groups)
+                    groupDao.upsertRecommendedGroupItemGroups(recommendedGroupItemGroups)
+                    groupDao.upsertRecommendedGroups(recommendedGroups)
                     groupDao.upsertPosts(posts)
-                    val ids = groupDao.upsertRecommendedGroups(recommendedGroupResults)
-                    val recommendedGroupsResult = RecommendedGroupsResult(
-                        type, ids
-                    )
+                    groupDao.deletePostTagCrossRefsByPostIds(postIds)
+                    groupDao.insertPostTagCrossRefs(postTagCrossRefs)
+                    userDao.insertUsers(postsAuthors)
                     groupDao.insertRecommendedGroupsResult(recommendedGroupsResult)
+                    groupDao.insertRecommendedGroupPosts(recommendedGroupPostRefs)
                 }
             }
 
-            override fun shouldFetch(data: List<RecommendedGroup>?): Boolean {
-                return true
-            }
 
-            override fun loadFromDb(): LiveData<List<RecommendedGroup>> {
-                return Transformations.switchMap(
-                    groupDao.getRecommendedGroups(type)
-                ) { data: RecommendedGroupsResult? ->
+            override fun shouldFetch(data: List<RecommendedGroupItem>?) = true
+
+            override fun loadFromDb(): LiveData<List<RecommendedGroupItem>> {
+                return groupDao.getRecommendedGroups(type).switchMap { data ->
                     if (data == null) {
-                        return@switchMap object : LiveData<List<RecommendedGroup>?>(null) {}
+                        object : LiveData<List<RecommendedGroupItem>>(null) {}
                     } else {
-                        return@switchMap groupDao.loadRecommendedGroupsByIds(data.ids)
+                        groupDao.loadRecommendedGroupsByIds(data.ids).map {
+                            it.map(PopulatedRecommendedGroup::asExternalModel)
+                        }
                     }
                 }
             }
 
-            override fun createCall(): LiveData<ApiResponse<RecommendedGroupsResponse>> {
-                return doubanService.getGroupsOfTheDay()
-            }
+            override fun createCall() = doubanService.getGroupsOfTheDay()
         }.asLiveData()
     }
 
-    private fun processPostsResponse(
-        postSortBy: PostSortBy,
-        response: ApiResponse<PostsResponse>
-    ): PostsResponse {
-        return with(response.body!!) {
-            if (postSortBy != PostSortBy.NEW) this
-            else PostsResponse(start, count, total, items.sortedByDescending { it.created })
-        }
-    }
 
     companion object {
+        @Volatile
         private var instance: GroupRepository? = null
 
-        @JvmStatic
         fun getInstance(
-            appExecutors: AppExecutors, appDatabase: AppDatabase, doubanService: DoubanService
+            appExecutors: AppExecutors, appDatabase: AppDatabase, doubanService: DoubanService,
         ): GroupRepository? {
             if (instance == null) {
-                synchronized(GroupRepository::class.java) {
+                synchronized(this) {
                     if (instance == null) {
                         instance = GroupRepository(appExecutors, appDatabase, doubanService)
                     }
@@ -529,3 +538,7 @@ class GroupRepository private constructor(
     }
 
 }
+
+
+
+

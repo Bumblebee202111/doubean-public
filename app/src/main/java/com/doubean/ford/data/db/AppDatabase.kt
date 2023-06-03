@@ -6,15 +6,32 @@ import androidx.room.Room.databaseBuilder
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.doubean.ford.data.vo.*
+import com.doubean.ford.data.db.model.*
 import com.doubean.ford.util.AppExecutors
-import com.doubean.ford.util.Constants
+import com.doubean.ford.util.DATABASE_NAME
 
 /**
  * The Room database for this app
  */
 @Database(
-    entities = [Group::class, Post::class, GroupFollow::class, GroupSearchResult::class, GroupPostsResult::class, GroupTagPostsResult::class, PostComment::class, PostCommentsResult::class, PostTopComments::class, RecommendedGroupsResult::class, RecommendedGroupResult::class],
+    entities = [
+        GroupEntity::class,
+        PostEntity::class,
+        GroupTabEntity::class,
+        GroupPostTagEntity::class,
+        GroupSearchResult::class,
+        GroupPostsResult::class,
+        GroupTagPostsResult::class,
+        PostCommentEntity::class,
+        PostCommentsResult::class,
+        RecommendedGroupsResult::class,
+        RecommendedGroupEntity::class,
+        RecommendedGroupPost::class,
+        PostTagCrossRef::class,
+        UserEntity::class,
+        FollowedGroupEntity::class,
+        FollowedGroupTabEntity::class,
+    ],
     version = 1,
     exportSchema = false
 )
@@ -23,15 +40,15 @@ import com.doubean.ford.util.Constants
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun groupDao(): GroupDao
-    abstract fun groupFollowsAndSavesDao(): GroupFollowsAndSavesDao
+    abstract fun userDao(): UserDao
+    abstract fun groupFollowsAndSavesDao(): UserGroupDao
 
     companion object {
         @Volatile
         private var instance: AppDatabase? = null
-        @JvmStatic
         fun getInstance(context: Context): AppDatabase? {
             if (instance == null) {
-                synchronized(AppDatabase::class.java) { instance = buildDatabase(context) }
+                synchronized(this) { instance = buildDatabase(context) }
             }
             return instance
         }
@@ -44,7 +61,7 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         private fun buildDatabase(context: Context): AppDatabase {
-            return databaseBuilder(context, AppDatabase::class.java, Constants.DATABASE_NAME)
+            return databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
                 .addCallback(sRoomDatabaseCallback)
                 .build()
         }

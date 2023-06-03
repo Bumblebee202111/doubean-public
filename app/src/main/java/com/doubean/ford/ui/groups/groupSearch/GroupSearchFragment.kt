@@ -10,38 +10,39 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.doubean.ford.adapters.GroupAdapter
-import com.doubean.ford.data.vo.GroupItem
-import com.doubean.ford.data.vo.Resource
 import com.doubean.ford.databinding.FragmentGroupSearchBinding
-import com.doubean.ford.ui.common.LoadMoreState
 import com.doubean.ford.ui.common.RetryCallback
 import com.doubean.ford.util.InjectorUtils
 import com.doubean.ford.util.SpanCountCalculator
+import com.doubean.ford.util.showSnackbar
 import com.google.android.material.snackbar.Snackbar
 
 class GroupSearchFragment : Fragment() {
-    lateinit var groupSearchViewModel: GroupSearchViewModel
+    private val groupSearchViewModel: GroupSearchViewModel by viewModels {
+        InjectorUtils.provideGroupSearchViewModelFactory(requireContext())
+    }
     lateinit var binding: FragmentGroupSearchBinding
-    private lateinit var adapter: GroupAdapter
+    private lateinit var adapter: SearchResultGroupAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
-        binding = FragmentGroupSearchBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        val factory: GroupSearchViewModelFactory =
-            InjectorUtils.provideGroupSearchViewModelFactory(requireContext())
-        groupSearchViewModel = ViewModelProvider(this, factory)[GroupSearchViewModel::class.java]
+        binding = FragmentGroupSearchBinding.inflate(inflater, container, false).apply {
+            lifecycleOwner = viewLifecycleOwner
+        }
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
-        adapter = GroupAdapter()
+        adapter = SearchResultGroupAdapter()
         binding.groupList.adapter = adapter
-        val spanCount: Int = SpanCountCalculator.getSpanCount(requireContext(), 500)
+        val spanCount = SpanCountCalculator.getSpanCount(requireContext(), 500)
         binding.groupList.layoutManager =
             StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL)
         binding.groupList.addItemDecoration(
@@ -58,7 +59,6 @@ class GroupSearchFragment : Fragment() {
             }
         }
         binding.swiperefresh.setOnRefreshListener { groupSearchViewModel.refreshResults() }
-        return binding.root
     }
 
     private fun initSearchInputListener() {
@@ -98,7 +98,7 @@ class GroupSearchFragment : Fragment() {
             }
         })
         groupSearchViewModel.results
-            .observe(viewLifecycleOwner) { result: Resource<List<GroupItem?>?>? ->
+            .observe(viewLifecycleOwner) { result ->
                 binding.searchResource = result
                 binding.resultCount =
                     if (result?.data == null) 0 else result.data.size
@@ -106,14 +106,14 @@ class GroupSearchFragment : Fragment() {
                 if (result != null) binding.swiperefresh.isRefreshing = false
             }
         groupSearchViewModel.loadMoreStatus
-            .observe(viewLifecycleOwner) { loadingMore: LoadMoreState? ->
+            .observe(viewLifecycleOwner) { loadingMore ->
                 if (loadingMore == null) {
                     binding.loadingMore = false
                 } else {
                     binding.loadingMore = loadingMore.isRunning
-                    val error: String? = loadingMore.errorMessageIfNotHandled
+                    val error = loadingMore.errorMessageIfNotHandled
                     if (error != null) {
-                        Snackbar.make(binding.loadMoreBar, error, Snackbar.LENGTH_LONG).show()
+                        binding.loadMoreBar.showSnackbar(error, Snackbar.LENGTH_LONG)
                     }
                 }
                 binding.executePendingBindings()
@@ -121,7 +121,7 @@ class GroupSearchFragment : Fragment() {
     }
 
     private fun dismissKeyboard(windowToken: IBinder) {
-        val activity: FragmentActivity? = activity
+        val activity = activity
         if (activity != null) {
             val imm = activity.getSystemService(
                 Context.INPUT_METHOD_SERVICE

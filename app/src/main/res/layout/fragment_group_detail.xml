@@ -9,7 +9,7 @@
 
         <variable
             name="group"
-            type="com.doubean.ford.data.vo.GroupDetail" />
+            type="com.doubean.ford.model.GroupDetail" />
 
         <variable
             name="viewModel"

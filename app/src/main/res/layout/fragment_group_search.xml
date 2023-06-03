@@ -5,13 +5,13 @@
 
     <data>
 
-        <import type="com.doubean.ford.data.vo.GroupItem" />
+        <import type="com.doubean.ford.api.model.NetworkGroupSearchResultGroupItem" />
 
         <import type="java.util.List" />
 
-        <import type="com.doubean.ford.data.vo.Status" />
+        <import type="com.doubean.ford.model.Status" />
 
-        <import type="com.doubean.ford.data.vo.Resource" />
+        <import type="com.doubean.ford.model.Resource" />
 
         <variable
             name="searchResource"

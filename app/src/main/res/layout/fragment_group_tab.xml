@@ -9,13 +9,11 @@
             name="viewModel"
             type="com.doubean.ford.ui.groups.groupTab.GroupTabViewModel" />
 
-        <import type="com.doubean.ford.data.vo.PostItem" />
-
         <import type="java.util.List" />
 
-        <import type="com.doubean.ford.data.vo.Status" />
+        <import type="com.doubean.ford.model.Status" />
 
-        <import type="com.doubean.ford.data.vo.Resource" />
+        <import type="com.doubean.ford.model.Resource" />
 
         <variable
             name="findResource"

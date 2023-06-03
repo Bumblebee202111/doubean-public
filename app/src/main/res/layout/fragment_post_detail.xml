@@ -5,17 +5,15 @@
 
     <data>
 
-        <import type="com.doubean.ford.util.DateTimeUtil" />
-
         <import type="com.doubean.ford.util.DateTimeStyle" />
 
-        <import type="com.doubean.ford.data.vo.PostComment" />
+        <import type="com.doubean.ford.model.PostComment" />
 
         <import type="java.util.List" />
 
-        <import type="com.doubean.ford.data.vo.Status" />
+        <import type="com.doubean.ford.model.Status" />
 
-        <import type="com.doubean.ford.data.vo.Resource" />
+        <import type="com.doubean.ford.model.Resource" />
 
         <variable
             name="viewModel"
@@ -158,7 +156,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/margin_small"
                         android:layout_marginTop="@dimen/margin_extra_small"
-                        android:text="@{DateTimeUtil.dateTimeText(viewModel.post.data.created,DateTimeStyle.LONG)}"
+                        app:dateTime="@{viewModel.post.data.created}"
+                        app:dateTimeStyle="@{DateTimeStyle.Long}"
                         app:layout_constraintStart_toEndOf="@id/author_avatar"
                         app:layout_constraintTop_toBottomOf="@id/author_name"
                         tools:text="1999" />
@@ -179,12 +178,12 @@
                     <com.google.android.material.chip.Chip
                         android:id="@+id/post_tag"
                         style="@style/Widget.MaterialComponents.Chip.Action"
-                        isGone="@{viewModel.post.data.tagId==null}"
+                        isGone="@{viewModel.post.data.tags.empty}"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/margin_normal"
                         android:layout_marginTop="@dimen/margin_small"
-                        android:text="@{viewModel.post.data.tagName}"
+                        android:text="@{viewModel.post.data.tag.name}"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/post_title"
                         tools:text="标签tag" />

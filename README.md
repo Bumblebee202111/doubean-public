@@ -87,12 +87,12 @@ groups is finally added by them.
   authoritative third party libraries | | Architecture | MVVM | | Design philosophy | Android
   Jetpack |
 
-* Support for viewing content in Douban WebView optimized for mobile reading
-* Support for loading cache as alternative when connection is off
+* Support for loading cache as alternative even when connection is off
 * Ad-free, lite \(~4MB\)
 * Support URL deep links
 * Basic support for MD \(dark theme included\) and tablets/landscape
 * Bilingual UI strings support
+* Support for viewing content in Douban WebView optimized for mobile reading \(in progress\)
 * Paging & swipe refresh support
 * Support creating categories consisting of group/tab/search posts by multiple user-defined
   conditions \(TODO\)
@@ -159,25 +159,27 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
 #### To-dos for next release \(0.4.2\)
 
-* Optimize architecture by studying NiA/iosched/Sunflower/GithubBrowserSample, adopt more Kotlin
-  sugar/Flows/Coroutines
-  * Rearrange packages, prepare \(add empty directories etc\) for modules \(feature-wise, not
-    modules in "multi-modules"\) of books and movies
-  * Distinguish among `XApiModel` \(`NetworkX`\), `XEntity` and `X` \(external model\)
-  * Extract methods from large blocks of code in fragments
-  * Fix the disastrous implementation of the "follow" feature
-    * 🛠 It's ugly & buggy now
-    * Still store follow data in Room instead of data stores
-  * \[Data layer\] Migrate to Kotlin Flow \(for data layer only!\)
+* Keep learning from iosched/architecture-samples-views/sunflower-views/NiA/GithubBrowserSample/docs
+  * Introduce Coroutines
+  * \[Data layer\] Migrate to Kotlin Flow \(for data layer only, like sunflower-views\)
   * Migrate GithubBrowserSample's way of paging to Paging3 + Coroutine + LiveData/
-  * Add very basic testing if possible
   * ...
+* Remove sensitive files from VC
+* Fix arg "room.schemaLocation" for kapt although it is currently not used
 
 #### Future plans
 
+* Notifications by pulling
+* Refactor Resource to sealed Result, parse it in ViewModels \(like iosched, architecture-samples)\
+* Add very basic testing if possible
+* Learn about RecycledViewPool and use it if necessary
+* Use modern form of manual di
+* Use the nullable "edit_time" property of network posts
+* \[Build\] Migrate to KSP
+* \[Books\] Add T250
+* \[Movies\] Add T250
 * \[SettingsFragment\] Add WebView enabled by default preference, nav start destination etc with
   DataStore
-* SnackbarUtils from todo app
 * \[SearchFragment\]GroupSearchFragment -> SearchFragment / Search group/tab posts (in-group) /
   Search posts of all groups (global)
 * \[PostDetailFragment\]Save WebView images
@@ -207,11 +209,11 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
     submitted by LiveData
   * Try to ask ChatGPT for help
   * It is really annoying \(SEE the anecdote\)
-* Notifications and push services \(delayed in consideration of its difficulty and unimportance\)
 * Allow another option of using Twitter-like date formatting
 * Widgets
 * Other modules, e.g., books, movies
 * Login-based features \(if possible\)
+
 * 🛠 Views on top of WebView become invisible after scroll on my MIUI 10 Android 8.1 device \(causes
   unknown, may never be fixed\)
 * \[Lists\]Post order: custom rules based on multiple factors
@@ -341,7 +343,6 @@ Hence, the issue had obsessed me for months and discouraged me to continue the d
    conclusion: GroupDetailActivity + FragmentStatePagerAdapter + Intent/Bundle\)
 
 I repeated these steps on version 7 & 8, only to find that the ugly and lengthy code is still almost
-unchanged. It really surprised me. What I should do: pass tab info to the constructor / newInstance
-method / Bundle of a tab/page Fragment so it is always known to the tab. In my opinion, loading of
-tab info should happen \(be implemented\) inside the GroupDetailFragment \(autonomy\). Till now, I
-still haven't find an elegant solution to it.
+unchanged. It really surprised me. In early July, after weeks of architecture optimization, I solved
+it by attaching adapter only when data is ready, and used an Event wrapper to set the default
+position \(which would soon be replaced by a Coroutine method\) .

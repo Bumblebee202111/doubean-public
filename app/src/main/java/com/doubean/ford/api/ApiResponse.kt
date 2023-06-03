@@ -15,48 +15,46 @@
  */
 package com.doubean.ford.api
 
-import android.util.Log
 import retrofit2.Response
-import java.io.IOException
 
 /**
  * Common class used by API responses.
- *
- * @param <T>
+ * @param <T> the type of the response object
 </T> */
-class ApiResponse<T> {
-    val code: Int
-    val body: T?
-    val errorMessage: String?
+sealed class ApiResponse<T> {
+    companion object {
+        fun <T> create(error: Throwable): ApiErrorResponse<T> {
+            return ApiErrorResponse(error.message ?: "unknown error")
+        }
 
-    constructor(error: Throwable) {
-        code = 500
-        body = null
-        errorMessage = error.message
-    }
-
-    constructor(response: Response<T>) {
-        code = response.code()
-        if (response.isSuccessful) {
-            body = response.body()
-            errorMessage = null
-        } else {
-            var message: String? = null
-            if (response.errorBody() != null) {
-                try {
-                    message = response.errorBody()!!.string()
-                } catch (ignored: IOException) {
-                    Log.e(ignored.toString(), "error while parsing response")
+        fun <T> create(response: Response<T>): ApiResponse<T> {
+            return if (response.isSuccessful) {
+                val body = response.body()
+                if (body == null || response.code() == 204) {
+                    ApiEmptyResponse()
+                } else {
+                    ApiSuccessResponse(body)
                 }
+            } else {
+                val msg = response.errorBody()?.string()
+                val errorMsg = if (msg.isNullOrEmpty()) {
+                    response.message()
+                } else {
+                    msg
+                }
+                ApiErrorResponse(errorMsg ?: "unknown error")
             }
-            if (message == null || message.trim { it <= ' ' }.isEmpty()) {
-                message = response.message()
-            }
-            errorMessage = message
-            body = null
         }
     }
-
-    val isSuccessful: Boolean
-        get() = code >= 200 && code < 300
 }
+
+/**
+ * separate class for HTTP 204 responses so that we can make ApiSuccessResponse's body non-null.
+ */
+class ApiEmptyResponse<T> : ApiResponse<T>()
+
+data class ApiSuccessResponse<T>(
+    val body: T,
+) : ApiResponse<T>()
+
+data class ApiErrorResponse<T>(val errorMessage: String) : ApiResponse<T>()

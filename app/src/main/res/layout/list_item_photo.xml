@@ -7,7 +7,7 @@
 
         <variable
             name="photo"
-            type="com.doubean.ford.data.vo.SizedPhoto" />
+            type="com.doubean.ford.model.SizedPhoto" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

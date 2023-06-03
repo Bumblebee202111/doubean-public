@@ -1,34 +1,37 @@
 package com.doubean.ford.data.db
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import androidx.room.*
-import com.doubean.ford.data.vo.*
+import com.doubean.ford.data.db.model.*
+import com.doubean.ford.model.GroupRecommendationType
+import com.doubean.ford.model.PostSortBy
 
 /**
- * The Data Access Object for the [Group] class.
+ * The Data Access Object for Group related operations.
  */
 @Dao
 interface GroupDao {
+    @Transaction
     @Query(value = "SELECT * FROM groups WHERE id = :groupId")
     @RewriteQueriesToDropUnusedColumns
-    fun loadDetail(groupId: String): LiveData<GroupDetail>
+    fun loadGroupDetail(groupId: String): LiveData<PopulatedGroupDetail>
 
-    @Upsert(entity = Group::class)
+    @Upsert(entity = GroupEntity::class)
     @RewriteQueriesToDropUnusedColumns
-    fun upsertDetail(group: GroupDetail)
+    fun upsertGroupDetail(group: GroupDetailPartialEntity)
 
-    @Update(entity = Group::class)
+    @Update(entity = GroupEntity::class)
     @RewriteQueriesToDropUnusedColumns
-    fun upsertGroupBrief(group: GroupBrief)
+    fun upsertPostGroup(group: PostGroupPartialEntity)
 
-    @Query("SELECT * FROM groups")
+    @Upsert(entity = GroupEntity::class)
     @RewriteQueriesToDropUnusedColumns
-    fun getGroups(): LiveData<List<GroupItem>>
+    fun upsertSearchResultGroups(groupList: List<GroupSearchResultGroupItemPartialEntity>)
 
-    @Upsert(entity = Group::class)
+    @Upsert(entity = GroupEntity::class)
     @RewriteQueriesToDropUnusedColumns
-    fun upsertGroups(groupList: List<GroupItem>)
+    fun upsertRecommendedGroupItemGroups(groupList: List<RecommendedGroupItemGroupPartialEntity>)
 
     @Query("SELECT * FROM group_search_results WHERE `query` = :query")
     fun search(query: String): LiveData<GroupSearchResult?>
@@ -41,102 +44,86 @@ interface GroupDao {
 
     @Query("SELECT * FROM groups WHERE id IN (:groupIds)")
     @RewriteQueriesToDropUnusedColumns
-    fun loadGroupsById(groupIds: List<String>): LiveData<List<GroupItem>>
+    fun loadSearchResultGroupsById(groupIds: List<String>): LiveData<List<GroupSearchResultGroupItemPartialEntity>>
 
-    fun loadOrderedGroups(
+    fun loadOrderedSearchResultGroups(
         groupIds: List<String>,
-        c: Comparator<GroupItem>? = null
-    ): LiveData<List<GroupItem>> {
-        return Transformations.map(loadGroupsById(groupIds)) { groups ->
-            if (c == null) {
-                groups.sortedWith(compareBy { o: GroupItem -> groupIds.indexOf(o.id) })
-            } else groups.sortedWith(c)
-            groups
-        }
+        c: Comparator<GroupSearchResultGroupItemPartialEntity>? = null,
+    ) = this.loadSearchResultGroupsById(groupIds).map { groups ->
+        if (c == null) {
+            groups.sortedWith(compareBy { o -> groupIds.indexOf(o.id) })
+        } else groups.sortedWith(c)
+        groups
     }
 
-    /* Posts-related operations start */
-    @Query("SELECT * FROM posts WHERE groupId = :groupId ORDER BY created DESC")
-    @RewriteQueriesToDropUnusedColumns
-    fun loadGroupPosts(groupId: String): LiveData<List<PostItem>>
-
-    @Query("SELECT * FROM posts WHERE groupId = :groupId AND tagId=:tagId ORDER BY created DESC")
-    @RewriteQueriesToDropUnusedColumns
-    fun loadGroupTagPosts(groupId: String, tagId: String): LiveData<List<PostItem>>
-
+    @Transaction
     @Query("SELECT * FROM posts WHERE id IN (:postIds)")
     @RewriteQueriesToDropUnusedColumns
-    fun loadPostsById(postIds: List<String>): LiveData<List<PostItem>>
-    fun loadPosts(postIds: List<String>): LiveData<List<PostItem>> {
-        return Transformations.map(loadPostsById(postIds)) { posts ->
-            posts.sortedWith(compareBy { o: PostItem -> postIds.indexOf(o.id) })
-        }
+    fun loadPostsById(postIds: List<String>): LiveData<List<PopulatedPostItem>>
+
+    fun loadPosts(postIds: List<String>) = loadPostsById(postIds).map { posts ->
+        posts.sortedWith(compareBy { o -> postIds.indexOf(o.partialEntity.id) })
     }
 
-    @Query("SELECT * FROM GroupPostsResult WHERE groupId = :groupId AND sortBy = :sortBy")
+
+    @Query("SELECT * FROM GroupPostsResult WHERE group_id = :groupId AND sort_by = :sortBy")
     @RewriteQueriesToDropUnusedColumns
     fun getGroupPosts(groupId: String, sortBy: PostSortBy): LiveData<GroupPostsResult?>
 
-    @Query("SELECT * FROM GroupPostsResult WHERE groupId = :groupId AND sortBy = :sortBy")
+    @Query("SELECT * FROM GroupPostsResult WHERE group_id = :groupId AND sort_by = :sortBy")
     @RewriteQueriesToDropUnusedColumns
     fun findGroupPosts(groupId: String, sortBy: PostSortBy): GroupPostsResult?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertGroupPostsResult(groupPostsResult: GroupPostsResult?)
 
-    @Query("SELECT * FROM group_tag_posts_results WHERE groupId = :groupId AND tagId=:tagId AND sortBy = :sortBy")
+    @Query("SELECT * FROM group_tag_posts_results WHERE group_id = :groupId AND tag_id=:tagId AND sort_by = :sortBy")
     @RewriteQueriesToDropUnusedColumns
     fun getGroupTagPosts(
         groupId: String,
         tagId: String,
-        sortBy: PostSortBy
+        sortBy: PostSortBy,
     ): LiveData<GroupTagPostsResult?>
 
-    @Query("SELECT * FROM group_tag_posts_results WHERE groupId = :groupId AND tagId=:tagId AND sortBy = :sortBy")
+    @Query("SELECT * FROM group_tag_posts_results WHERE group_id = :groupId AND tag_id=:tagId AND sort_by = :sortBy")
     @RewriteQueriesToDropUnusedColumns
     fun findGroupTagPosts(
         groupId: String,
         tagId: String,
-        sortBy: PostSortBy
+        sortBy: PostSortBy,
     ): GroupTagPostsResult?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertGroupTagPostsResult(groupTagPostsResult: GroupTagPostsResult?)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPost(post: Post)
+    @Insert(entity = PostEntity::class, onConflict = OnConflictStrategy.REPLACE)
+    fun insertPostDetail(post: PostDetailPartialEntity)
 
-    @Upsert(entity = Post::class)
+    @Upsert(entity = PostEntity::class)
     @RewriteQueriesToDropUnusedColumns
-    fun upsertPosts(List: List<PostItem>)
+    fun upsertPosts(posts: List<PostItemPartialEntity>)
 
+    @Transaction
     @Query("SELECT * FROM posts WHERE id=:postId")
-    fun loadPost(postId: String): LiveData<Post>
-
-    @Query("SELECT * FROM post_top_comments WHERE postId = :postId")
-    fun loadPostTopComments(postId: String): LiveData<PostTopComments?>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPostTopComments(topComments: PostTopComments?)
+    fun loadPost(postId: String): LiveData<PopulatedPostDetail>
 
     fun loadOrderedComments(
         commentIds: List<String>,
-        c: Comparator<PostComment>? = null
-    ): LiveData<List<PostComment>>? {
-        return Transformations.map(
-            loadCommentsById(commentIds)
-        ) { comments ->
+        c: Comparator<PopulatedPostComment>? = null,
+    ): LiveData<List<PopulatedPostComment>> {
+        return loadCommentsById(commentIds).map { comments ->
             if (c != null) comments.sortedWith(c) else comments.sortedWith(
-                compareBy { o: PostComment -> commentIds.indexOf(o.id) })
+                compareBy { o -> commentIds.indexOf(o.entity.id) })
             comments
         }
     }
 
+    @Transaction
     @Query("SELECT * FROM post_comments WHERE id IN (:commentIds)")
-    fun loadCommentsById(commentIds: List<String>): LiveData<List<PostComment>>
+    fun loadCommentsById(commentIds: List<String>): LiveData<List<PopulatedPostComment>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPostComments(comments: List<PostComment>)
+    fun insertPostComments(comments: List<PostCommentEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPostCommentsResult(postCommentsResult: PostCommentsResult?)
@@ -147,17 +134,38 @@ interface GroupDao {
     @Query("SELECT * FROM post_comments_results WHERE postId=:postId")
     fun findPostComments(postId: String): PostCommentsResult?
 
-    @Query("SELECT * FROM recommended_groups_result WHERE type=:type")
+    @Query("SELECT * FROM recommended_groups_results WHERE recommendation_type=:type")
     fun getRecommendedGroups(type: GroupRecommendationType): LiveData<RecommendedGroupsResult?>
 
-    @Upsert(entity = RecommendedGroupResult::class)
-    fun upsertRecommendedGroups(recommendedGroupResults: List<RecommendedGroupResult?>): List<Long>
+    @Upsert(entity = RecommendedGroupEntity::class)
+    fun upsertRecommendedGroups(recommendedGroupEntities: List<RecommendedGroupEntity?>): List<Long>
 
     @Transaction
-    @Query("SELECT * FROM recommended_groups_results WHERE id IN (:ids)")
+    @Query("SELECT * FROM recommended_groups WHERE group_id IN (:ids)")
     @RewriteQueriesToDropUnusedColumns
-    fun loadRecommendedGroupsByIds(ids: List<Long>): LiveData<List<RecommendedGroup>>
+    fun loadRecommendedGroupsByIds(ids: List<String>): LiveData<List<PopulatedRecommendedGroup>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertRecommendedGroupsResult(recommendedGroupsResult: RecommendedGroupsResult?)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertGroupTabs(tabs: List<GroupTabEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertGroupPostTags(postTags: List<GroupPostTagEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertRecommendedGroupPosts(recommendedGroupPosts: List<RecommendedGroupPost>)
+
+    @Query("DELETE FROM recommended_group_posts WHERE group_id IN (:groupIds)")
+    fun deleteRecommendedGroupPostByGroupIds(groupIds: List<String>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertPostTagCrossRefs(postTagCrossRefs: List<PostTagCrossRef>)
+
+    @Query("DELETE FROM posts_tags WHERE post_id =:postId")
+    fun deletePostTagCrossRefsByPostId(postId: String)
+
+    @Query("DELETE FROM posts_tags WHERE post_id IN (:postIds)")
+    fun deletePostTagCrossRefsByPostIds(postIds: List<String>)
 }

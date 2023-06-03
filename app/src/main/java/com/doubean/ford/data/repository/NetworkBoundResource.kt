@@ -20,8 +20,11 @@ import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import com.doubean.ford.api.ApiEmptyResponse
+import com.doubean.ford.api.ApiErrorResponse
 import com.doubean.ford.api.ApiResponse
-import com.doubean.ford.data.vo.Resource
+import com.doubean.ford.api.ApiSuccessResponse
+import com.doubean.ford.model.Resource
 import com.doubean.ford.util.AppExecutors
 
 /**
@@ -33,14 +36,14 @@ import com.doubean.ford.util.AppExecutors
  * @param <ResultType>
  * @param <RequestType>
 </RequestType></ResultType> */
-abstract class NetworkBoundResource<ResultType, RequestType> @MainThread constructor(
-    private val appExecutors: AppExecutors
-) {
+abstract class NetworkBoundResource<ResultType, RequestType>
+@MainThread constructor(private val appExecutors: AppExecutors) {
 
     private val result = MediatorLiveData<Resource<ResultType>>()
 
     init {
         result.value = Resource.loading(null)
+        @Suppress("LeakingThis")
         val dbSource = loadFromDb()
         result.addSource(dbSource) { data ->
             result.removeSource(dbSource)
@@ -64,42 +67,47 @@ abstract class NetworkBoundResource<ResultType, RequestType> @MainThread constru
     private fun fetchFromNetwork(dbSource: LiveData<ResultType>) {
         val apiResponse = createCall()
         // we re-attach dbSource as a new source, it will dispatch its latest value quickly
-        result.addSource(dbSource) { newData -> setValue(Resource.loading(newData)) }
+        result.addSource(dbSource) { newData ->
+            setValue(Resource.loading(newData))
+        }
         result.addSource(apiResponse) { response ->
             result.removeSource(apiResponse)
             result.removeSource(dbSource)
-            if (response.isSuccessful) {
-                appExecutors.diskIO().execute {
-                    saveCallResult(processResponse(response))
-                    appExecutors.mainThread().execute {
-                        // we specially request a new live data,
-                        // otherwise we will get immediately last cached value,
-                        // which may not be updated with latest results received from network.
-                        result.addSource(
-                            loadFromDb()
-                        ) { newData -> setValue(Resource.success(newData)) }
+            when (response) {
+                is ApiSuccessResponse -> {
+                    appExecutors.diskIO().execute {
+                        saveCallResult(response.body)
+                        appExecutors.mainThread().execute {
+                            // we specially request a new live data,
+                            // otherwise we will get immediately last cached value,
+                            // which may not be updated with latest results received from network.
+                            result.addSource(loadFromDb()) { newData ->
+                                setValue(Resource.success(newData))
+                            }
+                        }
                     }
                 }
-            } else {
-                onFetchFailed()
-                result.addSource(dbSource) { newData: ResultType ->
-                    setValue(
-                        Resource.error(response.errorMessage!!, newData)
-                    )
+                is ApiEmptyResponse -> {
+                    appExecutors.mainThread().execute {
+                        // reload from disk whatever we had
+                        result.addSource(loadFromDb()) { newData ->
+                            setValue(Resource.success(newData))
+                        }
+                    }
+                }
+                is ApiErrorResponse -> {
+                    onFetchFailed()
+                    result.addSource(dbSource) { newData ->
+                        setValue(Resource.error(response.errorMessage, newData))
+                    }
                 }
             }
         }
     }
 
     protected open fun onFetchFailed() {}
-    fun asLiveData(): LiveData<Resource<ResultType>> {
-        return result
-    }
 
-    @WorkerThread
-    protected open fun processResponse(response: ApiResponse<RequestType>): RequestType {
-        return response.body!!
-    }
+    fun asLiveData() = result as LiveData<Resource<ResultType>>
 
     @WorkerThread
     protected abstract fun saveCallResult(item: RequestType)

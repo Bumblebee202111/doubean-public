@@ -5,13 +5,11 @@
 
     <data>
 
-        <import type="com.doubean.ford.util.DateTimeUtil" />
-
         <import type="com.doubean.ford.util.DateTimeStyle" />
 
         <variable
             name="post"
-            type="com.doubean.ford.data.vo.PostItem" />
+            type="com.doubean.ford.model.PostItem" />
 
         <variable
             name="clickListener"
@@ -101,7 +99,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:text="@{DateTimeUtil.dateTimeText(post.created,DateTimeStyle.SHORT)}"
+                    app:dateTime="@{post.created}"
+                    app:dateTimeStyle="@{DateTimeStyle.Short}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/created_middle_dot"
@@ -119,8 +118,8 @@
                 app:layout_constraintEnd_toEndOf="@id/first_line"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/first_line"
-                app:postTabName="@{post.tagName}"
-                app:postTitle="@{post.title}"
+                app:groupPostTag="@{post.tag}"
+                app:groupPostTitle="@{post.title}"
                 tools:text="Post title post title post title post title post title post title post title" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -170,7 +169,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_extra_small"
-                    android:text="@{@string/last_updated(DateTimeUtil.dateTimeText(post.lastUpdated,DateTimeStyle.SHORT))}"
+                    app:dateTime="@{post.lastUpdated}"
+                    app:dateTimeStyle="@{DateTimeStyle.Short}"
                     app:isGone="@{post.commentCount==0&amp;&amp;post.created.equals(post.lastUpdated)}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/last_commented_middle_dot"
