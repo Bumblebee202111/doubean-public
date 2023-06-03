@@ -20,10 +20,9 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-
--keep class com.doubean.ford.data.vo.** { *; }
--keep class com.doubean.ford.api.*Response { *; }
--keep class com.doubean.ford.api.*ResponseItem { *; }
+-keep class com.doubean.ford.api.model.** { *; }
+#-keep class com.doubean.ford.data.db.model.** { *; }
+#-keep class com.doubean.ford.model.** { *; }
 
 # Retrofit does reflection on generic parameters. InnerClasses is required to use Signature and
 # EnclosingMethod is required to use InnerClasses.
