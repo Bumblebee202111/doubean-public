@@ -157,15 +157,20 @@ Libraries Used
 
 Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
-#### To-dos for next release \(0.4.2\)
+#### To-dos for current release \(0.4.1\)
 
 * Keep learning from iosched/architecture-samples-views/sunflower-views/NiA/GithubBrowserSample/docs
   * Introduce Coroutines
   * \[Data layer\] Migrate to Kotlin Flow \(for data layer only, like sunflower-views\)
   * Migrate GithubBrowserSample's way of paging to Paging3 + Coroutine + LiveData/
   * ...
-* Remove sensitive files from VC
 * Fix arg "room.schemaLocation" for kapt although it is currently not used
+
+#### To-dos for next release \(0.4.2\)
+
+* Notifications by pulling
+* Refactor Resource to sealed Result, parse it in ViewModels \(like iosched, architecture-samples)\
+* Use the nullable "edit_time" property of network posts
 
 #### Future plans
 
