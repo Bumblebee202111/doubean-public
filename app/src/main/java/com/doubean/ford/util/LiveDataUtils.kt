@@ -2,6 +2,8 @@ package com.doubean.ford.util
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.asFlow
+import kotlinx.coroutines.flow.first
 
 
 object LiveDataUtils {
@@ -80,5 +82,9 @@ object LiveDataUtils {
             }
         }
         return result
+    }
+
+    suspend fun <T> LiveData<T>.first(): T {
+        return this.asFlow().first()
     }
 }

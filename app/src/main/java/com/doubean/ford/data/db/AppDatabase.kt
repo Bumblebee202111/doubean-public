@@ -5,10 +5,11 @@ import androidx.room.Database
 import androidx.room.Room.databaseBuilder
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.withTransaction
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.doubean.ford.data.db.model.*
-import com.doubean.ford.util.AppExecutors
 import com.doubean.ford.util.DATABASE_NAME
+import kotlinx.coroutines.*
 
 /**
  * The Room database for this app
@@ -53,10 +54,13 @@ abstract class AppDatabase : RoomDatabase() {
             return instance
         }
 
+        // Adapted from trackr
         private val sRoomDatabaseCallback: Callback = object : Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
-                AppExecutors().diskIO().execute { prepopulate() }
+                GlobalScope.launch(Dispatchers.IO) {
+                    insertSeedData()
+                }
             }
         }
 
@@ -66,6 +70,10 @@ abstract class AppDatabase : RoomDatabase() {
                 .build()
         }
 
-        private fun prepopulate() {}
+        suspend fun insertSeedData() {
+            instance?.withTransaction {
+
+            }
+        }
     }
 }

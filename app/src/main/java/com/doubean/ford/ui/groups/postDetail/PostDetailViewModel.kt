@@ -3,8 +3,8 @@ package com.doubean.ford.ui.groups.postDetail
 import androidx.lifecycle.*
 import com.doubean.ford.data.repository.GroupRepository
 import com.doubean.ford.model.Resource
-import com.doubean.ford.ui.common.LoadMoreState
 import com.doubean.ford.ui.common.NextPageHandler
+import kotlinx.coroutines.Dispatchers
 
 class PostDetailViewModel(
     private val groupRepository: GroupRepository,
@@ -14,20 +14,25 @@ class PostDetailViewModel(
     private val reloadTrigger = MutableLiveData(Unit)
     private val nextPageHandler = object : NextPageHandler() {
         override fun loadNextPageFromRepo(): LiveData<Resource<Boolean>?> {
-            return groupRepository.getNextPagePostComments(postId)
+            return liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+                emit(groupRepository.getNextPagePostComments(postId))
+            }
         }
 
     }
     val post = groupRepository.getPost(postId)
     val postComments = reloadTrigger.switchMap {
-        groupRepository.getPostComments(postId)
+        liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+            emitSource(groupRepository.getPostComments(postId))
+        }
+
     }
 
     fun refreshPostComments() {
         reloadTrigger.value = Unit
     }
 
-    val loadMoreStatus: LiveData<LoadMoreState>
+    val loadMoreStatus
         get() = nextPageHandler.loadMoreState
 
     fun loadNextPage() {

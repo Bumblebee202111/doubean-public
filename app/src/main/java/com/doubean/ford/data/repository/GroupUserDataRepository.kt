@@ -9,10 +9,8 @@ import com.doubean.ford.data.db.model.FollowedGroupTabEntity
 import com.doubean.ford.data.db.model.PopulatedGroupFollowItem
 import com.doubean.ford.data.db.model.asExternalModel
 import com.doubean.ford.model.GroupFollowItem
-import com.doubean.ford.util.AppExecutors
 
 class GroupUserDataRepository private constructor(
-    private val appExecutors: AppExecutors,
     appDatabase: AppDatabase,
 ) {
     private val userGroupDao: UserGroupDao = appDatabase.groupFollowsAndSavesDao()
@@ -26,22 +24,20 @@ class GroupUserDataRepository private constructor(
     }
 
 
-    fun removeFollowedGroup(groupId: String) {
-        appExecutors.diskIO().execute { userGroupDao.deleteFollowedGroup(groupId) }
+    suspend fun removeFollowedGroup(groupId: String) {
+        userGroupDao.deleteFollowedGroup(groupId)
     }
 
-    fun addFollowedGroup(groupId: String) {
-        appExecutors.diskIO()
-            .execute { userGroupDao.insertFollowedGroup(FollowedGroupEntity(groupId)) }
+    suspend fun addFollowedGroup(groupId: String) {
+        userGroupDao.insertFollowedGroup(FollowedGroupEntity(groupId))
     }
 
-    fun removeFollowedTab(tabId: String) {
-        appExecutors.diskIO().execute { userGroupDao.deleteFollowedTab(tabId) }
+    suspend fun removeFollowedTab(tabId: String) {
+        userGroupDao.deleteFollowedTab(tabId)
     }
 
-    fun addFollowedTab(tabId: String) {
-        appExecutors.diskIO()
-            .execute { userGroupDao.insertFollowedTab(FollowedGroupTabEntity(tabId)) }
+    suspend fun addFollowedTab(tabId: String) {
+        userGroupDao.insertFollowedTab(FollowedGroupTabEntity(tabId))
     }
 
     fun getAllGroupFollows(): LiveData<List<GroupFollowItem>> =
@@ -53,14 +49,12 @@ class GroupUserDataRepository private constructor(
         @Volatile
         private var instance: GroupUserDataRepository? = null
         fun getInstance(
-            appExecutors: AppExecutors,
             appDatabase: AppDatabase,
         ): GroupUserDataRepository? {
             if (instance == null) {
                 synchronized(this) {
                     if (instance == null) {
                         instance = GroupUserDataRepository(
-                            appExecutors,
                             appDatabase
                         )
                     }

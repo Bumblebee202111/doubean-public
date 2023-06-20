@@ -6,22 +6,28 @@ import com.doubean.ford.model.GroupSearchResultGroupItem
 import com.doubean.ford.model.Resource
 import com.doubean.ford.ui.common.LoadMoreState
 import com.doubean.ford.ui.common.NextPageHandler
+import kotlinx.coroutines.Dispatchers
 import java.util.*
 
 class GroupSearchViewModel(private val groupRepository: GroupRepository) : ViewModel() {
     private val query = MutableLiveData<String>()
     private val nextPageHandler = object : NextPageHandler() {
         override fun loadNextPageFromRepo(): LiveData<Resource<Boolean>?> {
-            return groupRepository.searchNextPage(query.value!!)
+            return liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+                emit(groupRepository.searchNextPage(query.value!!))
+            }
         }
     }
     private val reloadTrigger = MutableLiveData(Unit)
-    val results: LiveData<Resource<List<GroupSearchResultGroupItem>>> = reloadTrigger.switchMap {
+    val results = reloadTrigger.switchMap {
         query.switchMap { search ->
             if (search.isBlank()) {
                 MutableLiveData<Resource<List<GroupSearchResultGroupItem>>>(null)
             } else {
-                groupRepository.search(search)
+                liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+                    emitSource(groupRepository.search(search))
+                }
+
             }
         }
     }

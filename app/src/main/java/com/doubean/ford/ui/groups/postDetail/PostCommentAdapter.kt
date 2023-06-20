@@ -23,7 +23,6 @@ class PostCommentAdapter(
 ) :
     ListAdapter<PostComment, PostCommentAdapter.ViewHolder>(PostCommentDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        //TODO: observe postLiveData
         val binding = ListItemPostCommentBinding.inflate(
             LayoutInflater.from(parent.context), parent,
             false)

@@ -15,45 +15,29 @@
  */
 package com.doubean.ford.data.repository
 
-import androidx.annotation.MainThread
-import androidx.annotation.WorkerThread
-import androidx.lifecycle.MutableLiveData
 import com.doubean.ford.api.*
 import com.doubean.ford.api.model.NetworkPagedList
 import com.doubean.ford.data.db.AppDatabase
 import com.doubean.ford.data.db.model.PagedListResult
 import com.doubean.ford.model.Resource
-import retrofit2.Call
 import java.io.IOException
 
 /**
  * A task that reads the result in the database and fetches the next page, if it has one.
  */
 abstract class FetchNextPageTask<ResultEntityType : PagedListResult, RequestType : NetworkPagedList<out Any>> internal constructor(
-//private final String query;
     private val doubanService: DoubanService, private val db: AppDatabase,
-) : Runnable {
-    private val _liveData = MutableLiveData<Resource<Boolean>?>()
-    val liveData: MutableLiveData<Resource<Boolean>?> = _liveData
-    override fun run() {
-        val current = loadCurrentFromDb()
-        if (current == null) {
-            _liveData.postValue(null)
-            return
-        }
-        val nextPageStart = current.next
-        if (nextPageStart == null) {
-            _liveData.postValue(Resource.success(false))
-            return
-        }
+) {
+
+    suspend fun run(): Resource<Boolean>? {
+        val current = getCurrentFromDb() ?: return null
+
+        val nextPageStart = current.next ?: return Resource.success(false)
+
         val newValue = try {
-            val response = createCall(nextPageStart).execute()
-            when (val apiResponse = ApiResponse.create(response)) {
+            when (val apiResponse = createCall(nextPageStart)) {
                 is ApiSuccessResponse -> {
                     // we merge all item ids into 1 list so that it is easier to fetch the result list.
-                    //val ids = arrayListOf<String>()
-                    //ids.addAll(current.ids)
-                    //ids.addAll(apiResponseBody.items.map { it.id })
                     mergeAndSaveCallResult(current, apiResponse.body)
                     Resource.success(apiResponse.body.nextPageStart != null)
                 }
@@ -67,15 +51,15 @@ abstract class FetchNextPageTask<ResultEntityType : PagedListResult, RequestType
         } catch (e: IOException) {
             Resource.error(e.message!!, true)
         }
-        _liveData.postValue(newValue)
+        return newValue
     }
 
-    @MainThread
-    protected abstract fun loadCurrentFromDb(): ResultEntityType?
+    protected abstract suspend fun getCurrentFromDb(): ResultEntityType?
 
-    @MainThread
-    protected abstract fun createCall(nextPageStart: Int?): Call<RequestType>
+    protected abstract suspend fun createCall(nextPageStart: Int?): ApiResponse<RequestType>
 
-    @WorkerThread
-    protected abstract fun mergeAndSaveCallResult(current: ResultEntityType, item: RequestType)
+    protected abstract suspend fun mergeAndSaveCallResult(
+        current: ResultEntityType,
+        item: RequestType,
+    )
 }

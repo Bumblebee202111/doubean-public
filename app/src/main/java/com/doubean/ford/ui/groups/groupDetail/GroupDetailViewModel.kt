@@ -1,12 +1,11 @@
 package com.doubean.ford.ui.groups.groupDetail
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.doubean.ford.data.repository.GroupRepository
 import com.doubean.ford.data.repository.GroupUserDataRepository
 import com.doubean.ford.util.Event
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class GroupDetailViewModel(
     groupRepository: GroupRepository,
@@ -17,14 +16,21 @@ class GroupDetailViewModel(
     private val _pagerPreselectedEvent = MutableLiveData(Event(Unit))
     val pagerPreselectedEvent: LiveData<Event<Unit>> = _pagerPreselectedEvent
 
-    val group = groupRepository.getGroup(groupId, true)
+    val group = liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+        emitSource(groupRepository.getGroup(groupId, true))
+    }
 
     fun addFollow() {
-        groupUserDataRepository.addFollowedGroup(groupId)
+        viewModelScope.launch {
+            groupUserDataRepository.addFollowedGroup(groupId)
+        }
+
     }
 
     fun removeFollow() {
-        groupUserDataRepository.removeFollowedGroup(groupId)
+        viewModelScope.launch {
+            groupUserDataRepository.removeFollowedGroup(groupId)
+        }
     }
 
     companion object {

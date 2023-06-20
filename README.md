@@ -155,40 +155,42 @@ Libraries Used
 
 ### Plans
 
-Incoming features, libraries and bug fixes \(roughly in chronological order\)
+Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological
+order\)
 
 #### To-dos for current release \(0.4.1\)
 
-* Keep learning from iosched/architecture-samples-views/sunflower-views/NiA/GithubBrowserSample/docs
-  * Introduce Coroutines
-  * \[Data layer\] Migrate to Kotlin Flow \(for data layer only, like sunflower-views\)
-  * Migrate GithubBrowserSample's way of paging to Paging3 + Coroutine + LiveData/
-  * ...
+* Fix tab follow not working properly \(should access **tab**?.isFollowed\)
 * Fix arg "room.schemaLocation" for kapt although it is currently not used
+* https://stackoverflow.com/a/64673736
+* Upgrade AS
+* \[Data layer\] Migrate LiveData to Kotlin Flow \(like sunflower-views\)
+* Migrate GithubBrowserSample's way of paging to Paging3 + Coroutine + Flow \(delay if
+  FetchNextPageTask still works w/ Flow\)
 
 #### To-dos for next release \(0.4.2\)
 
-* Notifications by pulling
-* Refactor Resource to sealed Result, parse it in ViewModels \(like iosched, architecture-samples)\
-* Use the nullable "edit_time" property of network posts
+* \[Group\] Interest post notifications with Retrofit/Worker
 
 #### Future plans
 
-* Notifications by pulling
-* Refactor Resource to sealed Result, parse it in ViewModels \(like iosched, architecture-samples)\
-* Add very basic testing if possible
+* Use the new nullable "edit_time" property of network posts
+* Refactor `Resource` to `sealed` `Result`, parse it in ViewModels \(like iosched,
+  architecture-samples)\
 * Learn about RecycledViewPool and use it if necessary
-* Use modern form of manual di
-* Use the nullable "edit_time" property of network posts
-* \[Build\] Migrate to KSP
 * \[Books\] Add T250
 * \[Movies\] Add T250
+* Hide officially-marked unfriendly content by default
+* Use modern form of manual di
+* Allow expanding group description w/ SpannableString
 * \[SettingsFragment\] Add WebView enabled by default preference, nav start destination etc with
   DataStore
 * \[SearchFragment\]GroupSearchFragment -> SearchFragment / Search group/tab posts (in-group) /
   Search posts of all groups (global)
+* Add very basic testing if possible
 * \[PostDetailFragment\]Save WebView images
 * \[GroupDetailFragment\]WebView for group
+* \[Build\] Migrate to KSP
 * \[WebView\]Complete CSS of content WebView: find official CSS source or write on my own
 * \[GroupDetailFragment\]\[PostDetailFragment\]Track/mark/revert/todo read
 * \[GroupsHomeFragment\]Unfollow/reorder items
@@ -204,21 +206,17 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
   from name
 * 🛠\[GroupPostFragment\]Dealing with post URL click - new page should not show in the old WebView
 * Support blocking unfriendly content
-* \[GroupsHomeFragment\]Recommendations using SharedPref
 * \[PostDetailFragment\]Show saves and reposts
 * \[GroupDetailFragment\]Collapse on entrance for the followed group/tab
 * \[Sortby\]Migrate Spinner to `singleSelection` `ChipGroup`
-* 🛠\[Need help\]\[GroupDetailFragment\]The last position won't be restored when the pager is being
-  recreated
-  * When using ViewPager2, the restore problem arises if the list of page IDs are asynchronously
-    submitted by LiveData
-  * Try to ask ChatGPT for help
-  * It is really annoying \(SEE the anecdote\)
 * Allow another option of using Twitter-like date formatting
 * Widgets
 * Other modules, e.g., books, movies
+* \[GroupDetailFragment\] The problem that if the initial position is manually set, the last
+  position won't be restored when the pager is being recreated is solved, but not in a way that is
+  clean enough
 * Login-based features \(if possible\)
-
+* \[GroupsHomeFragment\] Customized recommendation feeds
 * 🛠 Views on top of WebView become invisible after scroll on my MIUI 10 Android 8.1 device \(causes
   unknown, may never be fixed\)
 * \[Lists\]Post order: custom rules based on multiple factors
@@ -227,15 +225,10 @@ Incoming features, libraries and bug fixes \(roughly in chronological order\)
 
 #### More general plans
 
-* Migration to Kotlin
-  * New class files should be written in Kotlin
-  * Use Kotlin/Flow first in repository/data layer and paging, while the UI layer should keep using
-    LiveData even with the Kotlin migration
 * Use MD3
 * Use new features of the updated dependencies
   * CreationExtras?
 * Optimize landscape experience
-* Add views for fields currently unused
 * Decouple DoubanInterface and expose as much code to VC as possible \(Make anything but keys
   open-source\)
 

@@ -164,6 +164,38 @@ class PostDetailFragment : Fragment() {
         )
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
         spinner.adapter = arrayAdapter
+        val onAllCommentsScrollChangeListener =
+            NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
+                if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
+                    postDetailViewModel.loadNextPage()
+                }
+            }
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?, view: View?, position: Int, id: Long,
+            ) {
+                postDetailViewModel.postComments.value?.data?.let { comments ->
+                    when (getSortByAt(position)) {
+                        PostCommentSortBy.TOP -> {
+                            commentAdapter.submitList(comments.topComments)
+                            binding.postDetailScrollview.setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?)
+                        }
+                        PostCommentSortBy.ALL -> {
+                            commentAdapter.submitList(comments.allComments)
+                            binding.postDetailScrollview.setOnScrollChangeListener(
+                                onAllCommentsScrollChangeListener
+                            )
+                        }
+                        else -> {}
+                    }
+
+                }
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
     }
 
     private fun setupCommentList() {
@@ -175,66 +207,49 @@ class PostDetailFragment : Fragment() {
     }
 
     private fun initCommentList() {
-        val onAllCommentsScrollChangeListener =
-            NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
-                if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
-                    postDetailViewModel.loadNextPage()
-                }
-            }
+
         postDetailViewModel.postComments
             .observe(viewLifecycleOwner) { result ->
                 spinner.visibility = View.GONE
                 binding.findResource = result
-                binding.resultCount =
-                    if (result.data?.allComments == null) 0 else result.data.allComments.size
-                if (result.data != null) {
-                    if (result.data.topComments.isEmpty()) {
+                binding.resultCount = result.data?.allComments?.size ?: 0
+                result.data?.let { comments ->
+                    if (comments.topComments.isEmpty()) {
                         spinner.setSelection(1)
                     }
+                    when (getSortByAt(spinner.selectedItemPosition)) {
+                        PostCommentSortBy.TOP -> {
+                            commentAdapter.submitList(comments.topComments)
+                        }
+                        PostCommentSortBy.ALL -> {
+                            commentAdapter.submitList(comments.allComments)
+                        }
+                        else -> {}
+                    }
                     spinner.visibility = View.VISIBLE
-                    spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(
-                            parent: AdapterView<*>?, view: View?, position: Int, id: Long,
-                        ) {
-                            when (getSortByAt(position)) {
-                                PostCommentSortBy.TOP -> {
-                                    commentAdapter.submitList(result.data.topComments)
-                                    binding.postDetailScrollview.setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?)
-                                }
-                                PostCommentSortBy.ALL -> {
-                                    commentAdapter.submitList(result.data.allComments)
-                                    binding.postDetailScrollview.setOnScrollChangeListener(
-                                        onAllCommentsScrollChangeListener
-                                    )
-                                }
-                                else -> {}
-                            }
-                        }
+                }
 
-                        override fun onNothingSelected(parent: AdapterView<*>?) {}
-                    }
-                }
-                binding.swiperefresh.isRefreshing = false
-                postDetailViewModel.loadMoreStatus
-                    .observe(viewLifecycleOwner) { loadingMore ->
-                        if (loadingMore == null) {
-                            binding.loadingMore = false
-                        } else {
-                            binding.loadingMore = loadingMore.isRunning
-                            val error = loadingMore.errorMessageIfNotHandled
-                            if (error != null) {
-                                binding.loadMoreBar.showSnackbar(error, Snackbar.LENGTH_LONG)
-                            }
-                        }
-                        binding.executePendingBindings()
-                    }
-                binding.callback = object : RetryCallback {
-                    override fun retry() {
-                        postDetailViewModel.refreshPostComments()
-                    }
-                }
-                binding.swiperefresh.setOnRefreshListener(postDetailViewModel::refreshPostComments)
+                if (result != null) binding.swiperefresh.isRefreshing = false
             }
+        postDetailViewModel.loadMoreStatus
+            .observe(viewLifecycleOwner) { loadingMore ->
+                if (loadingMore == null) {
+                    binding.loadingMore = false
+                } else {
+                    binding.loadingMore = loadingMore.isRunning
+                    val error = loadingMore.errorMessageIfNotHandled
+                    if (error != null) {
+                        binding.loadMoreBar.showSnackbar(error, Snackbar.LENGTH_LONG)
+                    }
+                }
+                binding.executePendingBindings()
+            }
+        binding.callback = object : RetryCallback {
+            override fun retry() {
+                postDetailViewModel.refreshPostComments()
+            }
+        }
+        binding.swiperefresh.setOnRefreshListener(postDetailViewModel::refreshPostComments)
     }
 
     private fun navigateToWebView(post: PostDetail) {

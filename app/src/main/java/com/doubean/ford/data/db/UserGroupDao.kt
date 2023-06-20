@@ -12,19 +12,19 @@ import com.doubean.ford.data.db.model.PopulatedGroupFollowItem
 @Dao
 interface UserGroupDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertFollowedGroup(followedGroup: FollowedGroupEntity)
+    suspend fun insertFollowedGroup(followedGroup: FollowedGroupEntity)
 
     @Query("DELETE FROM followed_groups WHERE group_id=:groupId")
-    fun deleteFollowedGroup(groupId: String)
+    suspend fun deleteFollowedGroup(groupId: String)
 
     @Query("SELECT EXISTS(SELECT * FROM followed_groups WHERE group_id= :groupId)")
     fun loadGroupFollowed(groupId: String): LiveData<Boolean>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertFollowedTab(followedGroupTab: FollowedGroupTabEntity)
+    suspend fun insertFollowedTab(followedGroupTab: FollowedGroupTabEntity)
 
     @Query("DELETE FROM followed_group_tabs WHERE tab_id=:tabId")
-    fun deleteFollowedTab(tabId: String)
+    suspend fun deleteFollowedTab(tabId: String)
 
     @Query("SELECT EXISTS(SELECT * FROM followed_group_tabs WHERE tab_id=:tabId)")
     fun loadTabFollowed(tabId: String): LiveData<Boolean>

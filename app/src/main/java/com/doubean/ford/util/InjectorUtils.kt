@@ -36,7 +36,6 @@ object InjectorUtils {
 
     private fun getGroupRepository(context: Context): GroupRepository? {
         return GroupRepository.getInstance(
-            AppExecutors(),
             getInstance(context.applicationContext)!!,
             provideDoubanService()
         )
@@ -44,7 +43,6 @@ object InjectorUtils {
 
     private fun getGroupFollowsAndSavesRepository(context: Context): GroupUserDataRepository? {
         return GroupUserDataRepository.getInstance(
-            AppExecutors(),
             getInstance(context.applicationContext)!!
         )
     }
@@ -83,5 +81,4 @@ object InjectorUtils {
 
     fun provideGroupSearchViewModelFactory(context: Context) =
         GroupSearchViewModel.Companion.Factory(getGroupRepository(context)!!)
-
 }
