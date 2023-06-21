@@ -90,8 +90,8 @@ class GroupTabFragment : Fragment() {
             binding.more.visibility = View.GONE
         } else { //Non-all tab
             followUnfollow.setOnClickListener {
-                groupTabViewModel.group.value?.data?.let { group ->
-                    if (group.isFollowed) {
+                groupTabViewModel.tab.value?.let { tab ->
+                    if (tab.isFollowed) {
                         groupTabViewModel.removeFollow()
                         view?.showSnackbar(R.string.unfollowed_tab, Snackbar.LENGTH_LONG)
                     } else {
