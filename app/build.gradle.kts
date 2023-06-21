@@ -25,7 +25,11 @@ android {
         buildConfigField("String", "DOUBAN_ACCESS_KEY", "\"" + getDoubanAccess() + "\"")
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments += "room.schemaLocation" to "$projectDir/schemas"
+                //https://developer.android.google.cn/jetpack/androidx/releases/room#compiler-options
+                arguments += mapOf(
+                    "room.schemaLocation" to "$projectDir/schemas",
+                    "room.incremental" to "true"
+                )
             }
         }
     }

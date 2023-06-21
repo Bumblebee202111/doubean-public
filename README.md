@@ -159,7 +159,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 order\)
 
 #### To-dos for current release \(0.4.1\)
-* Fix bad declaration of arg "room.schemaLocation" for kapt although it is currently not used
+
 * https://stackoverflow.com/a/64673736
 * Upgrade AS \(install a newer version on my new computer after its assembly is done)\
 * \[Data layer\] Migrate LiveData to Kotlin Flow \(like sunflower-views\)
