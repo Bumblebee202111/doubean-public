@@ -1,10 +1,10 @@
 package com.doubean.ford.data.db
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.doubean.ford.data.db.model.FollowedGroupEntity
 import com.doubean.ford.data.db.model.FollowedGroupTabEntity
 import com.doubean.ford.data.db.model.PopulatedGroupFollowItem
+import kotlinx.coroutines.flow.Flow
 
 /**
  * The Data Access Object for Group related local user operations.
@@ -18,7 +18,7 @@ interface UserGroupDao {
     suspend fun deleteFollowedGroup(groupId: String)
 
     @Query("SELECT EXISTS(SELECT * FROM followed_groups WHERE group_id= :groupId)")
-    fun loadGroupFollowed(groupId: String): LiveData<Boolean>
+    fun loadGroupFollowed(groupId: String): Flow<Boolean>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFollowedTab(followedGroupTab: FollowedGroupTabEntity)
@@ -27,7 +27,7 @@ interface UserGroupDao {
     suspend fun deleteFollowedTab(tabId: String)
 
     @Query("SELECT EXISTS(SELECT * FROM followed_group_tabs WHERE tab_id=:tabId)")
-    fun loadTabFollowed(tabId: String): LiveData<Boolean>
+    fun loadTabFollowed(tabId: String): Flow<Boolean>
 
     @Transaction
     @Query("""
@@ -55,7 +55,8 @@ interface UserGroupDao {
         LEFT OUTER JOIN groups 
         ON groups.id = group_tabs.group_id 
         ORDER BY follow_date
-        """)
+        """
+    )
     @RewriteQueriesToDropUnusedColumns
-    fun loadAllFollows(): LiveData<List<PopulatedGroupFollowItem>>
+    fun loadAllFollows(): Flow<List<PopulatedGroupFollowItem>>
 }

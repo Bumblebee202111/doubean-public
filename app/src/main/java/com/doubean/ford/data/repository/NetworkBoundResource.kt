@@ -16,13 +16,12 @@
 
 package com.doubean.ford.data.repository
 
-import androidx.lifecycle.*
 import com.doubean.ford.api.ApiEmptyResponse
 import com.doubean.ford.api.ApiErrorResponse
 import com.doubean.ford.api.ApiResponse
 import com.doubean.ford.api.ApiSuccessResponse
 import com.doubean.ford.model.Resource
-import com.doubean.ford.util.LiveDataUtils.first
+import kotlinx.coroutines.flow.*
 
 /**
  * A generic class that can provide a resource backed by both the sqlite database and the network.
@@ -34,58 +33,57 @@ import com.doubean.ford.util.LiveDataUtils.first
  * @param <RequestType>
 </RequestType></ResultType> */
 
-//TODO: rewrite with Flow
 abstract class NetworkBoundResource<ResultType, RequestType> {
 
-    val result = liveData {
-        val dbSource = loadFromDb().distinctUntilChanged()
+    private val result = flow {
+        val dbSource = loadFromDb()
         val dbData = dbSource.first()
         emit(Resource.loading(dbData))
         if (shouldFetch(dbData)) {
-            fetchFromNetwork(this, dbSource)
+            val networkSource = fetchFromNetwork(dbSource)
+            emitAll(networkSource)
         } else {
-            emitSource(dbSource.map { newData ->
+            emitAll(dbSource.map { newData ->
                 Resource.success(newData)
             })
         }
     }
 
     private suspend fun fetchFromNetwork(
-        scope: LiveDataScope<Resource<ResultType>>,
-        dbSource: LiveData<ResultType>,
-    ) {
+        dbSource: Flow<ResultType?>,
+    ) = when (val apiResponse = createCall()) {
+        is ApiSuccessResponse -> {
+            saveCallResult(apiResponse.body)
+            dbSource.map { newData ->
+                Resource.success(newData)
 
-        when (val apiResponse = createCall()) {
-            is ApiSuccessResponse -> {
-                saveCallResult(apiResponse.body)
-                scope.emitSource(dbSource.map { newData ->
-                    Resource.success(newData)
-                })
             }
-            is ApiEmptyResponse -> {
-                scope.emitSource(dbSource.map { newData ->
-                    Resource.success(newData)
-                })
+        }
+        is ApiEmptyResponse -> {
+            dbSource.map { newData ->
+                Resource.success(newData)
             }
-            is ApiErrorResponse -> {
-                onFetchFailed()
-                scope.emitSource(dbSource.map { newData ->
-                    Resource.error(apiResponse.errorMessage,
-                        newData)
-                })
+        }
+        is ApiErrorResponse -> {
+            onFetchFailed()
+            dbSource.map { newData ->
+                Resource.error(
+                    apiResponse.errorMessage,
+                    newData
+                )
             }
         }
     }
 
     protected open suspend fun onFetchFailed() {}
 
-    fun asLiveData() = result
+    fun asFlow() = result
 
     protected abstract suspend fun saveCallResult(item: RequestType)
 
-    protected abstract fun shouldFetch(data: ResultType?): Boolean
+    protected open fun shouldFetch(data: ResultType?) = true
 
-    protected abstract fun loadFromDb(): LiveData<ResultType>
+    protected abstract fun loadFromDb(): Flow<ResultType?>
 
     protected abstract suspend fun createCall(): ApiResponse<RequestType>
 }

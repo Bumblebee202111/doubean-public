@@ -1,11 +1,11 @@
 package com.doubean.ford.data.db
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
 import androidx.room.*
 import com.doubean.ford.data.db.model.*
 import com.doubean.ford.model.GroupRecommendationType
 import com.doubean.ford.model.PostSortBy
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 /**
  * The Data Access Object for Group related operations.
@@ -15,7 +15,7 @@ interface GroupDao {
     @Transaction
     @Query(value = "SELECT * FROM groups WHERE id = :groupId")
     @RewriteQueriesToDropUnusedColumns
-    fun loadGroupDetail(groupId: String): LiveData<PopulatedGroupDetail>
+    fun loadGroupDetail(groupId: String): Flow<PopulatedGroupDetail>
 
     @Transaction
     @Query(value = "SELECT * FROM groups WHERE id = :groupId")
@@ -39,7 +39,7 @@ interface GroupDao {
     suspend fun upsertRecommendedGroupItemGroups(groupList: List<RecommendedGroupItemGroupPartialEntity>)
 
     @Query("SELECT * FROM group_search_results WHERE `query` = :query")
-    fun loadSearchResult(query: String): LiveData<GroupSearchResult?>
+    fun loadSearchResult(query: String): Flow<GroupSearchResult?>
 
     @Query("SELECT * FROM group_search_results WHERE `query` = :query")
     suspend fun getSearchResult(query: String): GroupSearchResult?
@@ -49,7 +49,7 @@ interface GroupDao {
 
     @Query("SELECT * FROM groups WHERE id IN (:groupIds)")
     @RewriteQueriesToDropUnusedColumns
-    fun loadSearchResultGroups(groupIds: List<String>): LiveData<List<GroupSearchResultGroupItemPartialEntity>>
+    fun loadSearchResultGroups(groupIds: List<String>): Flow<List<GroupSearchResultGroupItemPartialEntity>>
 
     fun loadOrderedSearchResultGroups(
         groupIds: List<String>,
@@ -64,7 +64,7 @@ interface GroupDao {
     @Transaction
     @Query("SELECT * FROM posts WHERE id IN (:postIds)")
     @RewriteQueriesToDropUnusedColumns
-    fun loadPosts(postIds: List<String>): LiveData<List<PopulatedPostItem>>
+    fun loadPosts(postIds: List<String>): Flow<List<PopulatedPostItem>>
 
     fun loadOrderedPosts(postIds: List<String>) = loadPosts(postIds).map { posts ->
         posts.sortedWith(compareBy { o -> postIds.indexOf(o.partialEntity.id) })
@@ -73,7 +73,7 @@ interface GroupDao {
 
     @Query("SELECT * FROM GroupPostsResult WHERE group_id = :groupId AND sort_by = :sortBy")
     @RewriteQueriesToDropUnusedColumns
-    fun loadGroupPosts(groupId: String, sortBy: PostSortBy): LiveData<GroupPostsResult?>
+    fun loadGroupPosts(groupId: String, sortBy: PostSortBy): Flow<GroupPostsResult?>
 
     @Query("SELECT * FROM GroupPostsResult WHERE group_id = :groupId AND sort_by = :sortBy")
     @RewriteQueriesToDropUnusedColumns
@@ -88,7 +88,7 @@ interface GroupDao {
         groupId: String,
         tagId: String,
         sortBy: PostSortBy,
-    ): LiveData<GroupTagPostsResult?>
+    ): Flow<GroupTagPostsResult?>
 
     @Query("SELECT * FROM group_tag_posts_results WHERE group_id = :groupId AND tag_id=:tagId AND sort_by = :sortBy")
     @RewriteQueriesToDropUnusedColumns
@@ -110,12 +110,12 @@ interface GroupDao {
 
     @Transaction
     @Query("SELECT * FROM posts WHERE id=:postId")
-    fun loadPost(postId: String): LiveData<PopulatedPostDetail>
+    fun loadPost(postId: String): Flow<PopulatedPostDetail>
 
     fun loadOrderedComments(
         commentIds: List<String>,
         c: Comparator<PopulatedPostComment>? = null,
-    ): LiveData<List<PopulatedPostComment>> {
+    ): Flow<List<PopulatedPostComment>> {
         return loadComments(commentIds).map { comments ->
             if (c != null) comments.sortedWith(c) else comments.sortedWith(
                 compareBy { o -> commentIds.indexOf(o.entity.id) })
@@ -125,7 +125,7 @@ interface GroupDao {
 
     @Transaction
     @Query("SELECT * FROM post_comments WHERE id IN (:commentIds)")
-    fun loadComments(commentIds: List<String>): LiveData<List<PopulatedPostComment>>
+    fun loadComments(commentIds: List<String>): Flow<List<PopulatedPostComment>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPostComments(comments: List<PostCommentEntity>)
@@ -134,13 +134,13 @@ interface GroupDao {
     suspend fun insertPostCommentsResult(postCommentsResult: PostCommentsResult?)
 
     @Query("SELECT * FROM post_comments_results WHERE postId=:postId")
-    fun loadPostComments(postId: String): LiveData<PostCommentsResult?>
+    fun loadPostComments(postId: String): Flow<PostCommentsResult?>
 
     @Query("SELECT * FROM post_comments_results WHERE postId=:postId")
     fun findPostComments(postId: String): PostCommentsResult?
 
     @Query("SELECT * FROM recommended_groups_results WHERE recommendation_type=:type")
-    fun loadRecommendedGroups(type: GroupRecommendationType): LiveData<RecommendedGroupsResult?>
+    fun loadRecommendedGroups(type: GroupRecommendationType): Flow<RecommendedGroupsResult?>
 
     @Upsert(entity = RecommendedGroupEntity::class)
     suspend fun upsertRecommendedGroups(recommendedGroupEntities: List<RecommendedGroupEntity>)
@@ -148,7 +148,7 @@ interface GroupDao {
     @Transaction
     @Query("SELECT * FROM recommended_groups WHERE group_id IN (:ids)")
     @RewriteQueriesToDropUnusedColumns
-    fun loadRecommendedGroups(ids: List<String>): LiveData<List<PopulatedRecommendedGroup>>
+    fun loadRecommendedGroups(ids: List<String>): Flow<List<PopulatedRecommendedGroup>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRecommendedGroupsResult(recommendedGroupsResult: RecommendedGroupsResult?)

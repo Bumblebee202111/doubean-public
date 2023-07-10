@@ -6,6 +6,7 @@ import com.doubean.ford.data.repository.GroupUserDataRepository
 import com.doubean.ford.model.*
 import com.doubean.ford.ui.common.NextPageHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 /**
@@ -37,17 +38,16 @@ class GroupTabViewModel(
     private val reloadTrigger = MutableLiveData(Unit)
     val posts = reloadTrigger.switchMap {
         sortBy.switchMap { type ->
-            val postsLiveData = if (tabId == null) groupRepository.getGroupPosts(
+            val postsFlow = if (tabId == null) groupRepository.getGroupPosts(
                 groupId,
-                type)
+                type
+            )
             else groupRepository.getGroupTagPosts(groupId, tabId, type)
-            liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(postsLiveData)
-            }
+            postsFlow.flowOn(Dispatchers.IO).asLiveData()
         }
     }
     private val sortBy = MutableLiveData<PostSortBy>()
-    val group = groupRepository.getGroup(groupId, false)
+    val group = groupRepository.getGroup(groupId, false).flowOn(Dispatchers.IO).asLiveData()
     val tab = group.map { it.data?.tabs?.firstOrNull { tab -> tab.id == this.tabId } }
 
     fun setSortBy(postSortBy: PostSortBy) {

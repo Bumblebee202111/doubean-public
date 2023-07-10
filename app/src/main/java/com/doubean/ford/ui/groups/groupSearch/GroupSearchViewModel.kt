@@ -2,11 +2,12 @@ package com.doubean.ford.ui.groups.groupSearch
 
 import androidx.lifecycle.*
 import com.doubean.ford.data.repository.GroupRepository
-import com.doubean.ford.model.GroupSearchResultGroupItem
 import com.doubean.ford.model.Resource
 import com.doubean.ford.ui.common.LoadMoreState
 import com.doubean.ford.ui.common.NextPageHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOn
 import java.util.*
 
 class GroupSearchViewModel(private val groupRepository: GroupRepository) : ViewModel() {
@@ -22,16 +23,12 @@ class GroupSearchViewModel(private val groupRepository: GroupRepository) : ViewM
     val results = reloadTrigger.switchMap {
         query.switchMap { search ->
             if (search.isBlank()) {
-                MutableLiveData<Resource<List<GroupSearchResultGroupItem>>>(null)
+                emptyFlow()
             } else {
-                liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
-                    emitSource(groupRepository.search(search))
-                }
-
-            }
+                groupRepository.search(search).flowOn(Dispatchers.IO)
+            }.asLiveData()
         }
     }
-
 
     fun refreshResults() {
         reloadTrigger.value = Unit

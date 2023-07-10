@@ -83,9 +83,12 @@ groups is finally added by them.
 
 * Inherent advantages leading to good performance and simple coding
 
-  | Design Aspect | Choice\(s\) | | -- | --- | | Language | Kotlin | | Libraries | Jetpack and
-  authoritative third party libraries | | Architecture | MVVM | | Design philosophy | Android
-  Jetpack |
+| Design Aspect     | Choice\(s\)                                     |
+|-------------------|-------------------------------------------------|
+| Language          | Kotlin                                          |
+| Libraries         | Jetpack and authoritative third party libraries |
+| Architecture      | MVVM                                            |
+| Design philosophy | Android Jetpack                                 |
 
 * Support for loading cache as alternative even when connection is off
 * Ad-free, lite \(~4MB\)
@@ -160,11 +163,7 @@ order\)
 
 #### To-dos for current release \(0.4.1\)
 
-* https://stackoverflow.com/a/64673736
-* Upgrade AS \(install a newer version on my new computer after its assembly is done)\
-* \[Data layer\] Migrate LiveData to Kotlin Flow \(like sunflower-views\)
-* Migrate GithubBrowserSample's way of paging to Paging3 + Coroutine + Flow \(delay if
-  FetchNextPageTask still works w/ Flow, which is expected\)
+* Fix avatars not being loaded
 
 #### To-dos for next release \(0.4.2\)
 
@@ -172,6 +171,7 @@ order\)
 
 #### Future plans
 
+* Migrate GithubBrowserSample's user-implemented way of paging to Paging3
 * Use the new nullable "edit_time" property of network posts
 * Refactor `Resource` to `sealed` `Result`, parse it in ViewModels \(like iosched,
   architecture-samples)\

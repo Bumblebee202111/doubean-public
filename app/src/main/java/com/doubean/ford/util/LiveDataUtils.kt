@@ -2,28 +2,9 @@ package com.doubean.ford.util
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.asFlow
-import kotlinx.coroutines.flow.first
 
 
 object LiveDataUtils {
-
-    //TODO: use Flow instead of LiveData to process complex business logic
-    inline fun <reified T> zip(vararg liveItems: LiveData<T>): LiveData<List<T>> {
-        val zipped = arrayOfNulls<T>(liveItems.size)
-        val mediator = MediatorLiveData<List<T>>()
-        for (i in liveItems.indices) {
-            mediator.addSource(liveItems[i]) { o ->
-                zipped[i] = o
-                if (!zipped.contains(null)) {
-                    val value = List<T>(liveItems.size) { zipped[i]!! }
-                    mediator.value = value
-                }
-            }
-        }
-        return mediator
-    }
-
 
     /**
      * From iosched
@@ -84,7 +65,4 @@ object LiveDataUtils {
         return result
     }
 
-    suspend fun <T> LiveData<T>.first(): T {
-        return this.asFlow().first()
-    }
 }

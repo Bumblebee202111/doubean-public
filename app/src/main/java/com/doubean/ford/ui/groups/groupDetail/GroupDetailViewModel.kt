@@ -5,6 +5,7 @@ import com.doubean.ford.data.repository.GroupRepository
 import com.doubean.ford.data.repository.GroupUserDataRepository
 import com.doubean.ford.util.Event
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class GroupDetailViewModel(
@@ -16,9 +17,7 @@ class GroupDetailViewModel(
     private val _pagerPreselectedEvent = MutableLiveData(Event(Unit))
     val pagerPreselectedEvent: LiveData<Event<Unit>> = _pagerPreselectedEvent
 
-    val group = liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
-        emitSource(groupRepository.getGroup(groupId, true))
-    }
+    val group = groupRepository.getGroup(groupId).flowOn(Dispatchers.IO).asLiveData()
 
     fun addFollow() {
         viewModelScope.launch {

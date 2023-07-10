@@ -1,26 +1,22 @@
 package com.doubean.ford.ui.groups.groupsHome
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.doubean.ford.data.repository.GroupRepository
 import com.doubean.ford.data.repository.GroupUserDataRepository
 import com.doubean.ford.model.GroupRecommendationType
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
 
 class GroupsHomeViewModel(
     groupRepository: GroupRepository,
     groupUserDataRepository: GroupUserDataRepository,
 ) : ViewModel() {
 
-    val follows = liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
-        emitSource(groupUserDataRepository.getAllGroupFollows())
-    }
+    val follows = groupUserDataRepository.getAllGroupFollows().flowOn(Dispatchers.IO).asLiveData()
 
-    val groupsOfTheDay = liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
-        emitSource(groupRepository.getGroupRecommendation(GroupRecommendationType.DAILY))
-    }
+    val groupsOfTheDay =
+        groupRepository.getGroupRecommendation(GroupRecommendationType.DAILY).flowOn(Dispatchers.IO)
+            .asLiveData()
 
     companion object {
         class Factory(

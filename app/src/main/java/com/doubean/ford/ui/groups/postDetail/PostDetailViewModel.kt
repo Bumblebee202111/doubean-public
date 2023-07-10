@@ -5,6 +5,7 @@ import com.doubean.ford.data.repository.GroupRepository
 import com.doubean.ford.model.Resource
 import com.doubean.ford.ui.common.NextPageHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
 
 class PostDetailViewModel(
     private val groupRepository: GroupRepository,
@@ -20,11 +21,9 @@ class PostDetailViewModel(
         }
 
     }
-    val post = groupRepository.getPost(postId)
+    val post = groupRepository.getPost(postId).flowOn(Dispatchers.IO).asLiveData()
     val postComments = reloadTrigger.switchMap {
-        liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
-            emitSource(groupRepository.getPostComments(postId))
-        }
+        groupRepository.getPostComments(postId).flowOn(Dispatchers.IO).asLiveData()
 
     }
 
