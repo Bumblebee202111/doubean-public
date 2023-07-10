@@ -47,7 +47,7 @@ class GroupTabViewModel(
         }
     }
     private val sortBy = MutableLiveData<PostSortBy>()
-    val group = groupRepository.getGroup(groupId, false).flowOn(Dispatchers.IO).asLiveData()
+    val group = groupRepository.getGroup(groupId).flowOn(Dispatchers.IO).asLiveData()
     val tab = group.map { it.data?.tabs?.firstOrNull { tab -> tab.id == this.tabId } }
 
     fun setSortBy(postSortBy: PostSortBy) {
