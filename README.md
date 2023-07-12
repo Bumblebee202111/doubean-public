@@ -161,11 +161,11 @@ Libraries Used
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological
 order\)
 
-#### To-dos for current release \(0.4.1\)
-
-#### To-dos for next release \(0.4.2\)
+#### To-dos for current release \(0.4.2\)
 
 * \[Group\] For-you post notifications with Retrofit/Worker
+
+#### To-dos for next release \(0.5.0\)
 
 #### Future plans
 
