@@ -20,7 +20,10 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class com.doubean.ford.api.model.** { *; }
+#-keep class com.doubean.ford.api.model.** { *; }
+-keep class com.doubean.ford.api.model.** { <fields>; }
+-keep class com.doubean.ford.data.db.model.** { <fields>; }
+-keep class com.doubean.ford.model.** { <fields>; }
 #-keep class com.doubean.ford.data.db.model.** { *; }
 #-keep class com.doubean.ford.model.** { *; }
 

@@ -1,4 +1,4 @@
-package com.doubean.ford.adapters
+package com.doubean.ford.ui.common
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

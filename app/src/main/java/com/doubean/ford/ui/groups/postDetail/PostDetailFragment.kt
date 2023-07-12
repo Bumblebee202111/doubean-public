@@ -20,7 +20,6 @@ import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
 import com.doubean.ford.MobileNavigationDirections
 import com.doubean.ford.R
-import com.doubean.ford.adapters.PostCommentAdapter
 import com.doubean.ford.databinding.FragmentPostDetailBinding
 import com.doubean.ford.model.PostCommentSortBy
 import com.doubean.ford.model.PostDetail
@@ -147,6 +146,7 @@ class PostDetailFragment : Fragment() {
         content.setPadding(0, 0, 0, 0)
         val webSettings = content.settings
         webSettings.setNeedInitialFocus(false)
+        webSettings.userAgentString = DOUBAN_USER_AGENT_STRING
         //webSettings.setUseWideViewPort(true);
         //webSettings.setLoadWithOverviewMode(true);
         val webViewClient = DoubeanWebViewClient(POST_CONTENT_CSS_FILENAME)

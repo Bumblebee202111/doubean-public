@@ -31,19 +31,23 @@ data class NetworkImageItem(
     val width: Int,
 )
 
-fun NetworkSizedPhoto.asExternalModel() = SizedPhoto(
-    id = id, description = description, image = image.asExternalModel(), origin = origin, tag = tag
+fun NetworkSizedPhoto.asEntityAndExternalModel() = SizedPhoto(
+    id = id,
+    description = description,
+    image = image.asEntityAndExternalModel(),
+    origin = origin,
+    tag = tag
 )
 
-fun NetworkSizedImage.asExternalModel() = SizedImage(
+fun NetworkSizedImage.asEntityAndExternalModel() = SizedImage(
     isAnimated = isAnimated,
-    large = large.asExternalModel(),
-    normal = normal.asExternalModel(),
-    raw = raw?.asExternalModel(),
-    small = small?.asExternalModel(),
-    video = video?.asExternalModel()
+    large = large.asEntityAndExternalModel(),
+    normal = normal.asEntityAndExternalModel(),
+    raw = raw?.asEntityAndExternalModel(),
+    small = small?.asEntityAndExternalModel(),
+    video = video?.asEntityAndExternalModel()
 )
 
-fun NetworkImageItem.asExternalModel() = ImageItem(
+fun NetworkImageItem.asEntityAndExternalModel() = ImageItem(
     height = height, size = size, url = url, width = width
 )

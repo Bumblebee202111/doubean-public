@@ -1,4 +1,4 @@
-package com.doubean.ford.adapters
+package com.doubean.ford.ui.groups.postDetail
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -15,6 +15,7 @@ import com.doubean.ford.databinding.ListItemPostCommentBinding
 import com.doubean.ford.model.PostComment
 import com.doubean.ford.model.PostDetail
 import com.doubean.ford.model.Resource
+import com.doubean.ford.ui.common.PhotoAdapter
 import com.doubean.ford.util.ShareUtil
 
 class PostCommentAdapter(

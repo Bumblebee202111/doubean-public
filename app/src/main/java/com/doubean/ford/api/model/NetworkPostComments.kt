@@ -2,7 +2,6 @@ package com.doubean.ford.api.model
 
 import androidx.room.PrimaryKey
 import com.doubean.ford.data.db.model.PostCommentEntity
-import com.doubean.ford.model.SizedPhoto
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDateTime
 
@@ -26,7 +25,7 @@ data class NetworkPostComment(
 
     val author: NetworkUser,
 
-    val photos: List<SizedPhoto>?,
+    val photos: List<NetworkSizedPhoto>?,
 
     val text: String? = null,
 
@@ -41,7 +40,6 @@ data class NetworkPostComment(
 
     @SerializedName("ip_location")
     val ipLocation: String,
-
     )
 
 data class NetworkRepliedToPostComment(
@@ -50,7 +48,7 @@ data class NetworkRepliedToPostComment(
 
     val author: NetworkUser,
 
-    val photos: List<SizedPhoto>?,
+    val photos: List<NetworkSizedPhoto>?,
 
     val text: String? = null,
 
@@ -68,7 +66,7 @@ fun NetworkPostComment.asEntity(postId: String) = PostCommentEntity(
     id = id,
     postId = postId,
     authorId = author.id,
-    photos = photos,
+    photos = photos?.map(NetworkSizedPhoto::asEntityAndExternalModel),
     text = text,
     created = created,
     voteCount = voteCount,
@@ -80,7 +78,7 @@ fun NetworkRepliedToPostComment.asEntity(postId: String) = PostCommentEntity(
     id = id,
     postId = postId,
     authorId = author.id,
-    photos = photos,
+    photos = photos?.map(NetworkSizedPhoto::asEntityAndExternalModel),
     text = text,
     created = created,
     voteCount = voteCount,
