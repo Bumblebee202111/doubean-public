@@ -91,7 +91,7 @@ groups is finally added by them.
 | Design philosophy | Android Jetpack                                 |
 
 * Support for loading cache as alternative even when connection is off
-* Ad-free, lite \(~4MB\)
+* Ad-free, lite \(~5MB\)
 * Support URL deep links
 * Basic support for MD \(dark theme included\) and tablets/landscape
 * Bilingual UI strings support
@@ -163,11 +163,9 @@ order\)
 
 #### To-dos for current release \(0.4.1\)
 
-* Fix avatars not being loaded
-
 #### To-dos for next release \(0.4.2\)
 
-* \[Group\] Interest post notifications with Retrofit/Worker
+* \[Group\] For-you post notifications with Retrofit/Worker
 
 #### Future plans
 
@@ -179,6 +177,7 @@ order\)
 * \[Books\] Add T250
 * \[Movies\] Add T250
 * Hide officially-marked unfriendly content by default
+* Optimize rendering of pictures
 * Use modern form of manual di
 * Allow expanding group description w/ SpannableString
 * \[SettingsFragment\] Add WebView enabled by default preference, nav start destination etc with
@@ -209,7 +208,7 @@ order\)
 * \[Sortby\]Migrate Spinner to `singleSelection` `ChipGroup`
 * Allow another option of using Twitter-like date formatting
 * Widgets
-* Other modules, e.g., books, movies
+* More features of books & movies
 * \[GroupDetailFragment\] The problem that if the initial position is manually set, the last
   position won't be restored when the pager is being recreated is solved, but not in a way that is
   clean enough
