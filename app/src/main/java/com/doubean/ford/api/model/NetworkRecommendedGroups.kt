@@ -4,7 +4,7 @@ import com.doubean.ford.data.db.model.RecommendedGroupEntity
 import com.doubean.ford.data.db.model.RecommendedGroupItemGroupPartialEntity
 import com.doubean.ford.data.db.model.RecommendedGroupPost
 import com.doubean.ford.model.GroupRecommendationType
-import com.doubean.ford.util.ColorUtils
+import com.doubean.ford.util.parseHexColor
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -68,7 +68,7 @@ fun NetworkRecommendedGroupItemGroup.asPartialEntity() = RecommendedGroupItemGro
     avatarUrl = avatarUrl,
     memberName = memberName,
     shortDescription = shortDescription,
-    color = ColorUtils.parseHexColor(colorString)
+    color = parseHexColor(colorString)
 )
 
 fun NetworkRecommendedGroup.asEntity(groupRecommendationType: GroupRecommendationType, no: Int) =

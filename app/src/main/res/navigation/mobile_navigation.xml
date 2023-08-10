@@ -79,6 +79,7 @@
             <action
                 android:id="@+id/action_post_detail_to_group_detail"
                 app:destination="@id/navigation_group_detail" />
+            <deepLink app:uri="https://www.ford.doubean.com/group/post/{postId}" />
         </fragment>
     </navigation>
     <fragment

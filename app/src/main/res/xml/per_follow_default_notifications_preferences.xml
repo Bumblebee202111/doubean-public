@@ -1,0 +1,26 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:persistent="false">
+
+    <SwitchPreferenceCompat
+        app:key="post_notifications"
+
+        app:title="@string/enable_post_notifications_title" />
+
+    <SwitchPreferenceCompat
+        app:key="allow_duplicate_notifications"
+
+        app:title="@string/allow_duplicate_notifications_title" />
+    <ListPreference
+        android:entries="@array/sort_recommended_posts_by_array"
+        app:entryValues="@array/sort_recommended_posts_by_entry_values"
+        app:key="sort_recommended_posts_by"
+        app:title="@string/sort_recommended_posts_by" />
+    <SeekBarPreference
+        android:max="50"
+        app:key="feed_request_post_count_limit"
+        app:min="1"
+        app:showSeekBarValue="true"
+        app:title="@string/feed_request_post_count_limit_title" />
+
+</PreferenceScreen>

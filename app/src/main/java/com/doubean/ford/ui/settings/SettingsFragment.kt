@@ -5,17 +5,39 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreferenceCompat
 import com.doubean.ford.BuildConfig
 import com.doubean.ford.R
+import com.doubean.ford.util.InjectorUtils
 import com.google.android.material.appbar.MaterialToolbar
 
+// PreferenceFragmentCompat + DataStore
+// See https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:datastore/datastore-sampleapp/src/main/java/com/example/datastoresampleapp/SettingsFragment.kt
 class SettingsFragment : PreferenceFragmentCompat() {
+
+    private val settingsViewModel: SettingsViewModel by viewModels {
+        InjectorUtils.provideSettingsViewModelFactory(
+            requireContext()
+        )
+    }
+
+    private var perFollowDefaultNotificationsPreferencesPreference: Preference? = null
+    private var notificationsSwitchPreference: SwitchPreferenceCompat? = null
+    private var appVersionPreference: Preference? = null
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
-        preferenceManager.findPreference<Preference>("app_version")!!.summary =
+
+        perFollowDefaultNotificationsPreferencesPreference =
+            preferenceManager.findPreference<Preference>("per_follow_default_notifications_preferences")
+        notificationsSwitchPreference =
+            preferenceManager.findPreference<SwitchPreferenceCompat>("notifications")
+        appVersionPreference = preferenceManager.findPreference<Preference>("app_version")
+        appVersionPreference?.summary =
             BuildConfig.VERSION_NAME
     }
 
@@ -29,6 +51,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
         linearLayout.fitsSystemWindows = true
         addToolbar(linearLayout)
         return linearLayout
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        settingsViewModel.enableNotifications.observe(viewLifecycleOwner) {
+            notificationsSwitchPreference?.isChecked = it
+        }
+
+        notificationsSwitchPreference?.onPreferenceChangeListener =
+            Preference.OnPreferenceChangeListener { _, _ ->
+                settingsViewModel.toggleEnableNotifications()
+                true
+            }
     }
 
     private fun addToolbar(linearLayout: LinearLayout) {

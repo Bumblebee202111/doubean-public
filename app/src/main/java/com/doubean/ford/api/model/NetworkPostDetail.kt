@@ -3,7 +3,7 @@ package com.doubean.ford.api.model
 import com.doubean.ford.data.db.model.PostDetailPartialEntity
 import com.doubean.ford.data.db.model.PostGroupPartialEntity
 import com.doubean.ford.data.db.model.PostTagCrossRef
-import com.doubean.ford.util.ColorUtils
+import com.doubean.ford.util.parseHexColor
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDateTime
 
@@ -120,5 +120,5 @@ fun NetworkPostGroup.asPartialEntity() = PostGroupPartialEntity(
     avatarUrl = avatarUrl,
     memberName = memberName,
     shortDescription = shortDescription,
-    color = ColorUtils.parseHexColor(colorString)
+    color = parseHexColor(colorString)
 )

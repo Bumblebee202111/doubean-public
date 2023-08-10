@@ -2,7 +2,6 @@ package com.doubean.ford.ui.groups.groupDetail
 
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -15,6 +14,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.doubean.ford.R
 import com.doubean.ford.databinding.FragmentGroupDetailBinding
 import com.doubean.ford.model.GroupTab
+import com.doubean.ford.ui.groups.groupDetail.GroupNotificationsPreferenceDialogFragment.Companion.DIALOG_GROUP_NOTIFICATIONS_PREFERENCE
 import com.doubean.ford.util.*
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
@@ -32,7 +32,8 @@ class GroupDetailFragment : Fragment() {
         InjectorUtils.provideGroupDetailViewModelFactory(
             requireContext(),
             groupId,
-            defaultSelectedTabId)
+            defaultSelectedTabId
+        )
     }
     private lateinit var viewPager: ViewPager2
 
@@ -52,10 +53,10 @@ class GroupDetailFragment : Fragment() {
         viewPager = binding.pager
 
         binding.followUnfollow.setOnClickListener {
-            groupDetailViewModel.group.value?.data?.let {
-                onFollowGroup(it.isFollowed)
-            }
+            groupDetailViewModel.group.value?.data?.isFollowed?.let(::onFollowGroup)
         }
+
+        binding.notificationButton.setOnClickListener { showNotificationsPrefDialog() }
 
         binding.toolbarLayout.setCollapsedTitleTextColor(requireContext().getColor(R.color.doubean_white))
         binding.appbar.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
@@ -85,7 +86,8 @@ class GroupDetailFragment : Fragment() {
                 group.tabs?.let { tabs ->
                     val taggedTabIds = tabs.map(GroupTab::id)
                     if (viewPager.adapter == null && (defaultSelectedTabId == null || taggedTabIds.contains(
-                            defaultSelectedTabId))
+                            defaultSelectedTabId
+                        ))
                     ) {
                         groupPagerAdapter = GroupPagerAdapter(
                             childFragmentManager,
@@ -114,35 +116,48 @@ class GroupDetailFragment : Fragment() {
                     viewPager.offscreenPageLimit = tabs.size + 1
                 }
 
-                val colorSurface = getColorSurface()
+                val colorSurface = requireContext().getColorFromTheme(R.attr.colorSurface)
+                val groupColor =
+                    group.color ?: requireContext().getColorFromTheme(R.attr.colorPrimary)
+
                 val followedItem = binding.toolbar.menu.findItem(R.id.action_follow)
                 followedItem.setIcon(if (group.isFollowed) R.drawable.ic_remove else R.drawable.ic_add)
-                val followUnfollow = binding.followUnfollow
-                if (group.isFollowed) {
-                    followUnfollow.setIconResource(R.drawable.ic_remove)
-                    followUnfollow.setText(R.string.unfollow)
-                    group.color?.let { color ->
-                        followUnfollow.iconTint = ColorStateList.valueOf(color)
-                        followUnfollow.setTextColor(color)
+
+                with(binding.followUnfollow) {
+                    if (group.isFollowed) {
+                        setIconResource(R.drawable.ic_remove)
+                        setText(R.string.unfollow)
+                        iconTint = ColorStateList.valueOf(groupColor)
+                        setTextColor(groupColor)
+                        setBackgroundColor(colorSurface)
+                    } else {
+                        setIconResource(R.drawable.ic_add)
+                        setText(R.string.follow)
+                        iconTint = ColorStateList.valueOf(colorSurface)
+                        setTextColor(colorSurface)
+                        setBackgroundColor(groupColor)
                     }
-                    followUnfollow.setBackgroundColor(colorSurface)
-                } else {
-                    followUnfollow.setIconResource(R.drawable.ic_add)
-                    followUnfollow.setText(R.string.follow)
-                    followUnfollow.iconTint = ColorStateList.valueOf(colorSurface)
-                    followUnfollow.setTextColor(colorSurface)
-                    group.color?.let { color ->
-                        followUnfollow.setBackgroundColor(color)
+                }
+
+                with(binding.notificationButton) {
+                    when (group.enableNotifications) {
+                        true -> {
+                            setIconResource(R.drawable.ic_notifications)
+                            iconTint = ColorStateList.valueOf(groupColor)
+                            setBackgroundColor(colorSurface)
+                        }
+                        false -> {
+                            setIconResource(R.drawable.ic_notification_add)
+                            iconTint = ColorStateList.valueOf(colorSurface)
+                            setBackgroundColor(groupColor)
+                        }
+                        else -> {
+
+                        }
                     }
                 }
             }
         }
-    }
-
-    private fun getColorSurface(): Int {
-        val typedValue = TypedValue()
-        requireContext().theme.resolveAttribute(R.attr.colorSurface, typedValue, true)
-        return typedValue.data
     }
 
     private fun onMenuItemClick(item: MenuItem): Boolean {
@@ -176,12 +191,23 @@ class GroupDetailFragment : Fragment() {
     private fun onFollowGroup(oldIsFollowed: Boolean) {
         if (oldIsFollowed) {
             groupDetailViewModel.removeFollow()
-            view?.showSnackbar(R.string.unfollowed_group, Snackbar.LENGTH_LONG)
+            view?.showSnackbar(
+                R.string.unfollowed_group,
+                Snackbar.LENGTH_LONG,
+            )
         } else {
             groupDetailViewModel.addFollow()
-            view?.showSnackbar(R.string.followed_group, Snackbar.LENGTH_LONG)
+            view?.showSnackbar(
+                R.string.followed_group, Snackbar.LENGTH_LONG, R.string.edit_follow_preferences
+            ) { showNotificationsPrefDialog() }
         }
     }
+
+    private fun showNotificationsPrefDialog() {
+        GroupNotificationsPreferenceDialogFragment.newInstance(groupId)
+            .show(childFragmentManager, DIALOG_GROUP_NOTIFICATIONS_PREFERENCE)
+    }
+
 
     companion object {
         fun getItemOfTabId(groupTabs: List<GroupTab>, tabId: String?) =

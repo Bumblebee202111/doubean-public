@@ -1,6 +1,20 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <PreferenceCategory app:title="@string/about_header">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:persistent="false">
+    <PreferenceCategory
+        app:key="notifications_category"
+        app:title="Notifications">
+        <SwitchPreferenceCompat
+            app:key="notifications"
+            app:title="@string/enable_notifications_title" />
+        <Preference
+            app:fragment="com.doubean.ford.ui.settings.PerFollowDefaultNotificationsPreferencesSettingsFragment"
+            app:key="per_follow_default_notifications_preferences"
+            app:title="@string/per_follow_default_notifications_preferences_settings_title" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:key="about"
+        app:title="@string/about_header">
 
         <Preference
             app:key="app_version"
@@ -19,7 +33,7 @@
                 android:data="https://github.com/Bumblebee202111" />
         </Preference>
         <Preference
-            app:key="send_feedback"
+            app:key="feedback"
             app:title="@string/send_feedback_title">
             <intent
                 android:action="android.intent.action.VIEW"

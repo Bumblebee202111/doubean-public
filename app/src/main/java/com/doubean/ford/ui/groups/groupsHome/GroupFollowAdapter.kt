@@ -12,11 +12,16 @@ import com.doubean.ford.databinding.ListItemGroupFollowBinding
 import com.doubean.ford.model.GroupFollowItem
 
 class GroupFollowAdapter : ListAdapter<GroupFollowItem, GroupFollowAdapter.ViewHolder>(
-    GroupFollowDiffCallback()) {
+    GroupFollowDiffCallback()
+) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ListItemGroupFollowBinding.inflate(LayoutInflater.from(parent.context),
-            parent,
-            false))
+        return ViewHolder(
+            ListItemGroupFollowBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -27,7 +32,14 @@ class GroupFollowAdapter : ListAdapter<GroupFollowItem, GroupFollowAdapter.ViewH
     class ViewHolder(private val binding: ListItemGroupFollowBinding) :
         RecyclerView.ViewHolder(binding.root) {
         init {
-            binding.clickListener = View.OnClickListener { v: View -> binding.groupFollow?.let{navigateToGroup(it, v)} }
+            binding.clickListener = View.OnClickListener { v: View ->
+                binding.groupFollow?.let {
+                    navigateToGroup(
+                        it,
+                        v
+                    )
+                }
+            }
         }
 
         private fun navigateToGroup(followItem: GroupFollowItem, itemView: View) {

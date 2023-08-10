@@ -6,8 +6,12 @@
     <data>
 
         <variable
-            name="viewModel"
+            name="groupTabViewModel"
             type="com.doubean.ford.ui.groups.groupTab.GroupTabViewModel" />
+
+        <variable
+            name="groupDetailViewModel"
+            type="com.doubean.ford.ui.groups.groupDetail.GroupDetailViewModel" />
 
         <import type="java.util.List" />
 
@@ -90,18 +94,34 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/follow_unfollow"
-                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                        <com.google.android.material.button.MaterialButtonToggleGroup
+                            android:id="@+id/toggle_group"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAllCaps="false"
                             android:layout_marginEnd="@dimen/margin_smaller"
-                            app:icon="@drawable/ic_add"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/more"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:text="Follow" />
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/notification_button"
+                                style="@style/Widget.Doubean.Button.OutlinedButton.IconOnly.MixedToggleGroupIcon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checkable="false"
+                                app:icon="@drawable/ic_notifications" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/follow_unfollow"
+                                style="@style/Widget.Doubean.Button.OutlinedButton.IconOnly.MixedToggleGroupIcon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checkable="false"
+                                android:textAllCaps="false"
+                                app:icon="@drawable/ic_add"
+                                tools:text="Follow" />
+                        </com.google.android.material.button.MaterialButtonToggleGroup>
+
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/more"

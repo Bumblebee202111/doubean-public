@@ -4,11 +4,12 @@
     <string name="title_groups">Groups</string>
     <string name="title_notifications">Notifications</string>
     <string name="follow_header">Follows</string>
-
     <string name="title_group">Group</string>
     <string name="title_post_detail">Post Detail</string>
     <string name="settings">Settings</string>
+
     <string name="search">Search</string>
+
     <string name="last_updated">Last updated %s</string>
     <string name="search_hint">Search groups</string>
 
@@ -25,6 +26,7 @@
     <string name="last_updated_posts">Last updated posts</string>
     <string name="new_posts">New posts</string>
     <string name="top_posts">Top posts</string>
+    <string name="new_top_posts">New top posts</string>
 
     <string-array name="sort_posts_by_array">
         <item>@string/last_updated_posts</item>
@@ -39,6 +41,7 @@
 
     <string name="follow">Follow</string>
     <string name="unfollow">Unfollow</string>
+    <string name="edit_follow_preferences">Edit follow preferences</string>
 
     <string name="a11y_group_item_image">Avatar of group</string>
     <string name="all">All</string>
@@ -76,6 +79,12 @@
     <string name="groups_of_the_day_header">Groups of the Day</string>
 
     <!-- Preference Titles -->
+    <string name="enable_notifications_title">Enable notifications</string>
+    <string name="per_follow_default_notifications_preferences_settings_title">Per-follow default notifications preferences settings</string>
+    <string name="enable_post_notifications_title">Enable post notifications</string>
+    <string name="allow_duplicate_notifications_title">Allow duplicate notifications</string>
+    <string name="sort_recommended_posts_by">Sort recommended posts by</string>
+    <string name="feed_request_post_count_limit_title">Feed request post count limit</string>
     <string name="about_header">About</string>
 
     <!-- About Preferences -->
@@ -84,5 +93,30 @@
     <string name="app_author_title">App author</string>
     <string name="app_author" translatable="false">Bumblebee202111</string>
 
+    <!-- Notifications -->
+    <string name="group_notifications_header">Group Notifications</string>
+    <string name="post_notification_channel_name">Recommended posts</string>
+    <string name="post_notification_channel_description">The latest updates on your following group posts and tabs</string>
+    <string name="post_notification_group_summary">%1$d recommend posts</string>
+
+    <!-- Dialogs -->
+    <string name="group_notifications_preference">Group notifications preference</string>
+    <string name="tab_notifications_preference">Tab notifications preference</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Settings -->
+    <string name="last_updated_value" translatable="false">lastUpdatedValue</string>
+    <string name="new_top_value" translatable="false">newTopValue</string>
+
+    <string-array name="sort_recommended_posts_by_array">
+        <item>@string/last_updated_posts</item>
+        <item>@string/new_top_posts</item>
+    </string-array>
+
+    <string-array name="sort_recommended_posts_by_entry_values">
+        <item>@string/last_updated_value</item>
+        <item>@string/new_top_value</item>
+    </string-array>
 
 </resources>

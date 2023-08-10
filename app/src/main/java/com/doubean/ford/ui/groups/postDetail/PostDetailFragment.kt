@@ -158,7 +158,7 @@ class PostDetailFragment : Fragment() {
         spinner.visibility = View.GONE
         val arrayAdapter = ArrayAdapter.createFromResource(
             requireContext(),
-            //TODO: use a simpler array for case of no top comments
+            //TODO: use a simpler array for case of no top comments, create array dynamically like iosched
             R.array.sort_comments_by_array,
             android.R.layout.simple_spinner_item
         )
@@ -186,7 +186,6 @@ class PostDetailFragment : Fragment() {
                                 onAllCommentsScrollChangeListener
                             )
                         }
-                        else -> {}
                     }
 
                 }
@@ -224,7 +223,6 @@ class PostDetailFragment : Fragment() {
                         PostCommentSortBy.ALL -> {
                             commentAdapter.submitList(comments.allComments)
                         }
-                        else -> {}
                     }
                     spinner.visibility = View.VISIBLE
                 }
@@ -268,11 +266,10 @@ class PostDetailFragment : Fragment() {
         findNavController().navigate(direction)
     }
 
-    private fun getSortByAt(position: Int): PostCommentSortBy? {
-        return when (position) {
-            0 -> return PostCommentSortBy.TOP
-            1 -> return PostCommentSortBy.ALL
-            else -> null
+    private fun getSortByAt(position: Int) =
+        when (position) {
+            0 -> PostCommentSortBy.TOP
+            1 -> PostCommentSortBy.ALL
+            else -> throw IndexOutOfBoundsException()
         }
-    }
 }

@@ -3,6 +3,7 @@ package com.doubean.ford.data.db.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.doubean.ford.model.PostSortBy
 import java.util.*
 
 @Entity(
@@ -11,7 +12,29 @@ import java.util.*
 data class FollowedGroupTabEntity(
     @PrimaryKey
     @ColumnInfo("tab_id")
-    val groupTabId: String,
+    val tabId: String,
+
+    @ColumnInfo("group_id")
+    override val groupId: String,
+
     @ColumnInfo("follow_date")
-    val followDate: Calendar = Calendar.getInstance(),
-)
+    override val followDate: Calendar = Calendar.getInstance(),
+
+    @ColumnInfo("feed_request_post_count_limit")
+    override val feedRequestPostCountLimit: Int,
+
+    @ColumnInfo("enable_notifications")
+    override val enablePostNotifications: Boolean,
+
+    @ColumnInfo("allow_duplicate_notifications")
+    override val allowDuplicateNotifications: Boolean,
+
+    @ColumnInfo("sort_recommended_posts_by")
+    override val sortRecommendedPostsBy: PostSortBy,
+
+    @ColumnInfo("last_notified_time_millis")
+    override val lastNotifiedTimeMillis: Long = 0,
+
+    ) : FollowableEntity {
+}
+

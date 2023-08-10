@@ -1,6 +1,7 @@
 package com.doubean.ford.data.db.model
 
 import androidx.room.*
+import com.doubean.ford.model.PostItemGroup
 import java.time.LocalDateTime
 
 class PostItemGroupPartialEntity(
@@ -34,6 +35,21 @@ class PostItemGroupPartialEntity(
 
     val description: String? = null,
 
-    @ColumnInfo("color_string")
     val color: Int? = null,
+)
+
+fun PostItemGroupPartialEntity.asExternalModel() = PostItemGroup(
+    id,
+    name,
+    memberCount,
+    postCount,
+    dateCreated,
+    shareUrl,
+    url,
+    uri,
+    avatarUrl,
+    memberName,
+    shortDescription,
+    description,
+    color
 )

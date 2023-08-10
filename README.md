@@ -4,9 +4,14 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
 
-From now on, this repo will be updated slightly more frequently as I will probably use it as a
-'ticket' to my first Android job. Note I am an inexperienced Android beginner and the only developer
-of it. Occasional crashes may happen, UI design may be incomplete and features you need may be
+From now on, the development of this app will be slowed down, as:
+
+* Douban users are making hilarious remarks, which is reinforced by the org/mods
+* There are few alternatives for me to refer to
+* Group theming is currently a mess
+
+Note I am an inexperienced Android beginner and the only developer of it. Occasional crashes may
+happen, UI design may be incomplete and features you need may be
 missing. Pretty much of my work is copy and paste from the official documentation and samples of
 Google Android. I am trying my best only to ensure that the app will function normally on my Xiaomi
 devices with the Android version varying from 8.1 to 12.
@@ -48,7 +53,7 @@ Blank
 
 #### NotificationFragment
 
-Blank
+* Group post notifications
 
 ### Screenshots
 
@@ -163,14 +168,19 @@ order\)
 
 #### To-dos for current release \(0.4.2\)
 
-* \[Group\] For-you post notifications with Retrofit/Worker
+* 🛠 "New" post order
+* 🛠 Default tab not correctly selected if not all
+* Remove ugly redundant follow button from group menu
 
 #### To-dos for next release \(0.5.0\)
 
 #### Future plans
 
+* Login if possible \(else exclude modules other than Groups from the to-do list\)
 * Migrate GithubBrowserSample's user-implemented way of paging to Paging3
 * Use the new nullable "edit_time" property of network posts
+* Split Douban data and local user data instead of putting them in one model class
+* Find a better solution for group theming
 * Refactor `Resource` to `sealed` `Result`, parse it in ViewModels \(like iosched,
   architecture-samples)\
 * Learn about RecycledViewPool and use it if necessary
@@ -178,7 +188,7 @@ order\)
 * \[Movies\] Add T250
 * Hide officially-marked unfriendly content by default
 * Optimize rendering of pictures
-* Use modern form of manual di
+* Hilt
 * Allow expanding group description w/ SpannableString
 * \[SettingsFragment\] Add WebView enabled by default preference, nav start destination etc with
   DataStore
@@ -191,11 +201,15 @@ order\)
 * \[WebView\]Complete CSS of content WebView: find official CSS source or write on my own
 * \[GroupDetailFragment\]\[PostDetailFragment\]Track/mark/revert/todo read
 * \[GroupsHomeFragment\]Unfollow/reorder items
-* Allow following/saving every type of item
-  * \[GroupsHomeFragment\]Show followed groups/tabs/searches / saved posts / saved comments with
-    group info
+* Follows/saves
+  * Allow following/saving every type of item: groups/tabs/searches/categories
+  * Post title text filters
+  * \[GroupsHomeFragment\]Show posts of followed collections / comments of saved comments with
+    group/tab header
   * \[Lists\]Add corresponding item action
-* \[GroupDetailFragment\]Allow custom groups/tabs/posts categories/groups with filters available
+  * Custom feeds like Reddit
+    * Replace content of the recommended groups area with recommended posts \(of followed groups and
+      tabs\)
 * \[GroupDetailFragment\]Group/tab/post shortcuts
 * Rate limit
 * \[Lists\]Reddit-like item expand/collapse
@@ -212,21 +226,19 @@ order\)
 * \[GroupDetailFragment\] The problem that if the initial position is manually set, the last
   position won't be restored when the pager is being recreated is solved, but not in a way that is
   clean enough
-* Login-based features \(if possible\)
-* \[GroupsHomeFragment\] Customized recommendation feeds
+  * Should I use Fragment.isResumed?
+
 * 🛠 Views on top of WebView become invisible after scroll on my MIUI 10 Android 8.1 device \(causes
   unknown, may never be fixed\)
 * \[Lists\]Post order: custom rules based on multiple factors
-* Uploads copies of responses to some place and reuses it among users to prevent frequent Douban
-  visits.
+* User data backup
 
 #### More general plans
 
-* Use MD3
 * Use new features of the updated dependencies
   * CreationExtras?
 * Optimize landscape experience
-* Decouple DoubanInterface and expose as much code to VC as possible \(Make anything but keys
+* Decouple Douban Interface and expose as much code to VC as possible \(Make anything but keys
   open-source\)
 
 ### Non-Todos

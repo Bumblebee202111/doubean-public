@@ -1,13 +1,16 @@
 package com.doubean.ford.ui.groups.groupTab
 
 import androidx.lifecycle.*
+import com.doubean.ford.data.prefs.DataStorePreferenceStorage
 import com.doubean.ford.data.repository.GroupRepository
 import com.doubean.ford.data.repository.GroupUserDataRepository
 import com.doubean.ford.model.*
 import com.doubean.ford.ui.common.NextPageHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Make LiveData refreshable:
@@ -16,22 +19,25 @@ import kotlinx.coroutines.launch
 class GroupTabViewModel(
     private val groupRepository: GroupRepository,
     private val groupUserDataRepository: GroupUserDataRepository,
+    private val preferenceStorage: DataStorePreferenceStorage,
     private val groupId: String,
-    private val tabId: String?,
+    val tabId: String?,
 ) : ViewModel() {
     private val nextPageHandler = object : NextPageHandler() {
         override fun loadNextPageFromRepo(): LiveData<Resource<Boolean>?> {
             return liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
-                emit(when (tabId != null) {
-                    true -> groupRepository.getNextPageGroupTagPosts(
-                        groupId, tabId, sortBy.value!!
-                    )
-                    else -> {
-                        groupRepository.getNextPageGroupPosts(
-                            groupId, sortBy.value!!
+                emit(
+                    when (tabId != null) {
+                        true -> groupRepository.getNextPageGroupTagPosts(
+                            groupId, tabId, sortBy.value!!
                         )
+                        else -> {
+                            groupRepository.getNextPageGroupPosts(
+                                groupId, sortBy.value!!
+                            )
+                        }
                     }
-                })
+                )
             }
         }
     }
@@ -47,8 +53,6 @@ class GroupTabViewModel(
         }
     }
     private val sortBy = MutableLiveData<PostSortBy>()
-    val group = groupRepository.getGroup(groupId).flowOn(Dispatchers.IO).asLiveData()
-    val tab = group.map { it.data?.tabs?.firstOrNull { tab -> tab.id == this.tabId } }
 
     fun setSortBy(postSortBy: PostSortBy) {
         if (postSortBy === sortBy.value) {
@@ -64,9 +68,17 @@ class GroupTabViewModel(
 
     fun addFollow() {
         viewModelScope.launch {
-            groupUserDataRepository.addFollowedTab(tabId!!)
+            withContext(Dispatchers.IO) {
+                groupUserDataRepository.addFollowedTab(
+                    groupId = groupId,
+                    tabId = tabId!!,
+                    enablePostNotifications = preferenceStorage.perFollowDefaultEnablePostNotifications.first(),
+                    allowsDuplicateNotifications = preferenceStorage.perFollowDefaultAllowDuplicateNotifications.first(),
+                    sortRecommendedPostsBy = preferenceStorage.perFollowDefaultSortRecommendedPostsBy.first(),
+                    feedRequestPostCountLimit = preferenceStorage.perFollowDefaultFeedRequestPostCountLimit.first()
+                )
+            }
         }
-
     }
 
     fun removeFollow() {
@@ -85,19 +97,45 @@ class GroupTabViewModel(
 
     }
 
+    fun saveNotificationsPreference(
+        enableNotifications: Boolean,
+        allowNotificationUpdates: Boolean,
+        sortRecommendedPostsBy: PostSortBy,
+        numberOfPostsLimitEachFeedFetch: Int,
+    ) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                if (tabId != null) {
+                    groupUserDataRepository.updateTabNotificationsPref(
+                        tabId,
+                        enableNotifications,
+                        allowNotificationUpdates,
+                        sortRecommendedPostsBy,
+                        numberOfPostsLimitEachFeedFetch
+                    )
+                }
+            }
+
+        }
+    }
+
     companion object {
         class Factory(
             private val groupRepository: GroupRepository,
             var groupUserDataRepository: GroupUserDataRepository,
+            private val preferenceStorage: DataStorePreferenceStorage,
             private val groupId: String,
             private val tagId: String?,
         ) : ViewModelProvider.NewInstanceFactory() {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return GroupTabViewModel(groupRepository,
+                return GroupTabViewModel(
+                    groupRepository,
                     groupUserDataRepository,
+                    preferenceStorage,
                     groupId,
-                    tagId) as T
+                    tagId
+                ) as T
             }
         }
     }

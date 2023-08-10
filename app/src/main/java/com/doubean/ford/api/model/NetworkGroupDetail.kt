@@ -2,7 +2,7 @@ package com.doubean.ford.api.model
 
 import com.doubean.ford.data.db.model.GroupDetailPartialEntity
 import com.doubean.ford.data.db.model.GroupTabEntity
-import com.doubean.ford.util.ColorUtils
+import com.doubean.ford.util.parseHexColor
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import java.time.LocalDateTime
@@ -67,7 +67,7 @@ fun NetworkGroupDetail.asPartialEntity() = GroupDetailPartialEntity(
     shareUrl = shareUrl,
     url = url,
     uri = uri,
-    color = ColorUtils.parseHexColor(colorString)
+    color = parseHexColor(colorString)
 )
 
 

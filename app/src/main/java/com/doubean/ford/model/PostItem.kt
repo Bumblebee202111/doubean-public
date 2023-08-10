@@ -17,11 +17,10 @@ data class PostItem(
 
     val tags: List<GroupPostTag>,
 
-    val coverUrl: String? = null,
+    val coverUrl: String?,
     val url: String,
     val uri: String,
 ) {
-    var tagId: String? = null
     val tag: GroupPostTag?
         get() = tags.firstOrNull()
 }

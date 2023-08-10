@@ -65,11 +65,19 @@ interface GroupDao {
     @Query("SELECT * FROM posts WHERE id IN (:postIds)")
     @RewriteQueriesToDropUnusedColumns
     fun loadPosts(postIds: List<String>): Flow<List<PopulatedPostItem>>
-
     fun loadOrderedPosts(postIds: List<String>) = loadPosts(postIds).map { posts ->
         posts.sortedWith(compareBy { o -> postIds.indexOf(o.partialEntity.id) })
     }
 
+    @Transaction
+    @Query("SELECT * FROM posts WHERE id IN (:postIds)")
+    @RewriteQueriesToDropUnusedColumns
+    fun loadPostsWithGroups(postIds: List<String>): Flow<List<PopulatedPostItemWithGroup>>
+
+    fun loadOrderedPostsWithGroups(postIds: List<String>) =
+        loadPostsWithGroups(postIds).map { posts ->
+            posts.sortedWith(compareBy { o -> postIds.indexOf(o.partialEntity.id) })
+        }
 
     @Query("SELECT * FROM GroupPostsResult WHERE group_id = :groupId AND sort_by = :sortBy")
     @RewriteQueriesToDropUnusedColumns

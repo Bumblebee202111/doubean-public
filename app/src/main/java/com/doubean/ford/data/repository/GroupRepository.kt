@@ -250,7 +250,7 @@ class GroupRepository private constructor(
             }
 
             override suspend fun createCall(): ApiResponse<NetworkPosts> {
-                return doubanService.getGroupTagPosts(
+                return doubanService.getGroupPosts(
                     groupId = groupId,
                     tagId = tagId,
                     sortBy = getPostSortByRequestParam(postSortBy).toString(),
@@ -272,7 +272,7 @@ class GroupRepository private constructor(
                     groupDao.getGroupTagPosts(groupId, tagId, postSortBy)!!
 
                 override suspend fun createCall(nextPageStart: Int?) =
-                    doubanService.getGroupTagPosts(
+                    doubanService.getGroupPosts(
                         groupId,
                         tagId,
                         getPostSortByRequestParam(postSortBy).toString(),
@@ -445,7 +445,7 @@ class GroupRepository private constructor(
     private fun getPostSortByRequestParam(postSortBy: PostSortBy): SortByRequestParam {
         return when (postSortBy) {
             PostSortBy.LAST_UPDATED, PostSortBy.NEW -> SortByRequestParam.NEW
-            PostSortBy.TOP -> SortByRequestParam.TOP
+            PostSortBy.TOP, PostSortBy.NEW_TOP -> SortByRequestParam.TOP
         }
     }
 

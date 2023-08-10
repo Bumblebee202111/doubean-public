@@ -24,8 +24,10 @@ data class PopulatedGroupDetail(
 data class PopulatedGroupTab(
     @Embedded
     val entity: GroupTabEntity,
-    @Relation(parentColumn = "id",
-        entityColumn = "tab_id")
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "tab_id"
+    )
     val followedTab: FollowedGroupTabEntity?,
 )
 
@@ -43,12 +45,20 @@ fun PopulatedGroupDetail.asExternalModel() = GroupDetail(
     description = partialEntity.description,
     tabs = tabs.map { it.asExternalModel() },
     color = partialEntity.color,
-    isFollowed = followedGroup != null
+    isFollowed = followedGroup != null,
+    enableNotifications = followedGroup?.enablePostNotifications,
+    allowDuplicateNotifications = followedGroup?.allowDuplicateNotifications,
+    sortRecommendedPostsBy = followedGroup?.sortRecommendedPostsBy,
+    feedRequestPostCountLimit = followedGroup?.feedRequestPostCountLimit,
 )
 
 fun PopulatedGroupTab.asExternalModel() = GroupTab(
     id = entity.id,
     name = entity.name,
     seq = entity.seq,
-    isFollowed = followedTab != null
+    isFollowed = followedTab != null,
+    enableNotifications = followedTab?.enablePostNotifications,
+    allowDuplicateNotifications = followedTab?.allowDuplicateNotifications,
+    sortRecommendedPostsBy = followedTab?.sortRecommendedPostsBy,
+    feedRequestPostCountLimit = followedTab?.feedRequestPostCountLimit,
 )

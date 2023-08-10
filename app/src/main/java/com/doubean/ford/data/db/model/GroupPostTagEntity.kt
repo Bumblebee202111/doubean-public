@@ -9,7 +9,7 @@ import com.doubean.ford.model.GroupPostTag
 data class GroupPostTagEntity(
     @PrimaryKey
     val id: String,
-    var name: String?,
+    val name: String,
     @ColumnInfo("group_id")
     val groupId: String,
 )

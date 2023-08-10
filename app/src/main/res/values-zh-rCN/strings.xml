@@ -10,7 +10,28 @@
     <string name="search">搜索</string>
     <string name="last_updated">最后更新于%s</string>
     <string name="search_hint">搜索小组</string>
+
     <string name="empty_search_result">暂无 <b>%s</b> 的搜索结果</string>
+    <string name="add_to_followed">添加到收藏</string>
+    <string name="followed_group">已关注小组</string>
+    <string name="unfollowed_group">取消关注小组</string>
+    <string name="edit_follow_preferences">编辑关注偏好</string>
+
+    <string name="empty_follows">你还没有任何关注，可以搜索小组或浏览小组日榜</string>
+
+    <string name="followed_tab">关注标签</string>
+    <string name="unfollowed_tab">取消关注标签</string>
+
+    <string name="a11y_group_item_image">小组头像</string>
+    <string name="all">全部</string>
+
+    <string name="last_updated_posts">最后更新发帖</string>
+    <string name="top_posts">热门发帖</string>
+    <string name="new_posts">最新发帖</string>
+    <string name="new_top_posts">最新热帖</string>
+
+    <string name="follow">关注</string>
+    <string name="unfollow">取消关注</string>
 
     <plurals name="comments">
         <item quantity="other">%d 评论</item>
@@ -24,21 +45,9 @@
     <plurals name="saves">
         <item quantity="other">%d 收藏</item>
     </plurals>
-    <string name="a11y_group_item_image">小组头像</string>
-    <string name="add_to_followed">添加到收藏</string>
-    <string name="followed_group">已关注小组</string>
-    <string name="unfollowed_group">取消关注小组</string>
-    <string name="all">全部</string>
     <string name="top_comments">热门评论</string>
     <string name="all_comments">全部评论</string>
     <string name="op">楼主</string>
-    <string name="top_posts">热门发帖</string>
-    <string name="new_posts">最新发帖</string>
-    <string name="follow">关注</string>
-    <string name="unfollow">取消关注</string>
-    <string name="last_updated_posts">最后更新发帖</string>
-    <string name="followed_tab">关注标签</string>
-    <string name="unfollowed_tab">取消关注标签</string>
     <string name="retry">重试</string>
     <string name="unknown_error">未知错误</string>
     <string name="share">分享</string>
@@ -50,14 +59,31 @@
     <string name="view_in_douban">在豆瓣中查看</string>
     <string name="view_in">在……中查看</string>
     <string name="groups_of_the_day_header">小组日榜</string>
-    <string name="empty_follows">你还没有任何关注，可以搜索小组或浏览小组日榜</string>
 
     <!-- Preference Titles -->
+    <string name="enable_notifications_title">开启通知</string>
+    <string name="per_follow_default_notifications_preferences_settings_title">分关注项默认通知偏好设置</string>
+    <string name="enable_post_notifications_title">启用帖子通知</string>
+    <string name="allow_duplicate_notifications_title">允许重复通知</string>
+    <string name="sort_recommended_posts_by">推荐帖子的排序方式</string>
+    <string name="feed_request_post_count_limit_title">每次动态更新请求的帖子总数限制</string>
     <string name="about_header">关于</string>
 
     <!-- About Preferences -->
     <string name="app_version_title">App版本</string>
     <string name="send_feedback_title">发送反馈</string>
     <string name="app_author_title">App作者</string>
+
+    <!-- Notifications -->
+    <string name="group_notifications_header">小组通知</string>
+    <string name="post_notification_channel_name">推荐的帖子</string>
+    <string name="post_notification_channel_description">你关注的小组和标签的最近更新</string>
+    <string name="post_notification_group_summary">%1$d条推荐的帖子</string>
+
+    <!-- Dialogs -->
+    <string name="group_notifications_preference">小组通知偏好</string>
+    <string name="tab_notifications_preference">标签页通知偏好</string>
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
 
 </resources>

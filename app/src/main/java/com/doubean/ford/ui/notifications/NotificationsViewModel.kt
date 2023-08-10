@@ -1,12 +1,23 @@
 package com.doubean.ford.ui.notifications
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
+import com.doubean.ford.data.repository.GroupUserDataRepository
 
-class NotificationsViewModel : ViewModel() {
-    private val mText: MutableLiveData<String> = MutableLiveData("This is notifications fragment")
+class NotificationsViewModel(private val groupUserDataRepository: GroupUserDataRepository) :
+    ViewModel() {
+    val notifications =
+        groupUserDataRepository.getRecommendedPostNotifications().cachedIn(viewModelScope)
 
-    val text: LiveData<String>
-        get() = mText
+    companion object {
+        class Factory(private val groupUserDataRepository: GroupUserDataRepository) :
+            ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return NotificationsViewModel(groupUserDataRepository) as T
+            }
+        }
+    }
 }

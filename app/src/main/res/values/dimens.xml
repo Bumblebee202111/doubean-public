@@ -21,4 +21,5 @@
 
     <dimen name="corner_size_small">4dp</dimen>
     <dimen name="corner_size_normal">8dp</dimen>
+    <dimen name="min_touch_target">48dp</dimen>
 </resources>

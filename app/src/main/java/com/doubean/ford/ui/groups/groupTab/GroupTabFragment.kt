@@ -20,6 +20,7 @@ import com.doubean.ford.ui.common.RetryCallback
 import com.doubean.ford.ui.groups.groupDetail.GroupDetailViewModel
 import com.doubean.ford.util.InjectorUtils
 import com.doubean.ford.util.ShareUtil
+import com.doubean.ford.util.getColorFromTheme
 import com.doubean.ford.util.showSnackbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
@@ -45,7 +46,8 @@ class GroupTabFragment : Fragment() {
         tagId = args.getString(ARG_TAG_ID)
         binding = FragmentGroupTabBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
-            viewModel = groupTabViewModel
+            groupTabViewModel = groupTabViewModel
+            groupDetailViewModel = groupDetailViewModel
         }
         return binding.root
     }
@@ -59,24 +61,47 @@ class GroupTabFragment : Fragment() {
 
         groupDetailViewModel.group.observe(viewLifecycleOwner) {
             it.data?.let { group ->
-                group.color?.let { groupColor ->
-                    followUnfollow.iconTint = ColorStateList.valueOf(groupColor)
-                    followUnfollow.setTextColor(groupColor)
+                val colorSurface = requireContext().getColorFromTheme(R.attr.colorSurface)
+                val groupColor =
+                    group.color ?: requireContext().getColorFromTheme(R.attr.colorPrimary)
+                binding.notificationButton.visibility =
+                    if (group.findTab(tagId)?.enableNotifications == null) View.GONE else View.VISIBLE
+                group.findTab(tagId)?.let { tab ->
+                    with(binding.followUnfollow) {
+                        if (tab.isFollowed) {
+                            setIconResource(R.drawable.ic_remove)
+                            setText(R.string.unfollow)
+                            iconTint = ColorStateList.valueOf(groupColor)
+                            setTextColor(groupColor)
+                            setBackgroundColor(colorSurface)
+                        } else {
+                            setIconResource(R.drawable.ic_add)
+                            setText(R.string.follow)
+                            iconTint = ColorStateList.valueOf(colorSurface)
+                            setTextColor(colorSurface)
+                            setBackgroundColor(groupColor)
+                        }
+                    }
+
+                    with(binding.notificationButton) {
+                        when (tab.enableNotifications) {
+                            true -> {
+                                setIconResource(R.drawable.ic_notifications)
+                                iconTint = ColorStateList.valueOf(groupColor)
+                                setBackgroundColor(colorSurface)
+                            }
+                            false -> {
+                                setIconResource(R.drawable.ic_notification_add)
+                                iconTint = ColorStateList.valueOf(colorSurface)
+                                setBackgroundColor(groupColor)
+                            }
+                            else -> {
+
+                            }
+                        }
+                    }
                 }
             }
-        }
-
-        groupTabViewModel.tab.observe(viewLifecycleOwner) {
-            it?.let { tab ->
-                if (tab.isFollowed) {
-                    followUnfollow.setIconResource(R.drawable.ic_remove)
-                    followUnfollow.setText(R.string.unfollow)
-                } else {
-                    followUnfollow.setIconResource(R.drawable.ic_add)
-                    followUnfollow.setText(R.string.follow)
-                }
-            }
-
         }
 
         initPostList()
@@ -86,19 +111,27 @@ class GroupTabFragment : Fragment() {
         followUnfollow = binding.followUnfollow
         more = binding.more
         if (tagId == null) { //All
-            binding.followUnfollow.visibility = View.GONE
+            binding.toggleGroup.visibility = View.GONE
             binding.more.visibility = View.GONE
         } else { //Non-all tab
             followUnfollow.setOnClickListener {
-                groupTabViewModel.tab.value?.let { tab ->
+                groupDetailViewModel.group.value?.data?.findTab(tagId)?.let { tab ->
                     if (tab.isFollowed) {
                         groupTabViewModel.removeFollow()
                         view?.showSnackbar(R.string.unfollowed_tab, Snackbar.LENGTH_LONG)
                     } else {
                         groupTabViewModel.addFollow()
-                        view?.showSnackbar(R.string.followed_tab, Snackbar.LENGTH_LONG)
+                        view?.showSnackbar(
+                            R.string.followed_tab,
+                            Snackbar.LENGTH_LONG,
+                            R.string.edit_follow_preferences
+                        ) { showNotificationsPrefDialog() }
                     }
                 }
+            }
+
+            binding.notificationButton.setOnClickListener {
+                showNotificationsPrefDialog()
             }
 
             more.setOnClickListener { v ->
@@ -200,8 +233,16 @@ class GroupTabFragment : Fragment() {
             0 -> PostSortBy.LAST_UPDATED
             1 -> PostSortBy.NEW
             2 -> PostSortBy.TOP
-            else -> throw(IndexOutOfBoundsException())
+            else -> throw (IndexOutOfBoundsException())
         }
+    }
+
+    private fun showNotificationsPrefDialog() {
+        GroupTabNotificationsPreferenceDialogFragment.newInstance(tagId!!)
+            .show(
+                childFragmentManager,
+                GroupTabNotificationsPreferenceDialogFragment.DIALOG_GROUP_TAB_NOTIFICATIONS_PREFERENCE
+            )
     }
 
     companion object {

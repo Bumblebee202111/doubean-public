@@ -4,7 +4,7 @@ import com.doubean.ford.data.db.model.GroupPostTagEntity
 
 data class NetworkGroupPostTag(
     val id: String,
-    var name: String?,
+    val name: String,
     val groupId: String,
 )
 

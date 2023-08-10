@@ -29,9 +29,10 @@ import kotlinx.coroutines.*
         RecommendedGroupEntity::class,
         RecommendedGroupPost::class,
         PostTagCrossRef::class,
-        UserEntity::class,
         FollowedGroupEntity::class,
         FollowedGroupTabEntity::class,
+        RecommendedPostNotificationEntity::class,
+        UserEntity::class,
     ],
     version = 1,
     exportSchema = false

@@ -38,10 +38,10 @@
                 android:id="@+id/more"
                 android:layout_width="@dimen/icon_size_extra_small"
                 android:layout_height="@dimen/icon_size_extra_small"
+                android:onClickListener="@{showPopup}"
                 android:src="@drawable/ic_more"
                 app:layout_constraintEnd_toStartOf="@id/cover"
                 app:layout_constraintStart_toEndOf="@id/first_line"
-                android:onClickListener="@{showPopup}"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -77,9 +77,9 @@
                     app:layout_constraintEnd_toStartOf="@id/created_middle_dot"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintWidth="wrap_content_constrained"
                     app:layout_constraintStart_toEndOf="@id/author_avatar"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth="wrap_content_constrained"
                     tools:text="usernameeeee" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -115,11 +115,11 @@
                 android:layout_marginTop="@dimen/margin_small"
                 android:gravity="center_vertical"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                app:groupPostTag="@{post.tag}"
+                app:groupPostTitle="@{post.title}"
                 app:layout_constraintEnd_toEndOf="@id/first_line"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/first_line"
-                app:groupPostTag="@{post.tag}"
-                app:groupPostTitle="@{post.title}"
                 tools:text="Post title post title post title post title post title post title post title" />
 
             <androidx.constraintlayout.widget.ConstraintLayout

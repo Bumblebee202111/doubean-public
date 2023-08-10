@@ -19,6 +19,33 @@
         <item name="colorPrimary">@color/doubean_white</item>
     </style>
 
+    <style name="ThemeOverlay.Doubean.MaterialButton" parent="">
+        <item name="colorPrimary">@color/doubean_green</item>
+    </style>
+
+    <style name="Widget.Doubean.Button.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Doubean.MaterialButton</item>
+    </style>
+
+    <style name="Widget.Doubean.Button.OutlinedButton.IconOnly" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="iconPadding">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">48dp</item>
+    </style>
+
+    <style name="Widget.Doubean.Button.OutlinedButton.IconOnly.MixedToggleGroupIcon" parent="Widget.Doubean.Button.OutlinedButton.IconOnly">
+        <item name="iconPadding">0dp</item>
+        <item name="android:insetTop">6dp</item>
+        <item name="android:insetBottom">6dp</item>
+        <item name="android:paddingLeft">6dp</item>
+        <item name="android:paddingRight">6dp</item>
+        <item name="android:minWidth">36dp</item>
+    </style>
+
     <style name="Widget.Douban.Toolbar" parent="Widget.MaterialComponents.Toolbar.PrimarySurface">
         <item name="materialThemeOverlay">@style/ThemeOverlay.Doubean.Toolbar</item>
     </style>
@@ -51,14 +78,6 @@
     <style name="ThemeOverlay.Doubean.BottomNavigationView" parent="">
         <item name="colorOnPrimary">@color/doubean_green</item>
         <item name="colorPrimary">@color/white</item>
-    </style>
-
-    <style name="Widget.Doubean.MaterialButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="materialThemeOverlay">@style/ThemeOverlay.Doubean.MaterialButton</item>
-    </style>
-
-    <style name="ThemeOverlay.Doubean.MaterialButton" parent="">
-        <item name="colorPrimary">@color/doubean_green</item>
     </style>
 
     <style name="Widget.Doubean.Chip.Action" parent="Widget.MaterialComponents.Chip.Action"></style>

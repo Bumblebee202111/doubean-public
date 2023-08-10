@@ -16,6 +16,7 @@ class PopulatedRecommendedGroup(
         entity = GroupEntity::class
     )
     val group: PopulatedRecommendedGroupItemGroup,
+
     @Relation(
         parentColumn = "group_id",
         entityColumn = "id",
