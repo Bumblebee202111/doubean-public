@@ -6,6 +6,7 @@ compileSdk = "33"
 constraintLayout = "2.1.4"
 coreTesting = "2.1.0"
 coroutines = "1.4.2"
+datastorePreferences = "1.0.0"
 espresso = "3.4.0"
 fragment = "1.5.6"
 glide = "4.14.2"
@@ -18,6 +19,7 @@ material = "1.6.0"
 minSdk = "27"
 navigation = "2.5.3"
 okhttpLogging = "4.10.0"
+paging = "3.1.1"
 preference = "1.2.0"
 retrofit = "2.9.0"
 room = "2.5.1"
@@ -36,6 +38,7 @@ work = "2.7.1"
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appCompat" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintLayout" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "ktx" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 androidx-lifecycle-viewmodel-savedstate = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
@@ -46,7 +49,9 @@ androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
+androidx-paging = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
 androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preference" }
 androidx-test-espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
 commons-codec = { module = "commons-codec:commons-codec", version.ref = "commonsCodec" }
