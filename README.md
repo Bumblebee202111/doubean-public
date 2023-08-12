@@ -168,7 +168,6 @@ order\)
 
 #### To-dos for current release \(0.4.2\)
 
-* 🛠 Notification order
 * Remove ugly redundant follow button from group menu
 
 #### To-dos for next release \(0.5.0\)
