@@ -4,7 +4,7 @@ import androidx.room.*
 import com.doubean.ford.data.db.Converters
 import com.doubean.ford.model.PostSortBy
 
-@Entity(primaryKeys = ["group_id", "sort_by"])
+@Entity(tableName = "group_posts_result", primaryKeys = ["group_id", "sort_by"])
 @TypeConverters(Converters::class)
 class GroupPostsResult(
     @ColumnInfo("group_id")

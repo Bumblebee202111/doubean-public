@@ -79,11 +79,11 @@ interface GroupDao {
             posts.sortedWith(compareBy { o -> postIds.indexOf(o.partialEntity.id) })
         }
 
-    @Query("SELECT * FROM GroupPostsResult WHERE group_id = :groupId AND sort_by = :sortBy")
+    @Query("SELECT * FROM group_posts_result WHERE group_id = :groupId AND sort_by = :sortBy")
     @RewriteQueriesToDropUnusedColumns
     fun loadGroupPosts(groupId: String, sortBy: PostSortBy): Flow<GroupPostsResult?>
 
-    @Query("SELECT * FROM GroupPostsResult WHERE group_id = :groupId AND sort_by = :sortBy")
+    @Query("SELECT * FROM group_posts_result WHERE group_id = :groupId AND sort_by = :sortBy")
     @RewriteQueriesToDropUnusedColumns
     suspend fun getGroupPosts(groupId: String, sortBy: PostSortBy): GroupPostsResult?
 

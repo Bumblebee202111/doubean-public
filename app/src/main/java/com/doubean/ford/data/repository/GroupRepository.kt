@@ -58,10 +58,12 @@ class GroupRepository private constructor(
                     item: NetworkGroupSearch,
                 ) {
                     val ids = current.ids + item.items.map { it.group.id }
-                    val merged = GroupSearchResult(query,
+                    val merged = GroupSearchResult(
+                        query,
                         ids,
                         item.total,
-                        item.nextPageStart)
+                        item.nextPageStart
+                    )
                     val groups = item.items.map { it.group.asPartialEntity() }
                     appDatabase.withTransaction {
                         groupDao.insertGroupSearchResult(merged)
@@ -111,10 +113,11 @@ class GroupRepository private constructor(
     ): Flow<Resource<List<PostItem>>> {
         return object : NetworkBoundResource<List<PostItem>, NetworkPosts>() {
             override suspend fun saveCallResult(item: NetworkPosts) {
-                val posts = item.items.map { it.asPartialEntity(groupId) }
-                val postIds = item.items.apply {
+                val posts = (item.items.map { it.asPartialEntity(groupId) })
+                val postIds = item.items.run {
                     if (postSortBy === PostSortBy.NEW)
                         sortedByDescending(NetworkPostItem::created)
+                    else this
                 }.map(NetworkPostItem::id)
                 val postTagCrossRefs = item.items.flatMap(NetworkPostItem::tagCrossRefs)
                 val groupPostsResult =
@@ -180,15 +183,18 @@ class GroupRepository private constructor(
                     current: GroupPostsResult,
                     item: NetworkPosts,
                 ) {
-                    val ids = current.ids + item.items.apply {
+                    val ids = current.ids + item.items.run {
                         if (postSortBy === PostSortBy.NEW)
                             sortedByDescending(NetworkPostItem::created)
+                        else this
                     }.map(NetworkPostItem::id)
-                    val merged = GroupPostsResult(groupId,
+                    val merged = GroupPostsResult(
+                        groupId,
                         postSortBy,
                         ids,
                         item.total,
-                        item.nextPageStart)
+                        item.nextPageStart
+                    )
                     val posts = item.items.map { it.asPartialEntity(groupId) }
                     val postTagCrossRefs =
                         item.items.flatMap(NetworkPostItem::tagCrossRefs)
@@ -213,9 +219,10 @@ class GroupRepository private constructor(
         ) {
             override suspend fun saveCallResult(item: NetworkPosts) {
                 val posts = item.items.map { it.asPartialEntity(groupId) }
-                val postIds = item.items.apply {
+                val postIds = item.items.run {
                     if (postSortBy === PostSortBy.NEW)
                         sortedByDescending(NetworkPostItem::created)
+                    else this
                 }.map(NetworkPostItem::id)
                 val postTagCrossRefs = item.items.flatMap(NetworkPostItem::tagCrossRefs)
                 val groupTagPostsResult = GroupTagPostsResult(
@@ -284,9 +291,10 @@ class GroupRepository private constructor(
                     current: GroupTagPostsResult,
                     item: NetworkPosts,
                 ) {
-                    val ids = current.ids + item.items.apply {
+                    val ids = current.ids + item.items.run {
                         if (postSortBy === PostSortBy.NEW)
                             sortedByDescending(NetworkPostItem::created)
+                        else this
                     }.map(NetworkPostItem::id)
                     val merged = GroupTagPostsResult(
                         groupId,
@@ -294,7 +302,8 @@ class GroupRepository private constructor(
                         postSortBy,
                         ids,
                         item.total,
-                        item.nextPageStart)
+                        item.nextPageStart
+                    )
                     val posts = item.items.map { it.asPartialEntity(groupId) }
                     val postTagCrossRefs =
                         item.items.flatMap(NetworkPostItem::tagCrossRefs)
@@ -348,17 +357,20 @@ class GroupRepository private constructor(
                 val allComments = item.allComments.map { it.asEntity(postId) }
                 val topComments = item.topComments.map { it.asEntity(postId) }
                 val repliedToComments = (item.items + item.topComments).mapNotNull(
-                    NetworkPostComment::repliedTo)
+                    NetworkPostComment::repliedTo
+                )
                     .map { it.asEntity(postId) }
                 val comments = (allComments + topComments + repliedToComments).distinctBy(
-                    PostCommentEntity::id)
+                    PostCommentEntity::id
+                )
                 val allCommentsAuthors = item.items.map { it.author.asEntity() }
                 val topCommentsAuthors = item.topComments.map { it.author.asEntity() }
                 val repliedToAuthors = (item.items + item.topComments).mapNotNull { it.repliedTo }
                     .map { it.author.asEntity() }
                 val authors =
                     (allCommentsAuthors + topCommentsAuthors + repliedToAuthors).distinctBy(
-                        UserEntity::id)
+                        UserEntity::id
+                    )
                 appDatabase.withTransaction {
                     groupDao.insertPostComments(comments)
                     groupDao.insertPostCommentsResult(commentsResult)
@@ -420,7 +432,8 @@ class GroupRepository private constructor(
                     val topComments = item.topComments.map { it.asEntity(postId) }
                     val repliedToComments =
                         (item.items + item.topComments).mapNotNull(
-                            NetworkPostComment::repliedTo)
+                            NetworkPostComment::repliedTo
+                        )
                             .map { it.asEntity(postId) }
                     val allCommentsAuthors = item.items.map { it.author.asEntity() }
                     val topCommentsAuthors = item.topComments.map { it.author.asEntity() }
@@ -429,7 +442,8 @@ class GroupRepository private constructor(
                             .map { it.author.asEntity() }
                     val authors =
                         (allCommentsAuthors + topCommentsAuthors + repliedToAuthors).distinctBy(
-                            UserEntity::id)
+                            UserEntity::id
+                        )
                     appDatabase.withTransaction {
                         groupDao.insertPostCommentsResult(merged)
                         groupDao.insertPostComments(allComments + topComments + repliedToComments)

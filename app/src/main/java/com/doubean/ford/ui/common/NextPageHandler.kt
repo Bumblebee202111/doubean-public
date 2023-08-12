@@ -9,8 +9,8 @@ import com.doubean.ford.model.Status
 abstract class NextPageHandler : Observer<Resource<Boolean>?> {
     private var nextPageLiveData: LiveData<Resource<Boolean>?>? = null
     val loadMoreState = MutableLiveData<LoadMoreState>()
-    var hasMore = false
     private var listId: Array<out Any?>? = null
+    var hasMore = false
 
     init {
         reset()
@@ -20,8 +20,8 @@ abstract class NextPageHandler : Observer<Resource<Boolean>?> {
         if (this.listId.contentEquals(listId)) {
             return
         }
-        this.listId = listId
         unregister()
+        this.listId = listId
         nextPageLiveData = loadNextPageFromRepo()
         loadMoreState.value = LoadMoreState(true, null)
         nextPageLiveData?.observeForever(this)
