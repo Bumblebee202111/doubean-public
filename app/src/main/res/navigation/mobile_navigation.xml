@@ -15,7 +15,7 @@
         android:id="@+id/navigation_notifications"
         android:name="com.doubean.ford.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_notifications"></fragment>
 
     <navigation
         android:id="@+id/navigation_groups_graph"
@@ -56,7 +56,6 @@
         <fragment
             android:id="@+id/navigation_group_search"
             android:name="com.doubean.ford.ui.groups.groupSearch.GroupSearchFragment">
-
             <action
                 android:id="@+id/action_group_search_to_group_detail"
                 app:destination="@id/navigation_group_detail" />

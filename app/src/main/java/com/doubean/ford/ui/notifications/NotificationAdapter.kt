@@ -2,6 +2,7 @@ package com.doubean.ford.ui.notifications
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -9,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.doubean.ford.databinding.ListItemPostNotificationBinding
 import com.doubean.ford.model.RecommendedPostNotificationItem
 
-class NotificationAdapter :
+class NotificationAdapter(private val onItemClick: (notification: RecommendedPostNotificationItem) -> Unit) :
     PagingDataAdapter<RecommendedPostNotificationItem, NotificationAdapter.ViewHolder>(
         NotificationDiffCallback()
     ) {
@@ -25,13 +26,16 @@ class NotificationAdapter :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        getItem(position)?.let { holder.bind(it) }
+        getItem(position)?.let { notificationItem ->
+            holder.bind(item = notificationItem) { onItemClick(notificationItem) }
+        }
     }
 
     class ViewHolder(private val binding: ListItemPostNotificationBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: RecommendedPostNotificationItem) {
+        fun bind(item: RecommendedPostNotificationItem, cardOnClickListener: View.OnClickListener) {
             binding.post = item
+            binding.card.setOnClickListener(cardOnClickListener)
             binding.executePendingBindings()
         }
 

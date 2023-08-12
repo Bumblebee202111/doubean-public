@@ -14,6 +14,9 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import com.doubean.ford.R
 import com.doubean.ford.model.PostItemWithGroup
+import com.doubean.ford.util.DEEP_LINK_SCHEME_AND_HOST
+import com.doubean.ford.util.GROUP_PATH
+import com.doubean.ford.util.POST_PATH
 import java.time.ZoneId
 
 
@@ -22,10 +25,6 @@ private const val POST_NOTIFICATION_CHANNEL_ID = ""
 private const val POST_NOTIFICATION_SUMMARY_ID = 0
 private const val GROUP_KEY_POST_NOTIFICATION = "com.android.example.POST_NOTIFICATIONS"
 private const val POST_NOTIFICATION_REQUEST_CODE = 0
-private const val DEEP_LINK_SCHEME_AND_HOST = "https://www.ford.doubean.com"
-private const val GROUP_PATH = "group"
-private const val POST_PATH = "post"
-
 
 class Notifier(private val context: Context) {
     fun postRecommendedPostNotifications(posts: List<PostItemWithGroup>) {
