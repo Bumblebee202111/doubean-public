@@ -168,7 +168,6 @@ order\)
 
 #### To-dos for current release \(0.4.2\)
 
-* 🛠 Default tab not correctly selected if not all
 * 🛠 Missing notification click listeners
 * 🛠 Notification order
 * Remove ugly redundant follow button from group menu
@@ -245,7 +244,6 @@ order\)
 ### Non-Todos
 
 * Jetpack Compose
-* Dagger2/Hilt
 * RxAndroid
 * Heavy use of Material Design
 * Kotlin Flows in UI layer

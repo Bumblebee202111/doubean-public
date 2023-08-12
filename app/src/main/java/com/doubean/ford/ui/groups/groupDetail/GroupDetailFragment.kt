@@ -210,9 +210,7 @@ class GroupDetailFragment : Fragment() {
 
 
     companion object {
-        fun getItemOfTabId(groupTabs: List<GroupTab>, tabId: String?) =
-            if (tabId == null) 0 else {
-                groupTabs.first { it.id == tabId }.seq + 1
-            }
+        private fun getItemOfTabId(groupTabs: List<GroupTab>, tabId: String?) =
+            groupTabs.firstOrNull { it.id == tabId }?.seq ?: 0
     }
 }
