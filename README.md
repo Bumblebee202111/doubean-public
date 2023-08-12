@@ -6,7 +6,8 @@ An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-
 
 From now on, the development of this app will be slowed down, as:
 
-* Douban users are making hilarious remarks, which is reinforced by the org/mods
+* Reinforced by the org/mods, Douban users are making hilarious remarks, which are frustrating to
+  read
 * There are few alternatives for me to refer to
 * Group theming is currently a mess
 
@@ -96,6 +97,7 @@ groups is finally added by them.
 | Design philosophy | Android Jetpack                                 |
 
 * Support for loading cache as alternative even when connection is off
+* Recommended post notifications
 * Ad-free, lite \(~5MB\)
 * Support URL deep links
 * Basic support for MD \(dark theme included\) and tablets/landscape
@@ -110,26 +112,34 @@ Libraries Used
 
 * [Foundation][foundation]
   * [AppCompat][appcompat]
+  * [Android KTX][android-ktx]
   * [Test][test] \(TODO\)
 * [Architecture][arch]
   * [Data Binding][data-binding]
   * [Lifecycles][lifecycle]
   * [LiveData][livedata]
   * [Navigation][navigation]
+  * [Paging][paging]
   * [Room][room]
   * [ViewModel][viewmodel]
+  * [WorkManager][workmanager]
 * [UI][ui]
   * [Animations & Transitions][animation]
   * [Fragment][fragment]
   * [Layout][layout]
+* Behavior
+  * [Notifications][notifications]
 * Third party and miscellaneous libraries
   * [Retrofit][retrofit]
   * [Apache Commons][apache-commons]
   * [Glide][glide]
+  * [Kotlin Coroutines][kotlin-coroutines]
 
 [foundation]: https://developer.android.com/jetpack/components
 
 [appcompat]: https://developer.android.com/topic/libraries/support-library/packages#v7-appcompat
+
+[android-ktx]: https://developer.android.com/kotlin/ktx
 
 [test]: https://developer.android.com/training/testing/
 
@@ -143,9 +153,13 @@ Libraries Used
 
 [navigation]: https://developer.android.com/topic/libraries/architecture/navigation/
 
+[paging]: https://developer.android.com/topic/libraries/architecture/paging/v3-overview
+
 [room]: https://developer.android.com/topic/libraries/architecture/room
 
 [viewmodel]: https://developer.android.com/topic/libraries/architecture/viewmodel
+
+[workmanager]:https://developer.android.com/topic/libraries/architecture/workmanager
 
 [ui]: https://developer.android.com/guide/topics/ui
 
@@ -155,11 +169,15 @@ Libraries Used
 
 [layout]: https://developer.android.com/guide/topics/ui/declaring-layout
 
+[notifications]: https://developer.android.com/develop/ui/views/notifications
+
 [retrofit]: https://square.github.io/retrofit/
 
 [apache-commons]: https://commons.apache.org/
 
 [glide]: https://bumptech.github.io/glide/
+
+[kotlin-coroutines]: https://kotlinlang.org/docs/reference/coroutines-overview.html
 
 ### Plans
 
@@ -168,7 +186,7 @@ order\)
 
 #### To-dos for current release \(0.4.2\)
 
-* Remove ugly redundant follow button from group menu
+* Use the debug app for days, eliminate any bugs shown and create release
 
 #### To-dos for next release \(0.5.0\)
 
@@ -206,7 +224,8 @@ order\)
     group/tab header
   * \[Lists\]Add corresponding item action
   * Custom feeds like Reddit
-    * Replace content of the recommended groups area with recommended posts \(of followed groups and
+    * Replace content of the recommended groups area with recommended posts \(of followed groups
+      and
       tabs\)
 * \[GroupDetailFragment\]Group/tab/post shortcuts
 * Rate limit

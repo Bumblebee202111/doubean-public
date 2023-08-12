@@ -120,9 +120,6 @@ class GroupDetailFragment : Fragment() {
                 val groupColor =
                     group.color ?: requireContext().getColorFromTheme(R.attr.colorPrimary)
 
-                val followedItem = binding.toolbar.menu.findItem(R.id.action_follow)
-                followedItem.setIcon(if (group.isFollowed) R.drawable.ic_remove else R.drawable.ic_add)
-
                 with(binding.followUnfollow) {
                     if (group.isFollowed) {
                         setIconResource(R.drawable.ic_remove)
@@ -163,10 +160,6 @@ class GroupDetailFragment : Fragment() {
     private fun onMenuItemClick(item: MenuItem): Boolean {
         groupDetailViewModel.group.value?.data?.let { group ->
             when (item.itemId) {
-                R.id.action_follow -> {
-                    onFollowGroup(group.isFollowed)
-                    return true
-                }
                 R.id.action_share -> {
                     val shareText = group.name + ' ' + group.shareUrl + "\r\n"
                     ShareUtil.share(requireContext(), shareText)
