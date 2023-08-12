@@ -168,8 +168,9 @@ order\)
 
 #### To-dos for current release \(0.4.2\)
 
-* 🛠 "New" post order
 * 🛠 Default tab not correctly selected if not all
+* 🛠 Missing notification click listeners
+* 🛠 Notification order
 * Remove ugly redundant follow button from group menu
 
 #### To-dos for next release \(0.5.0\)
