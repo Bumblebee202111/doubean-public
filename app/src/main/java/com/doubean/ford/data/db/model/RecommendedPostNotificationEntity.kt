@@ -11,8 +11,8 @@ data class RecommendedPostNotificationEntity(
     @ColumnInfo("post_id")
     val postId: String,
 
-    @ColumnInfo("post_last_updated")
-    val postLastUpdated: LocalDateTime,
+    @ColumnInfo("notified_last_updated")
+    val notifiedLastUpdated: LocalDateTime,
 
     val isNotificationUpdated: Boolean = false,
 )

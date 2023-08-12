@@ -68,7 +68,7 @@ interface UserGroupDao {
     suspend fun insertRecommendedPostNotifications(recommendedPostNotifications: List<RecommendedPostNotificationEntity>)
 
     @Transaction
-    @Query("SELECT * FROM recommended_post_notifications")
+    @Query("SELECT * FROM recommended_post_notifications ORDER BY notified_last_updated DESC")
     fun recommendedPostNotificationsPagingSource(): PagingSource<Int, PopulatedRecommendedPostNotificationItem>
 
     @Query("UPDATE followed_groups SET enable_notifications = 0 WHERE group_id = :groupId")

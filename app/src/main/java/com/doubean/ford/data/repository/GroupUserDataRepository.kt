@@ -133,7 +133,7 @@ class GroupUserDataRepository private constructor(
             val networkUpdatedPosts = if (currentFeedTopic.allowDuplicateNotifications) {
                 networkPosts.filter { networkPost ->
                     existingPostNotifications.find { e ->
-                        e.postId == networkPost.id && e.postLastUpdated != networkPost.lastUpdated
+                        e.postId == networkPost.id && e.notifiedLastUpdated != networkPost.lastUpdated
                     } != null
                 }
             } else emptyList()
@@ -158,14 +158,14 @@ class GroupUserDataRepository private constructor(
                 .map {
                     RecommendedPostNotificationEntity(
                         postId = it.id,
-                        postLastUpdated = it.lastUpdated,
+                        notifiedLastUpdated = it.lastUpdated,
                         isNotificationUpdated = true
                     )
                 } + truncatedNetworkNewPosts
                 .map {
                     RecommendedPostNotificationEntity(
                         postId = it.id,
-                        postLastUpdated = it.lastUpdated
+                        notifiedLastUpdated = it.lastUpdated
                     )
                 }
 
