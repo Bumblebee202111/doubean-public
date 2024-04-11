@@ -1,9 +1,9 @@
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.androidx.navigation.safeargs.kotlin)
-    
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.navigation.safeargs)
+    alias(libs.plugins.room)
     alias(libs.plugins.kapt)
 }
 
@@ -11,6 +11,8 @@ android {
     compileSdk = libs.versions.compileSdk.get().toInt()
     buildFeatures {
         dataBinding = true
+        viewBinding = true
+        buildConfig = true
     }
     defaultConfig {
         applicationId = "com.doubean.ford"
@@ -22,15 +24,11 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                
-                arguments += mapOf(
-                    "room.schemaLocation" to "$projectDir/schemas",
-                    "room.incremental" to "true"
-                )
-            }
-        }
+
+    }
+
+    room {
+        schemaDirectory("$projectDir/schemas")
     }
 
     buildTypes {
@@ -47,13 +45,10 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-
-    buildFeatures {
-        viewBinding = true
-    }
+    namespace = "com.doubean.ford"
 }
 
 dependencies {
@@ -66,11 +61,12 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.savedstate)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    
     implementation(libs.androidx.paging)
     implementation(libs.androidx.preference.ktx)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)
-    kapt(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.webkit)
     implementation(libs.androidx.work.runtime.ktx)
@@ -78,7 +74,7 @@ dependencies {
     implementation(libs.commons.codec)
     implementation(libs.material)
     implementation(libs.glide)
-    kapt(libs.glide.compiler)
+    ksp(libs.glide.compiler)
     implementation(libs.webpdecoder)
     implementation(libs.gson)
     implementation(libs.okhttp3.logging.interceptor)
