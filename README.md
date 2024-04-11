@@ -4,23 +4,16 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
 
+The development of this app will soon been restarted but still not progressed on a frequent basis, as is requested by the friend who filed the first issue! While we will only develop for the only user, this project is also going to be used as the playground for new libraries such as Jetpack Compose, partially serving the development of MinusOne Music and helping me understand declarative programming.
 
-The development of this app will soon been restarted but still not on a frequent basis, as is
-requested by the friend who filed the first issue! In addition, this project will be used as the playground
-for new libraries such as Jetpack Compose, partially serving the development of MinusOne Music.
+It has been inactive for 8 months, as:
 
-The development of this app was slowed down and finally paused for 8 months, as:
-
-* Reinforced by the org/mods, Douban users are making hilarious remarks, which are frustrating to
-  read
+* Reinforced by the org/mods, Douban users are making hilarious remarks, which are frustrating to read
 * There are few alternatives for me to refer to
 * Group theming is currently a mess
 
-Note I am an inexperienced Android beginner and the only developer of it. Occasional crashes may
-happen, UI design may be incomplete and features you need may be
-missing. Pretty much of my work is copy and paste from the official documentation and samples of
-Google Android. I am trying my best only to ensure that the app will function normally on my Xiaomi
-devices with the Android version varying from 8.1 to 12.
+Note I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be
+missing. Pretty much of my work is copy and paste from the official documentation and samples of Google Android. I am trying my best only to ensure that the app will function normally on my Xiaomi devices with the Android version varying from 8.1 to 12.
 
 [douban]: https://www.douban.com/
 
@@ -70,13 +63,11 @@ Blank
 
 ### Getting Started
 
-This project uses the Gradle build system. To build this project, use the
-`gradlew build` command or use "Import Project" in Android Studio.
+This project uses the Gradle build system. To build this project, use the `gradlew build` command or use "Import Project" in Android Studio.
 
 #### Douban access
 
-To not get myself into trouble, I have added detailed implementation of data access to .gitignore
-list. However, the latest release is always available.
+To not get myself into trouble, I have added detailed implementation of data access to .gitignore list. However, the latest release is always available.
 
 ### Who is it for?
 
@@ -85,12 +76,10 @@ list. However, the latest release is always available.
 
 ### Features
 
-It not only implements the very basic features of Douban app, but also has its own features. Some of
-which react to the fact that Douban community is somewhat unfriendly and closed to non-members;
+It not only implements the very basic features of Douban app, but also has its own features. Some of which react to the fact that Douban community is somewhat unfriendly and closed to non-members;
 examples are power abuse of some group mods, "apply ~~to follow or~~ to talk" and etc.
 
-\* In more recent (after mid-2022) versions of the Douban app, the feature of following unjoined
-groups is finally added by them.
+\* In more recent (after mid-2022) versions of the Douban app, the feature of following unjoined groups is finally added by them.
 
 * Inherent advantages leading to good performance and simple coding
 
@@ -189,11 +178,12 @@ Libraries Used
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological
 order\)
 
-#### To-dos for current release \(0.4.2\)
+#### To-dos for current release \(0.5.0\)
 
-* Use the debug app for days, eliminate any bugs shown and create release
+* Password login
+* Groups home for login
 
-#### To-dos for next release \(0.5.0\)
+#### To-dos for next release \(0.5.1\)
 
 #### Future plans
 
@@ -265,10 +255,7 @@ order\)
 
 ### Non-Todos
 
-* Jetpack Compose
-* RxAndroid
 * Heavy use of Material Design
-* Kotlin Flows in UI layer
 
 ### References
 
@@ -336,13 +323,13 @@ License
 ------------
 
     Copyright 2023 Bumblebee202111. All rights reserved.
-
+    
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
-
+    
         http://www.apache.org/licenses/LICENSE-2.0
-
+    
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -358,9 +345,7 @@ Anecdotes
 
 ### Efforts to Solve the dynamic ViewPager2 problem
 
-The problem is that when an ViewPager2 is asynchronously loaded via its FragmentStateAdapter from a
-LiveData containing info of its tabs \(pages\), either the pager position or the page position will
-never be saved, unlike the behavior of a RecycleView with its customized ListAdapter. LiveData +
+The problem is that when an ViewPager2 is asynchronously loaded via its FragmentStateAdapter from a LiveData containing info of its tabs \(pages\), either the pager position or the page position will never be saved, unlike the behavior of a RecycleView with its customized ListAdapter. LiveData +
 ViewPager2 seemed to be a very unpopular combination, and there is little info about it online.
 Hence, the issue had obsessed me for months and discouraged me to continue the development. On April
 10th in 2023, I decided to have my last fight against it. What I did:
@@ -370,7 +355,4 @@ Hence, the issue had obsessed me for months and discouraged me to continue the d
 3. Open the project in Android Studio and research on what the Douban implementation is. \(Brief
    conclusion: GroupDetailActivity + FragmentStatePagerAdapter + Intent/Bundle\)
 
-I repeated these steps on version 7 & 8, only to find that the ugly and lengthy code is still almost
-unchanged. It really surprised me. In early July, after weeks of architecture optimization, I solved
-it by attaching adapter only when data is ready, and used an Event wrapper to set the default
-position \(which would soon be replaced by a Coroutine method\) .
+I repeated these steps on version 7 & 8, only to find that the ugly and lengthy code is still almost unchanged. It really surprised me. In early July, after weeks of architecture optimization, I solved it by attaching adapter only when data is ready, and used an Event wrapper to set the default position \(which would soon be replaced by a Coroutine method\) .
