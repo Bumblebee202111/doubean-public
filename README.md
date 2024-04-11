@@ -4,7 +4,12 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
 
-From now on, the development of this app will be slowed down, as:
+
+The development of this app will soon been restarted but still not on a frequent basis, as is
+requested by the friend who filed the first issue! In addition, this project will be used as the playground
+for new libraries such as Jetpack Compose, partially serving the development of MinusOne Music.
+
+The development of this app was slowed down and finally paused for 8 months, as:
 
 * Reinforced by the org/mods, Douban users are making hilarious remarks, which are frustrating to
   read
@@ -75,8 +80,8 @@ list. However, the latest release is always available.
 
 ### Who is it for?
 
-* Me and other developers who are learning Android, Java and version control
-* Me and other users who want easier access to Douban groups
+* Me and other developers who are learning Android, Kotlin and version control
+* Me and other users who want easier access to Douban groups module
 
 ### Features
 
