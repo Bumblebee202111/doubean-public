@@ -1,7 +1,38 @@
 package com.doubean.ford.data.db
 
-import androidx.room.*
-import com.doubean.ford.data.db.model.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.RewriteQueriesToDropUnusedColumns
+import androidx.room.Transaction
+import androidx.room.Update
+import androidx.room.Upsert
+import com.doubean.ford.data.db.model.GroupDetailPartialEntity
+import com.doubean.ford.data.db.model.GroupEntity
+import com.doubean.ford.data.db.model.GroupPostTagEntity
+import com.doubean.ford.data.db.model.GroupPostsResult
+import com.doubean.ford.data.db.model.GroupSearchResult
+import com.doubean.ford.data.db.model.GroupSearchResultGroupItemPartialEntity
+import com.doubean.ford.data.db.model.GroupTabEntity
+import com.doubean.ford.data.db.model.GroupTagPostsResult
+import com.doubean.ford.data.db.model.PopulatedGroupDetail
+import com.doubean.ford.data.db.model.PopulatedPostComment
+import com.doubean.ford.data.db.model.PopulatedPostDetail
+import com.doubean.ford.data.db.model.PopulatedPostItem
+import com.doubean.ford.data.db.model.PopulatedPostItemWithGroup
+import com.doubean.ford.data.db.model.PopulatedRecommendedGroup
+import com.doubean.ford.data.db.model.PostCommentEntity
+import com.doubean.ford.data.db.model.PostCommentsResult
+import com.doubean.ford.data.db.model.PostDetailPartialEntity
+import com.doubean.ford.data.db.model.PostEntity
+import com.doubean.ford.data.db.model.PostGroupPartialEntity
+import com.doubean.ford.data.db.model.PostItemPartialEntity
+import com.doubean.ford.data.db.model.PostTagCrossRef
+import com.doubean.ford.data.db.model.RecommendedGroupEntity
+import com.doubean.ford.data.db.model.RecommendedGroupItemGroupPartialEntity
+import com.doubean.ford.data.db.model.RecommendedGroupPost
+import com.doubean.ford.data.db.model.RecommendedGroupsResult
 import com.doubean.ford.model.GroupRecommendationType
 import com.doubean.ford.model.PostSortBy
 import kotlinx.coroutines.flow.Flow
@@ -45,7 +76,7 @@ interface GroupDao {
     suspend fun getSearchResult(query: String): GroupSearchResult?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGroupSearchResult(groupSearchResult: GroupSearchResult?)
+    suspend fun insertGroupSearchResult(groupSearchResult: GroupSearchResult)
 
     @Query("SELECT * FROM groups WHERE id IN (:groupIds)")
     @RewriteQueriesToDropUnusedColumns
@@ -88,7 +119,7 @@ interface GroupDao {
     suspend fun getGroupPosts(groupId: String, sortBy: PostSortBy): GroupPostsResult?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGroupPostsResult(groupPostsResult: GroupPostsResult?)
+    suspend fun insertGroupPostsResult(groupPostsResult: GroupPostsResult)
 
     @Query("SELECT * FROM group_tag_posts_results WHERE group_id = :groupId AND tag_id=:tagId AND sort_by = :sortBy")
     @RewriteQueriesToDropUnusedColumns
@@ -107,7 +138,7 @@ interface GroupDao {
     ): GroupTagPostsResult?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGroupTagPostsResult(groupTagPostsResult: GroupTagPostsResult?)
+    suspend fun insertGroupTagPostsResult(groupTagPostsResult: GroupTagPostsResult)
 
     @Insert(entity = PostEntity::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPostDetail(post: PostDetailPartialEntity)
@@ -139,7 +170,7 @@ interface GroupDao {
     suspend fun insertPostComments(comments: List<PostCommentEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPostCommentsResult(postCommentsResult: PostCommentsResult?)
+    suspend fun insertPostCommentsResult(postCommentsResult: PostCommentsResult)
 
     @Query("SELECT * FROM post_comments_results WHERE postId=:postId")
     fun loadPostComments(postId: String): Flow<PostCommentsResult?>
@@ -159,7 +190,7 @@ interface GroupDao {
     fun loadRecommendedGroups(ids: List<String>): Flow<List<PopulatedRecommendedGroup>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRecommendedGroupsResult(recommendedGroupsResult: RecommendedGroupsResult?)
+    suspend fun insertRecommendedGroupsResult(recommendedGroupsResult: RecommendedGroupsResult)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGroupTabs(tabs: List<GroupTabEntity>)

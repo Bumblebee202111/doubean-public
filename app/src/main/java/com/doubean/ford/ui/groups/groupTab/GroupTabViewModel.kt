@@ -1,10 +1,18 @@
 package com.doubean.ford.ui.groups.groupTab
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.switchMap
+import androidx.lifecycle.viewModelScope
 import com.doubean.ford.data.prefs.DataStorePreferenceStorage
 import com.doubean.ford.data.repository.GroupRepository
 import com.doubean.ford.data.repository.GroupUserDataRepository
-import com.doubean.ford.model.*
+import com.doubean.ford.model.PostSortBy
+import com.doubean.ford.model.Resource
 import com.doubean.ford.ui.common.NextPageHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -42,7 +50,8 @@ class GroupTabViewModel(
         }
     }
     private val reloadTrigger = MutableLiveData(Unit)
-    val posts = reloadTrigger.switchMap {
+    private val sortBy = MutableLiveData<PostSortBy>()
+    val posts = reloadTrigger.switchMap { _ ->
         sortBy.switchMap { type ->
             val postsFlow = if (tabId == null) groupRepository.getGroupPosts(
                 groupId,
@@ -52,7 +61,7 @@ class GroupTabViewModel(
             postsFlow.flowOn(Dispatchers.IO).asLiveData()
         }
     }
-    private val sortBy = MutableLiveData<PostSortBy>()
+
 
     fun setSortBy(postSortBy: PostSortBy) {
         if (postSortBy === sortBy.value) {

@@ -27,13 +27,13 @@ abstract class NextPageHandler : Observer<Resource<Boolean>?> {
         nextPageLiveData?.observeForever(this)
     }
 
-    override fun onChanged(result: Resource<Boolean>?) {
-        if (result == null) {
+    override fun onChanged(value: Resource<Boolean>?) {
+        if (value == null) {
             reset()
         } else {
-            when (result.status) {
+            when (value.status) {
                 Status.SUCCESS -> {
-                    hasMore = result.data == true
+                    hasMore = value.data == true
                     unregister()
                     loadMoreState.setValue(LoadMoreState(false, null))
                 }
@@ -43,7 +43,7 @@ abstract class NextPageHandler : Observer<Resource<Boolean>?> {
                     loadMoreState.setValue(
                         LoadMoreState(
                             false,
-                            result.message
+                            value.message
                         )
                     )
                 }
