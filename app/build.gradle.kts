@@ -2,8 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.navigation.safeargs)
     alias(libs.plugins.room)
+    alias(libs.plugins.hilt)
     alias(libs.plugins.kapt)
 }
 
@@ -13,7 +15,12 @@ android {
         dataBinding = true
         viewBinding = true
         buildConfig = true
+        compose = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.11"
+    }
+
     defaultConfig {
         applicationId = "com.doubean.ford"
         minSdk = libs.versions.minSdk.get().toInt()
@@ -23,7 +30,6 @@ android {
         setProperty("archivesBaseName", "doubean_$versionName")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
 
     }
 
@@ -48,15 +54,35 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
+    kotlinOptions {
+        jvmTarget = "17"
+        freeCompilerArgs = listOf("-Xcontext-receivers")
+    }
+
     namespace = "com.doubean.ford"
 }
 
 dependencies {
+    val composeBom = platform(libs.androidx.compose.bom)
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.iconsExtended)
+    implementation(libs.androidx.compose.material3.windowSizeClass)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.androidx.compose.ui.viewbinding)
+    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.savedstate)
     implementation(libs.androidx.navigation.fragment.ktx)
@@ -66,24 +92,48 @@ dependencies {
     implementation(libs.androidx.preference.ktx)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.webkit)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.viewpager2)
+
     implementation(libs.commons.codec)
-    implementation(libs.material)
+
+    implementation(libs.google.android.material)
+
     implementation(libs.glide)
     ksp(libs.glide.compiler)
     implementation(libs.webpdecoder)
-    implementation(libs.gson)
-    implementation(libs.okhttp3.logging.interceptor)
-    implementation(libs.retrofit2)
-    implementation(libs.retrofit2.converter.gson)
 
-    
+    implementation(libs.gson)
+
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.serialization.kotlinx.json)
+
+    implementation(libs.okhttp3)
+    implementation(libs.okhttp3.logging.interceptor)
+    implementation(libs.okhttp3.urlconnection)
+
+    implementation(libs.retrofit2)
+    implementation(libs.retrofit2.converter.kotlinx.serialization)
+    implementation(libs.retrofit2.converter.gson)
+    kapt(libs.retrofit2.response.type.keeper)
+
+    implementation(libs.coil.compose)
+
+    implementation(libs.hilt.android)
+    ksp(libs.dagger.hilt.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.espresso)
+
+    implementation(libs.libsu.core)
+
 }
 
 }
