@@ -4,16 +4,21 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
 
-The development of this app will soon been restarted but still not progressed on a frequent basis, as is requested by the friend who filed the first issue! While we will only develop for the only user, this project is also going to be used as the playground for new libraries such as Jetpack Compose, partially serving the development of MinusOne Music and helping me understand declarative programming.
+The development of this app is restarted but still not progressed on a frequent basis, to meet the requirements the friend who filed the first issue! While we will only develop for them, this project is also going to be used as the playground for fashionable libraries/coding styles such as Jetpack Compose, partially serving the development of MinusOne Music and helping me understand declarative programming. This brings [tons of migration tasks](#migrations), and also means that old libraries and new libraries are currently mixed.
 
 It has been inactive for 8 months, as:
-
-* Reinforced by the org/mods, Douban users are making hilarious remarks, which are frustrating to read
-* There are few alternatives for me to refer to
+* Reinforced by the org/mods, hilarious remarks can be found everywhere
+* There are few other alternatives for me to refer to
 * Group theming is currently a mess
 
 Note I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be
-missing. Pretty much of my work is copy and paste from the official documentation and samples of Google Android. I am trying my best only to ensure that the app will function normally on my Xiaomi devices with the Android version varying from 8.1 to 12.
+missing. Pretty much of my work is copy and paste from the official documentation and samples of Google Android. I am trying my best only to ensure that the app will function normally on my Xiaomi devices with the Android version varying from 8.1 to 12 and the user's device.
+
+**Very important changes starting from 0.5.0:**
+
+* Repo name: `doubean` -> `doubean-public`
+  - New code will only be pushed into the private `doubean`
+* New package name: com.github.bumblebee202111.doubean`
 
 [douban]: https://www.douban.com/
 
@@ -42,6 +47,10 @@ The app is composed of 3 main screens, two of which are blank and left for futur
 * Post content
 * Post comments
 
+##### ProfileFragment
+
+- Login status
+
 ##### Groups Search
 
 * Search groups
@@ -63,21 +72,23 @@ Blank
 
 ### Getting Started
 
-This project uses the Gradle build system. To build this project, use the `gradlew build` command or use "Import Project" in Android Studio.
+#### Open-source?
 
-#### Douban access
-
-To not get myself into trouble, I have added detailed implementation of data access to .gitignore list. However, the latest release is always available.
+To not get this project/myself into trouble, the update of the source code of the public repo will be suspended. However, the latest release is always available.
 
 ### Who is it for?
 
 * Me and other developers who are learning Android, Kotlin and version control
 * Me and other users who want easier access to Douban groups module
 
+### Your do's and don'ts
+
+- Please use it only for personal learning purposes. 
+- Please don't share it on other websites/apps without permission.
+
 ### Features
 
-It not only implements the very basic features of Douban app, but also has its own features. Some of which react to the fact that Douban community is somewhat unfriendly and closed to non-members;
-examples are power abuse of some group mods, "apply ~~to follow or~~ to talk" and etc.
+It not only implements the very basic features of Douban app, but also has its own features. Some of which react to the fact that Douban community is somewhat unfriendly and closed to non-members; examples are power abuse of some group mods, "apply ~~to follow or~~ to talk" and etc.
 
 \* In more recent (after mid-2022) versions of the Douban app, the feature of following unjoined groups is finally added by them.
 
@@ -98,8 +109,8 @@ examples are power abuse of some group mods, "apply ~~to follow or~~ to talk" an
 * Bilingual UI strings support
 * Support for viewing content in Douban WebView optimized for mobile reading \(in progress\)
 * Paging & swipe refresh support
-* Support creating categories consisting of group/tab/search posts by multiple user-defined
-  conditions \(TODO\)
+* Rooted users can use login session of Douban app
+* Support creating categories consisting of group/tab/search posts by multiple user-defined conditions \(TODO\)
 
 Libraries Used
 --------------
@@ -115,12 +126,14 @@ Libraries Used
   * [Navigation][navigation]
   * [Paging][paging]
   * [Room][room]
+  * DataStore
   * [ViewModel][viewmodel]
   * [WorkManager][workmanager]
 * [UI][ui]
   * [Animations & Transitions][animation]
   * [Fragment][fragment]
   * [Layout][layout]
+  * Jetpack Compose
 * Behavior
   * [Notifications][notifications]
 * Third party and miscellaneous libraries
@@ -128,6 +141,10 @@ Libraries Used
   * [Apache Commons][apache-commons]
   * [Glide][glide]
   * [Kotlin Coroutines][kotlin-coroutines]
+  * Flow
+  * Ktor
+  * Kotlinx Serialization
+  * libsu
 
 [foundation]: https://developer.android.com/jetpack/components
 
@@ -180,78 +197,77 @@ order\)
 
 #### To-dos for current release \(0.5.0\)
 
-* Password login
-* Groups home for login
-
 #### To-dos for next release \(0.5.1\)
 
 #### Future plans
 
-* Login if possible \(else exclude modules other than Groups from the to-do list\)
-* Migrate GithubBrowserSample's user-implemented way of paging to Paging3
+* User requirements (= high priority)
+  * Home - Following
+  * Rename local follow to favorite
+  * Replace content of the recommended groups area with recommended posts
+    * First tab/page: Post recommendation (of followed groups) API
+    * Others: posts of favorite tabs from group tab posts API
+
+  * Post detail
+    * Polls
+    * Comment image
+
+* Gradual migrations: <span id="migrations"></span>
+  * From MD2 / custom design to MD3
+  * From manual DI to Hilt
+  * From Gson to Kotlinx.Serialization
+  * From custom paging to Paging 3
+  * From GithubBrowserSample's user-implemented way of paging to Paging3
+  * From LiveData to StateFlow
+  * From View and data binding to Jetpack Compose
+  * From Retrofit to Ktor
+  * From Glide to Coil Compose
+  * From Apache Commons to ??? 
+  * From NavHostFragment to ComposableNavHostFragment
+  * From Navigation Fragment to Navigation Compose (start when next stable version is available)
+
+* “每次动态更新请求的帖子总数限制” -> “每次从n条帖子中筛选新动态”
 * Use the new nullable "edit_time" property of network posts
 * Split Douban data and local user data instead of putting them in one model class
-* Find a better solution for group theming
-* Refactor `Resource` to `sealed` `Result`, parse it in ViewModels \(like iosched,
-  architecture-samples)\
-* Learn about RecycledViewPool and use it if necessary
+* Refactor uses of network only `Resource` to Kotlin `Result`
+* Set dispatchers / handle errors in repositories
 * \[Books\] Add T250
 * \[Movies\] Add T250
 * Hide officially-marked unfriendly content by default
-* Optimize rendering of pictures
-* Hilt
 * Allow expanding group description w/ SpannableString
-* \[SettingsFragment\] Add WebView enabled by default preference, nav start destination etc with
-  DataStore
-* \[SearchFragment\]GroupSearchFragment -> SearchFragment / Search group/tab posts (in-group) /
-  Search posts of all groups (global)
+* \[SettingsFragment\] Add WebView enabled by default preference, nav start destination etc with DataStore
+* \[SearchFragment\] GroupSearchFragment -> SearchFragment / Search group/tab posts (in-group) / Search posts of all groups (global)
 * Add very basic testing if possible
-* \[PostDetailFragment\]Save WebView images
-* \[GroupDetailFragment\]WebView for group
-* \[Build\] Migrate to KSP
+* Real login (which seems impossible)
+* \[PostDetailFragment\] Save WebView images
+* \[GroupDetailFragment\] WebView for group
 * \[WebView\]Complete CSS of content WebView: find official CSS source or write on my own
 * \[GroupDetailFragment\]\[PostDetailFragment\]Track/mark/revert/todo read
 * \[GroupsHomeFragment\]Unfollow/reorder items
 * Follows/saves
   * Allow following/saving every type of item: groups/tabs/searches/categories
   * Post title text filters
-  * \[GroupsHomeFragment\]Show posts of followed collections / comments of saved comments with
-    group/tab header
+  * \[GroupsHomeFragment\] Show posts of followed collections / comments of saved comments with group/tab header
   * \[Lists\]Add corresponding item action
   * Custom feeds like Reddit
-    * Replace content of the recommended groups area with recommended posts \(of followed groups
-      and
-      tabs\)
-* \[GroupDetailFragment\]Group/tab/post shortcuts
+* \[GroupDetailFragment\] Group/tab/post shortcuts
 * Rate limit
 * \[Lists\]Reddit-like item expand/collapse
-* \[GroupDetailFragment\]For post items, optimize tag display, e.g., assign color to each tag mapped
-  from name
+* \[GroupDetailFragment\]For post items, optimize tag display, e.g., assign color to each tag mapped from name
 * 🛠\[GroupPostFragment\]Dealing with post URL click - new page should not show in the old WebView
 * Support blocking unfriendly content
-* \[PostDetailFragment\]Show saves and reposts
-* \[GroupDetailFragment\]Collapse on entrance for the followed group/tab
+* \[PostDetailFragment\] Show saves and reposts
+* \[GroupDetailFragment\] Collapse on entrance for the followed group/tab
 * \[Sortby\]Migrate Spinner to `singleSelection` `ChipGroup`
 * Allow another option of using Twitter-like date formatting
 * Widgets
 * More features of books & movies
-* \[GroupDetailFragment\] The problem that if the initial position is manually set, the last
-  position won't be restored when the pager is being recreated is solved, but not in a way that is
-  clean enough
-  * Should I use Fragment.isResumed?
-
+* \[GroupDetailFragment\] Rewrite
 * 🛠 Views on top of WebView become invisible after scroll on my MIUI 10 Android 8.1 device \(causes
   unknown, may never be fixed\)
 * \[Lists\]Post order: custom rules based on multiple factors
 * User data backup
-
-#### More general plans
-
-* Use new features of the updated dependencies
-  * CreationExtras?
 * Optimize landscape experience
-* Decouple Douban Interface and expose as much code to VC as possible \(Make anything but keys
-  open-source\)
 
 ### Non-Todos
 
@@ -259,6 +275,7 @@ order\)
 
 ### References
 
+* New Compose samples
 * [Android Sunflower][sunflower]
 * [Developer Guides][guides]
 * [Github Browser Sample with Android Architecture Components][github-browser-sample]
@@ -319,40 +336,3 @@ order\)
 
 [google-chrome]:https://www.google.com/chrome/
 
-License
-------------
-
-    Copyright 2023 Bumblebee202111. All rights reserved.
-    
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-    
-        http://www.apache.org/licenses/LICENSE-2.0
-    
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-
-Besides adhering to the license, I wish that you will use it only for
-learning/personal/non-commercial purposes, and won't propagate it on other websites/apps, out of
-concern for potential copyright violations.
-
-Anecdotes
-------------
-
-### Efforts to Solve the dynamic ViewPager2 problem
-
-The problem is that when an ViewPager2 is asynchronously loaded via its FragmentStateAdapter from a LiveData containing info of its tabs \(pages\), either the pager position or the page position will never be saved, unlike the behavior of a RecycleView with its customized ListAdapter. LiveData +
-ViewPager2 seemed to be a very unpopular combination, and there is little info about it online.
-Hence, the issue had obsessed me for months and discouraged me to continue the development. On April
-10th in 2023, I decided to have my last fight against it. What I did:
-
-1. Download Douban APK version 6.40.0 \(less obscuration, faster decompilation\)
-2. Decompile it via JADX-GUI and export it to gradle project
-3. Open the project in Android Studio and research on what the Douban implementation is. \(Brief
-   conclusion: GroupDetailActivity + FragmentStatePagerAdapter + Intent/Bundle\)
-
-I repeated these steps on version 7 & 8, only to find that the ugly and lengthy code is still almost unchanged. It really surprised me. In early July, after weeks of architecture optimization, I solved it by attaching adapter only when data is ready, and used an Event wrapper to set the default position \(which would soon be replaced by a Coroutine method\) .
