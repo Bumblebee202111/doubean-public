@@ -20,10 +20,10 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep,allowoptimization class com.doubean.ford.network.model.** { <fields>;<methods>; }
--keep,allowoptimization,allowobfuscation class com.doubean.ford.model.** { <fields>;<methods>; }
--keep,allowoptimization,allowobfuscation class com.doubean.ford.network.ApiResponse { <fields>;<methods>; }
--keep,allowoptimization,allowobfuscation class com.doubean.ford.network.** { <fields>;<methods>; } #todo
+-keep,allowoptimization class com.github.bumblebee202111.doubean.network.model.** { <fields>;<methods>; }
+-keep,allowoptimization,allowobfuscation class com.github.bumblebee202111.doubean.model.** { <fields>;<methods>; }
+-keep,allowoptimization,allowobfuscation class com.github.bumblebee202111.doubean.network.ApiResponse { <fields>;<methods>; }
+-keep,allowoptimization,allowobfuscation class com.github.bumblebee202111.doubean.network.** { <fields>;<methods>; } #todo
 
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 
