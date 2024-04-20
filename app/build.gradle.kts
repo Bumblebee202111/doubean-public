@@ -22,7 +22,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.doubean.ford"
+        applicationId = "com.github.bumblebee202111.doubean"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
@@ -60,7 +60,7 @@ android {
         freeCompilerArgs = listOf("-Xcontext-receivers")
     }
 
-    namespace = "com.doubean.ford"
+    namespace = "com.github.bumblebee202111.doubean"
 }
 
 dependencies {

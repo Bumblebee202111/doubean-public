@@ -4,16 +4,21 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
 
-The development of this app is restarted but still not progressed on a frequent basis, to meet the requirements the friend who filed the first issue! While we will only develop for them, this project is also going to be used as the playground for fashionable libraries/coding styles such as Jetpack Compose, partially serving the development of MinusOne Music and helping me understand declarative programming. This brings [tons of migration tasks](#migrations), and means that old libraries and new libraries are currently mixed.
+The development of this app is restarted but still not progressed on a frequent basis, to meet the requirements the friend who filed the first issue! While we will only develop for them, this project is also going to be used as the playground for fashionable libraries/coding styles such as Jetpack Compose, partially serving the development of MinusOne Music and helping me understand declarative programming. This brings [tons of migration tasks](#migrations), and also means that old libraries and new libraries are currently mixed.
 
 It has been inactive for 8 months, as:
-
 * Reinforced by the org/mods, hilarious remarks can be found everywhere
 * There are few other alternatives for me to refer to
 * Group theming is currently a mess
 
 Note I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be
-missing. Pretty much of my work is copy and paste from the official documentation and samples of Google Android. I am trying my best only to ensure that the app will function normally on my Xiaomi devices with the Android version varying from 8.1 to 12.
+missing. Pretty much of my work is copy and paste from the official documentation and samples of Google Android. I am trying my best only to ensure that the app will function normally on my Xiaomi devices with the Android version varying from 8.1 to 12 and the user's device.
+
+**Very important changes started from 0.5.0:**
+
+* Repo change: `doubean` -> `doubean-public`
+  - New code will only be pushed into the private `doubean`
+* Package name change: now `com.github.bumblebee202111.doubean`
 
 [douban]: https://www.douban.com/
 
@@ -191,8 +196,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 order\)
 
 #### To-dos for current release \(0.5.0\)
-
-* User test
 
 #### To-dos for next release \(0.5.1\)
 
