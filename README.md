@@ -14,11 +14,11 @@ It has been inactive for 8 months, as:
 Note I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be
 missing. Pretty much of my work is copy and paste from the official documentation and samples of Google Android. I am trying my best only to ensure that the app will function normally on my Xiaomi devices with the Android version varying from 8.1 to 12 and the user's device.
 
-**Very important changes started from 0.5.0:**
+**Very important changes starting from 0.5.0:**
 
-* Repo change: `doubean` -> `doubean-public`
+* Repo name: `doubean` -> `doubean-public`
   - New code will only be pushed into the private `doubean`
-* Package name change: now `com.github.bumblebee202111.doubean`
+* New package name: com.github.bumblebee202111.doubean`
 
 [douban]: https://www.douban.com/
 
