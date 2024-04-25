@@ -134,6 +134,8 @@ dependencies {
 
     implementation(libs.libsu.core)
 
+    implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
+
 }
 
 }

@@ -33,6 +33,14 @@ The app is composed of 3 main screens, two of which are blank and left for futur
 
 #### GroupFragment
 
+#### HomeFragment (new)
+
+- Following
+
+#### ImageFragment (new)
+
+- Image view and save
+
 ##### Groups Home
 
 * Followed groups and tabs
@@ -54,10 +62,6 @@ The app is composed of 3 main screens, two of which are blank and left for futur
 ##### Groups Search
 
 * Search groups
-
-#### HomeFragment
-
-- Following
 
 #### NotificationFragment
 
@@ -193,11 +197,12 @@ order\)
 
 #### To-dos for current release \(0.5.2\)
 
-#### To-dos for next release \(0.5.3\)
+#### To-dos for next release \(0.5.3)
+
+- Optimize group topic content WebView and fix topic images
 
 #### Future plans
 
-* Group/Comment images: display, view and save
 * Paging buttons
 * Topic body urls
 * IP locations
@@ -208,7 +213,7 @@ order\)
   * Others: posts of favorite tabs from group tab posts API
 * Post detail
   * Polls
-
+* Shared element & navigation-fragment-compose
 * Gradual migrations: <span id="migrations"></span>
   * From MD2 / custom design to MD3
   * From manual DI to Hilt
