@@ -52,7 +52,7 @@ import kotlinx.coroutines.launch
         RecommendedPostNotificationEntity::class,
         UserEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(

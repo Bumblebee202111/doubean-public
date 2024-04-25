@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.DiffUtil
@@ -15,25 +16,29 @@ import com.github.bumblebee202111.doubean.databinding.ListItemPostCommentBinding
 import com.github.bumblebee202111.doubean.model.PostComment
 import com.github.bumblebee202111.doubean.model.PostDetail
 import com.github.bumblebee202111.doubean.model.Resource
-import com.github.bumblebee202111.doubean.ui.common.PhotoAdapter
+import com.github.bumblebee202111.doubean.model.SizedImage
+import com.github.bumblebee202111.doubean.model.SizedPhoto
+import com.github.bumblebee202111.doubean.ui.component.ListItemImages
 import com.github.bumblebee202111.doubean.util.ShareUtil
 
 class PostCommentAdapter(
     private val postLiveData: LiveData<Resource<PostDetail>>,
     private val lifecycleOwner: LifecycleOwner,
+    private val onImageClick: (image: SizedImage) -> Unit,
 ) :
     ListAdapter<PostComment, PostCommentAdapter.ViewHolder>(PostCommentDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ListItemPostCommentBinding.inflate(
             LayoutInflater.from(parent.context), parent,
-            false)
+            false
+        )
         binding.lifecycleOwner = lifecycleOwner
         return ViewHolder(binding, postLiveData)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val comment = getItem(position)
-        holder.bind(comment)
+        holder.bind(comment, onImageClick)
     }
 
     class ViewHolder(
@@ -63,21 +68,26 @@ class PostCommentAdapter(
                                             shareText.append("|" + tag.name)
                                         }
                                         val context = v.context
-                                        shareText.append("@${comment.author.name}${
-                                            context.getString(R.string.colon)
-                                        }${comment.text}")
+                                        shareText.append(
+                                            "@${comment.author.name}${
+                                                context.getString(R.string.colon)
+                                            }${comment.text}"
+                                        )
 
                                         comment.repliedTo?.let { repliedTo ->
                                             shareText.append("${context.getString(R.string.repliedTo)}@${repliedTo.author.name}： ${repliedTo.text}")
                                         }
-                                        shareText.append("""${context.getString(R.string.post)}@${comment.author.name}${
-                                            context.getString(R.string.colon)
-                                        } 
+                                        shareText.append(
+                                            """${context.getString(R.string.post)}@${comment.author.name}${
+                                                context.getString(R.string.colon)
+                                            } 
                                             ${post.title} ${post.url}
-                                            """)
+                                            """
+                                        )
                                         ShareUtil.share(context, shareText)
                                         true
                                     }
+
                                     else -> false
                                 }
 
@@ -91,21 +101,33 @@ class PostCommentAdapter(
 
         }
 
-        fun bind(item: PostComment) {
+        fun bind(item: PostComment, onImageClick: (image: SizedImage) -> Unit) {
             binding.postComment = item
             postLiveData.observe(binding.lifecycleOwner!!) {
                 it.data?.let { post ->
                     binding.isAuthorOp = item.author.id == post.author.id
                     if (!item.photos.isNullOrEmpty()) {
-                        val adapter = PhotoAdapter()
-                        binding.photos.adapter = adapter
-                        adapter.submitList(item.photos)
+                        binding.photos.apply {
+                            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                            setContent {
+                                ListItemImages(
+                                    images = item.photos.map(SizedPhoto::image),
+                                    onImageClick = onImageClick
+                                )
+                            }
+                        }
                     }
                     if (item.repliedTo != null) {
                         if (!item.repliedTo.photos.isNullOrEmpty()) {
-                            val adapter = PhotoAdapter()
-                            binding.repliedToPhotos.adapter = adapter
-                            adapter.submitList(item.repliedTo.photos)
+                            binding.repliedToPhotos.apply {
+                                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                                setContent {
+                                    ListItemImages(
+                                        images = item.repliedTo.photos.map(SizedPhoto::image),
+                                        onImageClick = onImageClick
+                                    )
+                                }
+                            }
                             binding.isRepliedToAuthorOp = item.repliedTo.id == post.author.id
                         }
                     }

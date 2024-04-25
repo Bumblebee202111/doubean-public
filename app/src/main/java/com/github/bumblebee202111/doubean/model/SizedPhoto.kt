@@ -13,12 +13,8 @@ data class SizedPhoto(
 
 @Serializable
 data class SizedImage(
-    val isAnimated: Boolean = false,
     val large: ImageItem,
     val normal: ImageItem,
-    val raw: ImageItem? = null,
-    val small: ImageItem? = null,
-    val video: ImageItem? = null,
 )
 
 @Serializable

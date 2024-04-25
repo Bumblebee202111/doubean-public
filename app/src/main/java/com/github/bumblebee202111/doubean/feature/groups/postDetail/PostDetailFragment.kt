@@ -25,7 +25,12 @@ import com.github.bumblebee202111.doubean.model.PostCommentSortBy
 import com.github.bumblebee202111.doubean.model.PostDetail
 import com.github.bumblebee202111.doubean.ui.common.DoubeanWebViewClient
 import com.github.bumblebee202111.doubean.ui.common.RetryCallback
-import com.github.bumblebee202111.doubean.util.*
+import com.github.bumblebee202111.doubean.util.DOUBAN_USER_AGENT_STRING
+import com.github.bumblebee202111.doubean.util.InjectorUtils
+import com.github.bumblebee202111.doubean.util.OpenInUtil
+import com.github.bumblebee202111.doubean.util.POST_CONTENT_CSS_FILENAME
+import com.github.bumblebee202111.doubean.util.ShareUtil
+import com.github.bumblebee202111.doubean.util.showSnackbar
 import com.google.android.material.snackbar.Snackbar
 
 class PostDetailFragment : Fragment() {
@@ -33,8 +38,10 @@ class PostDetailFragment : Fragment() {
     private lateinit var binding: FragmentPostDetailBinding
     private val args: PostDetailFragmentArgs by navArgs()
     private val postDetailViewModel: PostDetailViewModel by viewModels {
-        InjectorUtils.providePostDetailViewModelFactory(requireContext(),
-            args.postId)
+        InjectorUtils.providePostDetailViewModelFactory(
+            requireContext(),
+            args.postId
+        )
     }
     lateinit var commentAdapter: PostCommentAdapter
     lateinit var spinner: Spinner
@@ -61,6 +68,7 @@ class PostDetailFragment : Fragment() {
                         navigateToWebView(post)
                         true
                     }
+
                     R.id.action_share -> {
                         val shareText = StringBuilder()
                         post.group?.name.let { groupName ->
@@ -71,16 +79,19 @@ class PostDetailFragment : Fragment() {
                         ShareUtil.share(requireContext(), shareText)
                         true
                     }
+
                     R.id.action_view_in_douban -> {
                         val urlString = post.uri
                         OpenInUtil.openInDouban(requireContext(), urlString)
                         true
                     }
+
                     R.id.action_view_in_browser -> {
                         val urlString = post.url
                         OpenInUtil.openInBrowser(requireContext(), urlString)
                         true
                     }
+
                     else -> false
                 }
             }
@@ -137,6 +148,7 @@ class PostDetailFragment : Fragment() {
                     content.settings,
                     WebSettingsCompat.FORCE_DARK_ON
                 )
+
                 Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED -> WebSettingsCompat.setForceDark(
                     content.settings,
                     WebSettingsCompat.FORCE_DARK_OFF
@@ -180,6 +192,7 @@ class PostDetailFragment : Fragment() {
                             commentAdapter.submitList(comments.topComments)
                             binding.postDetailScrollview.setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?)
                         }
+
                         PostCommentSortBy.ALL -> {
                             commentAdapter.submitList(comments.allComments)
                             binding.postDetailScrollview.setOnScrollChangeListener(
@@ -198,7 +211,14 @@ class PostDetailFragment : Fragment() {
     }
 
     private fun setupCommentList() {
-        commentAdapter = PostCommentAdapter(postDetailViewModel.post, viewLifecycleOwner)
+        commentAdapter = PostCommentAdapter(
+            postLiveData = postDetailViewModel.post,
+            lifecycleOwner = viewLifecycleOwner,
+            onImageClick = {//TODO https://developer.android.google.cn/develop/ui/compose/touch-input/pointer-input/tap-and-press
+                findNavController().navigate(MobileNavigationDirections.actionGlobalNavImage(it.large.url))
+            }
+
+        )
         binding.comments.adapter = commentAdapter
         binding.comments.addItemDecoration(
             DividerItemDecoration(binding.comments.context, DividerItemDecoration.VERTICAL)
@@ -220,6 +240,7 @@ class PostDetailFragment : Fragment() {
                         PostCommentSortBy.TOP -> {
                             commentAdapter.submitList(comments.topComments)
                         }
+
                         PostCommentSortBy.ALL -> {
                             commentAdapter.submitList(comments.allComments)
                         }
