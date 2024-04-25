@@ -1,17 +1,22 @@
 package com.github.bumblebee202111.doubean.feature.settings
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
+import com.github.bumblebee202111.doubean.ui.common.stateInUi
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SettingsViewModel(private val preferenceStorage: PreferenceStorage) : ViewModel() {
+@HiltViewModel
+class SettingsViewModel @Inject constructor(private val preferenceStorage: PreferenceStorage) :
+    ViewModel() {
     val enableNotifications =
-        preferenceStorage.preferToReceiveNotifications.flowOn(Dispatchers.IO).asLiveData()
+        preferenceStorage.preferToReceiveNotifications.flowOn(Dispatchers.IO).stateInUi()
+    val startAppWithGroups =
+        preferenceStorage.startAppWithGroups.flowOn(Dispatchers.IO).stateInUi()
 
     fun toggleEnableNotifications() {
         viewModelScope.launch {
@@ -19,17 +24,10 @@ class SettingsViewModel(private val preferenceStorage: PreferenceStorage) : View
         }
     }
 
-    companion object {
-        class Factory(
-            private val preferenceStorage: PreferenceStorage,
-        ) : ViewModelProvider.NewInstanceFactory() {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return SettingsViewModel(
-                    preferenceStorage
-                ) as T
-            }
-
+    fun toggleSetGroupsAsStartDestination() {
+        viewModelScope.launch {
+            preferenceStorage.setStartAppWithGroups(!startAppWithGroups.value!!)
         }
     }
+
 }

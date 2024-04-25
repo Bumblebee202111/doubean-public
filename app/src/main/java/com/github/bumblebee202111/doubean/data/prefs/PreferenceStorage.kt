@@ -16,6 +16,7 @@ import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.Preferenc
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_PER_FOLLOW_FEED_REQUEST_POST_COUNT_LIMIT
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_PER_FOLLOW_SORT_RECOMMENDED_POSTS_BY
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_RECEIVE_NOTIFICATIONS
+import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_START_APP_WITH_GROUPS
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_UDID
 import com.github.bumblebee202111.doubean.model.PostSortBy
 import kotlinx.coroutines.flow.Flow
@@ -37,6 +38,9 @@ class PreferenceStorage(
 
     object PreferencesKeys {
         val PREF_RECEIVE_NOTIFICATIONS = booleanPreferencesKey("pref_receive_notifications")
+        val PREF_START_APP_WITH_GROUPS = booleanPreferencesKey("pref_start_app_with_groups")
+
+
         val PREF_PER_FOLLOW_DEFAULT_ENABLE_POST_NOTIFICATIONS =
             booleanPreferencesKey("per_follow_enable_post_notifications")
         val PREF_PER_FOLLOW_ALLOW_DUPLICATE_NOTIFICATIONS =
@@ -62,6 +66,16 @@ class PreferenceStorage(
 
     val preferToReceiveNotifications = dataStore.data.map {
         it[PREF_RECEIVE_NOTIFICATIONS] ?: true
+    }
+
+    suspend fun setStartAppWithGroups(startAppWithGroups: Boolean) {
+        dataStore.edit {
+            it[PREF_START_APP_WITH_GROUPS] = startAppWithGroups
+        }
+    }
+
+    val startAppWithGroups = dataStore.data.map {
+        it[PREF_START_APP_WITH_GROUPS] ?: false
     }
 
     suspend fun setPerFollowDefaultEnablePostNotifications(enable: Boolean) {
