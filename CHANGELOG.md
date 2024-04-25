@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+## Version 0.5.2
+
+- New: ImageScreen (view and save)
+- Optimize: Port Timeline images composable to comment list
+- Optimize: The single image of a list item is no longer cropped, instead it is usually shown with its original size and will only takes up to golden fraction of available size
+
 ## Version 0.5.1
 
 - New: Home - Following
