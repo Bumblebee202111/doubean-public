@@ -195,11 +195,11 @@ Libraries Used
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological
 order\)
 
-#### To-dos for current release \(0.5.2\)
-
-#### To-dos for next release \(0.5.3)
+#### To-dos for current release \(0.5.3\)
 
 - Optimize group topic content WebView and fix topic images
+
+#### To-dos for next release \(0.5.4)
 
 #### Future plans
 
