@@ -52,7 +52,7 @@ import kotlinx.coroutines.launch
         RecommendedPostNotificationEntity::class,
         UserEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(
@@ -85,6 +85,7 @@ abstract class AppDatabase : RoomDatabase() {
 
         fun buildDatabase(context: Context): AppDatabase {
             return databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
+                .fallbackToDestructiveMigration()
                 .addCallback(sRoomDatabaseCallback)
                 .build()
         }

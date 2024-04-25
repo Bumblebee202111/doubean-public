@@ -57,7 +57,7 @@ The app is composed of 3 main screens, two of which are blank and left for futur
 
 #### HomeFragment
 
-Blank
+- Following
 
 #### NotificationFragment
 
@@ -88,11 +88,7 @@ To not get this project/myself into trouble, the update of the source code of th
 
 ### Features
 
-It not only implements the very basic features of Douban app, but also has its own features. Some of which react to the fact that Douban community is somewhat unfriendly and closed to non-members; examples are power abuse of some group mods, "apply ~~to follow or~~ to talk" and etc.
-
-\* In more recent (after mid-2022) versions of the Douban app, the feature of following unjoined groups is finally added by them.
-
-* Inherent advantages leading to good performance and simple coding
+It not only implements the very basic features of Douban app, but also has its own features. 
 
 | Design Aspect     | Choice\(s\)                                     |
 |-------------------|-------------------------------------------------|
@@ -103,10 +99,10 @@ It not only implements the very basic features of Douban app, but also has its o
 
 * Support for loading cache as alternative even when connection is off
 * Recommended post notifications
-* Ad-free, lite \(~5MB\)
-* Support URL deep links
-* Basic support for MD \(dark theme included\) and tablets/landscape
-* Bilingual UI strings support
+* Ad-free, lite \(~6MB\)
+* Partially support URL deep links
+* Basic support for MD2/3 \(dark theme included\) and tablets/landscape
+* Partial bilingual UI strings support
 * Support for viewing content in Douban WebView optimized for mobile reading \(in progress\)
 * Paging & swipe refresh support
 * Rooted users can use login session of Douban app
@@ -195,22 +191,23 @@ Libraries Used
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological
 order\)
 
-#### To-dos for current release \(0.5.0\)
+#### To-dos for current release \(0.5.1\)
 
-#### To-dos for next release \(0.5.1\)
+#### To-dos for next release \(0.5.2\)
 
 #### Future plans
 
-* User requirements (= high priority)
-  * Home - Following
-  * Rename local follow to favorite
-  * Replace content of the recommended groups area with recommended posts
-    * First tab/page: Post recommendation (of followed groups) API
-    * Others: posts of favorite tabs from group tab posts API
-
-  * Post detail
-    * Polls
-    * Comment image
+* Group/Comment images: display, view and save
+* Paging buttons
+* Topic body urls
+* IP locations
+* Home - Following
+* Rename local follow to favorite
+* Replace content of the recommended groups area with recommended posts
+  * First tab/page: Post recommendation (of followed groups) API
+  * Others: posts of favorite tabs from group tab posts API
+* Post detail
+  * Polls
 
 * Gradual migrations: <span id="migrations"></span>
   * From MD2 / custom design to MD3
@@ -253,8 +250,8 @@ order\)
 * \[GroupDetailFragment\] Group/tab/post shortcuts
 * Rate limit
 * \[Lists\]Reddit-like item expand/collapse
-* \[GroupDetailFragment\]For post items, optimize tag display, e.g., assign color to each tag mapped from name
-* 🛠\[GroupPostFragment\]Dealing with post URL click - new page should not show in the old WebView
+* \[GroupDetailFragment\] For post items, optimize tag display, e.g., assign color to each tag mapped from name
+* 🛠\[GroupPostFragment\] Dealing with post URL click - new page should not show in the old WebView
 * Support blocking unfriendly content
 * \[PostDetailFragment\] Show saves and reposts
 * \[GroupDetailFragment\] Collapse on entrance for the followed group/tab
@@ -263,9 +260,8 @@ order\)
 * Widgets
 * More features of books & movies
 * \[GroupDetailFragment\] Rewrite
-* 🛠 Views on top of WebView become invisible after scroll on my MIUI 10 Android 8.1 device \(causes
-  unknown, may never be fixed\)
-* \[Lists\]Post order: custom rules based on multiple factors
+* 🛠 Views on top of WebView become invisible after scroll on my MIUI 10 Android 8.1 device \(causes unknown, may never be fixed\)
+* \[Lists\] Post order: custom rules based on multiple factors
 * User data backup
 * Optimize landscape experience
 

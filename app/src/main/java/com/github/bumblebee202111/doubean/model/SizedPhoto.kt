@@ -1,5 +1,8 @@
 package com.github.bumblebee202111.doubean.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class SizedPhoto(
     val id: String,
     val description: String,
@@ -8,6 +11,7 @@ data class SizedPhoto(
     val tag: String,
 )
 
+@Serializable
 data class SizedImage(
     val isAnimated: Boolean = false,
     val large: ImageItem,
@@ -17,9 +21,10 @@ data class SizedImage(
     val video: ImageItem? = null,
 )
 
+@Serializable
 data class ImageItem(
     val height: Int,
-    val size: Long,
+    val size: Long?,
     val url: String,
     val width: Int,
 )
