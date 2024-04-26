@@ -1,7 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.groups.postDetail
 
 import android.annotation.SuppressLint
-import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Base64
 import android.view.LayoutInflater
@@ -15,8 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.webkit.WebSettingsCompat
-import androidx.webkit.WebViewFeature
 import com.github.bumblebee202111.doubean.MobileNavigationDirections
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.FragmentPostDetailBinding
@@ -136,19 +133,6 @@ class PostDetailFragment : Fragment() {
 
     private fun setupContent() {
         val content = binding.content
-        if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
-            when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-                Configuration.UI_MODE_NIGHT_YES -> WebSettingsCompat.setForceDark(
-                    content.settings,
-                    WebSettingsCompat.FORCE_DARK_ON
-                )
-
-                Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED -> WebSettingsCompat.setForceDark(
-                    content.settings,
-                    WebSettingsCompat.FORCE_DARK_OFF
-                )
-            }
-        }
         content.setPadding(0, 0, 0, 0)
         val webSettings = content.settings
         webSettings.setNeedInitialFocus(false)
