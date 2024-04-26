@@ -1,11 +1,19 @@
 Change Log
 ==========
 
+## Version 0.5.3
+
+- New: Topic content WebView: Link clicks are intercepted to function properly.
+- New: Topic content WebView: Utilize official stylesheets and enable viewport
+  - Now images no longer overflow and embedded players are properly zoomed
+
+- New: Support WebView dark mode for Android versions ≥ T
+
 ## Version 0.5.2
 
 - New: ImageScreen (view and save)
 - Optimize: Port Timeline images composable to comment list
-- Optimize: The single image of a list item is no longer cropped, instead it is usually shown with its original size and will only takes up to golden fraction of available size
+- Optimize: The single image of a list item is no longer cropped, instead it is shown with its original size by default. But if it is too large, it will fit to the golden fraction of the size of available and visible space.
 
 ## Version 0.5.1
 

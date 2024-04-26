@@ -4,7 +4,7 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
 
-The development of this app is restarted but still not progressed on a frequent basis, to meet the requirements the friend who filed the first issue! While we will only develop for them, this project is also going to be used as the playground for fashionable libraries/coding styles such as Jetpack Compose, partially serving the development of MinusOne Music and helping me understand declarative programming. This brings [tons of migration tasks](#migrations), and also means that old libraries and new libraries are currently mixed.
+The development of this app is restarted to meet the requirements the friend who filed the first issue! While we will only develop for them, this project is also going to be used as the playground for fashionable libraries/coding styles such as Jetpack Compose, partially serving the development of MinusOne Music and helping me understand declarative programming. This brings [tons of migration tasks](#migrations), and also means that old libraries and new libraries are currently mixed together.
 
 It has been inactive for 8 months, as:
 * Reinforced by the org/mods, hilarious remarks can be found everywhere
@@ -29,7 +29,7 @@ Introduction
 
 ### Functionality
 
-The app is composed of 3 main screens, two of which are blank and left for future development.
+The app is composed of 4 main screens, two of which are blank and left for future development.
 
 #### GroupFragment
 
@@ -192,19 +192,15 @@ Libraries Used
 
 ### Plans
 
-Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological
-order\)
+Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
 #### To-dos for current release \(0.5.3\)
-
-- Handle link clicks and fix topic images of topic content WebView 
 
 #### To-dos for next release \(0.5.4)
 
 #### Future plans
 
 * Paging buttons
-* Topic body urls
 * IP locations
 * Home - Following
 * Rename local follow to favorite
@@ -216,7 +212,6 @@ order\)
 * Shared element & navigation-fragment-compose
 * Gradual migrations: <span id="migrations"></span>
   * From MD2 / custom design to MD3
-  * From manual DI to Hilt
   * From Gson to Kotlinx.Serialization
   * From custom paging to Paging 3
   * From GithubBrowserSample's user-implemented way of paging to Paging3
@@ -227,7 +222,6 @@ order\)
   * From Apache Commons to ??? 
   * From NavHostFragment to ComposableNavHostFragment
   * From Navigation Fragment to Navigation Compose (start when next stable version is available)
-
 * “每次动态更新请求的帖子总数限制” -> “每次从n条帖子中筛选新动态”
 * Use the new nullable "edit_time" property of network posts
 * Split Douban data and local user data instead of putting them in one model class
