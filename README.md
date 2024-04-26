@@ -197,7 +197,7 @@ order\)
 
 #### To-dos for current release \(0.5.3\)
 
-- Optimize group topic content WebView and fix topic images
+- Handle link clicks and fix topic images of topic content WebView 
 
 #### To-dos for next release \(0.5.4)
 
