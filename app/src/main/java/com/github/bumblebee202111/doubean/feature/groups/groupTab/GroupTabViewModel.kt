@@ -2,8 +2,8 @@ package com.github.bumblebee202111.doubean.feature.groups.groupTab
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
@@ -11,26 +11,34 @@ import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupUserDataRepository
+import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabFragment.Companion.ARG_GROUP_ID
+import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabFragment.Companion.ARG_TAG_ID
 import com.github.bumblebee202111.doubean.model.PostSortBy
 import com.github.bumblebee202111.doubean.model.Resource
 import com.github.bumblebee202111.doubean.ui.common.NextPageHandler
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * Make LiveData refreshable:
  * https://gist.github.com/ivanalvarado/726a6c3f5ffad54958fe4670269bd897
  */
-class GroupTabViewModel(
+@HiltViewModel
+class GroupTabViewModel @Inject constructor(
     private val groupRepository: GroupRepository,
     private val groupUserDataRepository: GroupUserDataRepository,
     private val preferenceStorage: PreferenceStorage,
-    private val groupId: String,
-    val tabId: String?,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+
+    private val tabId: String? = savedStateHandle[ARG_TAG_ID]
+    private val groupId: String = savedStateHandle[ARG_GROUP_ID]!!
+
     private val nextPageHandler = object : NextPageHandler() {
         override fun loadNextPageFromRepo(): LiveData<Resource<Boolean>?> {
             return liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
@@ -39,6 +47,7 @@ class GroupTabViewModel(
                         true -> groupRepository.getNextPageGroupTagPosts(
                             groupId, tabId, sortBy.value!!
                         )
+
                         else -> {
                             groupRepository.getNextPageGroupPosts(
                                 groupId, sortBy.value!!
@@ -123,28 +132,6 @@ class GroupTabViewModel(
                         numberOfPostsLimitEachFeedFetch
                     )
                 }
-            }
-
-        }
-    }
-
-    companion object {
-        class Factory(
-            private val groupRepository: GroupRepository,
-            var groupUserDataRepository: GroupUserDataRepository,
-            private val preferenceStorage: PreferenceStorage,
-            private val groupId: String,
-            private val tagId: String?,
-        ) : ViewModelProvider.NewInstanceFactory() {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return GroupTabViewModel(
-                    groupRepository,
-                    groupUserDataRepository,
-                    preferenceStorage,
-                    groupId,
-                    tagId
-                ) as T
             }
         }
     }

@@ -18,23 +18,20 @@ import com.github.bumblebee202111.doubean.databinding.FragmentGroupTabBinding
 import com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupDetailViewModel
 import com.github.bumblebee202111.doubean.model.PostSortBy
 import com.github.bumblebee202111.doubean.ui.common.RetryCallback
-import com.github.bumblebee202111.doubean.util.InjectorUtils
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.getColorFromTheme
 import com.github.bumblebee202111.doubean.util.showSnackbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class GroupTabFragment : Fragment() {
     lateinit var binding: FragmentGroupTabBinding
     private val args by lazy { requireArguments() }
     lateinit var groupId: String
     var tagId: String? = null
-    val groupTabViewModel: GroupTabViewModel by viewModels {
-        InjectorUtils.provideGroupTabViewModelFactory(
-            requireContext(), groupId, tagId
-        )
-    }
+    val groupTabViewModel: GroupTabViewModel by viewModels()
     private val groupDetailViewModel: GroupDetailViewModel by viewModels({ requireParentFragment() })
     private lateinit var followUnfollow: MaterialButton
     private lateinit var more: AppCompatImageView

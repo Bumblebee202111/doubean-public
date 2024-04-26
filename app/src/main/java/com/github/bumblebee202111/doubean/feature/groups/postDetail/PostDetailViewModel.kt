@@ -2,8 +2,8 @@ package com.github.bumblebee202111.doubean.feature.groups.postDetail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
@@ -11,13 +11,18 @@ import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.model.Resource
 import com.github.bumblebee202111.doubean.ui.common.NextPageHandler
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
+import javax.inject.Inject
 
-class PostDetailViewModel(
+@HiltViewModel
+class PostDetailViewModel @Inject constructor(
     private val groupRepository: GroupRepository,
-    private val postId: String,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+
+    private val postId = PostDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).postId
 
     private val reloadTrigger = MutableLiveData(Unit)
     private val nextPageHandler = object : NextPageHandler() {
@@ -45,15 +50,4 @@ class PostDetailViewModel(
         nextPageHandler.loadNextPage()
     }
 
-    companion object {
-        class Factory(
-            private val repository: GroupRepository,
-            private val postId: String,
-        ) : ViewModelProvider.NewInstanceFactory() {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return PostDetailViewModel(repository, postId) as T
-            }
-        }
-    }
 }

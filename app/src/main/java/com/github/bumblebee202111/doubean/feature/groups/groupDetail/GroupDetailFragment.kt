@@ -15,29 +15,29 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.FragmentGroupDetailBinding
 import com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupNotificationsPreferenceDialogFragment.Companion.DIALOG_GROUP_NOTIFICATIONS_PREFERENCE
 import com.github.bumblebee202111.doubean.model.GroupTab
-import com.github.bumblebee202111.doubean.util.*
+import com.github.bumblebee202111.doubean.util.EventObserver
+import com.github.bumblebee202111.doubean.util.OpenInUtil
+import com.github.bumblebee202111.doubean.util.ShareUtil
+import com.github.bumblebee202111.doubean.util.getColorFromTheme
+import com.github.bumblebee202111.doubean.util.showSnackbar
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A fragment representing a single Group detail screen.
  */
+@AndroidEntryPoint
 class GroupDetailFragment : Fragment() {
     private val args: GroupDetailFragmentArgs by navArgs()
     private lateinit var groupId: String
     private var defaultSelectedTabId: String? = null
 
     private lateinit var binding: FragmentGroupDetailBinding
-    private val groupDetailViewModel: GroupDetailViewModel by viewModels {
-        InjectorUtils.provideGroupDetailViewModelFactory(
-            requireContext(),
-            groupId,
-            defaultSelectedTabId
-        )
-    }
+    private val groupDetailViewModel: GroupDetailViewModel by viewModels()
     private lateinit var viewPager: ViewPager2
 
-    lateinit var groupPagerAdapter: com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupPagerAdapter
+    private lateinit var groupPagerAdapter: GroupPagerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -90,7 +90,7 @@ class GroupDetailFragment : Fragment() {
                         ))
                     ) {
                         groupPagerAdapter =
-                            com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupPagerAdapter(
+                            GroupPagerAdapter(
                                 childFragmentManager,
                                 viewLifecycleOwner.lifecycle,
                                 groupId,

@@ -14,19 +14,16 @@ import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreferenceCompat
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.PostSortBy
-import com.github.bumblebee202111.doubean.util.InjectorUtils
 import com.google.android.material.appbar.MaterialToolbar
+import dagger.hilt.android.AndroidEntryPoint
 
 // PreferenceFragmentCompat + DataStore<Preferences>
 // See https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:datastore/datastore-sampleapp/src/main/java/com/example/datastoresampleapp/SettingsFragment.kt
 // Also conforms to MVVM
+@AndroidEntryPoint
 class PerFollowDefaultNotificationsPreferencesSettingsFragment : PreferenceFragmentCompat() {
 
-    private val viewModel: PerFollowDefaultNotificationsPreferencesSettingsViewModel by viewModels {
-        InjectorUtils.providePerFollowDefaultNotificationsSettingsViewModelFactory(
-            requireContext()
-        )
-    }
+    private val viewModel: PerFollowDefaultNotificationsPreferencesSettingsViewModel by viewModels()
 
     private var postNotificationsSwitchPreference: SwitchPreferenceCompat? = null
     private var allowDuplicateNotificationsSwitchPreference: SwitchPreferenceCompat? = null
