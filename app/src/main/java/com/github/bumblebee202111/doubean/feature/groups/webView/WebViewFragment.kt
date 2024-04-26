@@ -28,7 +28,7 @@ class WebViewFragment : Fragment() {
         val url = args.url
         val webView = binding.webView
         val webViewClient =
-            object : DoubeanWebViewClient(DOUBAN_WEB_CSS_FILENAME) {
+            object : DoubeanWebViewClient(listOf(DOUBAN_WEB_CSS_FILENAME)) {
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
                     binding.toolbar.title = view.title

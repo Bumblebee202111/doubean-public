@@ -21,9 +21,9 @@ import com.github.bumblebee202111.doubean.model.PostCommentSortBy
 import com.github.bumblebee202111.doubean.model.PostDetail
 import com.github.bumblebee202111.doubean.ui.common.DoubeanWebViewClient
 import com.github.bumblebee202111.doubean.ui.common.RetryCallback
-import com.github.bumblebee202111.doubean.util.DOUBAN_USER_AGENT_STRING
+import com.github.bumblebee202111.doubean.util.APP_LIGHT_CSS_FILENAME
+import com.github.bumblebee202111.doubean.util.NOTE_V2_CSS_FILENAME
 import com.github.bumblebee202111.doubean.util.OpenInUtil
-import com.github.bumblebee202111.doubean.util.POST_CONTENT_CSS_FILENAME
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.showSnackbar
 import com.google.android.material.snackbar.Snackbar
@@ -115,9 +115,27 @@ class PostDetailFragment : Fragment() {
 
         postDetailViewModel.post.observe(viewLifecycleOwner) { postResource ->
             if (postResource.data != null) {
-                if (!postResource.data.content.isNullOrBlank()) {
+                val content = postResource.data.content
+                if (!content.isNullOrBlank()) {
+
+                    val wrappedContent = """
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
+</head>
+<body>
+    <section class="note-content paper">
+        <div class="note-body" id="note-body">
+            <div class="rich-note">
+                    $content
+            </div>
+        </div>
+    </section>
+<body>
+                    """.trimIndent()
+
                     val encodedContent = Base64.encodeToString(
-                        postResource.data.content.toByteArray(),
+                        wrappedContent.toByteArray(),
                         Base64.NO_PADDING
                     )
                     binding.content.loadData(encodedContent, "text/html", "base64")
@@ -136,10 +154,19 @@ class PostDetailFragment : Fragment() {
         content.setPadding(0, 0, 0, 0)
         val webSettings = content.settings
         webSettings.setNeedInitialFocus(false)
-        webSettings.userAgentString = DOUBAN_USER_AGENT_STRING
-        //webSettings.setUseWideViewPort(true);
-        //webSettings.setLoadWithOverviewMode(true);
-        val webViewClient = DoubeanWebViewClient(POST_CONTENT_CSS_FILENAME)
+        //webSettings.userAgentString = DOUBAN_USER_AGENT_STRING
+        webSettings.useWideViewPort = true;
+        //webSettings.loadWithOverviewMode = true;
+        val webViewClient = DoubeanWebViewClient(
+            listOf(
+                //GROUP_TOPIC_CSS_FILENAME,
+                //HTML5_VIDEO_CSS_FILENAME,
+                //BASE_CSS_FILENAME, //would make images overflow while loading and bottom
+                NOTE_V2_CSS_FILENAME,
+                APP_LIGHT_CSS_FILENAME
+                //POST_CONTENT_CSS_FILENAME
+            )
+        )
         content.webViewClient = webViewClient
     }
 
