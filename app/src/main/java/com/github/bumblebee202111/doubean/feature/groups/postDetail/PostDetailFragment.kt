@@ -14,7 +14,6 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
@@ -26,23 +25,18 @@ import com.github.bumblebee202111.doubean.model.PostDetail
 import com.github.bumblebee202111.doubean.ui.common.DoubeanWebViewClient
 import com.github.bumblebee202111.doubean.ui.common.RetryCallback
 import com.github.bumblebee202111.doubean.util.DOUBAN_USER_AGENT_STRING
-import com.github.bumblebee202111.doubean.util.InjectorUtils
 import com.github.bumblebee202111.doubean.util.OpenInUtil
 import com.github.bumblebee202111.doubean.util.POST_CONTENT_CSS_FILENAME
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.showSnackbar
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PostDetailFragment : Fragment() {
 
     private lateinit var binding: FragmentPostDetailBinding
-    private val args: PostDetailFragmentArgs by navArgs()
-    private val postDetailViewModel: PostDetailViewModel by viewModels {
-        InjectorUtils.providePostDetailViewModelFactory(
-            requireContext(),
-            args.postId
-        )
-    }
+    private val postDetailViewModel: PostDetailViewModel by viewModels()
     lateinit var commentAdapter: PostCommentAdapter
     lateinit var spinner: Spinner
 

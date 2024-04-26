@@ -1,16 +1,18 @@
 package com.github.bumblebee202111.doubean.feature.settings
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.model.PostSortBy
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class PerFollowDefaultNotificationsPreferencesSettingsViewModel(private val preferenceStorage: PreferenceStorage) :
+@HiltViewModel
+class PerFollowDefaultNotificationsPreferencesSettingsViewModel @Inject constructor(private val preferenceStorage: PreferenceStorage) :
     ViewModel() {
     val enablePostNotifications =
         preferenceStorage.perFollowDefaultEnablePostNotifications.flowOn(Dispatchers.IO)
@@ -51,17 +53,4 @@ class PerFollowDefaultNotificationsPreferencesSettingsViewModel(private val pref
         }
     }
 
-    companion object {
-        class Factory(
-            private val preferenceStorage: PreferenceStorage,
-        ) : ViewModelProvider.NewInstanceFactory() {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return PerFollowDefaultNotificationsPreferencesSettingsViewModel(
-                    preferenceStorage
-                ) as T
-            }
-
-        }
-    }
 }

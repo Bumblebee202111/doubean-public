@@ -16,15 +16,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.bumblebee202111.doubean.databinding.FragmentGroupSearchBinding
 import com.github.bumblebee202111.doubean.ui.common.RetryCallback
-import com.github.bumblebee202111.doubean.util.InjectorUtils
 import com.github.bumblebee202111.doubean.util.SpanCountCalculator
 import com.github.bumblebee202111.doubean.util.showSnackbar
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class GroupSearchFragment : Fragment() {
-    private val groupSearchViewModel: GroupSearchViewModel by viewModels {
-        InjectorUtils.provideGroupSearchViewModelFactory(requireContext())
-    }
+    private val groupSearchViewModel: GroupSearchViewModel by viewModels()
     lateinit var binding: FragmentGroupSearchBinding
     private lateinit var adapter: SearchResultGroupAdapter
     override fun onCreateView(

@@ -12,12 +12,16 @@ import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.model.Resource
 import com.github.bumblebee202111.doubean.ui.common.LoadMoreState
 import com.github.bumblebee202111.doubean.ui.common.NextPageHandler
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOn
 import java.util.Locale
+import javax.inject.Inject
 
-class GroupSearchViewModel(private val groupRepository: GroupRepository) : ViewModel() {
+@HiltViewModel
+class GroupSearchViewModel @Inject constructor(private val groupRepository: GroupRepository) :
+    ViewModel() {
     private val query = MutableLiveData<String>()
     private val nextPageHandler = object : NextPageHandler() {
         override fun loadNextPageFromRepo(): LiveData<Resource<Boolean>?> {
