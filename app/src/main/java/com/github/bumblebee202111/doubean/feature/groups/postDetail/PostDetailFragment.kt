@@ -1,17 +1,34 @@
 package com.github.bumblebee202111.doubean.feature.groups.postDetail
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.DownloadManager
+import android.content.Context.DOWNLOAD_SERVICE
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.util.Base64
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
+import android.webkit.WebView
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.net.toUri
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.github.bumblebee202111.doubean.MobileNavigationDirections
@@ -28,6 +45,8 @@ import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.showSnackbar
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
+
 
 @AndroidEntryPoint
 class PostDetailFragment : Fragment() {
@@ -36,6 +55,8 @@ class PostDetailFragment : Fragment() {
     private val postDetailViewModel: PostDetailViewModel by viewModels()
     lateinit var commentAdapter: PostCommentAdapter
     lateinit var spinner: Spinner
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
+    private lateinit var downloadImage: () -> Unit
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
@@ -147,17 +168,44 @@ class PostDetailFragment : Fragment() {
                 }
             }
         }
+
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            requestPermissionLauncher =
+                registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                    if (isGranted)
+                        downloadImage()
+                }
+        }
     }
 
+    private fun downloadImage(imageURL: String) {
+        val request = DownloadManager.Request(Uri.parse(imageURL))
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+        val name = URLUtil.guessFileName(imageURL, null, null)
+        val fullName =
+            "${Environment.getExternalStorageDirectory().absolutePath}/${Environment.DIRECTORY_PICTURES}/Douban/$name"
+        request.setDestinationUri(Uri.fromFile(File(fullName)))
+        val downloadManager =
+            requireActivity().getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+        downloadManager.enqueue(request)
+        Toast.makeText(
+            context,
+            "Downloading image to $fullName",
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
+    @SuppressLint("JavascriptInterface")
     private fun setupContent() {
         val content = binding.content
         content.setPadding(0, 0, 0, 0)
+
         val webSettings = content.settings
         webSettings.setNeedInitialFocus(false)
         //webSettings.userAgentString = DOUBAN_USER_AGENT_STRING
         webSettings.useWideViewPort = true;
-        //webSettings.loadWithOverviewMode = true;
-        val webViewClient = DoubeanWebViewClient(
+        val webViewClient = object : DoubeanWebViewClient(
             listOf(
                 //GROUP_TOPIC_CSS_FILENAME,
                 //HTML5_VIDEO_CSS_FILENAME,
@@ -166,7 +214,57 @@ class PostDetailFragment : Fragment() {
                 APP_LIGHT_CSS_FILENAME
                 //POST_CONTENT_CSS_FILENAME
             )
-        )
+        ) {
+            @Deprecated("Deprecated in Java")
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                if (url == null) return false
+                val request = NavDeepLinkRequest.Builder.fromUri(url.toUri()).build()
+                try {
+                    findNavController().navigate(request)
+                } catch (e: IllegalArgumentException) {
+                    Log.i("doubean", "shouldOverrideUrlLoading: $e")
+                    Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                        startActivity(this)
+                    }
+                }
+                return true
+            }
+        }
+
+        content.setOnLongClickListener {
+            val webViewHitTestResult: WebView.HitTestResult = binding.content.getHitTestResult()
+            if (webViewHitTestResult.type == WebView.HitTestResult.IMAGE_TYPE ||
+                webViewHitTestResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
+            ) {
+
+                val imageURL = webViewHitTestResult.extra
+                if (URLUtil.isValidUrl(imageURL)) {
+                    downloadImage = { downloadImage(imageURL!!) }
+                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                        downloadImage()
+                    } else {
+                        val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        if (ActivityCompat.checkSelfPermission(
+                                requireContext(),
+                                permission
+                            ) != PackageManager.PERMISSION_GRANTED
+                        ) {
+                            requestPermissionLauncher.launch(permission)
+                        } else {
+                            downloadImage()
+                        }
+                    }
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Invalid Image Url.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+            }
+            true
+        }
         content.webViewClient = webViewClient
     }
 
@@ -220,7 +318,11 @@ class PostDetailFragment : Fragment() {
             postLiveData = postDetailViewModel.post,
             lifecycleOwner = viewLifecycleOwner,
             onImageClick = {//TODO https://developer.android.google.cn/develop/ui/compose/touch-input/pointer-input/tap-and-press
-                findNavController().navigate(MobileNavigationDirections.actionGlobalNavImage(it.large.url))
+                findNavController().navigate(
+                    MobileNavigationDirections.actionGlobalNavImage(
+                        it.large.url
+                    )
+                )
             }
 
         )
