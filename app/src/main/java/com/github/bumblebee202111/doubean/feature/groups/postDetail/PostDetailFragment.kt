@@ -1,15 +1,10 @@
 package com.github.bumblebee202111.doubean.feature.groups.postDetail
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.DownloadManager
-import android.content.Context.DOWNLOAD_SERVICE
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,7 +18,6 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.core.net.toUri
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -34,6 +28,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.github.bumblebee202111.doubean.MobileNavigationDirections
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.FragmentPostDetailBinding
+import com.github.bumblebee202111.doubean.feature.image.ImageFragmentDirections
 import com.github.bumblebee202111.doubean.model.PostCommentSortBy
 import com.github.bumblebee202111.doubean.model.PostDetail
 import com.github.bumblebee202111.doubean.ui.common.DoubeanWebViewClient
@@ -45,7 +40,6 @@ import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.showSnackbar
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.File
 
 
 @AndroidEntryPoint
@@ -179,23 +173,6 @@ class PostDetailFragment : Fragment() {
         }
     }
 
-    private fun downloadImage(imageURL: String) {
-        val request = DownloadManager.Request(Uri.parse(imageURL))
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-        val name = URLUtil.guessFileName(imageURL, null, null)
-        val fullName =
-            "${Environment.getExternalStorageDirectory().absolutePath}/${Environment.DIRECTORY_PICTURES}/Douban/$name"
-        request.setDestinationUri(Uri.fromFile(File(fullName)))
-        val downloadManager =
-            requireActivity().getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-        downloadManager.enqueue(request)
-        Toast.makeText(
-            context,
-            "Downloading image to $fullName",
-            Toast.LENGTH_LONG
-        ).show()
-    }
-
     @SuppressLint("JavascriptInterface")
     private fun setupContent() {
         val content = binding.content
@@ -231,7 +208,7 @@ class PostDetailFragment : Fragment() {
             }
         }
 
-        content.setOnLongClickListener {
+        content.setOnClickListener {
             val webViewHitTestResult: WebView.HitTestResult = binding.content.getHitTestResult()
             if (webViewHitTestResult.type == WebView.HitTestResult.IMAGE_TYPE ||
                 webViewHitTestResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
@@ -239,31 +216,19 @@ class PostDetailFragment : Fragment() {
 
                 val imageURL = webViewHitTestResult.extra
                 if (URLUtil.isValidUrl(imageURL)) {
-                    downloadImage = { downloadImage(imageURL!!) }
-                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-                        downloadImage()
-                    } else {
-                        val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        if (ActivityCompat.checkSelfPermission(
-                                requireContext(),
-                                permission
-                            ) != PackageManager.PERMISSION_GRANTED
-                        ) {
-                            requestPermissionLauncher.launch(permission)
-                        } else {
-                            downloadImage()
-                        }
-                    }
+                    findNavController().navigate(
+                        ImageFragmentDirections.actionGlobalNavImage(
+                            imageURL!!
+                        )
+                    )
                 } else {
                     Toast.makeText(
                         context,
-                        "Invalid Image Url.",
+                        "Invalid Image Url",
                         Toast.LENGTH_LONG
                     ).show()
                 }
-
             }
-            true
         }
         content.webViewClient = webViewClient
     }
