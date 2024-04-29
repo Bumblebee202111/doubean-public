@@ -107,7 +107,6 @@ dependencies {
 
     implementation(libs.glide)
     ksp(libs.glide.compiler)
-    implementation(libs.webpdecoder)
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.ktor.client.content.negotiation)
