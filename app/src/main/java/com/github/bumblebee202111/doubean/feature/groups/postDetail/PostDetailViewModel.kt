@@ -23,8 +23,8 @@ import com.github.bumblebee202111.doubean.ui.common.NextPageHandler
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import java.math.RoundingMode
 import javax.inject.Inject
@@ -47,12 +47,15 @@ class PostDetailViewModel @Inject constructor(
         }
     }
 
-    val contentHtml = MutableStateFlow<String?>(null)
+
 
     val post = groupRepository.getPost(postId).onEach { it ->
 
-        if (it.status == Status.LOADING) return@onEach
-        val content = it.data?.content ?: return@onEach
+
+    }.flowOn(Dispatchers.IO).stateInUi()
+    val contentHtml = post.map {
+        if (it == null || it.status == Status.LOADING) return@map null
+        val content = it.data?.content ?: return@map null
 
         val regex =
             "(<div data-entity-type=\"(poll|question)\" data-id=\"(\\d*)\">)<div class=\"(poll|question)-wrapper\"><div class=\"(poll|question)-title\"><span>[^<>]*</span></div></div>(</div>)".toRegex()
@@ -74,7 +77,7 @@ class PostDetailViewModel @Inject constructor(
                 }
             }
         }.toList()
-        val entities = pollRepository.getPollsAndQuestions(ids).getOrNull() ?: return@onEach
+        val entities = pollRepository.getPollsAndQuestions(ids).getOrNull() ?: return@map null
         var index = 0
         val expandedContentElement = content.replace(regex) { it ->
             val groupValues = it.groupValues
@@ -165,7 +168,7 @@ class PostDetailViewModel @Inject constructor(
 
         }
         Log.d("Post detail", "content: $expandedContentElement")
-        contentHtml.value = """
+        return@map """
 <!DOCTYPE html>
 <head>
     <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
@@ -174,8 +177,7 @@ class PostDetailViewModel @Inject constructor(
     $expandedContentElement
 <body>
                     """.trimIndent()
-    }.flowOn(Dispatchers.IO).stateInUi()
-
+    }.stateInUi()
 
     val postComments = reloadTrigger.switchMap {
         groupRepository.getPostComments(postId).flowOn(Dispatchers.IO).asLiveData()
