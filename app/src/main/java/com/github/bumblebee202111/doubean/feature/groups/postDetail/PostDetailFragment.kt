@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
@@ -149,24 +150,8 @@ class PostDetailFragment : Fragment() {
                 postDetailViewModel.contentHtml.collect { content ->
                     if (!content.isNullOrBlank()) {
 
-                        val wrappedContent = """
-<!DOCTYPE html>
-<head>
-    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
-</head>
-<body>
-    <section class="note-content paper">
-        <div class="note-body" id="note-body">
-            <div class="rich-note">
-                    $content
-            </div>
-        </div>
-    </section>
-<body>
-                    """.trimIndent()
-
                         val encodedContent = Base64.encodeToString(
-                            wrappedContent.toByteArray(),
+                            content.toByteArray(),
                             Base64.NO_PADDING
                         )
                         binding.content.loadData(encodedContent, "text/html", "base64")
@@ -185,7 +170,7 @@ class PostDetailFragment : Fragment() {
 
     }
 
-    @SuppressLint("JavascriptInterface")
+    @SuppressLint("JavascriptInterface", "ClickableViewAccessibility")
     private fun setupContent() {
         val content = binding.content
         content.setPadding(0, 0, 0, 0)
@@ -220,27 +205,33 @@ class PostDetailFragment : Fragment() {
             }
         }
 
-        content.setOnClickListener {
-            val webViewHitTestResult: WebView.HitTestResult = binding.content.getHitTestResult()
-            if (webViewHitTestResult.type == WebView.HitTestResult.IMAGE_TYPE ||
-                webViewHitTestResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
-            ) {
 
-                val imageURL = webViewHitTestResult.extra
-                if (URLUtil.isValidUrl(imageURL)) {
-                    findNavController().navigate(
-                        ImageFragmentDirections.actionGlobalNavImage(
-                            imageURL!!
+        content.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_UP
+            ) {
+                val webViewHitTestResult: WebView.HitTestResult = binding.content.getHitTestResult()
+                if (webViewHitTestResult.type == WebView.HitTestResult.IMAGE_TYPE ||
+                    webViewHitTestResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
+                ) {
+
+                    val imageURL = webViewHitTestResult.extra
+                    if (URLUtil.isValidUrl(imageURL)) {
+                        findNavController().navigate(
+                            ImageFragmentDirections.actionGlobalNavImage(
+                                imageURL!!
+                            )
                         )
-                    )
-                } else {
-                    Toast.makeText(
-                        context,
-                        "Invalid Image Url",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Invalid Image Url",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
             }
+
+            return@setOnTouchListener false
         }
         content.webViewClient = webViewClient
     }
