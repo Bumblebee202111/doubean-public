@@ -1,15 +1,20 @@
 package com.github.bumblebee202111.doubean.data.db
 
+import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import com.github.bumblebee202111.doubean.model.SizedPhoto
 import com.github.bumblebee202111.doubean.util.DATETIME_PATTERN_DEFAULT
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import javax.inject.Inject
 
-object Converters {
+@ProvidedTypeConverter
+class Converters(private val json: Json) {
+    @Inject
+
     @TypeConverter
     fun stringToLocalDateTime(text: String?): LocalDateTime? {
         return if (text == null) null else LocalDateTime.parse(
@@ -18,30 +23,28 @@ object Converters {
             )
         )
     }
-
     @TypeConverter
-    fun dateToTimestamp(localDateTime: LocalDateTime?): String? {
+    fun localDateTimeToString(localDateTime: LocalDateTime?): String? {
         return localDateTime?.format(DateTimeFormatter.ofPattern(DATETIME_PATTERN_DEFAULT))
     }
-
     @TypeConverter
-    fun stringListToString(strings: List<String?>?): String {
-        return Gson().toJson(strings)
+    fun stringListToString(strings: List<String>?): String? {
+        return strings?.joinToString()
     }
 
     @TypeConverter
-    fun stringToStringList(string: String?): List<String> {
-        return Gson().fromJson(string, object : TypeToken<ArrayList<String?>?>() {}.type)
+    fun stringToStringList(string: String?): List<String>? {
+        return string?.split(", ")
     }
 
     @TypeConverter
-    fun sizedPhotoListToString(photo: List<SizedPhoto>?): String? {
-        return Gson().toJson(photo)
+    fun sizedPhotoListToString(photos: List<SizedPhoto>?): String {
+        return json.encodeToString(photos)
     }
 
     @TypeConverter
-    fun stringToSizedPhotoList(string: String?): List<SizedPhoto> {
-        return Gson().fromJson(string, object : TypeToken<ArrayList<SizedPhoto>?>() {}.type)
+    fun stringToSizedPhotoList(string: String?): List<SizedPhoto>? {
+        return string?.let { json.decodeFromString(it) }
     }
 
     @TypeConverter

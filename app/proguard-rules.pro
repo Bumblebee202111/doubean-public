@@ -20,13 +20,6 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep,allowoptimization class com.github.bumblebee202111.doubean.network.model.** { <fields>;<methods>; }
--keep,allowoptimization,allowobfuscation class com.github.bumblebee202111.doubean.model.** { <fields>;<methods>; }
--keep,allowoptimization,allowobfuscation class com.github.bumblebee202111.doubean.network.ApiResponse { <fields>;<methods>; }
--keep,allowoptimization,allowobfuscation class com.github.bumblebee202111.doubean.network.** { <fields>;<methods>; } #todo
-
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 
 -keepattributes Signature
--keep class com.google.gson.reflect.TypeToken { *; }
--keep class * extends com.google.gson.reflect.TypeToken

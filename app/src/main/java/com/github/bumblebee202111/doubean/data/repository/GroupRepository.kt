@@ -565,24 +565,6 @@ class GroupRepository @Inject constructor(
         }.asFlow()
     }
 
-    companion object {
-        @Volatile
-        private var instance: GroupRepository? = null
-
-        fun getInstance(
-            appDatabase: AppDatabase, ApiRetrofitService: ApiRetrofitService,
-        ): GroupRepository? {
-            if (instance == null) {
-                synchronized(this) {
-                    if (instance == null) {
-                        instance = GroupRepository(appDatabase, ApiRetrofitService)
-                    }
-                }
-            }
-            return instance
-        }
-    }
-
 }
 
 

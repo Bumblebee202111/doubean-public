@@ -28,6 +28,7 @@ import com.github.bumblebee202111.doubean.util.DATABASE_NAME
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
 
 @Database(
@@ -64,12 +65,6 @@ abstract class AppDatabase : RoomDatabase() {
     companion object {
         @Volatile
         private var instance: AppDatabase? = null
-        fun getInstance(context: Context): AppDatabase? {
-            if (instance == null) {
-                synchronized(this) { instance = buildDatabase(context) }
-            }
-            return instance
-        }
 
         
         private val sRoomDatabaseCallback: Callback = object : Callback() {
@@ -81,10 +76,11 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        fun buildDatabase(context: Context): AppDatabase {
+        fun buildDatabase(context: Context, json: Json): AppDatabase {
             return databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
                 .fallbackToDestructiveMigration()
                 .addCallback(sRoomDatabaseCallback)
+                .addTypeConverter(Converters(json))
                 .build()
         }
 
