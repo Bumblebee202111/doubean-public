@@ -138,7 +138,6 @@ Libraries Used
   * [Notifications][notifications]
 * Third party and miscellaneous libraries
   * [Retrofit][retrofit]
-  * [Apache Commons][apache-commons]
   * [Glide][glide]
   * [Kotlin Coroutines][kotlin-coroutines]
   * Flow
@@ -184,8 +183,6 @@ Libraries Used
 
 [retrofit]: https://square.github.io/retrofit/
 
-[apache-commons]: https://commons.apache.org/
-
 [glide]: https://bumptech.github.io/glide/
 
 [kotlin-coroutines]: https://kotlinlang.org/docs/reference/coroutines-overview.html
@@ -221,7 +218,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From View and data binding to Jetpack Compose
   * From Retrofit to Ktor
   * From Glide to Coil Compose
-  * From Apache Commons to ??? 
   * From NavHostFragment to ComposableNavHostFragment
   * From Navigation Fragment to Navigation Compose (start when next stable version is available)
 * “每次动态更新请求的帖子总数限制” -> “每次从n条帖子中筛选新动态”

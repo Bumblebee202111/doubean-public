@@ -1,11 +1,13 @@
 package com.github.bumblebee202111.doubean.network
 
 import android.content.Context
+import android.util.Base64
 import coil.ImageLoader
 import com.github.bumblebee202111.doubean.BuildConfig
 import com.github.bumblebee202111.doubean.coroutines.ApplicationScope
 import com.github.bumblebee202111.doubean.security.DOUBAN_API_KEY
 import com.github.bumblebee202111.doubean.security.DOUBAN_SECRET_KEY
+import com.github.bumblebee202111.doubean.security.hmacSha1
 import com.github.bumblebee202111.doubean.util.ApiResponseCallAdapterFactory
 import com.github.bumblebee202111.doubean.util.AppAndDeviceInfoProvider
 import com.github.bumblebee202111.doubean.util.DOUBAN_USER_AGENT_STRING
@@ -25,13 +27,10 @@ import okhttp3.Interceptor
 import okhttp3.JavaNetCookieJar
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
-import org.apache.commons.codec.digest.HmacAlgorithms
-import org.apache.commons.codec.digest.HmacUtils
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.net.CookieManager
 import java.net.URLEncoder
-import java.util.Base64
 import javax.inject.Singleton
 
 @Module
@@ -47,8 +46,9 @@ class NetworkModule {
             val timestamp = System.currentTimeMillis().toString()
             val valueToDigest =
                 "GET&" + URLEncoder.encode(url.encodedPath, "UTF-8") + "&" + timestamp
-            val signature = Base64.getEncoder().encodeToString(
-                HmacUtils(HmacAlgorithms.HMAC_SHA_1, DOUBAN_SECRET_KEY).hmac(valueToDigest)
+            val signature = Base64.encodeToString(
+                valueToDigest.toByteArray().hmacSha1(DOUBAN_SECRET_KEY.toByteArray()),
+                Base64.NO_WRAP
             )
             url = url.newBuilder()
                 .addQueryParameter("channel", "Google_Market")

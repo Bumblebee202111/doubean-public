@@ -100,7 +100,7 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.viewpager2)
 
-    implementation(libs.commons.codec)
+    
 
     implementation(libs.google.android.material)
 
