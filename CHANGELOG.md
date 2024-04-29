@@ -1,9 +1,13 @@
 Change Log
 ==========
 
+## Version 0.5.5
+
 ## Version 0.5.4
 
-- Optimize: Topic content WebView: Tap to view rather than long click to save
+- New: Topic content WebView: Support viewing topic polls and questions
+- New: Topic content WebView: Use official styles for topic content
+- Change: Topic content WebView: Tap to view an image rather than long click to save it
 
 ## Version 0.5.3
 

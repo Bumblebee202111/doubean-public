@@ -194,13 +194,17 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.5.3\)
+#### To-dos for current release \(0.5.5\)
 
-#### To-dos for next release \(0.5.4)
+- Use Ktor for fetching comments
+- Use Paging3 for displaying comments
+- Support jumping to some page
+- Show commenters' IP locations
+
+#### To-dos for next release \(0.5.6)
 
 #### Future plans
 
-* Paging buttons
 * IP locations
 * Home - Following
 * Rename local follow to favorite
