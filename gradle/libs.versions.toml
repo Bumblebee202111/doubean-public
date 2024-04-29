@@ -13,7 +13,6 @@ datastorePreferences = "1.1.0"
 espresso = "3.5.1"
 fragment = "1.5.6"
 glide = "4.16.0"
-gson = "2.10.1"
 hiltAndroid = "2.51.1"
 hiltExt = "1.2.0"
 junit = "4.13.2"
@@ -65,6 +64,7 @@ androidx-compose-ui-viewbinding = { module = "androidx.compose.ui:ui-viewbinding
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintLayout" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "ktx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltExt" }
 androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
@@ -94,7 +94,6 @@ ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negoti
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 libsu-core = { module = "com.github.topjohnwu.libsu:core", version.ref = "libsu" }
 webpdecoder = { module = "com.github.zjupure:webpdecoder", version.ref = "webpdecoder" }
-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { module = "junit:junit", version.ref = "junit" }
 google-android-material = { module = "com.google.android.material:material", version.ref = "material" }
 okhttp3 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
@@ -103,7 +102,6 @@ okhttp3-logging-interceptor = { module = "com.squareup.okhttp3:logging-intercept
 retrofit2 = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit2-response-type-keeper = { module = "com.squareup.retrofit2:response-type-keeper", version.ref = "responseTypeKeeper" }
 retrofit2-converter-kotlinx-serialization = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "retrofit" }
-retrofit2-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 
 [plugins]

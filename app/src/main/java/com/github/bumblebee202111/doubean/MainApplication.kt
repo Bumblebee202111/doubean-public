@@ -1,6 +1,8 @@
 package com.github.bumblebee202111.doubean
 
 import android.app.Application
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import com.topjohnwu.superuser.Shell
@@ -8,9 +10,17 @@ import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
 @HiltAndroidApp
-class MainApplication : Application(), ImageLoaderFactory {
+class MainApplication : Application(), ImageLoaderFactory, Configuration.Provider {
     @Inject
     lateinit var imageLoader: ImageLoader
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    override val workManagerConfiguration
+        get() = Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
 
     override fun newImageLoader(): ImageLoader = imageLoader
 

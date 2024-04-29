@@ -65,6 +65,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.hilt.work)
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
@@ -108,8 +109,6 @@ dependencies {
     ksp(libs.glide.compiler)
     implementation(libs.webpdecoder)
 
-    implementation(libs.gson)
-
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.client.core)
@@ -122,7 +121,6 @@ dependencies {
 
     implementation(libs.retrofit2)
     implementation(libs.retrofit2.converter.kotlinx.serialization)
-    implementation(libs.retrofit2.converter.gson)
     kapt(libs.retrofit2.response.type.keeper)
 
     implementation(libs.coil.compose)
