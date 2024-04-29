@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## Version 0.5.4
+
+- Optimize: Topic content WebView: Tap to view rather than long click to save
+
 ## Version 0.5.3
 
 - New: Topic content WebView: Link clicks are intercepted to function properly.
@@ -8,7 +12,7 @@ Change Log
 - New: Topic content WebView: Utilize official stylesheets and enable viewport
   - Now images no longer overflow and embedded players are properly zoomed
 
-- New: Support dark mode for WebView for Android versions ≥ T
+- New: Support WebView dark mode for Android versions ≥ T
 
 ## Version 0.5.2
 

@@ -22,6 +22,7 @@ import androidx.core.net.toUri
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -33,13 +34,15 @@ import com.github.bumblebee202111.doubean.model.PostCommentSortBy
 import com.github.bumblebee202111.doubean.model.PostDetail
 import com.github.bumblebee202111.doubean.ui.common.DoubeanWebViewClient
 import com.github.bumblebee202111.doubean.ui.common.RetryCallback
-import com.github.bumblebee202111.doubean.util.APP_LIGHT_CSS_FILENAME
-import com.github.bumblebee202111.doubean.util.NOTE_V2_CSS_FILENAME
+import com.github.bumblebee202111.doubean.ui.common.repeatWithViewLifecycle
 import com.github.bumblebee202111.doubean.util.OpenInUtil
 import com.github.bumblebee202111.doubean.util.ShareUtil
+import com.github.bumblebee202111.doubean.util.TOPIC_CSS_FILENAME
 import com.github.bumblebee202111.doubean.util.showSnackbar
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -127,13 +130,26 @@ class PostDetailFragment : Fragment() {
         setupSpinner()
         setupCommentList()
         initCommentList()
+        repeatWithViewLifecycle {
+            launch {
+                postDetailViewModel.post.collect { postResource ->
+                    if (postResource == null) return@collect
+                    if (postResource.data != null) {
+                        val content = postResource.data.content
 
-        postDetailViewModel.post.observe(viewLifecycleOwner) { postResource ->
-            if (postResource.data != null) {
-                val content = postResource.data.content
-                if (!content.isNullOrBlank()) {
 
-                    val wrappedContent = """
+                        postResource.data.group?.color?.let { groupColor ->
+                            binding.toolbar.setBackgroundColor(groupColor)
+                            binding.appbar.setBackgroundColor(groupColor)
+                        }
+                }
+            }
+        }
+            launch {
+                postDetailViewModel.contentHtml.collect { content ->
+                    if (!content.isNullOrBlank()) {
+
+                        val wrappedContent = """
 <!DOCTYPE html>
 <head>
     <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
@@ -149,20 +165,15 @@ class PostDetailFragment : Fragment() {
 <body>
                     """.trimIndent()
 
-                    val encodedContent = Base64.encodeToString(
-                        wrappedContent.toByteArray(),
-                        Base64.NO_PADDING
-                    )
-                    binding.content.loadData(encodedContent, "text/html", "base64")
-                }
-
-                postResource.data.group?.color?.let { groupColor ->
-                    binding.toolbar.setBackgroundColor(groupColor)
-                    binding.appbar.setBackgroundColor(groupColor)
+                        val encodedContent = Base64.encodeToString(
+                            wrappedContent.toByteArray(),
+                            Base64.NO_PADDING
+                        )
+                        binding.content.loadData(encodedContent, "text/html", "base64")
+                    }
                 }
             }
         }
-
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
             requestPermissionLauncher =
@@ -171,6 +182,7 @@ class PostDetailFragment : Fragment() {
                         downloadImage()
                 }
         }
+
     }
 
     @SuppressLint("JavascriptInterface")
@@ -187,8 +199,8 @@ class PostDetailFragment : Fragment() {
                 
                 
                 
-                NOTE_V2_CSS_FILENAME,
-                APP_LIGHT_CSS_FILENAME
+                TOPIC_CSS_FILENAME,
+                
                 
             )
         ) {
@@ -280,7 +292,7 @@ class PostDetailFragment : Fragment() {
 
     private fun setupCommentList() {
         commentAdapter = PostCommentAdapter(
-            postLiveData = postDetailViewModel.post,
+            postLiveData = postDetailViewModel.post.filterNotNull().asLiveData(),
             lifecycleOwner = viewLifecycleOwner,
             onImageClick = {
                 findNavController().navigate(
