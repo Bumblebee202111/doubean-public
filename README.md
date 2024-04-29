@@ -207,8 +207,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Replace content of the recommended groups area with recommended posts
   * First tab/page: Post recommendation (of followed groups) API
   * Others: posts of favorite tabs from group tab posts API
-* Post detail
-  * Polls
 * Shared element & navigation-fragment-compose
 * Gradual migrations: <span id="migrations"></span>
   * From MD2 / custom design to MD3

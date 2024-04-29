@@ -1,9 +1,16 @@
 Change Log
 ==========
 
+## Version 0.5.4
+
+- New: Topic content WebView: Support viewing topic polls and questions
+- New: Topic content WebView: Use official styles for topic content
+- Change: Topic content WebView: Tap to view an image rather than long click to save it
+
 ## Version 0.5.3
 
 - New: Topic content WebView: Link clicks are intercepted to function properly.
+- New: Topic content WebView: Long press an image to save
 - New: Topic content WebView: Utilize official stylesheets and enable viewport
   - Now images no longer overflow and embedded players are properly zoomed
 
