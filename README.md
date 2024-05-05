@@ -193,7 +193,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.5.5\)
 
-- Fix comment list parsing error caused by ad items
 - Show commenters' IP locations
 - Fix immediate crash after toggling starting tab setting
 - Fix could not instantiate com.github.bumblebee202111.doubean.workers.RecommendPostsWorker
@@ -218,11 +217,10 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Shared element & navigation-fragment-compose
 * Gradual migrations: <span id="migrations"></span>
   * From MD2 / custom design to MD3
-  * From Gson to Kotlinx.Serialization
   * From GithubBrowserSample's user-implemented way of paging to Paging3
   * From LiveData to StateFlow
   * From View and data binding to Jetpack Compose
-    * Exceptions: WebView, RecyclerView
+    * Exceptions: WebView
   * From Retrofit to Ktor
   * From Glide to Coil Compose
   * From NavHostFragment to ComposableNavHostFragment
