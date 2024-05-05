@@ -103,7 +103,7 @@ It not only implements the very basic features of Douban app, but also has its o
 
 * Support for loading cache as alternative even when connection is off
 * Recommended post notifications
-* Ad-free, lite \(~6MB\)
+* Ad-free, lite \(~4MB\)
 * Partially support URL deep links
 * Basic support for MD2/3 \(dark theme included\) and tablets/landscape
 * Partial bilingual UI strings support
