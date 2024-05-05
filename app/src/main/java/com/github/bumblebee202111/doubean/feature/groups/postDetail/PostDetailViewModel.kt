@@ -2,30 +2,33 @@ package com.github.bumblebee202111.doubean.feature.groups.postDetail
 
 import android.util.Log
 import androidx.core.text.htmlEncode
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
+import com.github.bumblebee202111.doubean.data.repository.GroupTopicRepo
 import com.github.bumblebee202111.doubean.data.repository.PollRepository
 import com.github.bumblebee202111.doubean.model.Poll
 import com.github.bumblebee202111.doubean.model.PollId
+import com.github.bumblebee202111.doubean.model.PostComment
+import com.github.bumblebee202111.doubean.model.PostCommentSortBy
 import com.github.bumblebee202111.doubean.model.Question
 import com.github.bumblebee202111.doubean.model.QuestionId
-import com.github.bumblebee202111.doubean.model.Resource
 import com.github.bumblebee202111.doubean.model.Status
 import com.github.bumblebee202111.doubean.model.TopicContentEntityId
-import com.github.bumblebee202111.doubean.ui.common.NextPageHandler
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import java.math.RoundingMode
 import javax.inject.Inject
 
@@ -33,37 +36,58 @@ import javax.inject.Inject
 class PostDetailViewModel @Inject constructor(
     private val groupRepository: GroupRepository,
     private val pollRepository: PollRepository,
+    private val topicRepo: GroupTopicRepo,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val postId = PostDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).postId
 
-    private val reloadTrigger = MutableLiveData(Unit)
-    private val nextPageHandler = object : NextPageHandler() {
-        override fun loadNextPageFromRepo(): LiveData<Resource<Boolean>?> {
-            return liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
-                emit(groupRepository.getNextPagePostComments(postId))
-            }
-        }
+    val topicId = PostDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).postId
+
+    private val popularComments: Flow<PagingData<PostComment>>
+
+    private val allComments: Flow<PagingData<PostComment>>
+
+    private val _commentsSortBy: MutableStateFlow<PostCommentSortBy> =
+        MutableStateFlow(PostCommentSortBy.ALL)
+    val commentsSortBy = _commentsSortBy.asStateFlow()
+
+
+    init {
+        val (popularComments, allComments) = topicRepo.getTopicComments(topicId)
+        this@PostDetailViewModel.popularComments =
+            popularComments.map { PagingData.from(it) }.cachedIn(viewModelScope)
+        this@PostDetailViewModel.allComments = allComments.cachedIn(viewModelScope)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val comments = commentsSortBy.flatMapLatest {
+        if (it == PostCommentSortBy.TOP)
+            popularComments
+        else
+            allComments
+    }.cachedIn(viewModelScope)
 
+    private val reloadTrigger = MutableLiveData(Unit)
 
-    val post = groupRepository.getPost(postId).onEach { it ->
+    fun updateCommentsSortBy(commentSortBy: PostCommentSortBy) {
+        _commentsSortBy.value = commentSortBy
+    }
 
+    private val postResource = groupRepository.getPost(topicId).flowOn(Dispatchers.IO).stateInUi()
 
-    }.flowOn(Dispatchers.IO).stateInUi()
-    val contentHtml = post.map {
+    val topic = postResource.map { it?.data }.stateInUi()
+
+    val contentHtml = postResource.map {
         if (it == null || it.status == Status.LOADING) return@map null
         val content = it.data?.content ?: return@map null
 
         val regex =
             "(<div data-entity-type=\"(poll|question)\" data-id=\"(\\d*)\">)<div class=\"(poll|question)-wrapper\"><div class=\"(poll|question)-title\"><span>[^<>]*</span></div></div>(</div>)".toRegex()
-        val matchResult = regex.findAll(content)
+        val matchResults = regex.findAll(content)
 
-        val ids: List<TopicContentEntityId> = matchResult.map {
-            val groupValues = it.groupValues
-            return@map when (groupValues[2]) {
+        val ids: List<TopicContentEntityId> = matchResults.map { matchResult ->
+            val groupValues = matchResult.groupValues
+            when (groupValues[2]) {
                 "poll" -> {
                     PollId(groupValues[3])
                 }
@@ -79,13 +103,14 @@ class PostDetailViewModel @Inject constructor(
         }.toList()
         val entities = pollRepository.getPollsAndQuestions(ids).getOrNull() ?: return@map null
         var index = 0
-        val expandedContentElement = content.replace(regex) { it ->
-            val groupValues = it.groupValues
+        val expandedContentElement = content.replace(regex) { matchResult ->
+            val groupValues = matchResult.groupValues
             buildString {
                 append(groupValues[1])
                 when (val entity = entities[index++]) {
                     is Poll -> {
-                        val showOptionCounts = entity.options.find { it.votedUserCount > 0 } != null
+                        val showOptionCounts =
+                            entity.options.find { option -> option.votedUserCount > 0 } != null
 
                         val optionElements = entity.options.joinToString("") {
                             """
@@ -179,21 +204,6 @@ class PostDetailViewModel @Inject constructor(
                     """.trimIndent()
     }.stateInUi()
 
-    val postComments = reloadTrigger.switchMap {
-        groupRepository.getPostComments(postId).flowOn(Dispatchers.IO).asLiveData()
-
-    }
-
-    fun refreshPostComments() {
-        reloadTrigger.value = Unit
-    }
-
-    val loadMoreStatus
-        get() = nextPageHandler.loadMoreState
-
-    fun loadNextPage() {
-        nextPageHandler.loadNextPage()
-    }
 
     private fun roundedPercentage(f: Float): Double {
         return f.toBigDecimal().setScale(1, RoundingMode.UP).toDouble()

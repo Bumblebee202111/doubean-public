@@ -17,13 +17,10 @@ import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultGroupIt
 import com.github.bumblebee202111.doubean.data.db.model.GroupTabEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTagPostsResult
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedGroupDetail
-import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostComment
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostDetail
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostItem
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostItemWithGroup
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedRecommendedGroup
-import com.github.bumblebee202111.doubean.data.db.model.PostCommentEntity
-import com.github.bumblebee202111.doubean.data.db.model.PostCommentsResult
 import com.github.bumblebee202111.doubean.data.db.model.PostDetailPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.PostEntity
 import com.github.bumblebee202111.doubean.data.db.model.PostGroupPartialEntity
@@ -149,32 +146,6 @@ interface GroupDao {
     @Query("SELECT * FROM posts WHERE id=:postId")
     fun loadPost(postId: String): Flow<PopulatedPostDetail>
 
-    fun loadOrderedComments(
-        commentIds: List<String>,
-        c: Comparator<PopulatedPostComment>? = null,
-    ): Flow<List<PopulatedPostComment>> {
-        return loadComments(commentIds).map { comments ->
-            if (c != null) comments.sortedWith(c) else comments.sortedWith(
-                compareBy { o -> commentIds.indexOf(o.entity.id) })
-            
-        }
-    }
-
-    @Transaction
-    @Query("SELECT * FROM post_comments WHERE id IN (:commentIds)")
-    fun loadComments(commentIds: List<String>): Flow<List<PopulatedPostComment>>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPostComments(comments: List<PostCommentEntity>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPostCommentsResult(postCommentsResult: PostCommentsResult)
-
-    @Query("SELECT * FROM post_comments_results WHERE postId=:postId")
-    fun loadPostComments(postId: String): Flow<PostCommentsResult?>
-
-    @Query("SELECT * FROM post_comments_results WHERE postId=:postId")
-    fun findPostComments(postId: String): PostCommentsResult?
 
     @Query("SELECT * FROM recommended_groups_results WHERE recommendation_type=:type")
     fun loadRecommendedGroups(type: GroupRecommendationType): Flow<RecommendedGroupsResult?>

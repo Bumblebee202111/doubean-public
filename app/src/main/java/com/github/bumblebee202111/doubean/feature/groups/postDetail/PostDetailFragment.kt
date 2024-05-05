@@ -1,11 +1,11 @@
+@file:Suppress("DEPRECATION")
+
 package com.github.bumblebee202111.doubean.feature.groups.postDetail
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -13,359 +13,591 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.webkit.WebView
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.widget.PopupMenu
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.net.toUri
-import androidx.core.widget.NestedScrollView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDeepLinkRequest
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.navigation.findNavController
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.MobileNavigationDirections
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.FragmentPostDetailBinding
-import com.github.bumblebee202111.doubean.feature.image.ImageFragmentDirections
+import com.github.bumblebee202111.doubean.databinding.ListItemPostCommentBinding
+import com.github.bumblebee202111.doubean.model.PostComment
 import com.github.bumblebee202111.doubean.model.PostCommentSortBy
 import com.github.bumblebee202111.doubean.model.PostDetail
-import com.github.bumblebee202111.doubean.ui.common.DoubeanWebViewClient
-import com.github.bumblebee202111.doubean.ui.common.RetryCallback
-import com.github.bumblebee202111.doubean.ui.common.repeatWithViewLifecycle
+import com.github.bumblebee202111.doubean.model.SizedPhoto
+import com.github.bumblebee202111.doubean.ui.common.DoubeanWebView
+import com.github.bumblebee202111.doubean.ui.common.TopicWebViewClient
+import com.github.bumblebee202111.doubean.ui.common.bindAvatarFromUrl
+import com.github.bumblebee202111.doubean.ui.common.bindDateTimeStringAndStyle
+import com.github.bumblebee202111.doubean.ui.component.ListItemImages
+import com.github.bumblebee202111.doubean.ui.theme.AppTheme
+import com.github.bumblebee202111.doubean.util.DateTimeStyle
 import com.github.bumblebee202111.doubean.util.OpenInUtil
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.TOPIC_CSS_FILENAME
-import com.github.bumblebee202111.doubean.util.showSnackbar
-import com.google.android.material.snackbar.Snackbar
+import com.google.accompanist.web.WebView
+import com.google.accompanist.web.rememberSaveableWebViewState
+import com.google.accompanist.web.rememberWebViewNavigator
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
 class PostDetailFragment : Fragment() {
 
-    private lateinit var binding: FragmentPostDetailBinding
     private val postDetailViewModel: PostDetailViewModel by viewModels()
-    lateinit var commentAdapter: PostCommentAdapter
-    lateinit var spinner: Spinner
-    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
-    private lateinit var downloadImage: () -> Unit
 
-    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = FragmentPostDetailBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = viewLifecycleOwner
-            viewModel = postDetailViewModel
-        }
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
-        binding.toolbar.setOnMenuItemClickListener { item ->
-            postDetailViewModel.post.value?.data?.let { post ->
-                when (item.itemId) {
-                    R.id.action_view_in_web -> {
-                        navigateToWebView(post)
-                        true
-                    }
-
-                    R.id.action_share -> {
-                        val shareText = StringBuilder()
-                        post.group?.name.let { groupName ->
-                            shareText.append(groupName)
-                        }
-                        post.tag?.let { tag -> shareText.append("|" + tag.name) }
-                        shareText.append("@${post.author.name}： ${post.title}${post.url}${post.content}")
-                        ShareUtil.share(requireContext(), shareText)
-                        true
-                    }
-
-                    R.id.action_view_in_douban -> {
-                        val urlString = post.uri
-                        OpenInUtil.openInDouban(requireContext(), urlString)
-                        true
-                    }
-
-                    R.id.action_view_in_browser -> {
-                        val urlString = post.url
-                        OpenInUtil.openInBrowser(requireContext(), urlString)
-                        true
-                    }
-
-                    else -> false
-                }
-            }
-            false
-        }
-        setHasOptionsMenu(true)
-
-        val postTagOnClickListener = View.OnClickListener {
-            postDetailViewModel.post.value?.data?.let {
-                val postTag = it.tag
-                if (it.group != null && postTag != null)
-                    navigateToGroupTab(it.group.id, postTag.id)
-            }
-        }
-        binding.postTag.setOnClickListener(postTagOnClickListener)
-
-        val groupOnClickListener = View.OnClickListener {
-            postDetailViewModel.post.value?.data?.group?.let {
-                navigateToGroup(it.id)
-            }
-        }
-        binding.groupName.setOnClickListener(groupOnClickListener)
-        binding.groupAvatar.setOnClickListener(groupOnClickListener)
-
-
-        setupContent()
-        setupSpinner()
-        setupCommentList()
-        initCommentList()
-        repeatWithViewLifecycle {
-            launch {
-                postDetailViewModel.post.collect { postResource ->
-                    if (postResource == null) return@collect
-                    if (postResource.data != null) {
-                        val content = postResource.data.content
-
-
-                        postResource.data.group?.color?.let { groupColor ->
-                            binding.toolbar.setBackgroundColor(groupColor)
-                            binding.appbar.setBackgroundColor(groupColor)
-                        }
-                }
-            }
-        }
-            launch {
-                postDetailViewModel.contentHtml.collect { content ->
-                    if (!content.isNullOrBlank()) {
-
-                        val encodedContent = Base64.encodeToString(
-                            content.toByteArray(),
-                            Base64.NO_PADDING
-                        )
-                        binding.content.loadData(encodedContent, "text/html", "base64")
-                    }
-                }
-            }
-        }
-
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-            requestPermissionLauncher =
-                registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-                    if (isGranted)
-                        downloadImage()
-                }
-        }
-
-    }
-
-    @SuppressLint("JavascriptInterface", "ClickableViewAccessibility")
-    private fun setupContent() {
-        val content = binding.content
-        content.setPadding(0, 0, 0, 0)
-
-        val webSettings = content.settings
-        webSettings.setNeedInitialFocus(false)
-        
-        webSettings.useWideViewPort = true;
-        val webViewClient = object : DoubeanWebViewClient(
-            listOf(
-                
-                
-                
-                TOPIC_CSS_FILENAME,
-                
-                
-            )
-        ) {
-            @Deprecated("Deprecated in Java")
-            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                if (url == null) return false
-                val request = NavDeepLinkRequest.Builder.fromUri(url.toUri()).build()
-                try {
-                    findNavController().navigate(request)
-                } catch (e: IllegalArgumentException) {
-                    Log.i("doubean", "shouldOverrideUrlLoading: $e")
-                    Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
-                        startActivity(this)
-                    }
-                }
-                return true
-            }
-        }
-
-
-        content.setOnTouchListener { v, event ->
-            if (event.action == MotionEvent.ACTION_UP
-            ) {
-                val webViewHitTestResult: WebView.HitTestResult = binding.content.getHitTestResult()
-                if (webViewHitTestResult.type == WebView.HitTestResult.IMAGE_TYPE ||
-                    webViewHitTestResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
-                ) {
-
-                    val imageURL = webViewHitTestResult.extra
-                    if (URLUtil.isValidUrl(imageURL)) {
-                        findNavController().navigate(
-                            ImageFragmentDirections.actionGlobalNavImage(
-                                imageURL!!
-                            )
-                        )
-                    } else {
-                        Toast.makeText(
-                            context,
-                            "Invalid Image Url",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-            }
-
-            return@setOnTouchListener false
-        }
-        content.webViewClient = webViewClient
-    }
-
-    private fun setupSpinner() {
-        spinner = binding.sortCommentsBySpinner
-        spinner.visibility = View.GONE
-        val arrayAdapter = ArrayAdapter.createFromResource(
-            requireContext(),
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             
-            R.array.sort_comments_by_array,
-            android.R.layout.simple_spinner_item
-        )
-        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
-        spinner.adapter = arrayAdapter
-        val onAllCommentsScrollChangeListener =
-            NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
-                if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
-                    postDetailViewModel.loadNextPage()
+            setContent {
+                AppTheme {
+                    PostDetailScreen(
+                        postDetailViewModel = postDetailViewModel,
+                        onBackClick = { findNavController().popBackStack() },
+                        navigateToWebView = { url ->
+                            findNavController().navigate(
+                                MobileNavigationDirections.actionGlobalNavWebView(
+                                    url
+                                )
+                            )
+                        },
+                        viewInDouban = { uri ->
+                            OpenInUtil.openInDouban(requireContext(), uri)
+                        },
+                        onTopicShareClick = { topic ->
+                            val shareText = StringBuilder()
+                            topic.group?.name.let { groupName ->
+                                shareText.append(groupName)
+                            }
+                            topic.tag?.let { tag -> shareText.append("|" + tag.name) }
+                            shareText.append("@${topic.author.name}： ${topic.title}${topic.url}${topic.content}")
+                            ShareUtil.share(requireContext(), shareText)
+                        },
+                        navigateToGroup = { groupId, tabId ->
+                            findNavController().navigate(
+                                PostDetailFragmentDirections.actionPostDetailToGroupDetail(groupId)
+                                    .setDefaultTabId(tabId)
+                            )
+                        },
+                        onShowToast = {
+                            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                        },
+                        navigateToImage = { url ->
+                            findNavController().navigate(
+                                MobileNavigationDirections.actionGlobalNavImage(
+                                    url
+                                )
+                            )
+                            
+                            
+                        },
+                        navigateWithDeepLinkUrl = { url ->
+                            val request =
+                                NavDeepLinkRequest.Builder.fromUri(url.toUri()).build()
+                            findNavController().navigate(request)
+                        },
+                        viewInActivity = { url ->
+                            Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                                startActivity(this)
+                            }
+                        },
+                        updateCommentSortBy = { postDetailViewModel.updateCommentsSortBy(it) }
+                    )
                 }
-            }
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?, view: View?, position: Int, id: Long,
-            ) {
-                postDetailViewModel.postComments.value?.data?.let { comments ->
-                    when (getSortByAt(position)) {
-                        PostCommentSortBy.TOP -> {
-                            commentAdapter.submitList(comments.topComments)
-                            binding.postDetailScrollview.setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?)
-                        }
 
-                        PostCommentSortBy.ALL -> {
-                            commentAdapter.submitList(comments.allComments)
-                            binding.postDetailScrollview.setOnScrollChangeListener(
-                                onAllCommentsScrollChangeListener
+            }
+        }
+    }
+
+
+    @SuppressLint("ClickableViewAccessibility")
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun PostDetailScreen(
+        postDetailViewModel: PostDetailViewModel,
+        onBackClick: () -> Unit,
+        navigateToWebView: (url: String) -> Unit,
+        viewInDouban: (uri: String) -> Unit,
+        onTopicShareClick: (PostDetail) -> Unit,
+        navigateToGroup: (groupId: String, tabId: String?) -> Unit,
+        onShowToast: (text: String) -> Unit,
+        navigateToImage: (url: String) -> Unit,
+        navigateWithDeepLinkUrl: (url: String) -> Unit,
+        viewInActivity: (url: String) -> Unit,
+        updateCommentSortBy: (PostCommentSortBy) -> Unit,
+    ) {
+        val topic by postDetailViewModel.topic.collectAsStateWithLifecycle()
+        val commentLazyPagingItems = postDetailViewModel.comments.collectAsLazyPagingItems()
+        val contentHtml by postDetailViewModel.contentHtml.collectAsStateWithLifecycle()
+        val commentSortBy by postDetailViewModel.commentsSortBy.collectAsStateWithLifecycle()
+        val groupColorInt = topic?.group?.color
+        Scaffold(
+            topBar = {
+                var expanded by remember { mutableStateOf(false) }
+                var viewInExpanded by remember { mutableStateOf(false) }
+                val groupColor = groupColorInt?.let(::Color)
+                TopAppBar(title = {
+                    topic?.title?.let {
+                        Text(
+                            text = it,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                },
+                    navigationIcon = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null,
+                            Modifier.clickable(onClick = onBackClick)
+                        )
+                    },
+                    actions = {
+
+                        IconButton(onClick = {
+                            topic?.let { onTopicShareClick(it) }
+
+                        }) {
+                            Icon(
+                                Icons.Filled.Share,
+                                contentDescription = null
                             )
                         }
-                    }
 
-                }
+                        IconButton(onClick = { expanded = !expanded }) {
+                            Icon(
+                                Icons.Filled.MoreVert,
+                                contentDescription = null
+                            )
+                        }
+                        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                            DropdownMenuItem(text = {
+                                Text(text = getString(R.string.view_in))
+                            },
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Filled.ChevronRight,
+                                        contentDescription = null
+                                    )
+                                },
+                                onClick = {
+                                    expanded = false
+                                    viewInExpanded = true
+                                })
+                        }
 
-            }
+                        DropdownMenu(
+                            expanded = viewInExpanded,
+                            onDismissRequest = { viewInExpanded = false }) {
+                            DropdownMenuItem(
+                                text = { Text(getString(R.string.view_in_web)) },
+                                onClick = { topic?.url?.let(navigateToWebView) })
+                            DropdownMenuItem(
+                                text = { Text(getString(R.string.view_in_douban)) },
+                                onClick = { topic?.uri?.let(viewInDouban) })
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors().run {
+                        groupColor?.let {
+                            copy(containerColor = it)
+                        } ?: this
+                    })
+            },
+            modifier = Modifier.fillMaxSize()
+        ) { paddingValues ->
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
 
-    }
-
-    private fun setupCommentList() {
-        commentAdapter = PostCommentAdapter(
-            postLiveData = postDetailViewModel.post.filterNotNull().asLiveData(),
-            lifecycleOwner = viewLifecycleOwner,
-            onImageClick = {
-                findNavController().navigate(
-                    MobileNavigationDirections.actionGlobalNavImage(
-                        it.large.url
+            LazyColumn(contentPadding = paddingValues) {
+                item(key = "TopicDetailHeader", contentType = "TopicDetailHeader") {
+                    TopicDetailHeader(
+                        topic = topic,
+                        contentHtml = contentHtml,
+                        viewInActivity = viewInActivity,
+                        navigateToImage = navigateToImage,
+                        navigateToGroup = navigateToGroup,
+                        navigateWithDeepLinkUrl = navigateWithDeepLinkUrl,
+                        onShowToast = onShowToast
                     )
-                )
-            }
-
-        )
-        binding.comments.adapter = commentAdapter
-        binding.comments.addItemDecoration(
-            DividerItemDecoration(binding.comments.context, DividerItemDecoration.VERTICAL)
-        )
-    }
-
-    private fun initCommentList() {
-
-        postDetailViewModel.postComments
-            .observe(viewLifecycleOwner) { result ->
-                spinner.visibility = View.GONE
-                binding.findResource = result
-                binding.resultCount = result.data?.allComments?.size ?: 0
-                result.data?.let { comments ->
-                    if (comments.topComments.isEmpty()) {
-                        spinner.setSelection(1)
-                    }
-                    when (getSortByAt(spinner.selectedItemPosition)) {
-                        PostCommentSortBy.TOP -> {
-                            commentAdapter.submitList(comments.topComments)
-                        }
-
-                        PostCommentSortBy.ALL -> {
-                            commentAdapter.submitList(comments.allComments)
-                        }
-                    }
-                    spinner.visibility = View.VISIBLE
                 }
 
-                if (result != null) binding.swiperefresh.isRefreshing = false
-            }
-        postDetailViewModel.loadMoreStatus
-            .observe(viewLifecycleOwner) { loadingMore ->
-                if (loadingMore == null) {
-                    binding.loadingMore = false
-                } else {
-                    binding.loadingMore = loadingMore.isRunning
-                    val error = loadingMore.errorMessageIfNotHandled
-                    if (error != null) {
-                        binding.loadMoreBar.showSnackbar(error, Snackbar.LENGTH_LONG)
-                    }
+                item(key = "TopicCommentSortBy", contentType = "TopicCommentSortBy") {
+                    TopicCommentSortBy(
+                        commentSortBy = commentSortBy,
+                        updateCommentSortBy = updateCommentSortBy
+                    )
                 }
-                binding.executePendingBindings()
-            }
-        binding.callback = object : RetryCallback {
-            override fun retry() {
-                postDetailViewModel.refreshPostComments()
+
+                items(
+                    count = commentLazyPagingItems.itemCount,
+                    key = commentLazyPagingItems.itemKey { it.id },
+                    contentType = { "TopicCommentAndroidView" }) { index ->
+                    TopicCommentAndroidView(
+                        comment = commentLazyPagingItems[index],
+                        groupColorInt = groupColorInt,
+                        topic = topic,
+                        navigateToImage = navigateToImage
+                    )
+                    if (index < commentLazyPagingItems.itemCount - 1)
+                        HorizontalDivider(thickness = 1.dp)
+                }
             }
         }
-        binding.swiperefresh.setOnRefreshListener(postDetailViewModel::refreshPostComments)
+
     }
 
-    private fun navigateToWebView(post: PostDetail) {
-        val direction = MobileNavigationDirections.actionGlobalNavigationWebView(post.url)
-        findNavController().navigate(direction)
-    }
-
-    private fun navigateToGroupTab(groupId: String, tabId: String) {
-        val direction = PostDetailFragmentDirections.actionPostDetailToGroupDetail(groupId)
-            .setDefaultTabId(tabId)
-        findNavController().navigate(direction)
-    }
-
-    private fun navigateToGroup(groupId: String) {
-        val direction = PostDetailFragmentDirections.actionPostDetailToGroupDetail(groupId)
-        findNavController().navigate(direction)
-    }
-
-    private fun getSortByAt(position: Int) =
-        when (position) {
-            0 -> PostCommentSortBy.TOP
-            1 -> PostCommentSortBy.ALL
-            else -> throw IndexOutOfBoundsException()
-        }
 }
+
+@SuppressLint("ClickableViewAccessibility")
+@Composable
+fun TopicDetailHeader(
+    topic: PostDetail?,
+    contentHtml: String?,
+    viewInActivity: (url: String) -> Unit,
+    navigateToImage: (url: String) -> Unit,
+    navigateToGroup: (groupId: String, tabId: String?) -> Unit,
+    navigateWithDeepLinkUrl: (url: String) -> Unit,
+    onShowToast: (text: String) -> Unit,
+) {
+    Column {
+        AndroidViewBinding(
+            factory = { inflater, root, attachToRoot ->
+                FragmentPostDetailBinding.inflate(
+                    inflater,
+                    root,
+                    attachToRoot
+                )
+            },
+            modifier = Modifier,
+            
+            onReset = {},
+            
+        ) {
+
+            postTag.setOnClickListener {
+                topic?.let { topic ->
+                    topic.group?.let { group ->
+                        navigateToGroup(
+                            group.id,
+                            topic.id
+                        )
+                    }
+                }
+            }
+
+            val groupOnClickListener = View.OnClickListener {
+                topic?.let { topic ->
+                    topic.group?.let { group ->
+                        navigateToGroup(
+                            group.id, null
+                        )
+                    }
+                }
+            }
+            groupName.setOnClickListener(groupOnClickListener)
+            groupAvatar.setOnClickListener(groupOnClickListener)
+
+            this.topic = topic
+
+            this.content.setContent {
+                contentHtml?.let {
+
+                    val webViewState = rememberSaveableWebViewState()
+                    val navigator = rememberWebViewNavigator()
+
+                    LaunchedEffect(navigator) {
+                        val bundle = webViewState.viewState
+                        if (bundle == null) {
+                            
+                            navigator.loadHtml(it)
+                        }
+                    }
+                    WebView(state = webViewState,
+                        navigator = navigator,
+                        modifier = Modifier
+                            .clipToBounds()
+                            .fillMaxSize(),
+                        captureBackPresses = false,
+                        client = remember {
+                            object : TopicWebViewClient(listOf(TOPIC_CSS_FILENAME)) {
+                                @Deprecated("Deprecated in Java")
+                                override fun shouldOverrideUrlLoading(
+                                    view: WebView?,
+                                    url: String?,
+                                ): Boolean {
+                                    if (url == null) return false
+
+                                    try {
+                                        navigateWithDeepLinkUrl(url)
+                                    } catch (e: IllegalArgumentException) {
+                                        Log.i("doubean", "shouldOverrideUrlLoading: $e")
+                                        viewInActivity(url)
+                                    }
+                                    return true
+                                }
+
+                            }
+                        },
+                        factory = { context ->
+                            DoubeanWebView(context).apply {
+                                setPadding(0, 0, 0, 0)
+                                settings.apply {
+                                    setNeedInitialFocus(false)
+                                    
+                                    useWideViewPort = true
+                                }
+
+                                setOnTouchListener { _, event ->
+                                    if (event.action == MotionEvent.ACTION_UP
+                                    ) {
+                                        val webViewHitTestResult = getHitTestResult()
+                                        if (webViewHitTestResult.type == WebView.HitTestResult.IMAGE_TYPE ||
+                                            webViewHitTestResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
+                                        ) {
+
+                                            val imageURL = webViewHitTestResult.extra
+                                            if (URLUtil.isValidUrl(imageURL)) {
+                                                navigateToImage(imageURL!!)
+                                            } else {
+                                                onShowToast("Invalid Image Url")
+                                            }
+                                        }
+                                    }
+
+                                    return@setOnTouchListener false
+                                }
+                            }
+                        })
+
+
+                }
+            }
+            executePendingBindings()
+        }
+    }
+}
+
+@Composable
+fun TopicCommentSortBy(
+    commentSortBy: PostCommentSortBy,
+    updateCommentSortBy: (PostCommentSortBy) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val sortCommentsByLabels =
+        stringArrayResource(id = R.array.sort_comments_by_array)
+
+    val indexToSortBy = mapOf(
+        0 to PostCommentSortBy.TOP,
+        1 to PostCommentSortBy.ALL
+    )
+
+    val sortByToIndex = mapOf(
+        PostCommentSortBy.TOP to 0,
+        PostCommentSortBy.ALL to 1
+    )
+
+    Box(
+        Modifier.padding(
+            start = dimensionResource(id = R.dimen.margin_normal),
+            end = dimensionResource(id = R.dimen.margin_normal),
+            top = dimensionResource(id = R.dimen.margin_small)
+        ),
+    ) {
+        Button(onClick = { expanded = !expanded }) {
+            Text(sortCommentsByLabels[sortByToIndex[commentSortBy]!!])
+            Icon(
+                imageVector = Icons.Filled.ArrowDropDown,
+                contentDescription = null,
+            )
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+        ) {
+            sortCommentsByLabels.forEachIndexed { index, label ->
+                DropdownMenuItem(
+                    text = { Text(text = label) },
+                    onClick = {
+                        expanded = false
+                        updateCommentSortBy(
+                            indexToSortBy[index]!!
+                        )
+                    })
+            }
+        }
+    }
+}
+
+@Composable
+fun TopicCommentAndroidView(
+    comment: PostComment?,
+    groupColorInt: Int?,
+    topic: PostDetail?,
+    navigateToImage: (url: String) -> Unit,
+) {
+
+    AndroidViewBinding(
+        factory = ListItemPostCommentBinding::inflate,
+        
+        update = {
+            authorAvatar.bindAvatarFromUrl(comment?.author?.avatarUrl)
+            authorName.text = comment?.author?.name
+            authorMiddleDot.isVisible = comment?.author != null
+            created.bindDateTimeStringAndStyle(comment?.created, DateTimeStyle.Normal)
+            more.setOnClickListener { v ->
+                val context = v.context
+                val popupMenu = PopupMenu(context, more)
+                popupMenu.inflate(R.menu.menu_post_item)
+                popupMenu.setOnMenuItemClickListener { item ->
+                    comment?.let { comment ->
+                        when (item.itemId) {
+                            R.id.action_share -> {
+                                val shareText = StringBuilder()
+                                topic?.let {
+                                    it.group?.let { group -> shareText.append(group.name) }
+                                    it.tag?.let { tag ->
+                                        shareText.append("|" + tag.name)
+                                    }
+                                }
+
+                                shareText.append(
+                                    "@${comment.author.name}${
+                                        context.getString(R.string.colon)
+                                    }${comment.text}"
+                                )
+
+                                comment.repliedTo?.let { repliedTo ->
+                                    shareText.append("${context.getString(R.string.repliedTo)}@${repliedTo.author.name}： ${repliedTo.text}")
+                                }
+                                topic?.let { topic ->
+                                    shareText.append(
+                                        """${context.getString(R.string.post)}@${topic.author.name}${
+                                            context.getString(R.string.colon)
+                                        }
+                                            ${topic.title} ${topic.url}
+                                            """
+                                    )
+                                }
+                                ShareUtil.share(context, shareText)
+                                true
+                            }
+
+                            else -> false
+                        }
+
+                    }
+                    false
+                }
+                popupMenu.show()
+            }
+            comment?.photos.takeUnless { it.isNullOrEmpty() }?.let {
+                photos.apply {
+                    
+                    setContent {
+                        ListItemImages(
+                            images = it.map(SizedPhoto::image),
+                            onImageClick = { navigateToImage(it.large.url) }
+                        )
+                    }
+                }
+            }
+
+            commentText.apply {
+                text = comment?.text
+                isVisible = comment == null || comment.text != null
+            }
+
+            authorOp.isVisible = comment?.author?.id?.let { it == topic?.author?.id } ?: false
+            repliedTo.isVisible = comment?.repliedTo != null
+
+            repliedToAvatar.bindAvatarFromUrl(comment?.repliedTo?.author?.avatarUrl)
+            repliedToAuthorOp.isVisible =
+                comment?.repliedTo?.author?.id?.let { it == topic?.author?.id } ?: false
+            repliedToAuthorName.text = comment?.repliedTo?.author?.name
+            repliedToCreated.bindDateTimeStringAndStyle(
+                comment?.repliedTo?.created,
+                DateTimeStyle.Normal
+            )
+            repliedToMiddleDot.isVisible = comment?.repliedTo?.author != null
+            repliedToText.apply {
+                text = comment?.repliedTo?.text
+                isVisible = comment?.repliedTo?.text != null
+            }
+            comment?.repliedTo?.photos.takeUnless { it.isNullOrEmpty() }?.let {
+                repliedToPhotos.apply {
+                    
+                    setContent {
+                        ListItemImages(
+                            images = it.map(SizedPhoto::image),
+                            onImageClick = { navigateToImage(it.large.url) }
+                        )
+                    }
+                }
+            }
+
+            groupColorInt?.let {
+                authorOp.setTextColor(it)
+                repliedToAuthorOp.setTextColor(it)
+            }
+
+
+
+            likeIcon.isVisible = comment?.voteCount?.takeIf { it != 0 } != null
+            likeCount.isVisible = comment?.voteCount?.takeIf { it != 0 } != null
+            likeCount.text = comment?.voteCount?.toString()
+        },
+        onReset = {},
+        onRelease = {}
+    )
+
+}
+

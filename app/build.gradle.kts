@@ -132,6 +132,8 @@ dependencies {
     implementation(libs.libsu.core)
 
     implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
+    implementation("com.google.accompanist:accompanist-webview:0.35.0-alpha")
+    implementation("androidx.paging:paging-compose:3.3.0-beta01")
 
 }
 
