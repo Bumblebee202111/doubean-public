@@ -28,6 +28,7 @@ import com.github.bumblebee202111.doubean.data.db.model.PostItemPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.PostTagCrossRef
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupEntity
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupItemGroupPartialEntity
+import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupItemPostPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupPost
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupsResult
 import com.github.bumblebee202111.doubean.model.GroupRecommendationType
@@ -141,6 +142,10 @@ interface GroupDao {
     @Upsert(entity = PostEntity::class)
     @RewriteQueriesToDropUnusedColumns
     suspend fun upsertPosts(posts: List<PostItemPartialEntity>)
+
+    @Upsert(entity = PostEntity::class)
+    @RewriteQueriesToDropUnusedColumns
+    suspend fun upsertRecommendedGroupItemPosts(posts: List<RecommendedGroupItemPostPartialEntity>)
 
     @Transaction
     @Query("SELECT * FROM posts WHERE id=:postId")

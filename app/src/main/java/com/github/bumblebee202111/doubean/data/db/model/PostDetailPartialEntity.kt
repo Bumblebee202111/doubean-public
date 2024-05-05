@@ -47,7 +47,7 @@ data class PostDetailPartialEntity(
     @ColumnInfo("group_id")
     val groupId: String,
 
-    val images: List<SizedImage>,
+    val images: List<SizedImage>? = null,
 
     @ColumnInfo("ip_location")
     val ipLocation: String? = null,
