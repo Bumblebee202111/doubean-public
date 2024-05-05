@@ -103,7 +103,7 @@ It not only implements the very basic features of Douban app, but also has its o
 
 * Support for loading cache as alternative even when connection is off
 * Recommended post notifications
-* Ad-free, lite \(~6MB\)
+* Ad-free, lite \(~4MB\)
 * Partially support URL deep links
 * Basic support for MD2/3 \(dark theme included\) and tablets/landscape
 * Partial bilingual UI strings support
@@ -138,7 +138,6 @@ Libraries Used
   * [Notifications][notifications]
 * Third party and miscellaneous libraries
   * [Retrofit][retrofit]
-  * [Apache Commons][apache-commons]
   * [Glide][glide]
   * [Kotlin Coroutines][kotlin-coroutines]
   * Flow
@@ -184,8 +183,6 @@ Libraries Used
 
 [retrofit]: https://square.github.io/retrofit/
 
-[apache-commons]: https://commons.apache.org/
-
 [glide]: https://bumptech.github.io/glide/
 
 [kotlin-coroutines]: https://kotlinlang.org/docs/reference/coroutines-overview.html
@@ -194,14 +191,19 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.5.3\)
+#### To-dos for current release \(0.5.5\)
 
-#### To-dos for next release \(0.5.4)
+#### To-dos for next release \(0.5.6)
+
+- Topic detail comments: Basic support of jumping to some page
+  - Page (item) indicator https://developer.android.google.cn/develop/ui/compose/layouts/pager#add-page
+    - Showing current index
+    - Long press and release to jump forward (speed grows exponentially)
+    - Click to jump to next page
+    - Secondary button backward or decided by direction
 
 #### Future plans
 
-* Paging buttons
-* IP locations
 * Home - Following
 * Rename local follow to favorite
 * Replace content of the recommended groups area with recommended posts
@@ -210,16 +212,15 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Shared element & navigation-fragment-compose
 * Gradual migrations: <span id="migrations"></span>
   * From MD2 / custom design to MD3
-  * From Gson to Kotlinx.Serialization
-  * From custom paging to Paging 3
   * From GithubBrowserSample's user-implemented way of paging to Paging3
   * From LiveData to StateFlow
   * From View and data binding to Jetpack Compose
+    * Exceptions: WebView
   * From Retrofit to Ktor
   * From Glide to Coil Compose
-  * From Apache Commons to ??? 
   * From NavHostFragment to ComposableNavHostFragment
-  * From Navigation Fragment to Navigation Compose (start when next stable version is available)
+  * From Navigation Fragment to Navigation Compose (take action when next stable version is available)
+* Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
 * “每次动态更新请求的帖子总数限制” -> “每次从n条帖子中筛选新动态”
 * Use the new nullable "edit_time" property of network posts
 * Split Douban data and local user data instead of putting them in one model class
@@ -257,7 +258,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Widgets
 * More features of books & movies
 * \[GroupDetailFragment\] Rewrite
-* 🛠 Views on top of WebView become invisible after scroll on my MIUI 10 Android 8.1 device \(causes unknown, may never be fixed\)
 * \[Lists\] Post order: custom rules based on multiple factors
 * User data backup
 * Optimize landscape experience
