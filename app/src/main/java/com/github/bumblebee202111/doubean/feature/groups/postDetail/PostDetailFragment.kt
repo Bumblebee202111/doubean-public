@@ -45,7 +45,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -364,8 +364,8 @@ fun TopicDetailHeader(
                     WebView(state = webViewState,
                         navigator = navigator,
                         modifier = Modifier
-                            .clipToBounds()
-                            .fillMaxSize(),
+                            .fillMaxSize()
+                            .alpha(0.99F),
                         captureBackPresses = false,
                         client = remember {
                             object : TopicWebViewClient(listOf(TOPIC_CSS_FILENAME)) {
