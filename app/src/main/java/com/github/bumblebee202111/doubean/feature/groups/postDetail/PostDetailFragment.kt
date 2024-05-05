@@ -409,7 +409,7 @@ fun TopicDetailHeader(
                                             val imageUrl = webViewHitTestResult.extra
                                             if (URLUtil.isValidUrl(imageUrl)) {
                                                 val largeImageUrl =
-                                                    topic.images.first { it.normal.url == imageUrl }.large.url
+                                                    topic.images!!.first { it.normal.url == imageUrl }.large.url
                                                 navigateToImage(largeImageUrl)
                                             } else {
                                                 onShowToast("Invalid Image Url")

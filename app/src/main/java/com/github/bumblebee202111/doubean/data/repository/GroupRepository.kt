@@ -28,6 +28,7 @@ import com.github.bumblebee202111.doubean.network.model.NetworkPostDetail
 import com.github.bumblebee202111.doubean.network.model.NetworkPostItem
 import com.github.bumblebee202111.doubean.network.model.NetworkPosts
 import com.github.bumblebee202111.doubean.network.model.NetworkRecommendedGroup
+import com.github.bumblebee202111.doubean.network.model.NetworkRecommendedGroupItemPost
 import com.github.bumblebee202111.doubean.network.model.NetworkRecommendedGroups
 import com.github.bumblebee202111.doubean.network.model.SortByRequestParam
 import com.github.bumblebee202111.doubean.network.model.asEntity
@@ -404,9 +405,9 @@ class GroupRepository @Inject constructor(
                     g.posts.map { p -> p.asPartialEntity(g.group.id) }
                 }
                 val postIds =
-                    item.items.flatMap { it.posts.map(NetworkPostItem::id) }
+                    item.items.flatMap { it.posts.map(NetworkRecommendedGroupItemPost::id) }
                 val postTagCrossRefs =
-                    item.items.flatMap { it.posts.map(NetworkPostItem::tagCrossRefs) }
+                    item.items.flatMap { it.posts.map(NetworkRecommendedGroupItemPost::tagCrossRefs) }
                         .flatten()
                 val postsAuthors =
                     item.items.flatMap { g -> g.posts.map { p -> p.author.asEntity() } }
@@ -419,7 +420,7 @@ class GroupRepository @Inject constructor(
                 appDatabase.withTransaction {
                     groupDao.upsertRecommendedGroupItemGroups(recommendedGroupItemGroups)
                     groupDao.upsertRecommendedGroups(recommendedGroups)
-                    groupDao.upsertPosts(posts)
+                    groupDao.upsertRecommendedGroupItemPosts(posts)
                     groupDao.deletePostTagCrossRefsByPostIds(postIds)
                     groupDao.insertPostTagCrossRefs(postTagCrossRefs)
                     userDao.insertUsers(postsAuthors)
