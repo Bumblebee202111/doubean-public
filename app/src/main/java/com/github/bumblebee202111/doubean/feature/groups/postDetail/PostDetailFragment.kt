@@ -497,6 +497,7 @@ fun TopicCommentAndroidView(
             authorName.text = comment?.author?.name
             authorMiddleDot.isVisible = comment?.author != null
             created.bindDateTimeStringAndStyle(comment?.created, DateTimeStyle.Normal)
+            ipLocation.text = comment?.ipLocation
             more.setOnClickListener { v ->
                 val context = v.context
                 val popupMenu = PopupMenu(context, more)
