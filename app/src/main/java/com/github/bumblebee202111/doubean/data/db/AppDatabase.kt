@@ -15,8 +15,9 @@ import com.github.bumblebee202111.doubean.data.db.model.GroupPostsResult
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResult
 import com.github.bumblebee202111.doubean.data.db.model.GroupTabEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTagPostsResult
+import com.github.bumblebee202111.doubean.data.db.model.GroupTopicCommentsRemoteKey
+import com.github.bumblebee202111.doubean.data.db.model.GroupTopicPopularCommentEntity
 import com.github.bumblebee202111.doubean.data.db.model.PostCommentEntity
-import com.github.bumblebee202111.doubean.data.db.model.PostCommentsResult
 import com.github.bumblebee202111.doubean.data.db.model.PostEntity
 import com.github.bumblebee202111.doubean.data.db.model.PostTagCrossRef
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupEntity
@@ -43,7 +44,7 @@ import kotlinx.serialization.json.Json
         GroupPostsResult::class,
         GroupTagPostsResult::class,
         PostCommentEntity::class,
-        PostCommentsResult::class,
+        GroupTopicPopularCommentEntity::class,
         RecommendedGroupsResult::class,
         RecommendedGroupEntity::class,
         RecommendedGroupPost::class,
@@ -52,6 +53,7 @@ import kotlinx.serialization.json.Json
         FollowedGroupTabEntity::class,
         RecommendedPostNotificationEntity::class,
         UserEntity::class,
+        GroupTopicCommentsRemoteKey::class
     ],
     version = 3,
     exportSchema = false
@@ -63,6 +65,9 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun groupDao(): GroupDao
     abstract fun userDao(): UserDao
     abstract fun groupFollowsAndSavesDao(): UserGroupDao
+
+    abstract fun groupTopicDao(): GroupTopicDao
+    abstract fun groupTopicCommentRemoteKeyDao(): GroupTopicCommentRemoteKeyDao
 
     companion object {
         @Volatile

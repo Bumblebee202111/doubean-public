@@ -6,19 +6,15 @@ import com.github.bumblebee202111.doubean.data.db.model.GroupPostsResult
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResult
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultGroupItemPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTagPostsResult
-import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostComment
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostDetail
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostItem
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedRecommendedGroup
-import com.github.bumblebee202111.doubean.data.db.model.PostCommentEntity
-import com.github.bumblebee202111.doubean.data.db.model.PostCommentsResult
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupsResult
 import com.github.bumblebee202111.doubean.data.db.model.UserEntity
 import com.github.bumblebee202111.doubean.data.db.model.asExternalModel
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.GroupRecommendationType
 import com.github.bumblebee202111.doubean.model.GroupSearchResultGroupItem
-import com.github.bumblebee202111.doubean.model.PostComments
 import com.github.bumblebee202111.doubean.model.PostDetail
 import com.github.bumblebee202111.doubean.model.PostItem
 import com.github.bumblebee202111.doubean.model.PostSortBy
@@ -28,8 +24,6 @@ import com.github.bumblebee202111.doubean.network.ApiResponse
 import com.github.bumblebee202111.doubean.network.ApiRetrofitService
 import com.github.bumblebee202111.doubean.network.model.NetworkGroupDetail
 import com.github.bumblebee202111.doubean.network.model.NetworkGroupSearch
-import com.github.bumblebee202111.doubean.network.model.NetworkPostComment
-import com.github.bumblebee202111.doubean.network.model.NetworkPostComments
 import com.github.bumblebee202111.doubean.network.model.NetworkPostDetail
 import com.github.bumblebee202111.doubean.network.model.NetworkPostItem
 import com.github.bumblebee202111.doubean.network.model.NetworkPosts
@@ -40,12 +34,10 @@ import com.github.bumblebee202111.doubean.network.model.asEntity
 import com.github.bumblebee202111.doubean.network.model.asPartialEntity
 import com.github.bumblebee202111.doubean.network.model.postRefs
 import com.github.bumblebee202111.doubean.network.model.tagCrossRefs
-import com.github.bumblebee202111.doubean.util.RESULT_COMMENTS_COUNT
 import com.github.bumblebee202111.doubean.util.RESULT_GROUPS_COUNT
 import com.github.bumblebee202111.doubean.util.RESULT_POSTS_COUNT
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -387,118 +379,7 @@ class GroupRepository @Inject constructor(
         }.asFlow()
     }
 
-    fun getPostComments(postId: String): Flow<Resource<PostComments>> {
-        return object : NetworkBoundResource<PostComments, NetworkPostComments>() {
-            override suspend fun saveCallResult(item: NetworkPostComments) {
-                val topIds = item.topComments.map(NetworkPostComment::id)
-                val allIds = item.allComments.map(NetworkPostComment::id)
-                val commentsResult = PostCommentsResult(
-                    postId, topIds, allIds, item.total, item.nextPageStart
-                )
-                val allComments = item.allComments.map { it.asEntity(postId) }
-                val topComments = item.topComments.map { it.asEntity(postId) }
-                val repliedToComments = (item.items + item.topComments).mapNotNull(
-                    NetworkPostComment::repliedTo
-                )
-                    .map { it.asEntity(postId) }
-                val comments = (allComments + topComments + repliedToComments).distinctBy(
-                    PostCommentEntity::id
-                )
-                val allCommentsAuthors = item.items.map { it.author.asEntity() }
-                val topCommentsAuthors = item.topComments.map { it.author.asEntity() }
-                val repliedToAuthors = (item.items + item.topComments).mapNotNull { it.repliedTo }
-                    .map { it.author.asEntity() }
-                val authors =
-                    (allCommentsAuthors + topCommentsAuthors + repliedToAuthors).distinctBy(
-                        UserEntity::id
-                    )
-                appDatabase.withTransaction {
-                    groupDao.insertPostComments(comments)
-                    groupDao.insertPostCommentsResult(commentsResult)
-                    userDao.insertUsers(authors)
-                }
-            }
 
-            override fun shouldFetch(data: PostComments?) = true
-
-            override fun loadFromDb() = groupDao.loadPostComments(postId).flatMapLatest { data ->
-                if (data == null) {
-                    flowOf(null)
-                } else {
-                    val allComments = groupDao.loadOrderedComments(data.allIds)
-                        .map { it.map(PopulatedPostComment::asExternalModel) }
-                    val topComments = groupDao.loadOrderedComments(data.topIds).map {
-                        it.map(PopulatedPostComment::asExternalModel)
-                    }
-                    topComments.combine(allComments) { t, a ->
-                        PostComments(t, a)
-                    }
-                }
-            }
-
-            override suspend fun createCall() =
-                ApiRetrofitService.getPostComments(
-                    postId = postId,
-                    count = RESULT_COMMENTS_COUNT
-                )
-        }.asFlow()
-    }
-
-    suspend fun getNextPagePostComments(postId: String): Resource<Boolean>? {
-        val fetchNextPageTask: FetchNextPageTask<PostCommentsResult, NetworkPostComments> =
-            object :
-                FetchNextPageTask<PostCommentsResult, NetworkPostComments>(
-                    ApiRetrofitService, appDatabase
-                ) {
-                override suspend fun getCurrentFromDb() = groupDao.findPostComments(postId)
-
-                override suspend fun createCall(nextPageStart: Int?) =
-                    ApiRetrofitService.getPostComments(
-                        postId, nextPageStart!!, RESULT_COMMENTS_COUNT
-                    )
-
-                override suspend fun mergeAndSaveCallResult(
-                    current: PostCommentsResult,
-                    item: NetworkPostComments,
-                ) {
-                    val topCommentIds =
-                        current.topIds + item.topComments.map(NetworkPostComment::id)
-                    val allCommentIds =
-                        current.allIds + item.items.map(NetworkPostComment::id)
-                    val merged = PostCommentsResult(
-                        postId,
-                        topCommentIds,
-                        allCommentIds,
-                        item.total,
-                        item.nextPageStart
-                    )
-                    val allComments = item.items.map { it.asEntity(postId) }
-                    val topComments = item.topComments.map { it.asEntity(postId) }
-                    val repliedToComments =
-                        (item.items + item.topComments).mapNotNull(
-                            NetworkPostComment::repliedTo
-                        )
-                            .map { it.asEntity(postId) }
-                    val allCommentsAuthors = item.items.map { it.author.asEntity() }
-                    val topCommentsAuthors = item.topComments.map { it.author.asEntity() }
-                    val repliedToAuthors =
-                        (item.items + item.topComments).mapNotNull { it.repliedTo }
-                            .map { it.author.asEntity() }
-                    val authors =
-                        (allCommentsAuthors + topCommentsAuthors + repliedToAuthors).distinctBy(
-                            UserEntity::id
-                        )
-                    appDatabase.withTransaction {
-                        groupDao.insertPostCommentsResult(merged)
-                        groupDao.insertPostComments(allComments + topComments + repliedToComments)
-                        userDao.insertUsers(authors)
-                    }
-                }
-
-
-            }
-        return fetchNextPageTask.run()
-    }
 
     private fun getPostSortByRequestParam(postSortBy: PostSortBy): SortByRequestParam {
         return when (postSortBy) {

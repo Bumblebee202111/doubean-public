@@ -193,16 +193,23 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.5.5\)
 
-- Use Ktor for fetching comments
-- Use Paging3 for displaying comments
-- Support jumping to some page
+- Fix comment list parsing error caused by ad items
 - Show commenters' IP locations
+- Fix immediate crash after toggling starting tab setting
+- Fix could not instantiate com.github.bumblebee202111.doubean.workers.RecommendPostsWorker
+- Gif
 
 #### To-dos for next release \(0.5.6)
 
+- Topic detail: Basic support of jumping to some page
+  - Page (item) indicator https://developer.android.google.cn/develop/ui/compose/layouts/pager#add-page
+    - Showing current index
+    - Long press and release to jump forward (speed grows exponentially)
+    - Click for next page
+    - Secondary button backward or decide by direction
+
 #### Future plans
 
-* IP locations
 * Home - Following
 * Rename local follow to favorite
 * Replace content of the recommended groups area with recommended posts
@@ -212,14 +219,15 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Gradual migrations: <span id="migrations"></span>
   * From MD2 / custom design to MD3
   * From Gson to Kotlinx.Serialization
-  * From custom paging to Paging 3
   * From GithubBrowserSample's user-implemented way of paging to Paging3
   * From LiveData to StateFlow
   * From View and data binding to Jetpack Compose
+    * Exceptions: WebView, RecyclerView
   * From Retrofit to Ktor
   * From Glide to Coil Compose
   * From NavHostFragment to ComposableNavHostFragment
-  * From Navigation Fragment to Navigation Compose (start when next stable version is available)
+  * From Navigation Fragment to Navigation Compose (take action when next stable version is available)
+* Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
 * “每次动态更新请求的帖子总数限制” -> “每次从n条帖子中筛选新动态”
 * Use the new nullable "edit_time" property of network posts
 * Split Douban data and local user data instead of putting them in one model class
@@ -257,7 +265,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Widgets
 * More features of books & movies
 * \[GroupDetailFragment\] Rewrite
-* 🛠 Views on top of WebView become invisible after scroll on my MIUI 10 Android 8.1 device \(causes unknown, may never be fixed\)
 * \[Lists\] Post order: custom rules based on multiple factors
 * User data backup
 * Optimize landscape experience
