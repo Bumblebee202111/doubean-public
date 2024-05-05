@@ -191,16 +191,18 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.5.5\)
+#### To-dos for current release \(0.5.6\)
+
+- Topic detail comments: Basic support of jumping to some page
+    - Page (item) indicator https://developer.android.google.cn/develop/ui/compose/layouts/pager#add-page
+      - Showing current index
+      - Long press and release to jump forward (speed grows exponentially)
+      - Click to jump to next page
+      - Secondary button backward or decided by direction
 
 #### To-dos for next release \(0.5.6)
 
-- Topic detail comments: Basic support of jumping to some page
-  - Page (item) indicator https://developer.android.google.cn/develop/ui/compose/layouts/pager#add-page
-    - Showing current index
-    - Long press and release to jump forward (speed grows exponentially)
-    - Click to jump to next page
-    - Secondary button backward or decided by direction
+
 
 #### Future plans
 
