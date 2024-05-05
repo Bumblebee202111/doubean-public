@@ -3,6 +3,21 @@ Change Log
 
 ## Version 0.5.5
 
+- New: Support displaying GIFs with animations (only the "large" quality of a douban gif is animated, which can be viewed in ImageScreen)
+- New: Show IP locations of posts & comments
+- Fix: Topic detail: Issue of topic content flickering solved
+- Fix: WorkManager: Posts feed can function normally now
+- **Known issue**: Topic WebView scroll position tends to be totally reset when you are returning from comment list / other screens
+- Optimize: Topic detail
+  - Comments are loaded with Ktor/Paging 3
+  - Introduce Compose
+  - Optimize details
+- Optimize: Starting tab 
+  - Toggling setting won't setup navigation again 
+  - Remove unnecessary icon animation when starting with groups tab
+- Optimize: Clean up unnecessary dependencies
+
+
 ## Version 0.5.4
 
 - New: Topic content WebView: Support viewing topic polls and questions
