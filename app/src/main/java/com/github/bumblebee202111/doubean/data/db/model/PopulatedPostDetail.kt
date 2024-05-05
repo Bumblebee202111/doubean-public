@@ -65,7 +65,8 @@ fun PopulatedPostDetail.asExternalModel() = PostDetail(
     url = partialEntity.url,
     group = group?.asExternalModel(),
     uri = partialEntity.uri,
-    images = partialEntity.images
+    images = partialEntity.images,
+    ipLocation = partialEntity.ipLocation
 )
 
 fun PopulatedPostGroup.asExternalModel() = PostGroup(

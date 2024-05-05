@@ -54,6 +54,9 @@ data class PostEntity(
     val groupId: String,
 
     val images: List<SizedImage>,
+
+    @ColumnInfo("ip_location")
+    val ipLocation: String?,
 )
 
 
