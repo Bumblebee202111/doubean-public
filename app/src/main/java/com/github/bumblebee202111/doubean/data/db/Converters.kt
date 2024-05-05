@@ -2,6 +2,7 @@ package com.github.bumblebee202111.doubean.data.db
 
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
+import com.github.bumblebee202111.doubean.model.SizedImage
 import com.github.bumblebee202111.doubean.model.SizedPhoto
 import com.github.bumblebee202111.doubean.util.DATETIME_PATTERN_DEFAULT
 import kotlinx.serialization.encodeToString
@@ -44,6 +45,16 @@ class Converters(private val json: Json) {
 
     @TypeConverter
     fun stringToSizedPhotoList(string: String?): List<SizedPhoto>? {
+        return string?.let { json.decodeFromString(it) }
+    }
+
+    @TypeConverter
+    fun sizedImageListToString(images: List<SizedImage>?): String {
+        return json.encodeToString(images)
+    }
+
+    @TypeConverter
+    fun stringToSizedImageList(string: String?): List<SizedImage>? {
         return string?.let { json.decodeFromString(it) }
     }
 

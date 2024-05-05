@@ -258,17 +258,20 @@ class PostDetailFragment : Fragment() {
 
 
             LazyColumn(contentPadding = paddingValues) {
-                item(key = "TopicDetailHeader", contentType = "TopicDetailHeader") {
-                    TopicDetailHeader(
-                        topic = topic,
-                        contentHtml = contentHtml,
-                        viewInActivity = viewInActivity,
-                        navigateToImage = navigateToImage,
-                        navigateToGroup = navigateToGroup,
-                        navigateWithDeepLinkUrl = navigateWithDeepLinkUrl,
-                        onShowToast = onShowToast
-                    )
+                topic?.let { topic ->
+                    item(key = "TopicDetailHeader", contentType = "TopicDetailHeader") {
+                        TopicDetailHeader(
+                            topic = topic,
+                            contentHtml = contentHtml,
+                            viewInActivity = viewInActivity,
+                            navigateToImage = navigateToImage,
+                            navigateToGroup = navigateToGroup,
+                            navigateWithDeepLinkUrl = navigateWithDeepLinkUrl,
+                            onShowToast = onShowToast
+                        )
+                    }
                 }
+
 
                 item(key = "TopicCommentSortBy", contentType = "TopicCommentSortBy") {
                     TopicCommentSortBy(
@@ -300,7 +303,7 @@ class PostDetailFragment : Fragment() {
 @SuppressLint("ClickableViewAccessibility")
 @Composable
 fun TopicDetailHeader(
-    topic: PostDetail?,
+    topic: PostDetail,
     contentHtml: String?,
     viewInActivity: (url: String) -> Unit,
     navigateToImage: (url: String) -> Unit,
@@ -403,10 +406,11 @@ fun TopicDetailHeader(
                                         if (webViewHitTestResult.type == WebView.HitTestResult.IMAGE_TYPE ||
                                             webViewHitTestResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
                                         ) {
-
-                                            val imageURL = webViewHitTestResult.extra
-                                            if (URLUtil.isValidUrl(imageURL)) {
-                                                navigateToImage(imageURL!!)
+                                            val imageUrl = webViewHitTestResult.extra
+                                            if (URLUtil.isValidUrl(imageUrl)) {
+                                                val largeImageUrl =
+                                                    topic.images.first { it.normal.url == imageUrl }.large.url
+                                                navigateToImage(largeImageUrl)
                                             } else {
                                                 onShowToast("Invalid Image Url")
                                             }

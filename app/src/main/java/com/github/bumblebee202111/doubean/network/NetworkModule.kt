@@ -1,8 +1,11 @@
 package com.github.bumblebee202111.doubean.network
 
 import android.content.Context
+import android.os.Build.VERSION.SDK_INT
 import android.util.Base64
 import coil.ImageLoader
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 import com.github.bumblebee202111.doubean.BuildConfig
 import com.github.bumblebee202111.doubean.coroutines.ApplicationScope
 import com.github.bumblebee202111.doubean.security.DOUBAN_API_KEY
@@ -117,6 +120,13 @@ class NetworkModule {
                             .addHeader("User-Agent", appAndDeviceInfoProvider.getImageUA()).build()
                     )
                 }.build()
+            }
+            .components {
+                if (SDK_INT >= 28) {
+                    add(ImageDecoderDecoder.Factory())
+                } else {
+                    add(GifDecoder.Factory())
+                }
             }
             .build()
 

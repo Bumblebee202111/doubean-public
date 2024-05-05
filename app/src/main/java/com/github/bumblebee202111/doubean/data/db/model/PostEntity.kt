@@ -3,6 +3,7 @@ package com.github.bumblebee202111.doubean.data.db.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.github.bumblebee202111.doubean.model.SizedImage
 import java.time.LocalDateTime
 
 /**
@@ -53,6 +54,8 @@ data class PostEntity(
 
     @ColumnInfo("group_id")
     val groupId: String,
+
+    val images: List<SizedImage>,
 )
 
 
