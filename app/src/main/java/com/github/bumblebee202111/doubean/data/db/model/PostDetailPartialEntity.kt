@@ -1,6 +1,7 @@
 package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.ColumnInfo
+import com.github.bumblebee202111.doubean.model.SizedImage
 import java.time.LocalDateTime
 
 data class PostDetailPartialEntity(
@@ -45,4 +46,6 @@ data class PostDetailPartialEntity(
     val uri: String,
     @ColumnInfo("group_id")
     val groupId: String,
+
+    val images: List<SizedImage>,
 )

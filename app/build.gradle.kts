@@ -124,6 +124,7 @@ dependencies {
     kapt(libs.retrofit2.response.type.keeper)
 
     implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
 
     implementation(libs.hilt.android)
     ksp(libs.dagger.hilt.compiler)
