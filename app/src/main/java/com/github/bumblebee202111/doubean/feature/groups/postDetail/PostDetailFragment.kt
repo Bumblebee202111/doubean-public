@@ -558,7 +558,7 @@ fun TopicCommentAndroidView(
 
             commentText.apply {
                 text = comment?.text
-                isVisible = comment == null || comment.text != null
+                isVisible = comment == null || !comment.text.isNullOrBlank()
             }
 
             authorOp.isVisible = comment?.author?.id?.let { it == topic?.author?.id } ?: false
@@ -575,7 +575,7 @@ fun TopicCommentAndroidView(
             repliedToMiddleDot.isVisible = comment?.repliedTo?.author != null
             repliedToText.apply {
                 text = comment?.repliedTo?.text
-                isVisible = comment?.repliedTo?.text != null
+                isVisible = !comment?.repliedTo?.text.isNullOrBlank()
             }
             comment?.repliedTo?.photos.takeUnless { it.isNullOrEmpty() }?.let {
                 repliedToPhotos.apply {
