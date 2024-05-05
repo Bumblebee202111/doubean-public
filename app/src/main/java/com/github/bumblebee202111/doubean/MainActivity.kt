@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
-import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -38,7 +38,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val navView = findViewById<BottomNavigationView>(R.id.nav_view)
-        navController = findNavController(this, R.id.nav_host_fragment_activity_main)
+
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+        navController = navHostFragment.navController
 
         lifecycleScope.launch {
             mainActivityViewModel.startAppWithGroups.collect {
@@ -51,6 +54,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 )
                 navController.graph = navGraph
+                navView.inflateMenu(R.menu.bottom_nav_menu)
                 setupWithNavController(navView, navController)
             }
         }
