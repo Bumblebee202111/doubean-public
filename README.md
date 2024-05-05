@@ -194,18 +194,16 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 #### To-dos for current release \(0.5.5\)
 
 - Show commenters' IP locations
-- Fix immediate crash after toggling starting tab setting
-- Fix could not instantiate com.github.bumblebee202111.doubean.workers.RecommendPostsWorker
 - Gif
 
 #### To-dos for next release \(0.5.6)
 
-- Topic detail: Basic support of jumping to some page
+- Topic detail comments: Basic support of jumping to some page
   - Page (item) indicator https://developer.android.google.cn/develop/ui/compose/layouts/pager#add-page
     - Showing current index
     - Long press and release to jump forward (speed grows exponentially)
-    - Click for next page
-    - Secondary button backward or decide by direction
+    - Click to jump to next page
+    - Secondary button backward or decided by direction
 
 #### Future plans
 
