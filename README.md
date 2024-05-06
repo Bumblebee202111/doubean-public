@@ -200,9 +200,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
       - Click to jump to next page
       - Secondary button backward or decided by direction
 
-#### To-dos for next release \(0.5.6)
-
-
+#### To-dos for next release \(0.5.7)
 
 #### Future plans
 

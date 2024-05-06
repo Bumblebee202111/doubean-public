@@ -5,7 +5,7 @@ Change Log
 
 - New: Support displaying GIFs with animations (only the "large" quality of a douban gif is animated, which can be viewed in ImageScreen)
 - New: Show IP locations of posts & comments
-- Fix: Topic detail: Issue of topic content flickering solved
+- Fix: Topic detail: Issue of topic content making other area flicker solved
 - Fix: WorkManager: Posts feed can function normally now
 - **Known issue**: Topic WebView scroll position tends to be totally reset when you are returning from comment list / other screens
 - Optimize: Topic detail
