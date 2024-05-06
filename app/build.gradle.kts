@@ -65,7 +65,10 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.hilt.work)
+
+    implementation(libs.accompanist.permissions)
+    implementation(libs.accompanist.webview)
+
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
@@ -93,6 +96,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     // implementation(libs.androidx.navigation.safe)
     implementation(libs.androidx.paging)
+    implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.preference.ktx)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)
@@ -103,14 +107,13 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.viewpager2)
 
-    //implementation(libs.commons.codec)
-
     implementation(libs.google.android.material)
 
     implementation(libs.glide)
     ksp(libs.glide.compiler)
 
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.okhttp)
@@ -134,10 +137,6 @@ dependencies {
     androidTestImplementation(libs.androidx.test.espresso)
 
     implementation(libs.libsu.core)
-
-    implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
-    implementation("com.google.accompanist:accompanist-webview:0.35.0-alpha")
-    implementation("androidx.paging:paging-compose:3.3.0-beta01")
 
 }
 
