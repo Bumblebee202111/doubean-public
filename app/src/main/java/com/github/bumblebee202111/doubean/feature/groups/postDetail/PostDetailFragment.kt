@@ -19,8 +19,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -28,6 +31,7 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,15 +39,18 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -51,9 +58,12 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
+import androidx.compose.ui.window.Dialog
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -61,7 +71,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.findNavController
+import androidx.paging.awaitNotLoading
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.MobileNavigationDirections
 import com.github.bumblebee202111.doubean.R
@@ -103,17 +115,8 @@ class PostDetailFragment : Fragment() {
                 AppTheme {
                     PostDetailScreen(
                         postDetailViewModel = postDetailViewModel,
+                        updateCommentSortBy = { postDetailViewModel.updateCommentsSortBy(it) },
                         onBackClick = { findNavController().popBackStack() },
-                        navigateToWebView = { url ->
-                            findNavController().navigate(
-                                MobileNavigationDirections.actionGlobalNavWebView(
-                                    url
-                                )
-                            )
-                        },
-                        viewInDouban = { uri ->
-                            OpenInUtil.openInDouban(requireContext(), uri)
-                        },
                         onTopicShareClick = { topic ->
                             val shareText = StringBuilder()
                             topic.group?.name.let { groupName ->
@@ -123,14 +126,18 @@ class PostDetailFragment : Fragment() {
                             shareText.append("@${topic.author.name}： ${topic.title}${topic.url}${topic.content}")
                             ShareUtil.share(requireContext(), shareText)
                         },
+                        navigateToWebView = { url ->
+                            findNavController().navigate(
+                                MobileNavigationDirections.actionGlobalNavWebView(
+                                    url
+                                )
+                            )
+                        },
                         navigateToGroup = { groupId, tabId ->
                             findNavController().navigate(
                                 PostDetailFragmentDirections.actionPostDetailToGroupDetail(groupId)
                                     .setDefaultTabId(tabId)
                             )
-                        },
-                        onShowToast = {
-                            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
                         },
                         navigateToImage = { url ->
                             findNavController().navigate(
@@ -146,45 +153,69 @@ class PostDetailFragment : Fragment() {
                                 NavDeepLinkRequest.Builder.fromUri(url.toUri()).build()
                             findNavController().navigate(request)
                         },
-                        viewInActivity = { url ->
-                            Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
-                                startActivity(this)
-                            }
+                        onShowToast = {
+                            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
                         },
-                        updateCommentSortBy = { postDetailViewModel.updateCommentsSortBy(it) }
-                    )
+                        viewInDouban = { uri ->
+                            OpenInUtil.openInDouban(requireContext(), uri)
+                        }
+                    ) { url ->
+                        Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                            startActivity(this)
+                        }
+                    }
                 }
 
             }
         }
     }
 
-
     @SuppressLint("ClickableViewAccessibility")
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun PostDetailScreen(
         postDetailViewModel: PostDetailViewModel,
+        updateCommentSortBy: (PostCommentSortBy) -> Unit,
         onBackClick: () -> Unit,
-        navigateToWebView: (url: String) -> Unit,
-        viewInDouban: (uri: String) -> Unit,
         onTopicShareClick: (PostDetail) -> Unit,
+        navigateToWebView: (url: String) -> Unit,
         navigateToGroup: (groupId: String, tabId: String?) -> Unit,
-        onShowToast: (text: String) -> Unit,
         navigateToImage: (url: String) -> Unit,
         navigateWithDeepLinkUrl: (url: String) -> Unit,
+        onShowToast: (text: String) -> Unit,
+        viewInDouban: (uri: String) -> Unit,
         viewInActivity: (url: String) -> Unit,
-        updateCommentSortBy: (PostCommentSortBy) -> Unit,
     ) {
         val topic by postDetailViewModel.topic.collectAsStateWithLifecycle()
         val commentLazyPagingItems = postDetailViewModel.comments.collectAsLazyPagingItems()
         val contentHtml by postDetailViewModel.contentHtml.collectAsStateWithLifecycle()
         val commentSortBy by postDetailViewModel.commentsSortBy.collectAsStateWithLifecycle()
         val groupColorInt = topic?.group?.color
+
+        var shouldShowDialog by remember {
+            mutableStateOf(false)
+        }
+        var scrollToCommentItemIndex: Int? by remember {
+            mutableStateOf(null)
+        }
+        val listState = rememberLazyListState()
+        val itemCountBeforeComments = 1 + if (topic == null) 0 else 1
+
+        scrollToCommentItemIndex?.let { index ->
+            LaunchedEffect(index) {
+                listState.scrollToItem(itemCountBeforeComments + index)
+                snapshotFlow {
+                    commentLazyPagingItems.loadState
+                }.awaitNotLoading()
+                listState.scrollToItem(itemCountBeforeComments + index)
+                scrollToCommentItemIndex = null
+            }
+        }
+
         Scaffold(
             topBar = {
-                var expanded by remember { mutableStateOf(false) }
-                var viewInExpanded by remember { mutableStateOf(false) }
+                var appBarMenuExpanded by remember { mutableStateOf(false) }
+                var viewInMenuExpanded by remember { mutableStateOf(false) }
                 val groupColor = groupColorInt?.let(::Color)
                 TopAppBar(title = {
                     topic?.title?.let {
@@ -214,13 +245,24 @@ class PostDetailFragment : Fragment() {
                             )
                         }
 
-                        IconButton(onClick = { expanded = !expanded }) {
+                        IconButton(onClick = { appBarMenuExpanded = !appBarMenuExpanded }) {
                             Icon(
                                 Icons.Filled.MoreVert,
                                 contentDescription = null
                             )
                         }
-                        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+
+                        DropdownMenu(
+                            expanded = appBarMenuExpanded,
+                            onDismissRequest = { appBarMenuExpanded = false }) {
+                            DropdownMenuItem(text = {
+                                Text(text = "Jump to comment")
+                            },
+                                onClick = {
+                                    appBarMenuExpanded = false
+                                    shouldShowDialog = true
+                                })
+
                             DropdownMenuItem(text = {
                                 Text(text = getString(R.string.view_in))
                             },
@@ -231,14 +273,14 @@ class PostDetailFragment : Fragment() {
                                     )
                                 },
                                 onClick = {
-                                    expanded = false
-                                    viewInExpanded = true
+                                    appBarMenuExpanded = false
+                                    viewInMenuExpanded = true
                                 })
                         }
 
                         DropdownMenu(
-                            expanded = viewInExpanded,
-                            onDismissRequest = { viewInExpanded = false }) {
+                            expanded = viewInMenuExpanded,
+                            onDismissRequest = { viewInMenuExpanded = false }) {
                             DropdownMenuItem(
                                 text = { Text(getString(R.string.view_in_web)) },
                                 onClick = { topic?.url?.let(navigateToWebView) })
@@ -255,9 +297,12 @@ class PostDetailFragment : Fragment() {
             },
             modifier = Modifier.fillMaxSize()
         ) { paddingValues ->
+            LazyColumn(
+                contentPadding = paddingValues,
+                state = listState,
+                modifier = Modifier.fillMaxSize()
+            ) {
 
-
-            LazyColumn(contentPadding = paddingValues) {
                 topic?.let { topic ->
                     item(key = "TopicDetailHeader", contentType = "TopicDetailHeader") {
                         TopicDetailHeader(
@@ -272,7 +317,6 @@ class PostDetailFragment : Fragment() {
                     }
                 }
 
-
                 item(key = "TopicCommentSortBy", contentType = "TopicCommentSortBy") {
                     TopicCommentSortBy(
                         commentSortBy = commentSortBy,
@@ -283,7 +327,7 @@ class PostDetailFragment : Fragment() {
                 items(
                     count = commentLazyPagingItems.itemCount,
                     key = commentLazyPagingItems.itemKey { it.id },
-                    contentType = { "TopicCommentAndroidView" }) { index ->
+                    contentType = commentLazyPagingItems.itemContentType { "TopicCommentAndroidView" }) { index ->
                     TopicCommentAndroidView(
                         comment = commentLazyPagingItems[index],
                         groupColorInt = groupColorInt,
@@ -295,9 +339,82 @@ class PostDetailFragment : Fragment() {
                 }
             }
         }
+        topic?.commentCount?.let {
+            if (shouldShowDialog) {
+
+                JumpToCommentOfIndexDialog(
+                    currentCommentIndex = (listState.firstVisibleItemIndex - itemCountBeforeComments).coerceAtLeast(
+                        0
+                    ),
+                    commentCount = it,
+                    onDismissRequest = {
+                        shouldShowDialog = false
+                    }) { index ->
+                    scrollToCommentItemIndex = index
+                }
+            }
+        }
 
     }
 
+}
+
+
+@Composable
+fun JumpToCommentOfIndexDialog(
+    currentCommentIndex: Int, commentCount: Int, onDismissRequest: () -> Unit,
+    jumpToCommentOfIndex: (newCommentIndex: Int) -> Unit,
+) {
+    Dialog(onDismissRequest = { onDismissRequest() }) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+        ) {
+            JumpToCommentOfIndexSlider(
+                currentCommentIndex = currentCommentIndex,
+                commentCount = commentCount,
+                onTargetCommentIndexConfirmed = {
+                    onDismissRequest()
+                    jumpToCommentOfIndex(it)
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun JumpToCommentOfIndexSlider(
+    currentCommentIndex: Int,
+    commentCount: Int,
+    onTargetCommentIndexConfirmed: (newCommentIndex: Int) -> Unit,
+) {
+    var sliderPosition by remember { mutableIntStateOf(currentCommentIndex) }
+    val steps = commentCount - 1
+    Column(modifier = Modifier.padding(16.dp)) {
+        fun Int.toDisplayPosition() = (this + 1).toString()
+
+        Slider(
+            value = sliderPosition.toFloat(),
+            onValueChange = { sliderPosition = it.toInt() },
+            steps = steps,
+            valueRange = 0f..steps.toFloat(),
+            onValueChangeFinished = { onTargetCommentIndexConfirmed(sliderPosition) },
+        )
+        Text(
+            text = "${sliderPosition.toDisplayPosition()}/$commentCount",
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+    }
+
+}
+
+@Preview
+@Composable
+fun JumpToCommentSliderPreview() {
+    JumpToCommentOfIndexSlider(100, 1000) {}
 }
 
 @SuppressLint("ClickableViewAccessibility")
@@ -327,25 +444,23 @@ fun TopicDetailHeader(
         ) {
 
             postTag.setOnClickListener {
-                topic?.let { topic ->
-                    topic.group?.let { group ->
-                        navigateToGroup(
-                            group.id,
-                            topic.id
-                        )
-                    }
+                topic.group?.let { group ->
+                    navigateToGroup(
+                        group.id,
+                        topic.id
+                    )
                 }
+
             }
 
             val groupOnClickListener = View.OnClickListener {
-                topic?.let { topic ->
-                    topic.group?.let { group ->
-                        navigateToGroup(
-                            group.id, null
-                        )
-                    }
+                topic.group?.let { group ->
+                    navigateToGroup(
+                        group.id, null
+                    )
                 }
             }
+
             groupName.setOnClickListener(groupOnClickListener)
             groupAvatar.setOnClickListener(groupOnClickListener)
 

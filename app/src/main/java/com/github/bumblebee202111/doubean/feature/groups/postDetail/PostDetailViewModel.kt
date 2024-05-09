@@ -43,21 +43,17 @@ class PostDetailViewModel @Inject constructor(
 
     val topicId = PostDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).postId
 
-    private val popularComments: Flow<PagingData<PostComment>>
+    private val commentsData = topicRepo.getTopicCommentsPagingData(topicId)
 
-    private val allComments: Flow<PagingData<PostComment>>
+    private val allComments: Flow<PagingData<PostComment>> =
+        commentsData.second.cachedIn(viewModelScope).cachedIn(viewModelScope)
+
+    private val popularComments =
+        commentsData.first.map { PagingData.from(it) }.cachedIn(viewModelScope)
 
     private val _commentsSortBy: MutableStateFlow<PostCommentSortBy> =
         MutableStateFlow(PostCommentSortBy.ALL)
     val commentsSortBy = _commentsSortBy.asStateFlow()
-
-
-    init {
-        val (popularComments, allComments) = topicRepo.getTopicComments(topicId)
-        this@PostDetailViewModel.popularComments =
-            popularComments.map { PagingData.from(it) }.cachedIn(viewModelScope)
-        this@PostDetailViewModel.allComments = allComments.cachedIn(viewModelScope)
-    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val comments = commentsSortBy.flatMapLatest {
@@ -208,4 +204,5 @@ class PostDetailViewModel @Inject constructor(
     private fun roundedPercentage(f: Float): Double {
         return f.toBigDecimal().setScale(1, RoundingMode.UP).toDouble()
     }
+
 }

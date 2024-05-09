@@ -7,12 +7,14 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.model.SizedImage
@@ -30,20 +32,28 @@ fun ListItemImages(
             modifier = modifier
                 .clip(RoundedCornerShape(12.dp))
         ) {
+            val normal = images[0].normal
+            val density = LocalDensity.current
+            val originalWidth = with(density) {
+                normal.width.toDp()
+            }
+            val originalHeight = with(density) {
+                normal.height.toDp()
+            }
+            val goldenWidth = maxWidth * 0.618f
+            val scale = (goldenWidth / originalWidth).coerceAtMost(1f)
             AsyncImage(
-                model = images[0].normal.url,
+                model = normal.url,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .clickable { onImageClick(images[0]) }
-                    .sizeIn(
-                        maxWidth = maxWidth * 0.618f,
-                        maxHeight = maxHeight * 0.618f
-                    )
-                
-                
-                
-                
+
+
+
+
+                    .width(originalWidth * scale)
+                    .height(originalHeight * scale)
             )
         }
 
