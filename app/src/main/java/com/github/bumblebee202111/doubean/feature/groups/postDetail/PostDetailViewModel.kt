@@ -6,14 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupTopicRepo
 import com.github.bumblebee202111.doubean.data.repository.PollRepository
 import com.github.bumblebee202111.doubean.model.Poll
 import com.github.bumblebee202111.doubean.model.PollId
-import com.github.bumblebee202111.doubean.model.PostComment
 import com.github.bumblebee202111.doubean.model.PostCommentSortBy
 import com.github.bumblebee202111.doubean.model.Question
 import com.github.bumblebee202111.doubean.model.QuestionId
@@ -22,11 +20,8 @@ import com.github.bumblebee202111.doubean.model.TopicContentEntityId
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import java.math.RoundingMode
@@ -45,25 +40,18 @@ class PostDetailViewModel @Inject constructor(
 
     private val commentsData = topicRepo.getTopicCommentsPagingData(topicId)
 
-    private val allComments: Flow<PagingData<PostComment>> =
-        commentsData.second.cachedIn(viewModelScope).cachedIn(viewModelScope)
+    val popularComments =
+        commentsData.first
 
-    private val popularComments =
-        commentsData.first.map { PagingData.from(it) }.cachedIn(viewModelScope)
+    val allComments = commentsData.second.cachedIn(viewModelScope)
 
     private val _commentsSortBy: MutableStateFlow<PostCommentSortBy> =
         MutableStateFlow(PostCommentSortBy.ALL)
     val commentsSortBy = _commentsSortBy.asStateFlow()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val comments = commentsSortBy.flatMapLatest {
-        if (it == PostCommentSortBy.TOP)
-            popularComments
-        else
-            allComments
-    }.cachedIn(viewModelScope)
-
     private val reloadTrigger = MutableLiveData(Unit)
+
+    val shouldShowSpinner = commentsData.first.map { it.isNotEmpty() }.stateInUi(false)
 
     fun updateCommentsSortBy(commentSortBy: PostCommentSortBy) {
         _commentsSortBy.value = commentSortBy
