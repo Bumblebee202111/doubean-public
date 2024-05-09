@@ -7,7 +7,7 @@ Change Log
   - Add menu item to open seeker dialog for jumping to any index of comments
   - Comments are no longer cached
 - Optimization: Topic detail: Hide sort comments by spinner if there are no popular comments
-- Optimization: To better support jumping to bottom comments, single item image groups are initially sized with given metrics before the image is loaded
+- Optimization: List item image groups: To better support jumping to bottom comments, single item image groups are initially sized with given metrics before the image is loaded
 
 ## Version 0.5.5
 
