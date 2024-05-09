@@ -187,10 +187,12 @@ class PostDetailFragment : Fragment() {
         viewInActivity: (url: String) -> Unit,
     ) {
         val topic by postDetailViewModel.topic.collectAsStateWithLifecycle()
-        val commentLazyPagingItems = postDetailViewModel.comments.collectAsLazyPagingItems()
+        val popularComments by postDetailViewModel.popularComments.collectAsStateWithLifecycle()
+        val allCommentLazyPagingItems = postDetailViewModel.allComments.collectAsLazyPagingItems()
         val contentHtml by postDetailViewModel.contentHtml.collectAsStateWithLifecycle()
         val commentSortBy by postDetailViewModel.commentsSortBy.collectAsStateWithLifecycle()
         val groupColorInt = topic?.group?.color
+        val shouldShowSpinner by postDetailViewModel.shouldShowSpinner.collectAsStateWithLifecycle()
 
         var shouldShowDialog by remember {
             mutableStateOf(false)
@@ -199,13 +201,16 @@ class PostDetailFragment : Fragment() {
             mutableStateOf(null)
         }
         val listState = rememberLazyListState()
-        val itemCountBeforeComments = 1 + if (topic == null) 0 else 1
+
+        var itemCountBeforeComments = 0
+        if (topic != null) itemCountBeforeComments++
+        if (shouldShowSpinner) itemCountBeforeComments++
 
         scrollToCommentItemIndex?.let { index ->
             LaunchedEffect(index) {
                 listState.scrollToItem(itemCountBeforeComments + index)
                 snapshotFlow {
-                    commentLazyPagingItems.loadState
+                    allCommentLazyPagingItems.loadState
                 }.awaitNotLoading()
                 listState.scrollToItem(itemCountBeforeComments + index)
                 scrollToCommentItemIndex = null
@@ -317,29 +322,54 @@ class PostDetailFragment : Fragment() {
                     }
                 }
 
-                item(key = "TopicCommentSortBy", contentType = "TopicCommentSortBy") {
-                    TopicCommentSortBy(
-                        commentSortBy = commentSortBy,
-                        updateCommentSortBy = updateCommentSortBy
-                    )
+                if (shouldShowSpinner) {
+                    item(key = "TopicCommentSortBy", contentType = "TopicCommentSortBy") {
+                        TopicCommentSortBy(
+                            commentSortBy = commentSortBy,
+                            updateCommentSortBy = updateCommentSortBy
+                        )
+                    }
                 }
 
-                items(
-                    count = commentLazyPagingItems.itemCount,
-                    key = commentLazyPagingItems.itemKey { it.id },
-                    contentType = commentLazyPagingItems.itemContentType { "TopicCommentAndroidView" }) { index ->
-                    TopicCommentAndroidView(
-                        comment = commentLazyPagingItems[index],
-                        groupColorInt = groupColorInt,
-                        topic = topic,
-                        navigateToImage = navigateToImage
-                    )
-                    if (index < commentLazyPagingItems.itemCount - 1)
-                        HorizontalDivider(thickness = 1.dp)
+                when (commentSortBy) {
+                    PostCommentSortBy.TOP -> {
+                        items(
+                            count = popularComments.size,
+                            key = { popularComments[it].id },
+                            contentType = { "TopicCommentAndroidView" }) { index ->
+                            TopicCommentAndroidView(
+                                modifier = Modifier.padding(top = 8.dp),
+                                comment = popularComments[index],
+                                groupColorInt = groupColorInt,
+                                topic = topic,
+                                navigateToImage = navigateToImage
+                            )
+                            if (index < popularComments.size - 1)
+                                HorizontalDivider(thickness = 1.dp)
+                        }
+                    }
+
+                    PostCommentSortBy.ALL -> {
+                        items(
+                            count = allCommentLazyPagingItems.itemCount,
+                            key = allCommentLazyPagingItems.itemKey { it.id },
+                            contentType = allCommentLazyPagingItems.itemContentType { "TopicCommentAndroidView" }) { index ->
+                            TopicCommentAndroidView(
+                                modifier = Modifier.padding(top = 8.dp),
+                                comment = allCommentLazyPagingItems[index],
+                                groupColorInt = groupColorInt,
+                                topic = topic,
+                                navigateToImage = navigateToImage
+                            )
+                            if (index < allCommentLazyPagingItems.itemCount - 1)
+                                HorizontalDivider(thickness = 1.dp)
+                        }
+                    }
                 }
+
             }
         }
-        topic?.commentCount?.let {
+        (if (commentSortBy == PostCommentSortBy.TOP) popularComments.size else topic?.commentCount)?.let {
             if (shouldShowDialog) {
 
                 JumpToCommentOfIndexDialog(
@@ -398,7 +428,7 @@ fun JumpToCommentOfIndexSlider(
         Slider(
             value = sliderPosition.toFloat(),
             onValueChange = { sliderPosition = it.toInt() },
-            steps = steps,
+            steps = steps - 1,
             valueRange = 0f..steps.toFloat(),
             onValueChangeFinished = { onTargetCommentIndexConfirmed(sliderPosition) },
         )
@@ -598,6 +628,7 @@ fun TopicCommentSortBy(
 
 @Composable
 fun TopicCommentAndroidView(
+    modifier: Modifier = Modifier,
     comment: PostComment?,
     groupColorInt: Int?,
     topic: PostDetail?,
@@ -606,7 +637,7 @@ fun TopicCommentAndroidView(
 
     AndroidViewBinding(
         factory = ListItemPostCommentBinding::inflate,
-        //Modifier.fillMaxSize(),
+        modifier = modifier,
         update = {
             authorAvatar.bindAvatarFromUrl(comment?.author?.avatarUrl)
             authorName.text = comment?.author?.name
