@@ -1,12 +1,21 @@
 Change Log
 ==========
 
+## Version 0.5.6
+
+- New: Topic detail: Jump to comment of index feature
+  - Add menu item to open seeker dialog for jumping to any index of comments
+  - Comments are no longer cached
+- Optimization: Topic detail: Hide sort comments by spinner if there are no popular comments
+- Optimization: List item image groups: To better support jumping to bottom comments, single item image groups are initially sized with given metrics before the image is loaded
+
 ## Version 0.5.5
 
 - New: Support displaying GIFs with animations (only the "large" quality of a douban gif is animated, which can be viewed in ImageScreen)
 - New: Show IP locations of posts & comments
-- Fix: Topic detail: Issue of topic content flickering solved
+- Fix: Topic detail: Issue of topic content making other area flicker solved
 - Fix: WorkManager: Posts feed can function normally now
+- **Known issue**: Topic WebView scroll position tends to be totally reset when you are returning from comment list / other screens
 - Optimize: Topic detail
   - Comments are loaded with Ktor/Paging 3
   - Introduce Compose
@@ -15,7 +24,7 @@ Change Log
   - Toggling setting won't setup navigation again 
   - Remove unnecessary icon animation when starting with groups tab
 - Optimize: Clean up unnecessary dependencies
-- Known issue: Topic WebView scroll position tends to be totally reset when you are returning from comment list / other screens
+
 
 ## Version 0.5.4
 
@@ -25,7 +34,7 @@ Change Log
 
 ## Version 0.5.3
 
-- New: Topic content WebView: Link clicks are intercepted to function properly.
+- New: Topic content WebView: Link clicks are intercepted to respond properly.
 - New: Topic content WebView: Long press an image to save
 - New: Topic content WebView: Utilize official stylesheets and enable viewport
   - Now images no longer overflow and embedded players are properly zoomed
@@ -36,7 +45,7 @@ Change Log
 
 - New: ImageScreen (view and save)
 - Optimize: Port Timeline images composable to comment list
-- Optimize: The single image of a list item is no longer cropped, instead it is shown with its original size by default. But if it is too large, it will fit to the golden fraction of the size of available and visible space.
+- Optimize: The single image of a list item is no longer cropped, instead it is shown with its original size by default. But if it is too large, it will fit to the golden fraction of the width of available and visible space.
 
 ## Version 0.5.1
 

@@ -191,76 +191,85 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.5.5\)
+#### To-dos for current release \(0.5.6\)
 
-#### To-dos for next release \(0.5.6)
+- 
 
-- Topic detail comments: Basic support of jumping to some page
-  - Page (item) indicator https://developer.android.google.cn/develop/ui/compose/layouts/pager#add-page
-    - Showing current index
-    - Long press and release to jump forward (speed grows exponentially)
-    - Click to jump to next page
-    - Secondary button backward or decided by direction
+#### To-dos for next release \(0.5.7)
+
+- Topic detail: Ktor
+- Topic detail: Counts in Compose
+- Show topic reposts
 
 #### Future plans
 
+* Group detail:
+  * Optimize and migrate to Compose M3 / Flows
+  * Keep AppBarLayout
 * Home - Following
-* Rename local follow to favorite
+  * More card types
+* Revert name conventions to those of Douban
 * Replace content of the recommended groups area with recommended posts
   * First tab/page: Post recommendation (of followed groups) API
   * Others: posts of favorite tabs from group tab posts API
 * Shared element & navigation-fragment-compose
 * Gradual migrations: <span id="migrations"></span>
-  * From MD2 / custom design to MD3
   * From GithubBrowserSample's user-implemented way of paging to Paging3
-  * From LiveData to StateFlow
+  * From MD2 / custom design to MD3
   * From View and data binding to Jetpack Compose
+    * Especially: migrate ViewPager2, MaterialToolbar ...
     * Exceptions: WebView
+  * From LiveData to StateFlow
   * From Retrofit to Ktor
   * From Glide to Coil Compose
-  * From NavHostFragment to ComposableNavHostFragment
   * From Navigation Fragment to Navigation Compose (take action when next stable version is available)
-* Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
-* “每次动态更新请求的帖子总数限制” -> “每次从n条帖子中筛选新动态”
-* Use the new nullable "edit_time" property of network posts
-* Split Douban data and local user data instead of putting them in one model class
-* Refactor uses of network only `Resource` to Kotlin `Result`
-* Set dispatchers / handle errors in repositories
-* \[Books\] Add T250
-* \[Movies\] Add T250
-* Hide officially-marked unfriendly content by default
-* Allow expanding group description w/ SpannableString
-* \[SettingsFragment\] Add WebView enabled by default preference, nav start destination etc with DataStore
-* \[SearchFragment\] GroupSearchFragment -> SearchFragment / Search group/tab posts (in-group) / Search posts of all groups (global)
-* Add very basic testing if possible
-* Real login (which seems impossible)
-* \[PostDetailFragment\] Save WebView images
-* \[GroupDetailFragment\] WebView for group
-* \[WebView\]Complete CSS of content WebView: find official CSS source or write on my own
-* \[GroupDetailFragment\]\[PostDetailFragment\]Track/mark/revert/todo read
-* \[GroupsHomeFragment\]Unfollow/reorder items
-* Follows/saves
-  * Allow following/saving every type of item: groups/tabs/searches/categories
+    * From NavHostFragment to ComposableNavHostFragment
+* The old local "follow"
+  * Needs some rework since following groups (official feature) is possible now although not implemented
+  * Rename to favorite (inspired by Reddit)
+  * Topics feed still not working properly
+  * Sync by uploading a fake private note (日记) which holds the data
+* Topic content WebView issues (WebView sucks!)
+  * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
+  * Sometimes topic content fails to be loaded on some low-end or large-screened devices (not sure which sets constraint)
+  * ...
+* \[PostDetailFragment\] Show saves and reposts
+* Paging 3 refresh, loading status ...
+* Sort by "Last updated" -> "active"
+* Follow/favorite/save
+  * Allow following/favoriting/saving every type of item: groups/tabs/searches/categories
   * Post title text filters
   * \[GroupsHomeFragment\] Show posts of followed collections / comments of saved comments with group/tab header
   * \[Lists\]Add corresponding item action
   * Custom feeds like Reddit
+* “每次动态更新请求的帖子总数限制” -> “每次从n条帖子中筛选新动态”
+* Use the new nullable "edit_time" property of network posts
+* Better model layering
+* Refactor uses of network only `Resource` to Kotlin `Result`
+* Handle errors in repositories
+* \[GroupsHomeFragment\]Unfollow/reorder items
+* Add `en-db` ("Douban English" locale)
+* Allow expanding group description w/ SpannableString
+* \[SettingsFragment\] Add prefer to show WebView by default preference
+* \[SearchFragment\] GroupSearchFragment -> SearchFragment / Search group/tab posts (in-group) / Search posts of all groups (global)
+* Real login (which seems impossible)
+* \[GroupDetailFragment\] WebView for group
+* \[GroupDetailFragment\]\[PostDetailFragment\] Track/mark/revert/todo read
 * \[GroupDetailFragment\] Group/tab/post shortcuts
+* Hide officially-marked unfriendly content by default
+* Support blocking unfriendly content
 * Rate limit
 * \[Lists\]Reddit-like item expand/collapse
 * \[GroupDetailFragment\] For post items, optimize tag display, e.g., assign color to each tag mapped from name
-* 🛠\[GroupPostFragment\] Dealing with post URL click - new page should not show in the old WebView
-* Support blocking unfriendly content
-* \[PostDetailFragment\] Show saves and reposts
 * \[GroupDetailFragment\] Collapse on entrance for the followed group/tab
-* \[Sortby\]Migrate Spinner to `singleSelection` `ChipGroup`
 * Allow another option of using Twitter-like date formatting
 * Widgets
+* \[Books\] Add T250
+* \[Movies\] Add T250
 * More features of books & movies
-* \[GroupDetailFragment\] Rewrite
 * \[Lists\] Post order: custom rules based on multiple factors
-* User data backup
-* Optimize landscape experience
+* Optimize dark mode & landscape experience
+* Test
 
 ### Non-Todos
 
