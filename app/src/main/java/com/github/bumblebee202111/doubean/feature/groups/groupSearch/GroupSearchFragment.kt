@@ -9,20 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.bumblebee202111.doubean.databinding.FragmentGroupSearchBinding
-import com.github.bumblebee202111.doubean.model.Result
-import com.github.bumblebee202111.doubean.ui.common.RetryCallback
-import com.github.bumblebee202111.doubean.ui.common.bindResult
+import com.github.bumblebee202111.doubean.ui.common.repeatWithViewLifecycle
 import com.github.bumblebee202111.doubean.util.SpanCountCalculator
-import com.github.bumblebee202111.doubean.util.showSnackbar
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class GroupSearchFragment : Fragment() {
@@ -33,9 +28,7 @@ class GroupSearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = FragmentGroupSearchBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = viewLifecycleOwner
-        }
+        binding = FragmentGroupSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -55,12 +48,6 @@ class GroupSearchFragment : Fragment() {
         )
         binding.groupList.itemAnimator = null
         initSearchInputListener()
-        binding.callback = object : RetryCallback {
-            override fun retry() {
-                groupSearchViewModel.refresh()
-            }
-        }
-        binding.swiperefresh.setOnRefreshListener { groupSearchViewModel.refreshResults() }
     }
 
     private fun initSearchInputListener() {
@@ -85,40 +72,19 @@ class GroupSearchFragment : Fragment() {
     private fun doSearch(v: View) {
         val query = binding.input.text.toString()
         dismissKeyboard(v.windowToken)
-        binding.query = query
         groupSearchViewModel.setQuery(query)
     }
 
     private fun initRecyclerView() {
-        binding.groupList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(1)) {
-                    groupSearchViewModel.loadNextPage()
-                }
-            }
-        })
-        groupSearchViewModel.results
-            .observe(viewLifecycleOwner) { result ->
-                binding.loadingState.bindResult(result)
-                adapter.submitList(result?.data)
-                if (result != null) binding.swiperefresh.isRefreshing = false
-                binding.noResultsText.isVisible =
-                    (result is Result.Success) && result.data.isEmpty()
-            }
-        groupSearchViewModel.loadMoreStatus
-            .observe(viewLifecycleOwner) { loadingMore ->
-                if (loadingMore == null) {
-                    binding.loadingMore = false
-                } else {
-                    binding.loadingMore = loadingMore.isRunning
-                    val error = loadingMore.errorMessageIfNotHandled
-                    if (error != null) {
-                        binding.loadMoreBar.showSnackbar(error, Snackbar.LENGTH_LONG)
+        repeatWithViewLifecycle {
+            launch {
+                groupSearchViewModel.results
+                    .collect { result ->
+                        adapter.submitData(result)
                     }
-                }
-                binding.executePendingBindings()
             }
+        }
+
     }
 
     private fun dismissKeyboard(windowToken: IBinder) {

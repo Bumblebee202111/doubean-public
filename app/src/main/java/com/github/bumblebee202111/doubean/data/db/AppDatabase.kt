@@ -7,12 +7,18 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.withTransaction
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.github.bumblebee202111.doubean.data.db.dao.GroupDao
+import com.github.bumblebee202111.doubean.data.db.dao.GroupSearchResultRemoteKeyDao
+import com.github.bumblebee202111.doubean.data.db.dao.GroupTopicDao
+import com.github.bumblebee202111.doubean.data.db.dao.UserDao
+import com.github.bumblebee202111.doubean.data.db.dao.UserGroupDao
 import com.github.bumblebee202111.doubean.data.db.model.FollowedGroupEntity
 import com.github.bumblebee202111.doubean.data.db.model.FollowedGroupTabEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupPostTagEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupPostsResult
-import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResult
+import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultItemEntity
+import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultRemoteKey
 import com.github.bumblebee202111.doubean.data.db.model.GroupTabEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTagPostsResult
 import com.github.bumblebee202111.doubean.data.db.model.PostEntity
@@ -37,7 +43,8 @@ import kotlinx.serialization.json.Json
         PostEntity::class,
         GroupTabEntity::class,
         GroupPostTagEntity::class,
-        GroupSearchResult::class,
+        GroupSearchResultItemEntity::class,
+        GroupSearchResultRemoteKey::class,
         GroupPostsResult::class,
         GroupTagPostsResult::class,
         RecommendedGroupsResult::class,
@@ -61,6 +68,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun groupFollowsAndSavesDao(): UserGroupDao
 
     abstract fun groupTopicDao(): GroupTopicDao
+
+    abstract fun groupSearchResultRemoteKeyDap(): GroupSearchResultRemoteKeyDao
 
     companion object {
         @Volatile

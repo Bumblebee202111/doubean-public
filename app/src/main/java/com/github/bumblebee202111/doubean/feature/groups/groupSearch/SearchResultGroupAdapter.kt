@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation.findNavController
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.bumblebee202111.doubean.databinding.ListItemGroupBinding
 import com.github.bumblebee202111.doubean.model.GroupSearchResultGroupItem
 
 class SearchResultGroupAdapter :
-    ListAdapter<GroupSearchResultGroupItem, SearchResultGroupAdapter.ViewHolder>(
+    PagingDataAdapter<GroupSearchResultGroupItem, SearchResultGroupAdapter.ViewHolder>(
         SearchResultGroupDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(ListItemGroupBinding.inflate(LayoutInflater.from(parent.context),
@@ -37,7 +37,7 @@ class SearchResultGroupAdapter :
             findNavController(itemView).navigate(direction)
         }
 
-        fun bind(item: GroupSearchResultGroupItem) {
+        fun bind(item: GroupSearchResultGroupItem?) {
             binding.group = item
             binding.executePendingBindings()
         }
