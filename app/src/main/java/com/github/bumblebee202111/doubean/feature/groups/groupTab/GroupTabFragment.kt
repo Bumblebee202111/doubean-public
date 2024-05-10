@@ -178,7 +178,7 @@ class GroupTabFragment : Fragment() {
         )
         val adapter = PostAdapter(groupDetailViewModel.group)
         binding.postList.adapter = adapter
-        groupTabViewModel.posts.observe(viewLifecycleOwner) { result ->
+        groupTabViewModel.postsResult.observe(viewLifecycleOwner) { result ->
             adapter.submitList(result?.data)
             if (result != null) binding.swiperefresh.isRefreshing = false
             binding.loadingState.bindResult(result)

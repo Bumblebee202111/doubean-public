@@ -57,7 +57,7 @@ class GroupTabViewModel @Inject constructor(
     }
     private val reloadTrigger = MutableLiveData(Unit)
     private val sortBy = MutableLiveData<PostSortBy>()
-    val posts = reloadTrigger.switchMap { _ ->
+    val postsResult = reloadTrigger.switchMap { _ ->
         sortBy.switchMap { type ->
             val postsFlow = if (tabId == null) groupRepository.getGroupPosts(
                 groupId,
