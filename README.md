@@ -137,11 +137,12 @@ Libraries Used
 * Behavior
   * [Notifications][notifications]
 * Third party and miscellaneous libraries
+  * Ktor
   * [Retrofit][retrofit]
+  * Coil
   * [Glide][glide]
   * [Kotlin Coroutines][kotlin-coroutines]
   * Flow
-  * Ktor
   * Kotlinx Serialization
   * libsu
 
@@ -191,20 +192,14 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.5.6\)
+#### To-dos for current release \(0.5.7\)
 
-- 
-
-#### To-dos for next release \(0.5.7)
-
-- Topic detail: Ktor
-- Topic detail: Counts in Compose
-- Show topic reposts
+#### To-dos for next release \(0.5.8)
 
 #### Future plans
 
 * Group detail:
-  * Optimize and migrate to Compose M3 / Flows
+  * Optimize and gradually migrate to Compose M3 / Flows
   * Keep AppBarLayout
 * Home - Following
   * More card types
@@ -228,7 +223,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Needs some rework since following groups (official feature) is possible now although not implemented
   * Rename to favorite (inspired by Reddit)
   * Topics feed still not working properly
-  * Sync by uploading a fake private note (日记) which holds the data
+  * Sync by maintaining a fake private note (日记) which holds the data
 * Topic content WebView issues (WebView sucks!)
   * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
   * Sometimes topic content fails to be loaded on some low-end or large-screened devices (not sure which sets constraint)
