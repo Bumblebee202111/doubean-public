@@ -15,10 +15,10 @@ import com.github.bumblebee202111.doubean.databinding.ListItemPostBinding
 import com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupDetailFragmentDirections
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.PostItem
-import com.github.bumblebee202111.doubean.model.Resource
+import com.github.bumblebee202111.doubean.model.Result
 import com.github.bumblebee202111.doubean.util.ShareUtil
 
-class PostAdapter(private val groupLiveData: LiveData<Resource<GroupDetail>>) :
+class PostAdapter(private val groupLiveData: LiveData<Result<GroupDetail>>) :
     ListAdapter<PostItem, PostAdapter.ViewHolder>(PostDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -37,11 +37,9 @@ class PostAdapter(private val groupLiveData: LiveData<Resource<GroupDetail>>) :
 
     class ViewHolder(
         private val binding: ListItemPostBinding,
-        groupLiveData: LiveData<Resource<GroupDetail>>,
+        groupLiveData: LiveData<Result<GroupDetail>>,
     ) :
         RecyclerView.ViewHolder(binding.root) {
-
-
         init {
             binding.clickListener =
                 View.OnClickListener { v -> binding.post?.let { navigateToPost(it, v) } }
@@ -85,8 +83,6 @@ class PostAdapter(private val groupLiveData: LiveData<Resource<GroupDetail>>) :
             binding.executePendingBindings()
         }
     }
-
-
 }
 
 class PostDiffCallback : DiffUtil.ItemCallback<PostItem>() {

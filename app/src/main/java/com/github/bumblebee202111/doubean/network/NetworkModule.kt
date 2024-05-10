@@ -91,7 +91,6 @@ class NetworkModule {
     @Singleton
     @Provides
     fun provideCookieStorage(
-        @ApplicationContext context: Context,
         @ApplicationScope coroutineScope: CoroutineScope,
     ): CookiesStorage =
         AcceptAllCookiesStorage().apply {

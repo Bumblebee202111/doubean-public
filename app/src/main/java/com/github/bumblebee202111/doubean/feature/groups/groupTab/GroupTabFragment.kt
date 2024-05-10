@@ -18,6 +18,7 @@ import com.github.bumblebee202111.doubean.databinding.FragmentGroupTabBinding
 import com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupDetailViewModel
 import com.github.bumblebee202111.doubean.model.PostSortBy
 import com.github.bumblebee202111.doubean.ui.common.RetryCallback
+import com.github.bumblebee202111.doubean.ui.common.bindResult
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.getColorFromTheme
 import com.github.bumblebee202111.doubean.util.showSnackbar
@@ -43,8 +44,6 @@ class GroupTabFragment : Fragment() {
         tagId = args.getString(ARG_TAG_ID)
         binding = FragmentGroupTabBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
-            groupTabViewModel = groupTabViewModel
-            groupDetailViewModel = groupDetailViewModel
         }
         return binding.root
     }
@@ -180,11 +179,9 @@ class GroupTabFragment : Fragment() {
         val adapter = PostAdapter(groupDetailViewModel.group)
         binding.postList.adapter = adapter
         groupTabViewModel.posts.observe(viewLifecycleOwner) { result ->
-            binding.findResource = result
-            binding.resultCount =
-                if (result?.data == null) 0 else result.data.size
             adapter.submitList(result?.data)
             if (result != null) binding.swiperefresh.isRefreshing = false
+            binding.loadingState.bindResult(result)
         }
         groupTabViewModel.loadMoreStatus.observe(viewLifecycleOwner) { loadingMore ->
             if (loadingMore == null) {
