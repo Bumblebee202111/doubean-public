@@ -82,6 +82,7 @@ import com.github.bumblebee202111.doubean.MobileNavigationDirections
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.FragmentPostDetailBinding
 import com.github.bumblebee202111.doubean.databinding.ListItemPostCommentBinding
+import com.github.bumblebee202111.doubean.feature.groups.common.TopicDetailActivityItemUserProfileImage
 import com.github.bumblebee202111.doubean.model.PostComment
 import com.github.bumblebee202111.doubean.model.PostCommentSortBy
 import com.github.bumblebee202111.doubean.model.PostDetail
@@ -711,7 +712,9 @@ fun TopicCommentAndroidView(
         factory = ListItemPostCommentBinding::inflate,
         modifier = modifier,
         update = {
-            authorAvatar.bindAvatarFromUrl(comment?.author?.avatarUrl)
+            authorAvatar.setContent {
+                TopicDetailActivityItemUserProfileImage(url = comment?.author?.avatarUrl)
+            }
             authorName.text = comment?.author?.name
             authorMiddleDot.isVisible = comment?.author != null
             created.bindDateTimeStringAndStyle(comment?.created, DateTimeStyle.Normal)
