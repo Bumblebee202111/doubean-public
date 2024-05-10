@@ -16,8 +16,11 @@ import android.webkit.WebView
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -57,6 +60,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -447,6 +451,7 @@ fun JumpToCommentSliderPreview() {
     JumpToCommentOfIndexSlider(100, 1000) {}
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @SuppressLint("ClickableViewAccessibility")
 @Composable
 fun TopicDetailHeader(
@@ -568,6 +573,55 @@ fun TopicDetailHeader(
                         })
 
 
+                }
+            }
+            this.counts.setContent {
+                Row(
+                    modifier = Modifier
+                        .padding(
+                            start = dimensionResource(id = R.dimen.margin_small),
+                            end = dimensionResource(id = R.dimen.margin_normal),
+                            top = dimensionResource(id = R.dimen.margin_normal)
+                        )
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    topic.commentCount?.let {
+                        Text(
+                            text = pluralStringResource(
+                                id = R.plurals.comments,
+                                count = it,
+                                it
+                            )
+                        )
+                    }
+                    topic.repostCount?.let {
+                        Text(
+                            text = pluralStringResource(
+                                id = R.plurals.reposts,
+                                count = it,
+                                it
+                            )
+                        )
+                    }
+                    topic.likeCount?.let {
+                        Text(
+                            text = pluralStringResource(
+                                id = R.plurals.likes,
+                                count = it,
+                                it
+                            )
+                        )
+                    }
+                    topic.saveCount?.let {
+                        Text(
+                            text = pluralStringResource(
+                                id = R.plurals.saves,
+                                count = it,
+                                it
+                            )
+                        )
+                    }
                 }
             }
             executePendingBindings()
@@ -740,8 +794,6 @@ fun TopicCommentAndroidView(
                 repliedToAuthorOp.setTextColor(it)
             }
 
-
-
             likeIcon.isVisible = comment?.voteCount?.takeIf { it != 0 } != null
             likeCount.isVisible = comment?.voteCount?.takeIf { it != 0 } != null
             likeCount.text = comment?.voteCount?.toString()
@@ -749,6 +801,4 @@ fun TopicCommentAndroidView(
         onReset = {},
         onRelease = {}
     )
-
 }
-
