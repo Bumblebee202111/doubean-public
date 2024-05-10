@@ -1,5 +1,6 @@
-package com.github.bumblebee202111.doubean.data.db
+package com.github.bumblebee202111.doubean.data.db.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -12,8 +13,8 @@ import com.github.bumblebee202111.doubean.data.db.model.GroupDetailPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupPostTagEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupPostsResult
-import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResult
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultGroupItemPartialEntity
+import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultItemEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTabEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTagPostsResult
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedGroupDetail
@@ -65,28 +66,16 @@ interface GroupDao {
     @RewriteQueriesToDropUnusedColumns
     suspend fun upsertRecommendedGroupItemGroups(groupList: List<RecommendedGroupItemGroupPartialEntity>)
 
-    @Query("SELECT * FROM group_search_results WHERE `query` = :query")
-    fun loadSearchResult(query: String): Flow<GroupSearchResult?>
+    @Insert(GroupSearchResultItemEntity::class, onConflict = OnConflictStrategy.REPLACE)
+    fun insertGroupSearchResultItems(groupSearchResultItems: List<GroupSearchResultItemEntity>)
 
-    @Query("SELECT * FROM group_search_results WHERE `query` = :query")
-    suspend fun getSearchResult(query: String): GroupSearchResult?
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGroupSearchResult(groupSearchResult: GroupSearchResult)
-
-    @Query("SELECT * FROM groups WHERE id IN (:groupIds)")
+    @Transaction
     @RewriteQueriesToDropUnusedColumns
-    fun loadSearchResultGroups(groupIds: List<String>): Flow<List<GroupSearchResultGroupItemPartialEntity>>
+    @Query("SELECT * FROM group_search_result_items LEFT OUTER JOIN groups ON group_search_result_items.group_id = groups.id WHERE `query` = :query ORDER BY `index` ASC")
+    fun groupSearchResultPagingSource(query: String): PagingSource<Int, GroupSearchResultGroupItemPartialEntity>
 
-    fun loadOrderedSearchResultGroups(
-        groupIds: List<String>,
-        c: Comparator<GroupSearchResultGroupItemPartialEntity>? = null,
-    ) = this.loadSearchResultGroups(groupIds).map { groups ->
-        if (c == null) {
-            groups.sortedWith(compareBy { o -> groupIds.indexOf(o.id) })
-        } else groups.sortedWith(c)
-        
-    }
+    @Query("DELETE FROM group_search_result_items WHERE `query` = :query")
+    fun deleteSearchResultPagingItemsByQuery(query: String)
 
     @Transaction
     @Query("SELECT * FROM posts WHERE id IN (:postIds)")

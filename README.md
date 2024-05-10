@@ -192,9 +192,18 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.5.7\)
+#### To-dos for current release \(0.5.8\)
 
-#### To-dos for next release \(0.5.8)
+- Refactor group detail
+  - LiveData -> Flow
+  - Retrofit -> Ktor 
+  - RecyclerView -> LazyColumn
+  - ViewPager2 -> HorizontalPager
+  - ImageView -> AsyncImage
+  - MaterialToolBar -> TopAppBar
+  - Spinner -> Button + DropDownMenu
+
+#### To-dos for next release \(0.5.9)
 
 #### Future plans
 

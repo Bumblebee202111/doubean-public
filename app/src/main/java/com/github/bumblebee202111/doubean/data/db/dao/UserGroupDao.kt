@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.data.db
+package com.github.bumblebee202111.doubean.data.db.dao
 
 import androidx.paging.PagingSource
 import androidx.room.Dao

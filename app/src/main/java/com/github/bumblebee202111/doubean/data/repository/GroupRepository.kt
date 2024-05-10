@@ -1,9 +1,12 @@
 package com.github.bumblebee202111.doubean.data.repository
 
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.map
 import androidx.room.withTransaction
 import com.github.bumblebee202111.doubean.data.db.AppDatabase
 import com.github.bumblebee202111.doubean.data.db.model.GroupPostsResult
-import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResult
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultGroupItemPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTagPostsResult
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostItem
@@ -11,17 +14,17 @@ import com.github.bumblebee202111.doubean.data.db.model.PopulatedRecommendedGrou
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupsResult
 import com.github.bumblebee202111.doubean.data.db.model.UserEntity
 import com.github.bumblebee202111.doubean.data.db.model.asExternalModel
+import com.github.bumblebee202111.doubean.data.paging.GroupSearchResultItemRemoteMediator
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.GroupRecommendationType
-import com.github.bumblebee202111.doubean.model.GroupSearchResultGroupItem
 import com.github.bumblebee202111.doubean.model.PostItem
 import com.github.bumblebee202111.doubean.model.PostSortBy
 import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
 import com.github.bumblebee202111.doubean.model.Result
 import com.github.bumblebee202111.doubean.network.ApiResponse
+import com.github.bumblebee202111.doubean.network.ApiKtorService
 import com.github.bumblebee202111.doubean.network.ApiRetrofitService
 import com.github.bumblebee202111.doubean.network.model.NetworkGroupDetail
-import com.github.bumblebee202111.doubean.network.model.NetworkGroupSearch
 import com.github.bumblebee202111.doubean.network.model.NetworkPostItem
 import com.github.bumblebee202111.doubean.network.model.NetworkPosts
 import com.github.bumblebee202111.doubean.network.model.NetworkRecommendedGroup
@@ -47,6 +50,7 @@ import javax.inject.Singleton
 class GroupRepository @Inject constructor(
     private val appDatabase: AppDatabase,
     private val ApiRetrofitService: ApiRetrofitService,
+    private val ApiKtorService: ApiKtorService,
 ) {
     private val groupDao = appDatabase.groupDao()
     private val userDao = appDatabase.userDao()
@@ -71,73 +75,18 @@ class GroupRepository @Inject constructor(
         }.asFlow()
     }
 
-    suspend fun searchNextPage(query: String): Result<Boolean>? {
-        val fetchNextSearchPageTask: FetchNextPageTask<GroupSearchResult, NetworkGroupSearch> =
-            object :
-                FetchNextPageTask<GroupSearchResult, NetworkGroupSearch>(
-                    ApiRetrofitService, appDatabase
-                ) {
-                override suspend fun getCurrentFromDb() = groupDao.getSearchResult(query)
 
-                override suspend fun createCall(nextPageStart: Int?) =
-                    ApiRetrofitService.searchGroups(
-                    query, nextPageStart!!, RESULT_GROUPS_COUNT
-                )
-
-                override suspend fun mergeAndSaveCallResult(
-                    current: GroupSearchResult,
-                    item: NetworkGroupSearch,
-                ) {
-                    val ids = current.ids + item.items.map { it.group.id }
-                    val merged = GroupSearchResult(
-                        query,
-                        ids,
-                        item.total,
-                        item.nextPageStart
-                    )
-                    val groups = item.items.map { it.group.asPartialEntity() }
-                    appDatabase.withTransaction {
-                        groupDao.insertGroupSearchResult(merged)
-                        groupDao.upsertSearchResultGroups(groups)
-                    }
-                }
-            }
-        return fetchNextSearchPageTask.run()
-    }
-
-    fun search(query: String): Flow<Result<List<GroupSearchResultGroupItem>>> {
-        return object : NetworkBoundResource<List<GroupSearchResultGroupItem>, NetworkGroupSearch>(
-        ) {
-            override suspend fun saveCallResult(item: NetworkGroupSearch) {
-                val groupIds = item.items.map { it.group.id }
-                val groupSearchResult = GroupSearchResult(
-                    query, groupIds, item.total, item.nextPageStart
-                )
-                val searchResultGroups = item.items.map { it.group.asPartialEntity() }
-                appDatabase.withTransaction {
-                    groupDao.upsertSearchResultGroups(searchResultGroups)
-                    groupDao.insertGroupSearchResult(groupSearchResult)
-                }
-            }
-
-            override fun shouldFetch(data: List<GroupSearchResultGroupItem>?): Boolean = true
-
-            override fun loadFromDb(): Flow<List<GroupSearchResultGroupItem>?> {
-                return groupDao.loadSearchResult(query).flatMapLatest { searchData ->
-                    if (searchData == null) {
-                        flowOf(null)
-                    } else {
-                        groupDao.loadOrderedSearchResultGroups(searchData.ids).map {
-                            it.map(GroupSearchResultGroupItemPartialEntity::asExternalModel)
-                        }
-                    }
-                }
-            }
-
-            override suspend fun createCall() =
-                ApiRetrofitService.searchGroups(query = query, count = RESULT_GROUPS_COUNT)
-        }.asFlow()
-    }
+    @OptIn(ExperimentalPagingApi::class)
+    fun search1(query: String) = Pager(
+        PagingConfig(
+            pageSize = RESULT_GROUPS_COUNT,
+            initialLoadSize = RESULT_GROUPS_COUNT
+        ),
+        remoteMediator = GroupSearchResultItemRemoteMediator(
+            query = query, service = ApiKtorService, appDatabase = appDatabase
+        ),
+        pagingSourceFactory = { groupDao.groupSearchResultPagingSource(query) }
+    ).flow.map { it.map(GroupSearchResultGroupItemPartialEntity::asExternalModel) }
 
     fun getGroupPosts(
         groupId: String, postSortBy: PostSortBy,
