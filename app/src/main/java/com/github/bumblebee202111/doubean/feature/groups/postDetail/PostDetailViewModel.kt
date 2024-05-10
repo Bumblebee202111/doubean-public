@@ -33,9 +33,9 @@ class PostDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val topicId = PostDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).postId
+    val topicId = PostDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).postId
 
-    private val commentsData = topicRepo.getTopicCommentsPagingData(topicId)
+    private val commentsData = topicRepo.getTopicCommentsData(topicId)
 
     val popularComments =
         commentsData.first
