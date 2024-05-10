@@ -26,11 +26,6 @@ class GroupNotificationsPreferenceDialogFragment : AppCompatDialogFragment() {
     private lateinit var feedRequestPostCountLimitTitle: MaterialTextView
     private lateinit var feedRequestPostCountLimitEditText: TextInputEditText
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val groupId = arguments?.getString(ARG_GROUP_ID)
-    }
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         binding =
@@ -64,8 +59,8 @@ class GroupNotificationsPreferenceDialogFragment : AppCompatDialogFragment() {
         binding.feedRequestPostCountLimitEditText.filters =
             arrayOf(MinMaxEditTextInputFilter(1, 50))
 
-        groupDetailViewModel.group.observe(this) { groupResource ->
-            groupResource.data?.sortRecommendedPostsBy?.let {
+        groupDetailViewModel.group.observe(this) { groupResult ->
+            groupResult.data?.sortRecommendedPostsBy?.let {
                 sortRecommendedPostsBySpinner.setSelection(getSpinnerItemPositionOf(it))
             }
 

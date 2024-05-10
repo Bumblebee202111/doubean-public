@@ -15,7 +15,7 @@ import com.github.bumblebee202111.doubean.model.PollId
 import com.github.bumblebee202111.doubean.model.PostCommentSortBy
 import com.github.bumblebee202111.doubean.model.Question
 import com.github.bumblebee202111.doubean.model.QuestionId
-import com.github.bumblebee202111.doubean.model.Status
+import com.github.bumblebee202111.doubean.model.Result
 import com.github.bumblebee202111.doubean.model.TopicContentEntityId
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -57,12 +57,12 @@ class PostDetailViewModel @Inject constructor(
         _commentsSortBy.value = commentSortBy
     }
 
-    private val postResource = groupRepository.getPost(topicId).flowOn(Dispatchers.IO).stateInUi()
+    private val postResult = groupRepository.getPost(topicId).flowOn(Dispatchers.IO).stateInUi()
 
-    val topic = postResource.map { it?.data }.stateInUi()
+    val topic = postResult.map { it?.data }.stateInUi()
 
-    val contentHtml = postResource.map {
-        if (it == null || it.status == Status.LOADING) return@map null
+    val contentHtml = postResult.map {
+        if (it == null || it is Result.Loading) return@map null
         val content = it.data?.content ?: return@map null
 
         val regex =

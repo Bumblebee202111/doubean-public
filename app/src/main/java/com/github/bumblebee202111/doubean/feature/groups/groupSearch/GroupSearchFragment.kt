@@ -9,13 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.bumblebee202111.doubean.databinding.FragmentGroupSearchBinding
+import com.github.bumblebee202111.doubean.model.Result
 import com.github.bumblebee202111.doubean.ui.common.RetryCallback
+import com.github.bumblebee202111.doubean.ui.common.bindResult
 import com.github.bumblebee202111.doubean.util.SpanCountCalculator
 import com.github.bumblebee202111.doubean.util.showSnackbar
 import com.google.android.material.snackbar.Snackbar
@@ -65,8 +68,7 @@ class GroupSearchFragment : Fragment() {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 doSearch(v)
                 true
-            }
-            else {
+            } else {
                 false
             }
         }
@@ -98,11 +100,11 @@ class GroupSearchFragment : Fragment() {
         })
         groupSearchViewModel.results
             .observe(viewLifecycleOwner) { result ->
-                binding.searchResource = result
-                binding.resultCount =
-                    if (result?.data == null) 0 else result.data.size
+                binding.loadingState.bindResult(result)
                 adapter.submitList(result?.data)
                 if (result != null) binding.swiperefresh.isRefreshing = false
+                binding.noResultsText.isVisible =
+                    (result is Result.Success) && result.data.isEmpty()
             }
         groupSearchViewModel.loadMoreStatus
             .observe(viewLifecycleOwner) { loadingMore ->

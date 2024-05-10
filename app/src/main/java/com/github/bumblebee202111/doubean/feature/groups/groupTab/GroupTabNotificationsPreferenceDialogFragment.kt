@@ -40,11 +40,6 @@ class GroupTabNotificationsPreferenceDialogFragment : AppCompatDialogFragment() 
 
         binding =
             DialogGroupTabNotificationsPreferenceBinding.inflate(requireActivity().layoutInflater)
-                .apply {
-                    groupTabviewModel = groupTabViewModel
-                    groupDetailViewModel = groupDetailViewModel
-                    lifecycleOwner = this@GroupTabNotificationsPreferenceDialogFragment
-                }
 
         enableGroupNotificationsPref = binding.enablePostNotificationsPref
         allowDuplicateNotificationsPref = binding.allowDuplicateNotificationsPref
@@ -70,8 +65,8 @@ class GroupTabNotificationsPreferenceDialogFragment : AppCompatDialogFragment() 
         feedRequestPostCountLimitEditText.filters =
             arrayOf(MinMaxEditTextInputFilter(1, 50))
 
-        groupDetailViewModel.group.observe(this) { groupResource ->
-            groupResource.data?.findTab(tabId)?.let { tab ->
+        groupDetailViewModel.group.observe(this) { groupResult ->
+            groupResult.data?.findTab(tabId)?.let { tab ->
                 tab.enableNotifications?.let { enableGroupNotificationsPref.isChecked = it }
                 tab.allowDuplicateNotifications?.let {
                     allowDuplicateNotificationsPref.isChecked = it

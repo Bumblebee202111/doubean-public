@@ -14,7 +14,7 @@ import com.github.bumblebee202111.doubean.data.repository.GroupUserDataRepositor
 import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabFragment.Companion.ARG_GROUP_ID
 import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabFragment.Companion.ARG_TAG_ID
 import com.github.bumblebee202111.doubean.model.PostSortBy
-import com.github.bumblebee202111.doubean.model.Resource
+import com.github.bumblebee202111.doubean.model.Result
 import com.github.bumblebee202111.doubean.ui.common.NextPageHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +40,7 @@ class GroupTabViewModel @Inject constructor(
     private val groupId: String = savedStateHandle[ARG_GROUP_ID]!!
 
     private val nextPageHandler = object : NextPageHandler() {
-        override fun loadNextPageFromRepo(): LiveData<Resource<Boolean>?> {
+        override fun loadNextPageFromRepo(): LiveData<Result<Boolean>?> {
             return liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
                 emit(
                     when (tabId != null) {

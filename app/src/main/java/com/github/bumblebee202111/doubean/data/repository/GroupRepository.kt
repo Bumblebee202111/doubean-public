@@ -19,7 +19,7 @@ import com.github.bumblebee202111.doubean.model.PostDetail
 import com.github.bumblebee202111.doubean.model.PostItem
 import com.github.bumblebee202111.doubean.model.PostSortBy
 import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
-import com.github.bumblebee202111.doubean.model.Resource
+import com.github.bumblebee202111.doubean.model.Result
 import com.github.bumblebee202111.doubean.network.ApiResponse
 import com.github.bumblebee202111.doubean.network.ApiRetrofitService
 import com.github.bumblebee202111.doubean.network.model.NetworkGroupDetail
@@ -54,7 +54,7 @@ class GroupRepository @Inject constructor(
     private val groupDao = appDatabase.groupDao()
     private val userDao = appDatabase.userDao()
 
-    fun getGroup(groupId: String): Flow<Resource<GroupDetail>> {
+    fun getGroup(groupId: String): Flow<Result<GroupDetail>> {
         return object : NetworkBoundResource<GroupDetail, NetworkGroupDetail>() {
             override suspend fun saveCallResult(item: NetworkGroupDetail) {
                 val groupDetails = item.asPartialEntity()
@@ -74,7 +74,7 @@ class GroupRepository @Inject constructor(
         }.asFlow()
     }
 
-    suspend fun searchNextPage(query: String): Resource<Boolean>? {
+    suspend fun searchNextPage(query: String): Result<Boolean>? {
         val fetchNextSearchPageTask: FetchNextPageTask<GroupSearchResult, NetworkGroupSearch> =
             object :
                 FetchNextPageTask<GroupSearchResult, NetworkGroupSearch>(
@@ -108,7 +108,7 @@ class GroupRepository @Inject constructor(
         return fetchNextSearchPageTask.run()
     }
 
-    fun search(query: String): Flow<Resource<List<GroupSearchResultGroupItem>>> {
+    fun search(query: String): Flow<Result<List<GroupSearchResultGroupItem>>> {
         return object : NetworkBoundResource<List<GroupSearchResultGroupItem>, NetworkGroupSearch>(
         ) {
             override suspend fun saveCallResult(item: NetworkGroupSearch) {
@@ -144,7 +144,7 @@ class GroupRepository @Inject constructor(
 
     fun getGroupPosts(
         groupId: String, postSortBy: PostSortBy,
-    ): Flow<Resource<List<PostItem>>> {
+    ): Flow<Result<List<PostItem>>> {
         return object : NetworkBoundResource<List<PostItem>, NetworkPosts>() {
             override suspend fun saveCallResult(item: NetworkPosts) {
                 val posts = (item.items.map { it.asPartialEntity(groupId) })
@@ -195,7 +195,7 @@ class GroupRepository @Inject constructor(
 
     suspend fun getNextPageGroupPosts(
         groupId: String, postSortBy: PostSortBy,
-    ): Resource<Boolean>? {
+    ): Result<Boolean>? {
         val fetchNextPageTask =
             object :
                 FetchNextPageTask<GroupPostsResult, NetworkPosts>(
@@ -248,7 +248,7 @@ class GroupRepository @Inject constructor(
 
     fun getGroupTagPosts(
         groupId: String, tagId: String, postSortBy: PostSortBy,
-    ): Flow<Resource<List<PostItem>>> {
+    ): Flow<Result<List<PostItem>>> {
         return object : NetworkBoundResource<List<PostItem>, NetworkPosts>(
         ) {
             override suspend fun saveCallResult(item: NetworkPosts) {
@@ -303,7 +303,7 @@ class GroupRepository @Inject constructor(
 
     suspend fun getNextPageGroupTagPosts(
         groupId: String, tagId: String, postSortBy: PostSortBy,
-    ): Resource<Boolean>? {
+    ): Result<Boolean>? {
         val fetchNextPageTask: FetchNextPageTask<GroupTagPostsResult, NetworkPosts> =
             object :
                 FetchNextPageTask<GroupTagPostsResult, NetworkPosts>(
@@ -354,7 +354,7 @@ class GroupRepository @Inject constructor(
         return fetchNextPageTask.run()
     }
 
-    fun getPost(postId: String): Flow<Resource<PostDetail>> {
+    fun getPost(postId: String): Flow<Result<PostDetail>> {
         return object : NetworkBoundResource<PostDetail, NetworkPostDetail>() {
             override suspend fun saveCallResult(item: NetworkPostDetail) {
                 val postDetail = item.asPartialEntity()
@@ -389,7 +389,7 @@ class GroupRepository @Inject constructor(
         }
     }
 
-    fun getGroupRecommendation(type: GroupRecommendationType): Flow<Resource<List<RecommendedGroupItem>>> {
+    fun getGroupRecommendation(type: GroupRecommendationType): Flow<Result<List<RecommendedGroupItem>>> {
         return object :
             NetworkBoundResource<List<RecommendedGroupItem>, NetworkRecommendedGroups>() {
             override suspend fun saveCallResult(item: NetworkRecommendedGroups) {
