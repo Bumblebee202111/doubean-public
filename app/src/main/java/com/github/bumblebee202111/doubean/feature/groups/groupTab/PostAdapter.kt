@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.compose.ui.res.dimensionResource
 import androidx.lifecycle.LiveData
 import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
@@ -16,6 +17,7 @@ import com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupDetail
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.PostItem
 import com.github.bumblebee202111.doubean.model.Result
+import com.github.bumblebee202111.doubean.ui.common.UserProfileImage
 import com.github.bumblebee202111.doubean.util.ShareUtil
 
 class PostAdapter(private val groupLiveData: LiveData<Result<GroupDetail>>) :
@@ -64,6 +66,7 @@ class PostAdapter(private val groupLiveData: LiveData<Result<GroupDetail>>) :
                                 ShareUtil.share(context, shareText)
                                 false
                             }
+
                             else -> false
                         }
                     }
@@ -80,6 +83,12 @@ class PostAdapter(private val groupLiveData: LiveData<Result<GroupDetail>>) :
 
         fun bind(item: PostItem) {
             binding.post = item
+            binding.authorAvatar.setContent {
+                UserProfileImage(
+                    url = item.author.avatarUrl,
+                    size = dimensionResource(id = R.dimen.icon_size_extra_small)
+                )
+            }
             binding.executePendingBindings()
         }
     }

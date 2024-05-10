@@ -89,7 +89,7 @@ import com.github.bumblebee202111.doubean.model.PostDetail
 import com.github.bumblebee202111.doubean.model.SizedPhoto
 import com.github.bumblebee202111.doubean.ui.common.DoubeanWebView
 import com.github.bumblebee202111.doubean.ui.common.TopicWebViewClient
-import com.github.bumblebee202111.doubean.ui.common.bindAvatarFromUrl
+import com.github.bumblebee202111.doubean.ui.common.UserProfileImage
 import com.github.bumblebee202111.doubean.ui.common.bindDateTimeStringAndStyle
 import com.github.bumblebee202111.doubean.ui.component.ListItemImages
 import com.github.bumblebee202111.doubean.ui.theme.AppTheme
@@ -509,6 +509,13 @@ fun TopicDetailHeader(
             groupName.setOnClickListener(groupOnClickListener)
             groupAvatar.setOnClickListener(groupOnClickListener)
 
+            authorAvatar.setContent {
+                UserProfileImage(
+                    url = topic.author.avatarUrl,
+                    size = dimensionResource(id = R.dimen.icon_size_large)
+                )
+            }
+
             this.topic = topic
 
             this.content.setContent {
@@ -785,7 +792,10 @@ fun TopicCommentAndroidView(
             authorOp.isVisible = comment?.author?.id?.let { it == topic?.author?.id } ?: false
             repliedTo.isVisible = comment?.repliedTo != null
 
-            repliedToAvatar.bindAvatarFromUrl(comment?.repliedTo?.author?.avatarUrl)
+            repliedToAvatar.setContent {
+                TopicDetailActivityItemUserProfileImage(comment?.repliedTo?.author?.avatarUrl)
+            }
+
             repliedToAuthorOp.isVisible =
                 comment?.repliedTo?.author?.id?.let { it == topic?.author?.id } ?: false
             repliedToAuthorName.text = comment?.repliedTo?.author?.name
