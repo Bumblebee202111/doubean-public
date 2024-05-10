@@ -19,7 +19,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -143,6 +142,13 @@ class PostDetailFragment : Fragment() {
                                     .setDefaultTabId(tabId)
                             )
                         },
+                        navigateToReshareStatuses = { topicId ->
+                            findNavController().navigate(
+                                PostDetailFragmentDirections.actionTopicDetailToReshareStatuses(
+                                    topicId
+                                )
+                            )
+                        },
                         navigateToImage = { url ->
                             findNavController().navigate(
                                 MobileNavigationDirections.actionGlobalNavImage(
@@ -184,12 +190,14 @@ class PostDetailFragment : Fragment() {
         onTopicShareClick: (PostDetail) -> Unit,
         navigateToWebView: (url: String) -> Unit,
         navigateToGroup: (groupId: String, tabId: String?) -> Unit,
+        navigateToReshareStatuses: (topicId: String) -> Unit,
         navigateToImage: (url: String) -> Unit,
         navigateWithDeepLinkUrl: (url: String) -> Unit,
         onShowToast: (text: String) -> Unit,
         viewInDouban: (uri: String) -> Unit,
         viewInActivity: (url: String) -> Unit,
     ) {
+        val topicId = postDetailViewModel.topicId
         val topic by postDetailViewModel.topic.collectAsStateWithLifecycle()
         val popularComments by postDetailViewModel.popularComments.collectAsStateWithLifecycle()
         val allCommentLazyPagingItems = postDetailViewModel.allComments.collectAsLazyPagingItems()
@@ -320,6 +328,7 @@ class PostDetailFragment : Fragment() {
                             viewInActivity = viewInActivity,
                             navigateToImage = navigateToImage,
                             navigateToGroup = navigateToGroup,
+                            navigateToReshareStatuses = navigateToReshareStatuses,
                             navigateWithDeepLinkUrl = navigateWithDeepLinkUrl,
                             onShowToast = onShowToast
                         )
@@ -451,7 +460,6 @@ fun JumpToCommentSliderPreview() {
     JumpToCommentOfIndexSlider(100, 1000) {}
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @SuppressLint("ClickableViewAccessibility")
 @Composable
 fun TopicDetailHeader(
@@ -460,6 +468,7 @@ fun TopicDetailHeader(
     viewInActivity: (url: String) -> Unit,
     navigateToImage: (url: String) -> Unit,
     navigateToGroup: (groupId: String, tabId: String?) -> Unit,
+    navigateToReshareStatuses: (topicId: String) -> Unit,
     navigateWithDeepLinkUrl: (url: String) -> Unit,
     onShowToast: (text: String) -> Unit,
 ) {
@@ -601,7 +610,16 @@ fun TopicDetailHeader(
                                 id = R.plurals.reposts,
                                 count = it,
                                 it
-                            )
+                            ),
+                            modifier = Modifier.run {
+                                if (it != 0) {
+                                    clickable {
+                                        navigateToReshareStatuses(topic.id)
+                                    }
+                                } else {
+                                    this
+                                }
+                            }
                         )
                     }
                     topic.likeCount?.let {
