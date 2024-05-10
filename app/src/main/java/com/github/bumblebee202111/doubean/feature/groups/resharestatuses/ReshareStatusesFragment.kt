@@ -108,14 +108,14 @@ fun ReshareStatusesScreen(viewModel: ReshareStatusesViewModel, onBackClick: () -
                     Column(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(horizontal = 12.dp),
+                            .padding(start = 12.dp),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             UserNameText(reshareStatus?.author?.name ?: "")
                             reshareStatus?.createTime?.let {
                                 Text(
-                                    text = dateTimeText(it, DateTimeStyle.Short),
+                                    text = dateTimeText(it, DateTimeStyle.Normal),
                                     modifier = Modifier.padding(start = 4.dp),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.outline,
