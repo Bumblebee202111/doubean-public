@@ -6,7 +6,6 @@ import com.github.bumblebee202111.doubean.data.db.model.GroupPostsResult
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResult
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultGroupItemPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTagPostsResult
-import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostDetail
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostItem
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedRecommendedGroup
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupsResult
@@ -15,7 +14,6 @@ import com.github.bumblebee202111.doubean.data.db.model.asExternalModel
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.GroupRecommendationType
 import com.github.bumblebee202111.doubean.model.GroupSearchResultGroupItem
-import com.github.bumblebee202111.doubean.model.PostDetail
 import com.github.bumblebee202111.doubean.model.PostItem
 import com.github.bumblebee202111.doubean.model.PostSortBy
 import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
@@ -24,7 +22,6 @@ import com.github.bumblebee202111.doubean.network.ApiResponse
 import com.github.bumblebee202111.doubean.network.ApiRetrofitService
 import com.github.bumblebee202111.doubean.network.model.NetworkGroupDetail
 import com.github.bumblebee202111.doubean.network.model.NetworkGroupSearch
-import com.github.bumblebee202111.doubean.network.model.NetworkPostDetail
 import com.github.bumblebee202111.doubean.network.model.NetworkPostItem
 import com.github.bumblebee202111.doubean.network.model.NetworkPosts
 import com.github.bumblebee202111.doubean.network.model.NetworkRecommendedGroup
@@ -353,34 +350,6 @@ class GroupRepository @Inject constructor(
             }
         return fetchNextPageTask.run()
     }
-
-    fun getPost(postId: String): Flow<Result<PostDetail>> {
-        return object : NetworkBoundResource<PostDetail, NetworkPostDetail>() {
-            override suspend fun saveCallResult(item: NetworkPostDetail) {
-                val postDetail = item.asPartialEntity()
-                val postTagCrossRefs = item.tagCrossRefs()
-                val group = item.group.asPartialEntity()
-                val author = item.author.asEntity()
-                appDatabase.withTransaction {
-                    groupDao.insertPostDetail(postDetail)
-                    groupDao.deletePostTagCrossRefsByPostId(postId)
-                    groupDao.insertPostTagCrossRefs(postTagCrossRefs)
-                    groupDao.upsertPostGroup(group)
-                    userDao.insertUser(author)
-                }
-            }
-
-            override fun shouldFetch(data: PostDetail?) = true
-
-            override fun loadFromDb() =
-                groupDao.loadPost(postId).map(PopulatedPostDetail::asExternalModel)
-
-            override suspend fun createCall() =
-                ApiRetrofitService.getGroupPost(postId)
-        }.asFlow()
-    }
-
-
 
     private fun getPostSortByRequestParam(postSortBy: PostSortBy): SortByRequestParam {
         return when (postSortBy) {

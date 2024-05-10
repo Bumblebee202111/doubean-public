@@ -194,7 +194,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.5.7\)
 
-- Topic detail: Ktor
 - Topic detail: Counts in Compose
 - Show topic reposts
 
@@ -203,7 +202,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 #### Future plans
 
 * Group detail:
-  * Optimize and migrate to Compose M3 / Flows
+  * Optimize and gradually migrate to Compose M3 / Flows
   * Keep AppBarLayout
 * Home - Following
   * More card types

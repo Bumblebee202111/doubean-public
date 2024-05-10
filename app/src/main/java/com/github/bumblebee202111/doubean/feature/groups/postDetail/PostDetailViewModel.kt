@@ -7,7 +7,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupTopicRepo
 import com.github.bumblebee202111.doubean.data.repository.PollRepository
 import com.github.bumblebee202111.doubean.model.Poll
@@ -29,14 +28,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PostDetailViewModel @Inject constructor(
-    private val groupRepository: GroupRepository,
     private val pollRepository: PollRepository,
     private val topicRepo: GroupTopicRepo,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-
-    val topicId = PostDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).postId
+    private val topicId = PostDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).postId
 
     private val commentsData = topicRepo.getTopicCommentsPagingData(topicId)
 
@@ -57,7 +54,7 @@ class PostDetailViewModel @Inject constructor(
         _commentsSortBy.value = commentSortBy
     }
 
-    private val postResult = groupRepository.getPost(topicId).flowOn(Dispatchers.IO).stateInUi()
+    private val postResult = topicRepo.getTopic(topicId).flowOn(Dispatchers.IO).stateInUi()
 
     val topic = postResult.map { it?.data }.stateInUi()
 
