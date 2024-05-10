@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+## Version 0.5.7
+
+- New: Topic detail: Allow viewing topic reshares
+- Optimization: Code cleanups and optimizations
+
 ## Version 0.5.6
 
 - New: Topic detail: Jump to comment of index feature

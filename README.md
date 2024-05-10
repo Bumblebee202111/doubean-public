@@ -194,8 +194,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.5.7\)
 
-- Show topic reposts
-
 #### To-dos for next release \(0.5.8)
 
 #### Future plans
