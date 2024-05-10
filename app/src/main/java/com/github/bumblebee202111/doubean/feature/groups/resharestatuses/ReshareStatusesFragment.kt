@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,8 +25,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,8 +35,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
-import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.feature.groups.common.TopicDetailActivityItemUserProfileImage
 import com.github.bumblebee202111.doubean.feature.home.UserNameText
 import com.github.bumblebee202111.doubean.ui.theme.AppTheme
 import com.github.bumblebee202111.doubean.util.DateTimeStyle
@@ -108,13 +104,7 @@ fun ReshareStatusesScreen(viewModel: ReshareStatusesViewModel, onBackClick: () -
                             vertical = 4.dp
                         ),
                 ) {
-                    AsyncImage(
-                        model = reshareStatus?.author?.avatarUrl,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(dimensionResource(id = R.dimen.icon_size_small))
-                            .clip(CircleShape)
-                    )
+                    TopicDetailActivityItemUserProfileImage(url = reshareStatus?.author?.avatarUrl)
                     Column(
                         modifier = Modifier
                             .weight(1f)
