@@ -15,7 +15,7 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.FragmentGroupDetailBinding
 import com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupNotificationsPreferenceDialogFragment.Companion.DIALOG_GROUP_NOTIFICATIONS_PREFERENCE
 import com.github.bumblebee202111.doubean.model.GroupTab
-import com.github.bumblebee202111.doubean.util.EventObserver
+import com.github.bumblebee202111.doubean.ui.common.repeatWithViewLifecycle
 import com.github.bumblebee202111.doubean.util.OpenInUtil
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.getColorFromTheme
@@ -23,6 +23,7 @@ import com.github.bumblebee202111.doubean.util.showSnackbar
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 /**
  * A fragment representing a single Group detail screen.
@@ -53,7 +54,7 @@ class GroupDetailFragment : Fragment() {
         viewPager = binding.pager
 
         binding.followUnfollow.setOnClickListener {
-            groupDetailViewModel.group.value?.data?.isFollowed?.let(::onFollowGroup)
+            groupDetailViewModel.group.value?.isFollowed?.let(::onFollowGroup)
         }
 
         binding.notificationButton.setOnClickListener { showNotificationsPrefDialog() }
@@ -75,7 +76,7 @@ class GroupDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         groupDetailViewModel.group.observe(viewLifecycleOwner) {
-            it?.data?.let { group ->
+            it?.let { group ->
                 binding.group = group
                 group.color?.let { color ->
                     binding.mask.setBackgroundColor(color)
@@ -83,42 +84,7 @@ class GroupDetailFragment : Fragment() {
                     binding.toolbarLayout.setStatusBarScrimColor(color)
                     binding.tabLayout.setSelectedTabIndicatorColor(color)
                 }
-                group.tabs?.let { tabs ->
-                    val taggedTabIds = tabs.map(GroupTab::id)
-                    if (viewPager.adapter == null && (defaultSelectedTabId == null || taggedTabIds.contains(
-                            defaultSelectedTabId
-                        ))
-                    ) {
-                        groupPagerAdapter =
-                            GroupPagerAdapter(
-                                childFragmentManager,
-                                viewLifecycleOwner.lifecycle,
-                                groupId,
-                                taggedTabIds
-                            )
-                        viewPager.adapter = groupPagerAdapter
-                        val tabLayout = binding.tabLayout
-                        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-                            tab.text =
-                                if (position == 0) getString(R.string.all)
-                                else groupDetailViewModel.group.value!!.data!!.tabs!![position - 1].name
-                        }.attach()
-                        groupDetailViewModel.pagerPreselectedEvent.observe(viewLifecycleOwner,
-                            EventObserver {
-                                viewPager.setCurrentItem(
-                                    com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupDetailFragment.Companion.getItemOfTabId(
-                                        tabs,
-                                        defaultSelectedTabId
-                                    ),
-                                    false
-                                )
-                            })
-                    } else if (viewPager.adapter != null) {
-                        groupPagerAdapter.taggedTabIds = taggedTabIds
 
-                    }
-                    viewPager.offscreenPageLimit = tabs.size + 1
-                }
 
                 val colorSurface = requireContext().getColorFromTheme(R.attr.colorSurface)
                 val groupColor =
@@ -147,11 +113,13 @@ class GroupDetailFragment : Fragment() {
                             iconTint = ColorStateList.valueOf(groupColor)
                             setBackgroundColor(colorSurface)
                         }
+
                         false -> {
                             setIconResource(R.drawable.ic_notification_add)
                             iconTint = ColorStateList.valueOf(colorSurface)
                             setBackgroundColor(groupColor)
                         }
+
                         else -> {
 
                         }
@@ -159,26 +127,52 @@ class GroupDetailFragment : Fragment() {
                 }
             }
         }
+        repeatWithViewLifecycle {
+            launch {
+                groupDetailViewModel.tabs.collect { tabs ->
+                    val taggedTabIds = tabs?.map(GroupTab::id)
+
+                    groupPagerAdapter =
+                        GroupPagerAdapter(
+                            childFragmentManager,
+                            viewLifecycleOwner.lifecycle,
+                            groupId,
+                            taggedTabIds
+                        )
+                    viewPager.adapter = groupPagerAdapter
+                    val tabLayout = binding.tabLayout
+                    TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                        tab.text =
+                            if (position == 0) getString(R.string.all)
+                            else groupDetailViewModel.group.value!!.tabs!![position - 1].name
+                    }.attach()
+
+                }
+            }
+        }
     }
 
     private fun onMenuItemClick(item: MenuItem): Boolean {
-        groupDetailViewModel.group.value?.data?.let { group ->
+        groupDetailViewModel.group.value?.let { group ->
             when (item.itemId) {
                 R.id.action_share -> {
                     val shareText = group.name + ' ' + group.shareUrl + "\r\n"
                     ShareUtil.share(requireContext(), shareText)
                     return true
                 }
+
                 R.id.action_view_in_douban -> {
                     val urlString: String = group.uri
                     OpenInUtil.openInDouban(requireContext(), urlString)
                     return true
                 }
+
                 R.id.action_view_in_browser -> {
                     val urlString: String = group.shareUrl
                     OpenInUtil.openInBrowser(requireContext(), urlString)
                     return true
                 }
+
                 else -> {}
             }
         }
@@ -201,12 +195,11 @@ class GroupDetailFragment : Fragment() {
     }
 
     private fun showNotificationsPrefDialog() {
-        com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupNotificationsPreferenceDialogFragment.Companion.newInstance(
+        GroupNotificationsPreferenceDialogFragment.newInstance(
             groupId
         )
             .show(childFragmentManager, DIALOG_GROUP_NOTIFICATIONS_PREFERENCE)
     }
-
 
     companion object {
         private fun getItemOfTabId(groupTabs: List<GroupTab>, tabId: String?) =

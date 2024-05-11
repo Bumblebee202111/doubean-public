@@ -6,37 +6,31 @@ import androidx.paging.PagingConfig
 import androidx.paging.map
 import androidx.room.withTransaction
 import com.github.bumblebee202111.doubean.data.db.AppDatabase
-import com.github.bumblebee202111.doubean.data.db.model.GroupPostsResult
+import com.github.bumblebee202111.doubean.data.db.COLUMN_VALUE_GROUP_TAG_ID_ALL
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultGroupItemPartialEntity
-import com.github.bumblebee202111.doubean.data.db.model.GroupTagPostsResult
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostItem
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedRecommendedGroup
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupsResult
 import com.github.bumblebee202111.doubean.data.db.model.UserEntity
 import com.github.bumblebee202111.doubean.data.db.model.asExternalModel
 import com.github.bumblebee202111.doubean.data.paging.GroupSearchResultItemRemoteMediator
+import com.github.bumblebee202111.doubean.data.paging.GroupTagTopicRemoteMediator
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.GroupRecommendationType
-import com.github.bumblebee202111.doubean.model.PostItem
 import com.github.bumblebee202111.doubean.model.PostSortBy
 import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
 import com.github.bumblebee202111.doubean.model.Result
-import com.github.bumblebee202111.doubean.network.ApiResponse
 import com.github.bumblebee202111.doubean.network.ApiKtorService
 import com.github.bumblebee202111.doubean.network.ApiRetrofitService
 import com.github.bumblebee202111.doubean.network.model.NetworkGroupDetail
-import com.github.bumblebee202111.doubean.network.model.NetworkPostItem
-import com.github.bumblebee202111.doubean.network.model.NetworkPosts
 import com.github.bumblebee202111.doubean.network.model.NetworkRecommendedGroup
 import com.github.bumblebee202111.doubean.network.model.NetworkRecommendedGroupItemPost
 import com.github.bumblebee202111.doubean.network.model.NetworkRecommendedGroups
-import com.github.bumblebee202111.doubean.network.model.SortByRequestParam
 import com.github.bumblebee202111.doubean.network.model.asEntity
 import com.github.bumblebee202111.doubean.network.model.asPartialEntity
 import com.github.bumblebee202111.doubean.network.model.postRefs
 import com.github.bumblebee202111.doubean.network.model.tagCrossRefs
 import com.github.bumblebee202111.doubean.util.RESULT_GROUPS_COUNT
-import com.github.bumblebee202111.doubean.util.RESULT_POSTS_COUNT
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -53,6 +47,7 @@ class GroupRepository @Inject constructor(
     private val ApiKtorService: ApiKtorService,
 ) {
     private val groupDao = appDatabase.groupDao()
+    private val groupTopicDao = appDatabase.groupTopicDao()
     private val userDao = appDatabase.userDao()
 
     fun getGroup(groupId: String): Flow<Result<GroupDetail>> {
@@ -75,11 +70,11 @@ class GroupRepository @Inject constructor(
         }.asFlow()
     }
 
-
     @OptIn(ExperimentalPagingApi::class)
-    fun search1(query: String) = Pager(
+    fun search(query: String) = Pager(
         PagingConfig(
             pageSize = RESULT_GROUPS_COUNT,
+            prefetchDistance = RESULT_GROUPS_COUNT / 2,
             initialLoadSize = RESULT_GROUPS_COUNT
         ),
         remoteMediator = GroupSearchResultItemRemoteMediator(
@@ -88,224 +83,26 @@ class GroupRepository @Inject constructor(
         pagingSourceFactory = { groupDao.groupSearchResultPagingSource(query) }
     ).flow.map { it.map(GroupSearchResultGroupItemPartialEntity::asExternalModel) }
 
-    fun getGroupPosts(
-        groupId: String, postSortBy: PostSortBy,
-    ): Flow<Result<List<PostItem>>> {
-        return object : NetworkBoundResource<List<PostItem>, NetworkPosts>() {
-            override suspend fun saveCallResult(item: NetworkPosts) {
-                val posts = (item.items.map { it.asPartialEntity(groupId) })
-                val postIds = item.items.run {
-                    if (postSortBy === PostSortBy.NEW)
-                        sortedByDescending(NetworkPostItem::created)
-                    else this
-                }.map(NetworkPostItem::id)
-                val postTagCrossRefs = item.items.flatMap(NetworkPostItem::tagCrossRefs)
-                val groupPostsResult =
-                    GroupPostsResult(groupId, postSortBy, postIds, item.total, item.nextPageStart)
-                val authors = item.items.map { it.author.asEntity() }
-                appDatabase.withTransaction {
-                    groupDao.upsertPosts(posts)
-                    groupDao.deletePostTagCrossRefsByPostIds(postIds)
-                    groupDao.insertPostTagCrossRefs(postTagCrossRefs)
-                    groupDao.insertGroupPostsResult(groupPostsResult)
-                    userDao.insertUsers(authors)
-                }
-            }
-
-            override fun shouldFetch(data: List<PostItem>?) = true
-
-            override fun loadFromDb(): Flow<List<PostItem>?> {
-                return groupDao.loadGroupPosts(
-                    groupId, postSortBy
-                ).flatMapLatest { findData ->
-                    if (findData == null) {
-                        flowOf(null)
-                    } else {
-                        groupDao.loadOrderedPosts(findData.ids).map {
-                            it.map(PopulatedPostItem::asExternalModel)
-                        }
-                    }
-                }
-            }
-
-            override suspend fun createCall(): ApiResponse<NetworkPosts> {
-                val sortByRequestParam = getPostSortByRequestParam(postSortBy)
-                return ApiRetrofitService.getGroupPosts(
-                    groupId = groupId,
-                    sortBy = sortByRequestParam.toString(),
-                    count = RESULT_POSTS_COUNT
-                )
-            }
-        }.asFlow()
-    }
-
-    suspend fun getNextPageGroupPosts(
-        groupId: String, postSortBy: PostSortBy,
-    ): Result<Boolean>? {
-        val fetchNextPageTask =
-            object :
-                FetchNextPageTask<GroupPostsResult, NetworkPosts>(
-                    ApiRetrofitService, appDatabase
-                ) {
-                override suspend fun getCurrentFromDb(): GroupPostsResult? =
-                    groupDao.getGroupPosts(groupId, postSortBy)!!
-
-                override suspend fun createCall(nextPageStart: Int?): ApiResponse<NetworkPosts> {
-                    return ApiRetrofitService.getGroupPosts(
-                        groupId = groupId,
-                        sortBy = getPostSortByRequestParam(postSortBy).toString(),
-                        start = nextPageStart!!,
-                        count = RESULT_POSTS_COUNT
-                    )
-                }
-
-                override suspend fun mergeAndSaveCallResult(
-                    current: GroupPostsResult,
-                    item: NetworkPosts,
-                ) {
-                    val ids = current.ids + item.items.run {
-                        if (postSortBy === PostSortBy.NEW)
-                            sortedByDescending(NetworkPostItem::created)
-                        else this
-                    }.map(NetworkPostItem::id)
-                    val merged = GroupPostsResult(
-                        groupId,
-                        postSortBy,
-                        ids,
-                        item.total,
-                        item.nextPageStart
-                    )
-                    val posts = item.items.map { it.asPartialEntity(groupId) }
-                    val postTagCrossRefs =
-                        item.items.flatMap(NetworkPostItem::tagCrossRefs)
-                    val authors = item.items.map { it.author.asEntity() }
-                    appDatabase.withTransaction {
-                        groupDao.insertGroupPostsResult(merged)
-                        groupDao.deletePostTagCrossRefsByPostIds(ids)
-                        groupDao.insertPostTagCrossRefs(postTagCrossRefs)
-                        groupDao.upsertPosts(posts)
-                        userDao.insertUsers(authors)
-                    }
-
-                }
-            }
-        return fetchNextPageTask.run()
-    }
-
-    fun getGroupTagPosts(
-        groupId: String, tagId: String, postSortBy: PostSortBy,
-    ): Flow<Result<List<PostItem>>> {
-        return object : NetworkBoundResource<List<PostItem>, NetworkPosts>(
-        ) {
-            override suspend fun saveCallResult(item: NetworkPosts) {
-                val posts = item.items.map { it.asPartialEntity(groupId) }
-                val postIds = item.items.run {
-                    if (postSortBy === PostSortBy.NEW)
-                        sortedByDescending(NetworkPostItem::created)
-                    else this
-                }.map(NetworkPostItem::id)
-                val postTagCrossRefs = item.items.flatMap(NetworkPostItem::tagCrossRefs)
-                val groupTagPostsResult = GroupTagPostsResult(
-                    groupId, tagId, postSortBy, postIds, item.total, item.nextPageStart
-                )
-                val authors = item.items.map { it.author.asEntity() }
-                appDatabase.withTransaction {
-                    groupDao.upsertPosts(posts)
-                    groupDao.deletePostTagCrossRefsByPostIds(postIds)
-                    groupDao.insertPostTagCrossRefs(postTagCrossRefs)
-                    groupDao.insertGroupTagPostsResult(groupTagPostsResult)
-                    userDao.insertUsers(authors)
-                }
-            }
-
-            override fun shouldFetch(data: List<PostItem>?) = true
-
-            override fun loadFromDb(): Flow<List<PostItem>?> {
-                return groupDao.loadGroupTagPosts(
-                    groupId, tagId, postSortBy
-                ).flatMapLatest { findData ->
-                    if (findData == null) {
-                        flowOf(null)
-                    } else {
-                        groupDao.loadOrderedPosts(findData.ids).map {
-                            it.map(
-                                PopulatedPostItem::asExternalModel
-                            )
-                        }
-                    }
-                }
-            }
-
-            override suspend fun createCall(): ApiResponse<NetworkPosts> {
-                return ApiRetrofitService.getGroupPosts(
-                    groupId = groupId,
-                    tagId = tagId,
-                    sortBy = getPostSortByRequestParam(postSortBy).toString(),
-                    count = RESULT_POSTS_COUNT
-                )
-            }
-        }.asFlow()
-    }
-
-    suspend fun getNextPageGroupTagPosts(
-        groupId: String, tagId: String, postSortBy: PostSortBy,
-    ): Result<Boolean>? {
-        val fetchNextPageTask: FetchNextPageTask<GroupTagPostsResult, NetworkPosts> =
-            object :
-                FetchNextPageTask<GroupTagPostsResult, NetworkPosts>(
-                    ApiRetrofitService, appDatabase
-                ) {
-                override suspend fun getCurrentFromDb() =
-                    groupDao.getGroupTagPosts(groupId, tagId, postSortBy)!!
-
-                override suspend fun createCall(nextPageStart: Int?) =
-                    ApiRetrofitService.getGroupPosts(
-                        groupId,
-                        tagId,
-                        getPostSortByRequestParam(postSortBy).toString(),
-                        nextPageStart!!,
-                        RESULT_POSTS_COUNT,
-                    )
-
-                override suspend fun mergeAndSaveCallResult(
-                    current: GroupTagPostsResult,
-                    item: NetworkPosts,
-                ) {
-                    val ids = current.ids + item.items.run {
-                        if (postSortBy === PostSortBy.NEW)
-                            sortedByDescending(NetworkPostItem::created)
-                        else this
-                    }.map(NetworkPostItem::id)
-                    val merged = GroupTagPostsResult(
-                        groupId,
-                        tagId,
-                        postSortBy,
-                        ids,
-                        item.total,
-                        item.nextPageStart
-                    )
-                    val posts = item.items.map { it.asPartialEntity(groupId) }
-                    val postTagCrossRefs =
-                        item.items.flatMap(NetworkPostItem::tagCrossRefs)
-                    val authors = item.items.map { it.author.asEntity() }
-                    appDatabase.withTransaction {
-                        groupDao.insertGroupTagPostsResult(merged)
-                        groupDao.deletePostTagCrossRefsByPostIds(ids)
-                        groupDao.insertPostTagCrossRefs(postTagCrossRefs)
-                        groupDao.upsertPosts(posts)
-                        userDao.insertUsers(authors)
-                    }
-                }
-            }
-        return fetchNextPageTask.run()
-    }
-
-    private fun getPostSortByRequestParam(postSortBy: PostSortBy): SortByRequestParam {
-        return when (postSortBy) {
-            PostSortBy.LAST_UPDATED, PostSortBy.NEW -> SortByRequestParam.NEW
-            PostSortBy.TOP, PostSortBy.NEW_TOP -> SortByRequestParam.TOP
+    @OptIn(ExperimentalPagingApi::class)
+    fun getTopicsPagingData(groupId: String, tagId: String?, sortBy: PostSortBy) = Pager(
+        PagingConfig(
+            pageSize = RESULT_POSTS_PAGE_SIZE,
+            prefetchDistance = RESULT_POSTS_PAGE_SIZE / 2,
+            initialLoadSize = RESULT_POSTS_PAGE_SIZE
+        ),
+        remoteMediator = GroupTagTopicRemoteMediator(
+            groupId = groupId,
+            tagId = tagId,
+            sortBy = sortBy, service = ApiKtorService, appDatabase = appDatabase
+        ),
+        pagingSourceFactory = {
+            groupDao.groupTagTopicPagingSource(
+                groupId = groupId,
+                tagId = tagId ?: COLUMN_VALUE_GROUP_TAG_ID_ALL,
+                sortBy = sortBy
+            )
         }
-    }
+    ).flow.map { it.map(PopulatedPostItem::asExternalModel) }
 
     fun getGroupRecommendation(type: GroupRecommendationType): Flow<Result<List<RecommendedGroupItem>>> {
         return object :
@@ -338,9 +135,9 @@ class GroupRepository @Inject constructor(
                 appDatabase.withTransaction {
                     groupDao.upsertRecommendedGroupItemGroups(recommendedGroupItemGroups)
                     groupDao.upsertRecommendedGroups(recommendedGroups)
-                    groupDao.upsertRecommendedGroupItemPosts(posts)
-                    groupDao.deletePostTagCrossRefsByPostIds(postIds)
-                    groupDao.insertPostTagCrossRefs(postTagCrossRefs)
+                    groupTopicDao.upsertRecommendedGroupItemPosts(posts)
+                    groupTopicDao.deletePostTagCrossRefsByPostIds(postIds)
+                    groupTopicDao.insertPostTagCrossRefs(postTagCrossRefs)
                     userDao.insertUsers(postsAuthors)
                     groupDao.insertRecommendedGroupsResult(recommendedGroupsResult)
                     groupDao.insertRecommendedGroupPosts(recommendedGroupPostRefs)
@@ -365,6 +162,9 @@ class GroupRepository @Inject constructor(
         }.asFlow()
     }
 
+    companion object {
+        const val RESULT_POSTS_PAGE_SIZE = 40
+    }
 }
 
 

@@ -24,7 +24,7 @@ class GroupSearchViewModel @Inject constructor(private val groupRepository: Grou
             if (search.isNullOrBlank()) {
                 flowOf(PagingData.empty())
             } else {
-                groupRepository.search1(search).cachedIn(viewModelScope)
+                groupRepository.search(search).cachedIn(viewModelScope)
             }
 
         }.cachedIn(viewModelScope)

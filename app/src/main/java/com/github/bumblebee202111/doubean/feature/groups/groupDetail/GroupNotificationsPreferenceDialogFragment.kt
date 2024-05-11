@@ -59,11 +59,10 @@ class GroupNotificationsPreferenceDialogFragment : AppCompatDialogFragment() {
         binding.feedRequestPostCountLimitEditText.filters =
             arrayOf(MinMaxEditTextInputFilter(1, 50))
 
-        groupDetailViewModel.group.observe(this) { groupResult ->
-            groupResult.data?.sortRecommendedPostsBy?.let {
+        groupDetailViewModel.group.observe(this) { group ->
+            group?.sortRecommendedPostsBy?.let {
                 sortRecommendedPostsBySpinner.setSelection(getSpinnerItemPositionOf(it))
             }
-
         }
 
         return MaterialAlertDialogBuilder(requireContext()).setView(binding.root)

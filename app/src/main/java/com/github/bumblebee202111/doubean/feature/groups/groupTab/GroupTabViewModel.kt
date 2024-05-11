@@ -1,25 +1,23 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupTab
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupUserDataRepository
 import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabFragment.Companion.ARG_GROUP_ID
 import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabFragment.Companion.ARG_TAG_ID
 import com.github.bumblebee202111.doubean.model.PostSortBy
-import com.github.bumblebee202111.doubean.model.Result
-import com.github.bumblebee202111.doubean.ui.common.NextPageHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -39,49 +37,23 @@ class GroupTabViewModel @Inject constructor(
     private val tabId: String? = savedStateHandle[ARG_TAG_ID]
     private val groupId: String = savedStateHandle[ARG_GROUP_ID]!!
 
-    private val nextPageHandler = object : NextPageHandler() {
-        override fun loadNextPageFromRepo(): LiveData<Result<Boolean>?> {
-            return liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
-                emit(
-                    when (tabId != null) {
-                        true -> groupRepository.getNextPageGroupTagPosts(
-                            groupId, tabId, sortBy.value!!
-                        )
+    private val _sortBy = MutableStateFlow<PostSortBy?>(null)
 
-                        else -> {
-                            groupRepository.getNextPageGroupPosts(
-                                groupId, sortBy.value!!
-                            )
-                        }
-                    }
-                )
-            }
-        }
-    }
-    private val reloadTrigger = MutableLiveData(Unit)
-    private val sortBy = MutableLiveData<PostSortBy>()
-    val postsResult = reloadTrigger.switchMap { _ ->
-        sortBy.switchMap { type ->
-            val postsFlow = if (tabId == null) groupRepository.getGroupPosts(
-                groupId,
-                type
-            )
-            else groupRepository.getGroupTagPosts(groupId, tabId, type)
-            postsFlow.flowOn(Dispatchers.IO).asLiveData()
-        }
-    }
+    val sortBy = _sortBy.asStateFlow()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val topicsPagingData =
+        _sortBy.flatMapLatest { sortBy ->
+            sortBy?.let {
+                groupRepository.getTopicsPagingData(
+                    groupId, tabId,
+                    it
+                ).cachedIn(viewModelScope)
+            } ?: emptyFlow()
+        }.cachedIn(viewModelScope)
 
     fun setSortBy(postSortBy: PostSortBy) {
-        if (postSortBy === sortBy.value) {
-            return
-        }
-        nextPageHandler.reset()
-        sortBy.value = postSortBy
-    }
-
-    fun refreshPosts() {
-        reloadTrigger.value = Unit
+        _sortBy.value = postSortBy
     }
 
     fun addFollow() {
@@ -103,16 +75,6 @@ class GroupTabViewModel @Inject constructor(
         viewModelScope.launch {
             groupUserDataRepository.removeFollowedTab(tabId!!)
         }
-    }
-
-    val loadMoreStatus
-        get() = nextPageHandler.loadMoreState
-
-    fun loadNextPage() {
-        sortBy.value?.let {
-            nextPageHandler.loadNextPage(it)
-        }
-
     }
 
     fun saveNotificationsPreference(

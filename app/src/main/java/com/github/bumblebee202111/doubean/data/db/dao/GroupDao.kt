@@ -12,30 +12,21 @@ import androidx.room.Upsert
 import com.github.bumblebee202111.doubean.data.db.model.GroupDetailPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupPostTagEntity
-import com.github.bumblebee202111.doubean.data.db.model.GroupPostsResult
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultGroupItemPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultItemEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTabEntity
-import com.github.bumblebee202111.doubean.data.db.model.GroupTagPostsResult
+import com.github.bumblebee202111.doubean.data.db.model.GroupTagTopicItemEntity
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedGroupDetail
-import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostDetail
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostItem
-import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostItemWithGroup
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedRecommendedGroup
-import com.github.bumblebee202111.doubean.data.db.model.PostDetailPartialEntity
-import com.github.bumblebee202111.doubean.data.db.model.PostEntity
 import com.github.bumblebee202111.doubean.data.db.model.PostGroupPartialEntity
-import com.github.bumblebee202111.doubean.data.db.model.PostItemPartialEntity
-import com.github.bumblebee202111.doubean.data.db.model.PostTagCrossRef
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupEntity
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupItemGroupPartialEntity
-import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupItemPostPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupPost
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupsResult
 import com.github.bumblebee202111.doubean.model.GroupRecommendationType
 import com.github.bumblebee202111.doubean.model.PostSortBy
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 /**
  * The Data Access Object for Group related operations.
@@ -79,70 +70,6 @@ interface GroupDao {
     @Query("DELETE FROM group_search_result_items WHERE `query` = :query")
     fun deleteSearchResultPagingItemsByQuery(query: String)
 
-    @Transaction
-    @Query("SELECT * FROM posts WHERE id IN (:postIds)")
-    @RewriteQueriesToDropUnusedColumns
-    fun loadPosts(postIds: List<String>): Flow<List<PopulatedPostItem>>
-    fun loadOrderedPosts(postIds: List<String>) = loadPosts(postIds).map { posts ->
-        posts.sortedWith(compareBy { o -> postIds.indexOf(o.partialEntity.id) })
-    }
-
-    @Transaction
-    @Query("SELECT * FROM posts WHERE id IN (:postIds)")
-    @RewriteQueriesToDropUnusedColumns
-    fun loadPostsWithGroups(postIds: List<String>): Flow<List<PopulatedPostItemWithGroup>>
-
-    fun loadOrderedPostsWithGroups(postIds: List<String>) =
-        loadPostsWithGroups(postIds).map { posts ->
-            posts.sortedWith(compareBy { o -> postIds.indexOf(o.partialEntity.id) })
-        }
-
-    @Query("SELECT * FROM group_posts_result WHERE group_id = :groupId AND sort_by = :sortBy")
-    @RewriteQueriesToDropUnusedColumns
-    fun loadGroupPosts(groupId: String, sortBy: PostSortBy): Flow<GroupPostsResult?>
-
-    @Query("SELECT * FROM group_posts_result WHERE group_id = :groupId AND sort_by = :sortBy")
-    @RewriteQueriesToDropUnusedColumns
-    suspend fun getGroupPosts(groupId: String, sortBy: PostSortBy): GroupPostsResult?
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGroupPostsResult(groupPostsResult: GroupPostsResult)
-
-    @Query("SELECT * FROM group_tag_posts_results WHERE group_id = :groupId AND tag_id=:tagId AND sort_by = :sortBy")
-    @RewriteQueriesToDropUnusedColumns
-    fun loadGroupTagPosts(
-        groupId: String,
-        tagId: String,
-        sortBy: PostSortBy,
-    ): Flow<GroupTagPostsResult?>
-
-    @Query("SELECT * FROM group_tag_posts_results WHERE group_id = :groupId AND tag_id=:tagId AND sort_by = :sortBy")
-    @RewriteQueriesToDropUnusedColumns
-    suspend fun getGroupTagPosts(
-        groupId: String,
-        tagId: String,
-        sortBy: PostSortBy,
-    ): GroupTagPostsResult?
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGroupTagPostsResult(groupTagPostsResult: GroupTagPostsResult)
-
-    @Insert(entity = PostEntity::class, onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPostDetail(post: PostDetailPartialEntity)
-
-    @Upsert(entity = PostEntity::class)
-    @RewriteQueriesToDropUnusedColumns
-    suspend fun upsertPosts(posts: List<PostItemPartialEntity>)
-
-    @Upsert(entity = PostEntity::class)
-    @RewriteQueriesToDropUnusedColumns
-    suspend fun upsertRecommendedGroupItemPosts(posts: List<RecommendedGroupItemPostPartialEntity>)
-
-    @Transaction
-    @Query("SELECT * FROM posts WHERE id=:postId")
-    fun loadPost(postId: String): Flow<PopulatedPostDetail>
-
-
     @Query("SELECT * FROM recommended_groups_results WHERE recommendation_type=:type")
     fun loadRecommendedGroups(type: GroupRecommendationType): Flow<RecommendedGroupsResult?>
 
@@ -169,12 +96,19 @@ interface GroupDao {
     @Query("DELETE FROM recommended_group_posts WHERE group_id IN (:groupIds)")
     suspend fun deleteRecommendedGroupPostByGroupIds(groupIds: List<String>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPostTagCrossRefs(postTagCrossRefs: List<PostTagCrossRef>)
+    @Insert(GroupTagTopicItemEntity::class, onConflict = OnConflictStrategy.REPLACE)
+    fun insertGroupTopicItems(topicItems: List<GroupTagTopicItemEntity>)
 
-    @Query("DELETE FROM posts_tags WHERE post_id =:postId")
-    suspend fun deletePostTagCrossRefsByPostId(postId: String)
+    @Transaction
+    @RewriteQueriesToDropUnusedColumns
+    @Query("""SELECT id, title, author_id, created, last_updated, like_count, reaction_count, repost_count, save_count, comment_count, short_content, content, cover_url, url, uri, posts.group_id, images, ip_location FROM group_tag_topics LEFT JOIN posts ON topic_id = posts.id WHERE group_tag_topics.group_id = :groupId AND group_tag_topics.tag_id = :tagId AND sort_by = :sortBy ORDER BY `index` ASC""")
+    fun groupTagTopicPagingSource(
+        groupId: String,
+        tagId: String,
+        sortBy: PostSortBy,
+    ): PagingSource<Int, PopulatedPostItem>
 
-    @Query("DELETE FROM posts_tags WHERE post_id IN (:postIds)")
-    suspend fun deletePostTagCrossRefsByPostIds(postIds: List<String>)
+    @Query("DELETE FROM group_tag_topics WHERE group_id = :groupId AND tag_id = :tagId AND sort_by = :sortBy")
+    fun deleteGroupTagTopicItems(groupId: String, tagId: String, sortBy: PostSortBy)
+
 }

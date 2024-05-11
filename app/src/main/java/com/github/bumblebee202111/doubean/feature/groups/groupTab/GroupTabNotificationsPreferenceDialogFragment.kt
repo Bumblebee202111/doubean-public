@@ -65,8 +65,8 @@ class GroupTabNotificationsPreferenceDialogFragment : AppCompatDialogFragment() 
         feedRequestPostCountLimitEditText.filters =
             arrayOf(MinMaxEditTextInputFilter(1, 50))
 
-        groupDetailViewModel.group.observe(this) { groupResult ->
-            groupResult.data?.findTab(tabId)?.let { tab ->
+        groupDetailViewModel.group.observe(this) { group ->
+            group?.findTab(tabId)?.let { tab ->
                 tab.enableNotifications?.let { enableGroupNotificationsPref.isChecked = it }
                 tab.allowDuplicateNotifications?.let {
                     allowDuplicateNotificationsPref.isChecked = it

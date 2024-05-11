@@ -10,17 +10,18 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.github.bumblebee202111.doubean.data.db.dao.GroupDao
 import com.github.bumblebee202111.doubean.data.db.dao.GroupSearchResultRemoteKeyDao
 import com.github.bumblebee202111.doubean.data.db.dao.GroupTopicDao
+import com.github.bumblebee202111.doubean.data.db.dao.GroupTopicRemoteKeyDao
 import com.github.bumblebee202111.doubean.data.db.dao.UserDao
 import com.github.bumblebee202111.doubean.data.db.dao.UserGroupDao
 import com.github.bumblebee202111.doubean.data.db.model.FollowedGroupEntity
 import com.github.bumblebee202111.doubean.data.db.model.FollowedGroupTabEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupPostTagEntity
-import com.github.bumblebee202111.doubean.data.db.model.GroupPostsResult
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultItemEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultRemoteKey
 import com.github.bumblebee202111.doubean.data.db.model.GroupTabEntity
-import com.github.bumblebee202111.doubean.data.db.model.GroupTagPostsResult
+import com.github.bumblebee202111.doubean.data.db.model.GroupTabTopicRemoteKey
+import com.github.bumblebee202111.doubean.data.db.model.GroupTagTopicItemEntity
 import com.github.bumblebee202111.doubean.data.db.model.PostEntity
 import com.github.bumblebee202111.doubean.data.db.model.PostTagCrossRef
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupEntity
@@ -45,8 +46,8 @@ import kotlinx.serialization.json.Json
         GroupPostTagEntity::class,
         GroupSearchResultItemEntity::class,
         GroupSearchResultRemoteKey::class,
-        GroupPostsResult::class,
-        GroupTagPostsResult::class,
+        GroupTabTopicRemoteKey::class,
+        GroupTagTopicItemEntity::class,
         RecommendedGroupsResult::class,
         RecommendedGroupEntity::class,
         RecommendedGroupPost::class,
@@ -68,6 +69,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun groupFollowsAndSavesDao(): UserGroupDao
 
     abstract fun groupTopicDao(): GroupTopicDao
+
+    abstract fun groupTopicRemoteKeyDao(): GroupTopicRemoteKeyDao
 
     abstract fun groupSearchResultRemoteKeyDap(): GroupSearchResultRemoteKeyDao
 
