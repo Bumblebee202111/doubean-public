@@ -13,7 +13,7 @@ import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostItem
 import com.github.bumblebee202111.doubean.data.db.model.UserEntity
 import com.github.bumblebee202111.doubean.model.PostSortBy
 import com.github.bumblebee202111.doubean.model.getRequestParamString
-import com.github.bumblebee202111.doubean.network.ApiKtorService
+import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkPostItem
 import com.github.bumblebee202111.doubean.network.model.asEntity
 import com.github.bumblebee202111.doubean.network.model.asPartialEntity
@@ -24,7 +24,7 @@ class GroupTagTopicRemoteMediator(
     private val groupId: String,
     private val tagId: String?,
     private val sortBy: PostSortBy,
-    private val service: ApiKtorService,
+    private val service: ApiService,
     private val appDatabase: AppDatabase,
 ) : RemoteMediator<Int, PopulatedPostItem>() {
     private val groupDao = appDatabase.groupDao()

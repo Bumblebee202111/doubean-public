@@ -9,13 +9,13 @@ import com.github.bumblebee202111.doubean.data.db.AppDatabase
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultGroupItemPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultItemEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultRemoteKey
-import com.github.bumblebee202111.doubean.network.ApiKtorService
+import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.asPartialEntity
 
 @OptIn(ExperimentalPagingApi::class)
 class GroupSearchResultItemRemoteMediator(
     private val query: String,
-    private val service: ApiKtorService,
+    private val service: ApiService,
     private val appDatabase: AppDatabase,
 ) : RemoteMediator<Int, GroupSearchResultGroupItemPartialEntity>() {
     private val groupDao = appDatabase.groupDao()

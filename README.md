@@ -137,7 +137,6 @@ Libraries Used
   * [Notifications][notifications]
 * Third party and miscellaneous libraries
   * Ktor
-  * [Retrofit][retrofit]
   * Coil
   * [Glide][glide]
   * [Kotlin Coroutines][kotlin-coroutines]
@@ -179,8 +178,6 @@ Libraries Used
 
 [notifications]: https://developer.android.com/develop/ui/views/notifications
 
-[retrofit]: https://square.github.io/retrofit/
-
 [glide]: https://bumptech.github.io/glide/
 
 [kotlin-coroutines]: https://kotlinlang.org/docs/reference/coroutines-overview.html
@@ -191,13 +188,12 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.5.8\)
 
-- Finish migration to Ktor
-- Move tab notification settings to GroupTabViewModel
 - Refactor group detail
   - ViewPager2 -> HorizontalPager
   - Glide ImageView -> Coil AsyncImage
   - MaterialToolBar -> TopAppBar
   - Spinner -> Button + DropDownMenu
+  - Move tab notification setting models to GroupTabViewModel
 - Finish migration to Coil
 - LazyLayoutPinnableItem?
 
@@ -216,7 +212,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From MD2 / custom design to MD3
   * From View and data binding to Jetpack Compose
     * Exceptions: WebView
-  * From Retrofit to Ktor
   * From Glide to Coil Compose
   * From Navigation Fragment to Navigation Compose (take action when next stable version is available)
     * From NavHostFragment to ComposableNavHostFragment
