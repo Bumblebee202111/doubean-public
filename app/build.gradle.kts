@@ -128,10 +128,6 @@ dependencies {
     implementation(libs.okhttp3.logging.interceptor)
     implementation(libs.okhttp3.urlconnection)
 
-    implementation(libs.retrofit2)
-    implementation(libs.retrofit2.converter.kotlinx.serialization)
-    kapt(libs.retrofit2.response.type.keeper)
-
     implementation(libs.coil.compose)
     implementation(libs.coil.gif)
 
