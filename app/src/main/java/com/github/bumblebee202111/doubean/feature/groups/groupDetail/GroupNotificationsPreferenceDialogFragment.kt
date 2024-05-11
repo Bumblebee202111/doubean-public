@@ -6,14 +6,17 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.DialogGroupNotificationsPreferenceBinding
 import com.github.bumblebee202111.doubean.model.PostSortBy
+import com.github.bumblebee202111.doubean.ui.common.repeatWithViewLifecycle
 import com.github.bumblebee202111.doubean.util.MinMaxEditTextInputFilter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
+import kotlinx.coroutines.launch
 
 class GroupNotificationsPreferenceDialogFragment : AppCompatDialogFragment() {
 
@@ -59,9 +62,13 @@ class GroupNotificationsPreferenceDialogFragment : AppCompatDialogFragment() {
         binding.feedRequestPostCountLimitEditText.filters =
             arrayOf(MinMaxEditTextInputFilter(1, 50))
 
-        groupDetailViewModel.group.observe(this) { group ->
-            group?.sortRecommendedPostsBy?.let {
-                sortRecommendedPostsBySpinner.setSelection(getSpinnerItemPositionOf(it))
+        repeatWithViewLifecycle(Lifecycle.State.RESUMED) {
+            launch {
+                groupDetailViewModel.group.collect { group ->
+                    group?.sortRecommendedPostsBy?.let {
+                        sortRecommendedPostsBySpinner.setSelection(getSpinnerItemPositionOf(it))
+                    }
+                }
             }
         }
 

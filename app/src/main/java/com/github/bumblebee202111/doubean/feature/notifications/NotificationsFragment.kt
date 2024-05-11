@@ -13,6 +13,7 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.FragmentNotificationsBinding
 import com.github.bumblebee202111.doubean.feature.groups.groupsHome.GroupsHomeFragmentDirections
 import com.github.bumblebee202111.doubean.model.RecommendedPostNotificationItem
+import com.github.bumblebee202111.doubean.ui.common.repeatWithViewLifecycle
 import com.github.bumblebee202111.doubean.util.DEEP_LINK_SCHEME_AND_HOST
 import com.github.bumblebee202111.doubean.util.GROUP_PATH
 import com.github.bumblebee202111.doubean.util.POST_PATH
@@ -57,8 +58,11 @@ class NotificationsFragment : Fragment() {
             findNavController().navigate(request)
         }
         binding.notifications.adapter = notificationAdapter
-        notificationsViewModel.notifications.observe(viewLifecycleOwner) {
-            notificationAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+
+        repeatWithViewLifecycle {
+            notificationsViewModel.notifications.collect {
+                notificationAdapter.submitData(it)
+            }
         }
     }
 }

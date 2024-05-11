@@ -15,11 +15,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.fragment.compose.content
 import androidx.navigation.fragment.findNavController
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.VerifyPhoneRequestCodeResult
@@ -35,14 +34,10 @@ class VerifyPhoneFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View {
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                VerifyPhoneScreen()
-            }
-        }
+    ) = content {
+        VerifyPhoneScreen()
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         repeatWithViewLifecycle {

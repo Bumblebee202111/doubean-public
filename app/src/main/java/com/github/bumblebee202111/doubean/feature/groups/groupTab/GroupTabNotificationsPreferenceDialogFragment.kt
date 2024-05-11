@@ -6,15 +6,18 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.DialogGroupTabNotificationsPreferenceBinding
 import com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupDetailViewModel
 import com.github.bumblebee202111.doubean.model.PostSortBy
+import com.github.bumblebee202111.doubean.ui.common.repeatWithViewLifecycle
 import com.github.bumblebee202111.doubean.util.MinMaxEditTextInputFilter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
+import kotlinx.coroutines.launch
 
 class GroupTabNotificationsPreferenceDialogFragment : AppCompatDialogFragment() {
 
@@ -65,22 +68,26 @@ class GroupTabNotificationsPreferenceDialogFragment : AppCompatDialogFragment() 
         feedRequestPostCountLimitEditText.filters =
             arrayOf(MinMaxEditTextInputFilter(1, 50))
 
-        groupDetailViewModel.group.observe(this) { group ->
-            group?.findTab(tabId)?.let { tab ->
-                tab.enableNotifications?.let { enableGroupNotificationsPref.isChecked = it }
-                tab.allowDuplicateNotifications?.let {
-                    allowDuplicateNotificationsPref.isChecked = it
-                }
-                tab.sortRecommendedPostsBy?.let {
-                    sortRecommendedPostsBySpinner.setSelection(getSpinnerItemPositionOf(it))
-                }
-                tab.feedRequestPostCountLimit?.let {
-                    feedRequestPostCountLimitEditText.setText(
-                        it.toString()
-                    )
+        repeatWithViewLifecycle(Lifecycle.State.RESUMED) {
+            launch {
+                groupDetailViewModel.group.collect { group ->
+                    group?.findTab(tabId)?.let { tab ->
+                        tab.enableNotifications?.let { enableGroupNotificationsPref.isChecked = it }
+                        tab.allowDuplicateNotifications?.let {
+                            allowDuplicateNotificationsPref.isChecked = it
+                        }
+                        tab.sortRecommendedPostsBy?.let {
+                            sortRecommendedPostsBySpinner.setSelection(getSpinnerItemPositionOf(it))
+                        }
+                        tab.feedRequestPostCountLimit?.let {
+                            feedRequestPostCountLimitEditText.setText(
+                                it.toString()
+                            )
+                        }
+                    }
+
                 }
             }
-
         }
 
         return MaterialAlertDialogBuilder(requireContext()).setView(binding.root)

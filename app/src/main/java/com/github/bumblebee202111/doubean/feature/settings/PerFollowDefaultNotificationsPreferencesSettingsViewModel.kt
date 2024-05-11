@@ -1,22 +1,28 @@
 package com.github.bumblebee202111.doubean.feature.settings
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.github.bumblebee202111.doubean.coroutines.AppDispatchers
+import com.github.bumblebee202111.doubean.coroutines.Dispatcher
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.model.PostSortBy
+import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PerFollowDefaultNotificationsPreferencesSettingsViewModel @Inject constructor(private val preferenceStorage: PreferenceStorage) :
+class PerFollowDefaultNotificationsPreferencesSettingsViewModel @Inject constructor(
+    private val preferenceStorage: PreferenceStorage,
+    @Dispatcher(
+        AppDispatchers.IO
+    ) private val ioDispatcher: CoroutineDispatcher,
+) :
     ViewModel() {
     val enablePostNotifications =
-        preferenceStorage.perFollowDefaultEnablePostNotifications.flowOn(Dispatchers.IO)
-            .asLiveData()
+        preferenceStorage.perFollowDefaultEnablePostNotifications.flowOn(ioDispatcher).stateInUi()
 
     fun toggleEnablePostNotifications() {
         viewModelScope.launch {
@@ -25,8 +31,8 @@ class PerFollowDefaultNotificationsPreferencesSettingsViewModel @Inject construc
     }
 
     val allowDuplicateNotifications =
-        preferenceStorage.perFollowDefaultAllowDuplicateNotifications.flowOn(Dispatchers.IO)
-            .asLiveData()
+        preferenceStorage.perFollowDefaultAllowDuplicateNotifications.flowOn(ioDispatcher)
+            .stateInUi()
 
     fun toggleAllowDuplicateNotifications() {
         viewModelScope.launch {
@@ -35,7 +41,7 @@ class PerFollowDefaultNotificationsPreferencesSettingsViewModel @Inject construc
     }
 
     val sortRecommendedPostsBy =
-        preferenceStorage.perFollowDefaultSortRecommendedPostsBy.flowOn(Dispatchers.IO).asLiveData()
+        preferenceStorage.perFollowDefaultSortRecommendedPostsBy.flowOn(ioDispatcher).stateInUi()
 
     fun setSortRecommendedPostsBy(postSortBy: PostSortBy) {
         viewModelScope.launch {
@@ -44,8 +50,7 @@ class PerFollowDefaultNotificationsPreferencesSettingsViewModel @Inject construc
     }
 
     val feedRequestPostCountLimit =
-        preferenceStorage.perFollowDefaultFeedRequestPostCountLimit.flowOn(Dispatchers.IO)
-            .asLiveData()
+        preferenceStorage.perFollowDefaultFeedRequestPostCountLimit.flowOn(ioDispatcher).stateInUi()
 
     fun setFeedRequestPostCountLimit(feedRequestPostCountLimit: Int) {
         viewModelScope.launch {

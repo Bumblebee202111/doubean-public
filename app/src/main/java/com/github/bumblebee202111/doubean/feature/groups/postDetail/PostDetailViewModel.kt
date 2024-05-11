@@ -2,7 +2,6 @@ package com.github.bumblebee202111.doubean.feature.groups.postDetail
 
 import android.util.Log
 import androidx.core.text.htmlEncode
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -45,8 +44,6 @@ class PostDetailViewModel @Inject constructor(
     private val _commentsSortBy: MutableStateFlow<PostCommentSortBy> =
         MutableStateFlow(PostCommentSortBy.ALL)
     val commentsSortBy = _commentsSortBy.asStateFlow()
-
-    private val reloadTrigger = MutableLiveData(Unit)
 
     val shouldShowSpinner = commentsData.first.map { it.isNotEmpty() }.stateInUi(false)
 

@@ -28,8 +28,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.databinding.FragmentGroupTabBinding
 import com.github.bumblebee202111.doubean.databinding.ListItemPostBinding
+import com.github.bumblebee202111.doubean.databinding.ViewGroupTabActionsBinding
 import com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupDetailFragmentDirections
 import com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupDetailViewModel
 import com.github.bumblebee202111.doubean.model.PostItem
@@ -43,16 +43,19 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class GroupTabFragment : Fragment() {
-    var tagId: String? = null
 
     private val groupDetailViewModel: GroupDetailViewModel by viewModels({ requireParentFragment() })
+    var tabId: String? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ) = content {
         val groupTabViewModel: GroupTabViewModel = viewModel()
 
-        val group by groupDetailViewModel.groupStateFlow.collectAsStateWithLifecycle()
+
+        tabId = groupTabViewModel.tabId
+
+        val group by groupDetailViewModel.group.collectAsStateWithLifecycle()
 
         val topicLazyPagingItems = groupTabViewModel.topicsPagingData.collectAsLazyPagingItems()
 
@@ -67,7 +70,7 @@ class GroupTabFragment : Fragment() {
             ) {
                 AndroidViewBinding(
                     factory = { inflater, parent, attachToParent ->
-                        FragmentGroupTabBinding.inflate(
+                        ViewGroupTabActionsBinding.inflate(
                             inflater,
                             parent,
                             attachToParent
@@ -104,12 +107,12 @@ class GroupTabFragment : Fragment() {
 
                     fun setupFollowUnFollowAndMore() {
 
-                        if (tagId == null) { 
+                        if (tabId == null) { 
                             toggleGroup.visibility = View.GONE
                             more.visibility = View.GONE
                         } else { 
                             followUnfollow.setOnClickListener {
-                                group?.findTab(tagId)?.let { tab ->
+                                group?.findTab(tabId)?.let { tab ->
                                     if (tab.isFollowed) {
                                         groupTabViewModel.removeFollow()
                                         view?.showSnackbar(
@@ -139,8 +142,8 @@ class GroupTabFragment : Fragment() {
                                             val shareText = StringBuilder()
                                             groupDetailViewModel.group.value?.let { group ->
                                                 shareText.append(group.name + "|")
-                                                if (tagId != null)
-                                                    group.tabs?.first { it.id == tagId }
+                                                if (tabId != null)
+                                                    group.tabs?.first { it.id == tabId }
                                                         ?.let { tab ->
                                                             shareText.append(tab.name)
                                                         }
@@ -166,8 +169,8 @@ class GroupTabFragment : Fragment() {
                         val groupColor =
                             group.color ?: requireContext().getColorFromTheme(R.attr.colorPrimary)
                         notificationButton.visibility =
-                            if (group.findTab(tagId)?.enableNotifications == null) View.GONE else View.VISIBLE
-                        group.findTab(tagId)?.let { tab ->
+                            if (group.findTab(tabId)?.enableNotifications == null) View.GONE else View.VISIBLE
+                        group.findTab(tabId)?.let { tab ->
                             with(followUnfollow) {
                                 if (tab.isFollowed) {
                                     setIconResource(R.drawable.ic_remove)
@@ -283,7 +286,7 @@ class GroupTabFragment : Fragment() {
     }
 
     private fun showNotificationsPrefDialog() {
-        GroupTabNotificationsPreferenceDialogFragment.newInstance(tagId!!)
+        GroupTabNotificationsPreferenceDialogFragment.newInstance(tabId!!)
             .show(
                 childFragmentManager,
                 GroupTabNotificationsPreferenceDialogFragment.DIALOG_GROUP_TAB_NOTIFICATIONS_PREFERENCE

@@ -2,16 +2,16 @@ package com.github.bumblebee202111.doubean.feature.groups.groupDetail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asFlow
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
+import com.github.bumblebee202111.doubean.coroutines.AppDispatchers
+import com.github.bumblebee202111.doubean.coroutines.Dispatcher
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupUserDataRepository
 import com.github.bumblebee202111.doubean.model.PostSortBy
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
@@ -26,15 +26,14 @@ class GroupDetailViewModel @Inject constructor(
     private val groupUserDataRepository: GroupUserDataRepository,
     private val preferenceStorage: PreferenceStorage,
     savedStateHandle: SavedStateHandle,
+    @Dispatcher(AppDispatchers.IO) ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     private val groupId = GroupDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).groupId
 
     val group =
-        groupRepository.getGroup(groupId).flowOn(Dispatchers.IO).map { it.data }.asLiveData()
+        groupRepository.getGroup(groupId).map { it.data }.flowOn(ioDispatcher).stateInUi()
 
-    val groupStateFlow = group.asFlow().stateInUi()
-
-    val tabs = group.map { it?.tabs }.asFlow().stateInUi()
+    val tabs = this.group.map { it?.tabs }.stateInUi()
 
     fun addFollow() {
         viewModelScope.launch {
