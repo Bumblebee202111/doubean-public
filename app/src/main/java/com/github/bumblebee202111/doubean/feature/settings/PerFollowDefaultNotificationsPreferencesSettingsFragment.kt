@@ -14,8 +14,10 @@ import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreferenceCompat
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.PostSortBy
+import com.github.bumblebee202111.doubean.ui.common.repeatWithViewLifecycle
 import com.google.android.material.appbar.MaterialToolbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 // PreferenceFragmentCompat + DataStore<Preferences>
 // See https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:datastore/datastore-sampleapp/src/main/java/com/example/datastoresampleapp/SettingsFragment.kt
@@ -57,41 +59,60 @@ class PerFollowDefaultNotificationsPreferencesSettingsFragment : PreferenceFragm
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.enablePostNotifications.observe(viewLifecycleOwner) {
-            postNotificationsSwitchPreference?.isChecked = it
-        }
+
         postNotificationsSwitchPreference?.onPreferenceChangeListener =
             Preference.OnPreferenceChangeListener { _, _ ->
                 viewModel.toggleEnablePostNotifications()
                 true
             }
 
-        viewModel.allowDuplicateNotifications.observe(viewLifecycleOwner) {
-            allowDuplicateNotificationsSwitchPreference?.isChecked = it
-        }
         allowDuplicateNotificationsSwitchPreference?.onPreferenceChangeListener =
             Preference.OnPreferenceChangeListener { _, _ ->
                 viewModel.toggleAllowDuplicateNotifications()
                 true
             }
 
-        viewModel.sortRecommendedPostsBy.observe(viewLifecycleOwner) {
-            sortRecommendedPostsByListPreference?.value = getSortRecommendedPostsByValue(it)
-        }
         sortRecommendedPostsByListPreference?.onPreferenceChangeListener =
             Preference.OnPreferenceChangeListener { _, newValue ->
                 viewModel.setSortRecommendedPostsBy(getSortRecommendedPostsBy(newValue as String))
                 true
             }
 
-        viewModel.feedRequestPostCountLimit.observe(viewLifecycleOwner) {
-            feedRequestPostCountLimitSeekBarPreference?.value = it
-        }
         feedRequestPostCountLimitSeekBarPreference?.onPreferenceChangeListener =
             Preference.OnPreferenceChangeListener { _, newValue ->
                 viewModel.setFeedRequestPostCountLimit(newValue as Int)
                 true
             }
+
+        repeatWithViewLifecycle {
+            launch {
+                viewModel.enablePostNotifications.collect {
+                    if (it != null) {
+                        postNotificationsSwitchPreference?.isChecked = it
+                    }
+                }
+            }
+            launch {
+                viewModel.allowDuplicateNotifications.collect {
+                    if (it != null) {
+                        allowDuplicateNotificationsSwitchPreference?.isChecked = it
+                    }
+                }
+            }
+            launch {
+                viewModel.sortRecommendedPostsBy.collect {
+                    sortRecommendedPostsByListPreference?.value =
+                        it?.let(::getSortRecommendedPostsByValue)
+                }
+            }
+            launch {
+                viewModel.feedRequestPostCountLimit.collect {
+                    if (it != null) {
+                        feedRequestPostCountLimitSeekBarPreference?.value = it
+                    }
+                }
+            }
+        }
     }
 
     private fun getSortRecommendedPostsBy(value: String) =

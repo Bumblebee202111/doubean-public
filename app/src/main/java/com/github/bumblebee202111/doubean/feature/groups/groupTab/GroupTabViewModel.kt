@@ -22,10 +22,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-/**
- * Make LiveData refreshable:
- * https://gist.github.com/ivanalvarado/726a6c3f5ffad54958fe4670269bd897
- */
 @HiltViewModel
 class GroupTabViewModel @Inject constructor(
     private val groupRepository: GroupRepository,
@@ -34,7 +30,7 @@ class GroupTabViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val tabId: String? = savedStateHandle[ARG_TAG_ID]
+    val tabId: String? = savedStateHandle[ARG_TAG_ID]
     private val groupId: String = savedStateHandle[ARG_GROUP_ID]!!
 
     private val _sortBy = MutableStateFlow<PostSortBy?>(null)

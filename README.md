@@ -122,7 +122,6 @@ Libraries Used
 * [Architecture][arch]
   * [Data Binding][data-binding]
   * [Lifecycles][lifecycle]
-  * [LiveData][livedata]
   * [Navigation][navigation]
   * [Paging][paging]
   * [Room][room]
@@ -160,8 +159,6 @@ Libraries Used
 
 [lifecycle]: https://developer.android.com/topic/libraries/architecture/lifecycle
 
-[livedata]: https://developer.android.com/topic/libraries/architecture/livedata
-
 [navigation]: https://developer.android.com/topic/libraries/architecture/navigation/
 
 [paging]: https://developer.android.com/topic/libraries/architecture/paging/v3-overview
@@ -195,9 +192,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 #### To-dos for current release \(0.5.8\)
 
 - Finish migration to Ktor
+- Move tab notification settings to GroupTabViewModel
 - Refactor group detail
-  - LiveData -> Flow
-  - RecyclerView -> LazyColumn
   - ViewPager2 -> HorizontalPager
   - Glide ImageView -> Coil AsyncImage
   - MaterialToolBar -> TopAppBar
@@ -220,7 +216,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From MD2 / custom design to MD3
   * From View and data binding to Jetpack Compose
     * Exceptions: WebView
-  * From LiveData to StateFlow
   * From Retrofit to Ktor
   * From Glide to Coil Compose
   * From Navigation Fragment to Navigation Compose (take action when next stable version is available)
@@ -235,6 +230,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Sometimes topic content fails to be loaded on some low-end or large-screened devices (not sure which sets constraint)
   * ...
 * \[PostDetailFragment\] Show saves and reposts
+* Reduce MD3 TopAppBar height to 56 dp
 * Paging 3 refresh, loading status ...
 * Sort by "Last updated" -> "active"
 * Follow/favorite/save

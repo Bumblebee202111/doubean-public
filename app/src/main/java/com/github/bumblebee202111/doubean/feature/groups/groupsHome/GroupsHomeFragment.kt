@@ -41,8 +41,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,8 +48,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.compose.content
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.fragment.findNavController
 import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
@@ -67,35 +66,28 @@ import java.util.Calendar
 @AndroidEntryPoint
 
 class GroupsHomeFragment : Fragment() {
-    private val groupsHomeViewModel: GroupsHomeViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?,
-    ): View {
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            val navController = findNavController()
-            setContent {
-                AppTheme {
-                    GroupsHomeScreen(
-                        viewModel = groupsHomeViewModel,
-                        openSearch = { navController.navigate(R.id.nav_group_search) },
-                        openSettings = { navController.navigate(R.id.nav_settings) },
-                        openGroup = { groupId, tabId ->
-                            navController.navigate(
-                                GroupsHomeFragmentDirections.actionGroupsToGroupDetail(
-                                    groupId
-                                ).setDefaultTabId(tabId)
-                            )
-                        },
+    ) = content {
+        AppTheme {
+            GroupsHomeScreen(
+                viewModel = viewModel(),
+                openSearch = { findNavController().navigate(R.id.nav_group_search) },
+                openSettings = { findNavController().navigate(R.id.nav_settings) },
+                openGroup = { groupId, tabId ->
+                    findNavController().navigate(
+                        GroupsHomeFragmentDirections.actionGroupsToGroupDetail(
+                            groupId
+                        ).setDefaultTabId(tabId)
                     )
+                },
+            )
 
-                }
-            }
         }
     }
-
 }
+
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -166,19 +158,23 @@ fun LazyListScope.yourGroups(
                     ), border = BorderStroke(1.dp, Color.Black),
                     onClick = { onGroupItemClick(group.id) },
                     modifier = Modifier
-                        .padding(4.dp).width(80.dp)
+                        .padding(4.dp)
+                        .width(80.dp)
                 ) {
                     Column {
                         AsyncImage(
                             group.avatarUrl, contentDescription = null,
                             contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
                                 .aspectRatio(1f)
                         )
                         Text(
                             text = group.name,
                             overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.fillMaxWidth().padding(4.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp),
                             textAlign = TextAlign.Left,
                             style = MaterialTheme.typography.labelMedium,
                             maxLines = 1,
@@ -214,7 +210,9 @@ fun LazyListScope.yourFollowing(
                         containerColor = MaterialTheme.colorScheme.surface,
                     ), border = BorderStroke(1.dp, Color.Black),
                     onClick = { onGroupItemClick(group.groupId, group.tabId) },
-                    modifier = Modifier.padding(4.dp).width(80.dp)
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .width(80.dp)
                 ) {
                     Column {
                         AsyncImage(
@@ -235,7 +233,9 @@ fun LazyListScope.yourFollowing(
                             Text(
                                 text = group.groupName ?: "",
                                 overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.fillMaxWidth().padding(start = 4.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 4.dp),
                                 textAlign = TextAlign.Left,
                                 style = MaterialTheme.typography.labelMedium,
                                 maxLines = 1,
@@ -255,7 +255,9 @@ fun LazyListScope.yourFollowing(
                                 Text(
                                     text = group.groupTabName ?: "",
                                     overflow = TextOverflow.Ellipsis,
-                                    modifier = Modifier.fillMaxWidth().padding(4.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(4.dp),
                                     style = MaterialTheme.typography.labelMedium,
                                     textAlign = TextAlign.Left,
                                     maxLines = 1,

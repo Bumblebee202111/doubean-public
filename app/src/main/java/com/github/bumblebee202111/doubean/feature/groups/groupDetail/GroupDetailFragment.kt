@@ -66,68 +66,67 @@ class GroupDetailFragment : Fragment() {
             binding.appbar.isActivated = shouldShowToolbar
         }
         binding.toolbar.setOnMenuItemClickListener(::onMenuItemClick)
-        setHasOptionsMenu(true)
         binding.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        groupDetailViewModel.group.observe(viewLifecycleOwner) {
-            it?.let { group ->
-                binding.group = group
-                group.color?.let { color ->
-                    binding.mask.setBackgroundColor(color)
-                    binding.toolbarLayout.setContentScrimColor(color)
-                    binding.toolbarLayout.setStatusBarScrimColor(color)
-                    binding.tabLayout.setSelectedTabIndicatorColor(color)
-                }
-
-
-                val colorSurface = requireContext().getColorFromTheme(R.attr.colorSurface)
-                val groupColor =
-                    group.color ?: requireContext().getColorFromTheme(R.attr.colorPrimary)
-
-                with(binding.followUnfollow) {
-                    if (group.isFollowed) {
-                        setIconResource(R.drawable.ic_remove)
-                        setText(R.string.unfollow)
-                        iconTint = ColorStateList.valueOf(groupColor)
-                        setTextColor(groupColor)
-                        setBackgroundColor(colorSurface)
-                    } else {
-                        setIconResource(R.drawable.ic_add)
-                        setText(R.string.follow)
-                        iconTint = ColorStateList.valueOf(colorSurface)
-                        setTextColor(colorSurface)
-                        setBackgroundColor(groupColor)
-                    }
-                }
-
-                with(binding.notificationButton) {
-                    when (group.enableNotifications) {
-                        true -> {
-                            setIconResource(R.drawable.ic_notifications)
-                            iconTint = ColorStateList.valueOf(groupColor)
-                            setBackgroundColor(colorSurface)
+        repeatWithViewLifecycle {
+            launch {
+                groupDetailViewModel.group.collect {
+                    it?.let { group ->
+                        binding.group = group
+                        group.color?.let { color ->
+                            binding.mask.setBackgroundColor(color)
+                            binding.toolbarLayout.setContentScrimColor(color)
+                            binding.toolbarLayout.setStatusBarScrimColor(color)
+                            binding.tabLayout.setSelectedTabIndicatorColor(color)
                         }
 
-                        false -> {
-                            setIconResource(R.drawable.ic_notification_add)
-                            iconTint = ColorStateList.valueOf(colorSurface)
-                            setBackgroundColor(groupColor)
+                        val colorSurface = requireContext().getColorFromTheme(R.attr.colorSurface)
+                        val groupColor =
+                            group.color ?: requireContext().getColorFromTheme(R.attr.colorPrimary)
+
+                        with(binding.followUnfollow) {
+                            if (group.isFollowed) {
+                                setIconResource(R.drawable.ic_remove)
+                                setText(R.string.unfollow)
+                                iconTint = ColorStateList.valueOf(groupColor)
+                                setTextColor(groupColor)
+                                setBackgroundColor(colorSurface)
+                            } else {
+                                setIconResource(R.drawable.ic_add)
+                                setText(R.string.follow)
+                                iconTint = ColorStateList.valueOf(colorSurface)
+                                setTextColor(colorSurface)
+                                setBackgroundColor(groupColor)
+                            }
                         }
 
-                        else -> {
+                        with(binding.notificationButton) {
+                            when (group.enableNotifications) {
+                                true -> {
+                                    setIconResource(R.drawable.ic_notifications)
+                                    iconTint = ColorStateList.valueOf(groupColor)
+                                    setBackgroundColor(colorSurface)
+                                }
 
+                                false -> {
+                                    setIconResource(R.drawable.ic_notification_add)
+                                    iconTint = ColorStateList.valueOf(colorSurface)
+                                    setBackgroundColor(groupColor)
+                                }
+
+                                else -> {
+
+                                }
+                            }
                         }
                     }
                 }
             }
-        }
-        repeatWithViewLifecycle {
             launch {
                 groupDetailViewModel.tabs.collect { tabs ->
                     val taggedTabIds = tabs?.map(GroupTab::id)

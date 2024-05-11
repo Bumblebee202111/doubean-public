@@ -1,7 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.notifications
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.repository.GroupUserDataRepository
@@ -13,6 +12,5 @@ class NotificationsViewModel @Inject constructor(private val groupUserDataReposi
     ViewModel() {
     val notifications =
         groupUserDataRepository.getRecommendedPostNotifications().cachedIn(viewModelScope)
-            .asLiveData()
 
 }

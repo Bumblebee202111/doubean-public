@@ -56,8 +56,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringArrayResource
@@ -70,18 +68,19 @@ import androidx.compose.ui.window.Dialog
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.compose.content
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDeepLinkRequest
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.paging.awaitNotLoading
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.MobileNavigationDirections
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.databinding.FragmentPostDetailBinding
 import com.github.bumblebee202111.doubean.databinding.ListItemPostCommentBinding
+import com.github.bumblebee202111.doubean.databinding.ViewPostDetailHeaderBinding
 import com.github.bumblebee202111.doubean.feature.groups.common.TopicDetailActivityItemUserProfileImage
 import com.github.bumblebee202111.doubean.model.PostComment
 import com.github.bumblebee202111.doubean.model.PostCommentSortBy
@@ -102,91 +101,80 @@ import com.google.accompanist.web.rememberSaveableWebViewState
 import com.google.accompanist.web.rememberWebViewNavigator
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class PostDetailFragment : Fragment() {
-
-    private val postDetailViewModel: PostDetailViewModel by viewModels()
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View {
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            //val navController = findNavController()
-            setContent {
-                AppTheme {
-                    PostDetailScreen(
-                        postDetailViewModel = postDetailViewModel,
-                        updateCommentSortBy = { postDetailViewModel.updateCommentsSortBy(it) },
-                        onBackClick = { findNavController().popBackStack() },
-                        onTopicShareClick = { topic ->
-                            val shareText = StringBuilder()
-                            topic.group?.name.let { groupName ->
-                                shareText.append(groupName)
-                            }
-                            topic.tag?.let { tag -> shareText.append("|" + tag.name) }
-                            shareText.append("@${topic.author.name}： ${topic.title}${topic.url}${topic.content}")
-                            ShareUtil.share(requireContext(), shareText)
-                        },
-                        navigateToWebView = { url ->
-                            findNavController().navigate(
-                                MobileNavigationDirections.actionGlobalNavWebView(
-                                    url
-                                )
-                            )
-                        },
-                        navigateToGroup = { groupId, tabId ->
-                            findNavController().navigate(
-                                PostDetailFragmentDirections.actionPostDetailToGroupDetail(groupId)
-                                    .setDefaultTabId(tabId)
-                            )
-                        },
-                        navigateToReshareStatuses = { topicId ->
-                            findNavController().navigate(
-                                PostDetailFragmentDirections.actionTopicDetailToReshareStatuses(
-                                    topicId
-                                )
-                            )
-                        },
-                        navigateToImage = { url ->
-                            findNavController().navigate(
-                                MobileNavigationDirections.actionGlobalNavImage(
-                                    url
-                                )
-                            )
-                            //TODO https://developer.android.google.cn/develop/ui/compose/touch-input/pointer-input/tap-and-press
-                            // shared element
-                        },
-                        navigateWithDeepLinkUrl = { url ->
-                            val request =
-                                NavDeepLinkRequest.Builder.fromUri(url.toUri()).build()
-                            findNavController().navigate(request)
-                        },
-                        onShowToast = {
-                            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-                        },
-                        viewInDouban = { uri ->
-                            OpenInUtil.openInDouban(requireContext(), uri)
-                        }
-                    ) { url ->
-                        Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
-                            startActivity(this)
-                        }
+    ) = content {
+        AppTheme {
+            PostDetailScreen(
+                postDetailViewModel = viewModel(),
+                onBackClick = { findNavController().popBackStack() },
+                onTopicShareClick = { topic ->
+                    val shareText = StringBuilder()
+                    topic.group?.name.let { groupName ->
+                        shareText.append(groupName)
                     }
+                    topic.tag?.let { tag -> shareText.append("|" + tag.name) }
+                    shareText.append("@${topic.author.name}： ${topic.title}${topic.url}${topic.content}")
+                    ShareUtil.share(requireContext(), shareText)
+                },
+                navigateToWebView = { url ->
+                    findNavController().navigate(
+                        MobileNavigationDirections.actionGlobalNavWebView(
+                            url
+                        )
+                    )
+                },
+                navigateToGroup = { groupId, tabId ->
+                    findNavController().navigate(
+                        PostDetailFragmentDirections.actionPostDetailToGroupDetail(groupId)
+                            .setDefaultTabId(tabId)
+                    )
+                },
+                navigateToReshareStatuses = { topicId ->
+                    findNavController().navigate(
+                        PostDetailFragmentDirections.actionTopicDetailToReshareStatuses(
+                            topicId
+                        )
+                    )
+                },
+                navigateToImage = { url ->
+                    findNavController().navigate(
+                        MobileNavigationDirections.actionGlobalNavImage(
+                            url
+                        )
+                    )
+                    //TODO https://developer.android.google.cn/develop/ui/compose/touch-input/pointer-input/tap-and-press
+                    // shared element
+                },
+                navigateWithDeepLinkUrl = { url ->
+                    val request =
+                        NavDeepLinkRequest.Builder.fromUri(url.toUri()).build()
+                    findNavController().navigate(request)
+                },
+                onShowToast = {
+                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                },
+                viewInDouban = { uri ->
+                    OpenInUtil.openInDouban(requireContext(), uri)
                 }
-
+            ) { url ->
+                Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                    startActivity(this)
+                }
             }
         }
+
     }
+
 
     @SuppressLint("ClickableViewAccessibility")
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun PostDetailScreen(
         postDetailViewModel: PostDetailViewModel,
-        updateCommentSortBy: (PostCommentSortBy) -> Unit,
         onBackClick: () -> Unit,
         onTopicShareClick: (PostDetail) -> Unit,
         navigateToWebView: (url: String) -> Unit,
@@ -198,7 +186,6 @@ class PostDetailFragment : Fragment() {
         viewInDouban: (uri: String) -> Unit,
         viewInActivity: (url: String) -> Unit,
     ) {
-        val topicId = postDetailViewModel.topicId
         val topic by postDetailViewModel.topic.collectAsStateWithLifecycle()
         val popularComments by postDetailViewModel.popularComments.collectAsStateWithLifecycle()
         val allCommentLazyPagingItems = postDetailViewModel.allComments.collectAsLazyPagingItems()
@@ -340,7 +327,7 @@ class PostDetailFragment : Fragment() {
                     item(key = "TopicCommentSortBy", contentType = "TopicCommentSortBy") {
                         TopicCommentSortBy(
                             commentSortBy = commentSortBy,
-                            updateCommentSortBy = updateCommentSortBy
+                            updateCommentSortBy = postDetailViewModel::updateCommentsSortBy
                         )
                     }
                 }
@@ -476,7 +463,7 @@ fun TopicDetailHeader(
     Column {
         AndroidViewBinding(
             factory = { inflater, root, attachToRoot ->
-                FragmentPostDetailBinding.inflate(
+                ViewPostDetailHeaderBinding.inflate(
                     inflater,
                     root,
                     attachToRoot
@@ -773,14 +760,11 @@ fun TopicCommentAndroidView(
                 popupMenu.show()
             }
             comment?.photos.takeUnless { it.isNullOrEmpty() }?.let {
-                photos.apply {
-                    //setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                    setContent {
-                        ListItemImages(
-                            images = it.map(SizedPhoto::image),
-                            onImageClick = { navigateToImage(it.large.url) }
-                        )
-                    }
+                photos.setContent {
+                    ListItemImages(
+                        images = it.map(SizedPhoto::image),
+                        onImageClick = { navigateToImage(it.large.url) }
+                    )
                 }
             }
 
@@ -809,14 +793,12 @@ fun TopicCommentAndroidView(
                 isVisible = !comment?.repliedTo?.text.isNullOrBlank()
             }
             comment?.repliedTo?.photos.takeUnless { it.isNullOrEmpty() }?.let {
-                repliedToPhotos.apply {
-                    //setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                    setContent {
-                        ListItemImages(
-                            images = it.map(SizedPhoto::image),
-                            onImageClick = { navigateToImage(it.large.url) }
-                        )
-                    }
+                repliedToPhotos.setContent {
+                    ListItemImages(
+                        images = it.map(SizedPhoto::image),
+                        onImageClick = { navigateToImage(it.large.url) }
+                    )
+
                 }
             }
 
