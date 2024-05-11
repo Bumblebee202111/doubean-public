@@ -34,6 +34,10 @@ android {
         buildConfigField("String", "DOUBAN_ACCESS_KEY", "\"" + getDoubanAccess() + "\"")
     }
 
+    hilt {
+        // enableAggregatingTask = true
+    }
+
     room {
         schemaDirectory("$projectDir/schemas")
     }
@@ -132,7 +136,7 @@ dependencies {
     implementation(libs.coil.gif)
 
     implementation(libs.hilt.android)
-    ksp(libs.dagger.hilt.compiler)
+    ksp(libs.hilt.android.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.espresso)
