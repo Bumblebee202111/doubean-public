@@ -194,34 +194,31 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.5.8\)
 
+- Finish migration to Ktor
 - Refactor group detail
   - LiveData -> Flow
-  - Retrofit -> Ktor 
   - RecyclerView -> LazyColumn
   - ViewPager2 -> HorizontalPager
-  - ImageView -> AsyncImage
+  - Glide ImageView -> Coil AsyncImage
   - MaterialToolBar -> TopAppBar
   - Spinner -> Button + DropDownMenu
+- Finish migration to Coil
+- LazyLayoutPinnableItem?
 
 #### To-dos for next release \(0.5.9)
 
 #### Future plans
 
-* Group detail:
-  * Optimize and gradually migrate to Compose M3 / Flows
-  * Keep AppBarLayout
 * Home - Following
   * More card types
-* Revert name conventions to those of Douban
+* Revert naming conventions to those of Douban
 * Replace content of the recommended groups area with recommended posts
   * First tab/page: Post recommendation (of followed groups) API
   * Others: posts of favorite tabs from group tab posts API
 * Shared element & navigation-fragment-compose
 * Gradual migrations: <span id="migrations"></span>
-  * From GithubBrowserSample's user-implemented way of paging to Paging3
   * From MD2 / custom design to MD3
   * From View and data binding to Jetpack Compose
-    * Especially: migrate ViewPager2, MaterialToolbar ...
     * Exceptions: WebView
   * From LiveData to StateFlow
   * From Retrofit to Ktor
@@ -257,6 +254,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * \[SettingsFragment\] Add prefer to show WebView by default preference
 * \[SearchFragment\] GroupSearchFragment -> SearchFragment / Search group/tab posts (in-group) / Search posts of all groups (global)
 * Real login (which seems impossible)
+* Load state visualization
 * \[GroupDetailFragment\] WebView for group
 * \[GroupDetailFragment\]\[PostDetailFragment\] Track/mark/revert/todo read
 * \[GroupDetailFragment\] Group/tab/post shortcuts
