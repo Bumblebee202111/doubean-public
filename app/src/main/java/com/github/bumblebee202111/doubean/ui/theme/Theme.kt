@@ -259,7 +259,7 @@ fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     @Suppress("UNUSED_PARAMETER") dynamicColor: Boolean = true,
-    content: @Composable() () -> Unit,
+    content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
 // TODO: provide user option and support dynamic color

@@ -26,7 +26,7 @@ class MainApplication : Application(), ImageLoaderFactory, Configuration.Provide
 
     init {
         // Set settings before the main shell can be created
-        Shell.enableVerboseLogging = BuildConfig.DEBUG;
+        Shell.enableVerboseLogging = BuildConfig.DEBUG
         Shell.setDefaultBuilder(
             Shell.Builder.create()
                 .setFlags(Shell.FLAG_MOUNT_MASTER or Shell.FLAG_REDIRECT_STDERR)

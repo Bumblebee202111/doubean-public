@@ -28,7 +28,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PostDetailViewModel @Inject constructor(
     private val pollRepository: PollRepository,
-    private val topicRepo: GroupTopicRepo,
+    topicRepo: GroupTopicRepo,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -90,17 +90,17 @@ class PostDetailViewModel @Inject constructor(
                         val showOptionCounts =
                             entity.options.find { option -> option.votedUserCount > 0 } != null
 
-                        val optionElements = entity.options.joinToString("") {
+                        val optionElements = entity.options.joinToString("") { option ->
                             """
 <label class="poll-label">
     <span class="poll-checkbox">
         <input type="radio">
     </span>
     <span class="poll-option">
-        <span class="poll-option-title">${it.title.htmlEncode()}</span>
+        <span class="poll-option-title">${option.title.htmlEncode()}</span>
         <span class="poll-option-voted-count">${
                                 if (showOptionCounts) {
-                                    "${it.votedUserCount}（${roundedPercentage(it.votedUserCount.toFloat() / entity.votedUserCount)}%"
+                                    "${option.votedUserCount}（${roundedPercentage(option.votedUserCount.toFloat() / entity.votedUserCount)}%"
                                 } else ""
                             }</span>
     </span>
@@ -115,8 +115,8 @@ class PostDetailViewModel @Inject constructor(
                                 if (entity.votedLimit == 1) "单选" else "最多选${entity.votedLimit}项"
                             })</span>
         ${
-                                entity.expireTime?.let {
-                                    "<span class=\"poll-expire-time\"> · Poll expires at $it</span>"
+                                entity.expireTime?.let { expireTime ->
+                                    "<span class=\"poll-expire-time\"> · Poll expires at $expireTime</span>"
                                 } ?: ""
 
                             }
@@ -141,20 +141,20 @@ class PostDetailViewModel @Inject constructor(
     <div class="question-title">
         <span>${entity.title.htmlEncode()}</span>
         ${
-                                entity.expireTime?.let {
-                                    "<span class=\"question-expire-time\"> · Question expires at $it</span>"
+                                entity.expireTime?.let { expireTime ->
+                                    "<span class=\"question-expire-time\"> · Question expires at $expireTime</span>"
                                 } ?: ""
                             }
     </div>
     <div class="question-meta"><span>${entity.postedUserCount}人参与</span></div>
     ${
                                 entity.correctAnswer.takeUnless { answer -> answer.isBlank() }
-                                    ?.let {
+                                    ?.let { correctAnswer ->
                                         """
         <div class="question-content">
         <form>
             <div class="question-result">
-                <div class="question-result-answer">正确答案：$it</div>
+                <div class="question-result-answer">正确答案：$correctAnswer</div>
             </div>
         </form>
     </div>
