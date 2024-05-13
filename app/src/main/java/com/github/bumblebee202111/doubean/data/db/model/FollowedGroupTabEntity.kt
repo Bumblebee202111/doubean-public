@@ -35,6 +35,5 @@ data class FollowedGroupTabEntity(
     @ColumnInfo("last_notified_time_millis")
     override val lastNotifiedTimeMillis: Long = 0,
 
-    ) : FollowableEntity {
-}
+    ) : FollowableEntity
 

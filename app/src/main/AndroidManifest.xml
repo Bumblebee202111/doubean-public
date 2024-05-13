@@ -9,7 +9,6 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29"
         tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
 
     <application
         android:allowBackup="true"

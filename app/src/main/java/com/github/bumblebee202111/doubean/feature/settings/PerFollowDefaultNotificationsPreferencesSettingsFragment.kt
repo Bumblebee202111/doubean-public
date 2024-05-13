@@ -35,13 +35,13 @@ class PerFollowDefaultNotificationsPreferencesSettingsFragment : PreferenceFragm
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.per_follow_default_notifications_preferences, rootKey)
         postNotificationsSwitchPreference =
-            preferenceManager.findPreference<SwitchPreferenceCompat>("post_notifications")
+            preferenceManager.findPreference("post_notifications")
         allowDuplicateNotificationsSwitchPreference =
-            preferenceManager.findPreference<SwitchPreferenceCompat>("allow_duplicate_notifications")
+            preferenceManager.findPreference("allow_duplicate_notifications")
         sortRecommendedPostsByListPreference =
-            preferenceManager.findPreference<ListPreference>("sort_recommended_posts_by")
+            preferenceManager.findPreference("sort_recommended_posts_by")
         feedRequestPostCountLimitSeekBarPreference =
-            preferenceManager.findPreference<SeekBarPreference>("feed_request_post_count_limit")
+            preferenceManager.findPreference("feed_request_post_count_limit")
     }
 
     override fun onCreateView(
