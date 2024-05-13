@@ -13,6 +13,7 @@ import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -28,12 +29,17 @@ class GroupDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     @Dispatcher(AppDispatchers.IO) ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
-    private val groupId = GroupDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).groupId
+    val groupId = GroupDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).groupId
+    val initialTabId = GroupDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).defaultTabId
 
     val group =
         groupRepository.getGroup(groupId).map { it.data }.flowOn(ioDispatcher).stateInUi()
 
-    val tabs = this.group.map { it?.tabs }.stateInUi()
+    val tabs = this.group.map { it?.tabs }.filter { taggedTabs ->
+        initialTabId == null || taggedTabs?.find { tab ->
+            tab.id == initialTabId
+        } != null
+    }.stateInUi()
 
     fun addFollow() {
         viewModelScope.launch {
