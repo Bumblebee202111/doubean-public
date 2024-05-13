@@ -7,18 +7,24 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.widget.PopupMenu
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
+import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.ListItemPostBinding
 import com.github.bumblebee202111.doubean.databinding.ViewGroupTabActionsBinding
@@ -143,6 +149,7 @@ fun GroupTabScreen(
                                 }
                                 false
                             }
+
                             popup.inflate(R.menu.menu_group_tab)
                             popup.show()
                         }
@@ -211,6 +218,16 @@ fun GroupTabScreen(
             ) {
                 post = topic
                 executePendingBindings()
+
+                cover.setContent {
+                    AsyncImage(
+                        model = topic?.coverUrl, contentDescription = null,
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_normal))),
+                        contentScale = ContentScale.Crop
+                    )
+                }
 
                 clickListener =
                     View.OnClickListener { topic?.let { navigateToTopic(it.id) } }

@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -56,6 +57,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringArrayResource
@@ -77,6 +79,7 @@ import androidx.paging.awaitNotLoading
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
+import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.MobileNavigationDirections
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.ListItemPostCommentBinding
@@ -504,6 +507,15 @@ fun TopicDetailHeader(
             }
 
             this.topic = topic
+
+            groupAvatar.setContent {
+                AsyncImage(
+                    model = topic.group?.avatarUrl, null,
+                    modifier = Modifier
+                        .size(dimensionResource(id = R.dimen.icon_size_extra_small)),
+                    contentScale = ContentScale.Crop
+                )
+            }
 
             this.content.setContent {
                 contentHtml?.let {
