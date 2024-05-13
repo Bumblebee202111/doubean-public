@@ -162,7 +162,6 @@ fun GroupDetailCoordinator(
     navigateToTopic: (topicId: String) -> Unit,
 ) {
 
-
     taggedTabs?.let {
         val pagerState = rememberPagerState(
             initialPage = taggedTabs.indexOfFirst { it.id == initialTabId } + 1,
@@ -242,7 +241,6 @@ fun GroupDetailCoordinator(
                     groupColor = group?.color,
                     taggedTabs = taggedTabs
                 )
-
             }
 
             pager.setContent {
@@ -299,14 +297,12 @@ fun GroupDetailCoordinator(
                         }
 
                         else -> {
-
                         }
                     }
                 }
             }
         }
     }
-
 
 }
 

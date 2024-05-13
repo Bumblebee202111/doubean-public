@@ -9,6 +9,7 @@ import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupUserDataRepository
 import com.github.bumblebee202111.doubean.model.PostSortBy
+import com.github.bumblebee202111.doubean.model.Result
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -32,14 +33,13 @@ class GroupDetailViewModel @Inject constructor(
     val groupId = GroupDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).groupId
     val initialTabId = GroupDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).defaultTabId
 
-    val group =
-        groupRepository.getGroup(groupId).map { it.data }.flowOn(ioDispatcher).stateInUi()
+    private val groupResult = groupRepository.getGroup(groupId).flowOn(ioDispatcher).stateInUi()
 
-    val tabs = this.group.map { it?.tabs }.filter { taggedTabs ->
-        initialTabId == null || taggedTabs?.find { tab ->
-            tab.id == initialTabId
-        } != null
-    }.stateInUi()
+    val group = groupResult.map { it?.data }.stateInUi()
+
+    val tabs =
+        groupResult.filter { it is Result.Success || it is Result.Error }.map { it?.data?.tabs }
+            .stateInUi()
 
     fun addFollow() {
         viewModelScope.launch {

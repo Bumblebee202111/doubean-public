@@ -76,11 +76,11 @@ The app is composed of 4 main screens, two of which are blank and left for futur
 
 ### Using this app
 
-- Supported Android versions: 8.1 - 12
+- Supported Android versions: 8.1 - 14
 - Sometimes you need to clear app data when I forget to handle ROOM database schema change
 - Feel free to file issues 
 
-#### Open-source?
+### Open-source?
 
 To not get this project/myself into trouble, the update of the source code in the public repo will be suspended. However, the latest release is always available.
 
@@ -190,7 +190,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 - Refactor group detail
   - MaterialToolBar -> TopAppBar
   - Spinner -> Button + DropDownMenu
-  - Move tab notification setting models to GroupTabViewModel
 
 #### To-dos for next release \(0.5.9)
 
@@ -201,6 +200,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Gradually revert naming conventions to those of Douban
 * Replace content of the recommended groups area with recommended posts
   * Add more tabs/pages later
+* Group Tab: Untighten tab notification settings from group model
 * Gradual migrations: <span id="migrations"></span>
   * From MD2 / custom design to MD3
   * From View and data binding to Jetpack Compose
@@ -208,7 +208,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From Navigation Fragment to Navigation Compose (take action when next stable version is available)
     * From NavHostFragment to ComposableNavHostFragment
 * Lazylist problems
-  * Restoring scroll position is problematic especially when you are viewing bottom of list where there are some images
+  * Restoring scroll position is problematic
   * Comment items are sometimes visually polluted by others
   * Topic content WebView problems
     * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
