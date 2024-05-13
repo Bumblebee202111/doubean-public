@@ -140,7 +140,6 @@ Libraries Used
 * Third party and miscellaneous libraries
   * Ktor
   * Coil
-  * [Glide][glide]
   * [Kotlin Coroutines][kotlin-coroutines]
   * Flow
   * Kotlinx Serialization
@@ -180,8 +179,6 @@ Libraries Used
 
 [notifications]: https://developer.android.com/develop/ui/views/notifications
 
-[glide]: https://bumptech.github.io/glide/
-
 [kotlin-coroutines]: https://kotlinlang.org/docs/reference/coroutines-overview.html
 
 ### Plans
@@ -191,11 +188,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 #### To-dos for current release \(0.5.8\)
 
 - Refactor group detail
-  - Glide ImageView -> Coil AsyncImage
   - MaterialToolBar -> TopAppBar
   - Spinner -> Button + DropDownMenu
   - Move tab notification setting models to GroupTabViewModel
-- Complete migration to Coil
 
 #### To-dos for next release \(0.5.9)
 
@@ -210,7 +205,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From MD2 / custom design to MD3
   * From View and data binding to Jetpack Compose
     * Exceptions: WebView
-  * From Glide to Coil Compose
   * From Navigation Fragment to Navigation Compose (take action when next stable version is available)
     * From NavHostFragment to ComposableNavHostFragment
 * Lazylist problems

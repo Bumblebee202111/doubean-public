@@ -4,10 +4,19 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.Navigation.findNavController
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import coil.compose.AsyncImage
+import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.ListItemGroupBinding
 import com.github.bumblebee202111.doubean.model.GroupSearchResultGroupItem
 
@@ -39,6 +48,16 @@ class SearchResultGroupAdapter :
 
         fun bind(item: GroupSearchResultGroupItem?) {
             binding.group = item
+            binding.avatar.setContent {
+                AsyncImage(
+                    model = item?.avatarUrl,
+                    contentDescription = stringResource(id = R.string.a11y_group_item_image),
+                    modifier = Modifier
+                        .size(dimensionResource(id = R.dimen.icon_size_extra_large))
+                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small))),
+                    contentScale = ContentScale.Crop
+                )
+            }
             binding.executePendingBindings()
         }
     }

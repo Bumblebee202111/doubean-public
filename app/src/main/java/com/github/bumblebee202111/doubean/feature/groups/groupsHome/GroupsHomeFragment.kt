@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
@@ -39,9 +40,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -311,6 +315,16 @@ private fun LazyListScope.groupsOfTheDay(
                 index,
                 recommendedGroups.size
             )
+            avatar.setContent {
+                AsyncImage(
+                    model = group.group.avatarUrl,
+                    contentDescription = stringResource(id = R.string.a11y_group_item_image),
+                    modifier = Modifier
+                        .size(dimensionResource(id = R.dimen.icon_size_extra_large))
+                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small))),
+                    contentScale = ContentScale.Crop
+                )
+            }
             this.noBackground = noColor
             this.recommendedGroup = group
             this.no.text = group.no.toString()
