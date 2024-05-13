@@ -4,15 +4,14 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
 
-The development of this app is resumed to meet the requirements the friend who filed the first issue! While we will only develop for them, this project is also going to be used as the playground for fashionable libraries/coding styles such as Jetpack Compose, partially serving the development of MinusOne Music and helping me understand declarative programming. This brings [tons of migration tasks](#migrations), and also means that old libraries and new libraries are currently mixed together.
+The development of this app is resumed to meet the requirements the friend who filed the first issue! While we will only develop for them, this project is also going to be used as my playground for fashionable libraries/coding styles such as Jetpack Compose. This brings [tons of migration tasks](#migrations), and also means that old libraries and new libraries are currently mixed together.
+
+Note I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be missing.
 
 It has been inactive for 8 months, as:
 * Reinforced by the org/mods, hilarious remarks can be found everywhere
 * There are few other alternatives for me to refer to
 * Group theming is currently a mess
-
-Note I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be
-missing. Pretty much of my work is copy and paste from the official documentation and samples of Google Android. I am trying my best only to ensure that the app will function normally on my Xiaomi devices with the Android version varying from 8.1 to 12 and the user's device.
 
 **Very important changes starting from 0.5.0:**
 
@@ -73,8 +72,13 @@ The app is composed of 4 main screens, two of which are blank and left for futur
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
 <img src="screenshots/phone_group_search.png" alt="phone_group_search" height="300" />
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
-
 ### Getting Started
+
+### Using this app
+
+- Supported Android versions: 8.1 - 12
+- Sometimes you need to clear app data when I forget to handle ROOM database schema change
+- Feel free to file issues 
 
 #### Open-source?
 
@@ -101,16 +105,14 @@ It not only implements the very basic features of Douban app, but also has its o
 | Architecture      | MVVM                                            |
 | Design philosophy | Android Jetpack                                 |
 
-* Support for loading cache as alternative even when connection is off
-* Recommended post notifications
+* Partial offline caching support
 * Ad-free, lite \(~4MB\)
 * Partially support URL deep links
-* Basic support for MD2/3 \(dark theme included\) and tablets/landscape
-* Partial bilingual UI strings support
-* Support for viewing content in Douban WebView optimized for mobile reading \(in progress\)
-* Paging & swipe refresh support
+* Paging support
 * Rooted users can use login session of Douban app
-* Support creating categories consisting of group/tab/search posts by multiple user-defined conditions \(TODO\)
+* Support for viewing content in Douban WebView optimized for mobile reading in case of need
+* Basic use of MD2/3 (may not get along well during migration)
+* Recommended post notifications (maybe currently broken)
 
 Libraries Used
 --------------
@@ -194,7 +196,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   - Spinner -> Button + DropDownMenu
   - Move tab notification setting models to GroupTabViewModel
 - Complete migration to Coil
-- LazyLayoutPinnableItem?
 
 #### To-dos for next release \(0.5.9)
 
@@ -202,11 +203,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Home - Following
   * More card types
-* Revert naming conventions to those of Douban
+* Gradually revert naming conventions to those of Douban
 * Replace content of the recommended groups area with recommended posts
-  * First tab/page: Post recommendation (of followed groups) API
-  * Others: posts of favorite tabs from group tab posts API
-* Shared element & navigation-fragment-compose
+  * Add more tabs/pages later
 * Gradual migrations: <span id="migrations"></span>
   * From MD2 / custom design to MD3
   * From View and data binding to Jetpack Compose
@@ -214,53 +213,67 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From Glide to Coil Compose
   * From Navigation Fragment to Navigation Compose (take action when next stable version is available)
     * From NavHostFragment to ComposableNavHostFragment
-* The old local "follow"
-  * Needs some rework since following groups (official feature) is possible now although not implemented
-  * Rename to favorite (inspired by Reddit)
-  * Topics feed still not working properly
-  * Sync by maintaining a fake private note (日记) which holds the data
-* Topic content WebView issues (WebView sucks!)
-  * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
-  * Sometimes topic content fails to be loaded on some low-end or large-screened devices (not sure which sets constraint)
-  * ...
-* \[PostDetailFragment\] Show saves and reposts
-* Reduce MD3 TopAppBar height to 56 dp when https://developer.android.google.cn/jetpack/androidx/releases/compose-material3#1.3.0-alpha06 enters RC
-* Paging 3 refresh, loading status ...
-* Sort by "Last updated" -> "active"
-* Follow/favorite/save
-  * Allow following/favoriting/saving every type of item: groups/tabs/searches/categories
-  * Post title text filters
-  * \[GroupsHomeFragment\] Show posts of followed collections / comments of saved comments with group/tab header
-  * \[Lists\]Add corresponding item action
+* Lazylist problems
+  * Restoring scroll position is problematic especially when you are viewing bottom of list where there are some images
+  * Comment items are sometimes visually polluted by others
+  * Topic content WebView problems
+    * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
+    * Sometimes topic content fails to be loaded on some low-end or large-screened devices (not sure which sets constraint)
+    * LazyLayoutPinnableItem?
+    * ...
+
+* Shared element & navigation-fragment-compose
+* TopAppBar and Edge-to-Edge
+  * Reduce MD3 TopAppBar height to 56 dp when https://developer.android.google.cn/jetpack/androidx/releases/compose-material3#1.3.0-alpha06 enters RC
+
+* Topics sort by 
+  * "Last updated" -> "active"
+  * Add "New Top"
+
+* Follow/favorite/save/subscribe
+  * The old local "follow"
+    * Rename to favorite (inspired by Reddit)
+    * Needs some rework since following groups (official feature) is possible now although not implemented
+  * Save topics
+  * Follow groups
+  * Pin followed groups
+  * Add corresponding item action
+
+* More follow/favorite/save/subscribe
+  * Save comments
+  * Subscribe topics
+  * Sync custom lists by maintaining a fake private note (日记) which holds the data
   * Custom feeds like Reddit
+
+* Fix broken topics feed
 * “每次动态更新请求的帖子总数限制” -> “每次从n条帖子中筛选新动态”
 * Use the new nullable "edit_time" property of network posts
 * Better model layering
-* Refactor uses of network only `Resource` to Kotlin `Result`
-* Handle errors in repositories
-* \[GroupsHomeFragment\]Unfollow/reorder items
 * Add `en-db` ("Douban English" locale)
 * Allow expanding group description w/ SpannableString
-* \[SettingsFragment\] Add prefer to show WebView by default preference
-* \[SearchFragment\] GroupSearchFragment -> SearchFragment / Search group/tab posts (in-group) / Search posts of all groups (global)
+* Search
+  * Search group/tab posts (in-group) 
+  * Search posts of all groups (global)
+
 * Real login (which seems impossible)
-* Load state visualization
+* Add load state visualization which was removed during various types of migrations
+  * Paging 3 refresh, loading status ...
+
 * \[GroupDetailFragment\] WebView for group
-* \[GroupDetailFragment\]\[PostDetailFragment\] Track/mark/revert/todo read
+* Group tab: Track read
 * \[GroupDetailFragment\] Group/tab/post shortcuts
 * Hide officially-marked unfriendly content by default
 * Support blocking unfriendly content
-* Rate limit
-* \[Lists\]Reddit-like item expand/collapse
-* \[GroupDetailFragment\] For post items, optimize tag display, e.g., assign color to each tag mapped from name
 * \[GroupDetailFragment\] Collapse on entrance for the followed group/tab
-* Allow another option of using Twitter-like date formatting
+* Date & time: Yesterday
+* Bring back basic support for dark mode & landscape experience
 * Widgets
 * \[Books\] Add T250
 * \[Movies\] Add T250
 * More features of books & movies
-* \[Lists\] Post order: custom rules based on multiple factors
-* Optimize dark mode & landscape experience
+* \[GroupDetailFragment\] For post items, optimize tag display, e.g., assign color to each tag mapped from name
+* \[Lists\] Reddit-like item expand/collapse
+* Network
 * Test
 
 ### Non-Todos
@@ -276,11 +289,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * [Android Architecture Blueprints v1 (todo-mvvm-live)][todo-mvvm-live]
 * [Material Design][material]
 * Interactive communities: [StackOverflow][stack-overflow], [Google][google], [GitHub][github]
-  , [cnblogs][cnblogs], [Medium][medium], [CSDN][CSDN], etc.
+  , [cnblogs][cnblogs], [Medium][medium], [CSDN][CSDN], IssueTracker, etc.
   * Especially went through articles/posts on how to gain Douban access
-* [Twitter][twitter], [Reddit][reddit], [Play Store][google-play], [CoolApk][coolapk]
-  , [Google News][google-news], [YouTube][youtube], [bilibili][bilibili] and other apps as
-  references for UI design
+* Various social apps as references for UI design
 
 [sunflower]: https://github.com/android/sunflower
 
@@ -303,20 +314,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 [medium]:https://medium.com/
 
 [csdn]: https://blog.csdn.net/
-
-[twitter]:https://play.google.com/store/apps/details?id=com.twitter.android
-
-[reddit]:https://play.google.com/store/apps/details?id=com.reddit.frontpage
-
-[google-play]:https://play.google.com/store
-
-[coolapk]:https://www.coolapk.com/
-
-[google-news]:https://play.google.com/store/apps/details?id=com.google.android.apps.magazines
-
-[youtube]:https://play.google.com/store/apps/details?id=com.google.android.youtube
-
-[bilibili]: https://play.google.com/store/apps/details?id=com.bilibili.app.in
 
 ### Utilities
 
