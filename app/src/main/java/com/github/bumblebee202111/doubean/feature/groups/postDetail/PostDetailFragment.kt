@@ -771,11 +771,12 @@ fun TopicCommentAndroidView(
                 }
                 popupMenu.show()
             }
-            comment?.photos.takeUnless { it.isNullOrEmpty() }?.let {
-                photos.setContent {
+
+            photos.setContent {
+                comment?.photos.takeUnless(List<SizedPhoto>?::isNullOrEmpty)?.let {
                     ListItemImages(
                         images = it.map(SizedPhoto::image),
-                        onImageClick = { navigateToImage(it.large.url) }
+                        onImageClick = { image -> navigateToImage(image.large.url) }
                     )
                 }
             }
@@ -804,13 +805,12 @@ fun TopicCommentAndroidView(
                 text = comment?.repliedTo?.text
                 isVisible = !comment?.repliedTo?.text.isNullOrBlank()
             }
-            comment?.repliedTo?.photos.takeUnless { it.isNullOrEmpty() }?.let {
-                repliedToPhotos.setContent {
+            repliedToPhotos.setContent {
+                comment?.repliedTo?.photos.takeUnless(List<SizedPhoto>?::isNullOrEmpty)?.let {
                     ListItemImages(
                         images = it.map(SizedPhoto::image),
-                        onImageClick = { navigateToImage(it.large.url) }
+                        onImageClick = { image -> navigateToImage(image.large.url) }
                     )
-
                 }
             }
 
@@ -824,6 +824,6 @@ fun TopicCommentAndroidView(
             likeCount.text = comment?.voteCount?.toString()
         },
         onReset = {},
-        onRelease = {}
+        
     )
 }
