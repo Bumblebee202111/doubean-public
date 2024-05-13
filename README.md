@@ -187,10 +187,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.5.8\)
 
-- Refactor group detail
-  - MaterialToolBar -> TopAppBar
-  - Spinner -> Button + DropDownMenu
-
 #### To-dos for next release \(0.5.9)
 
 #### Future plans
@@ -209,21 +205,17 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * From NavHostFragment to ComposableNavHostFragment
 * Lazylist problems
   * Restoring scroll position is problematic
-  * Comment items are sometimes visually polluted by others
   * Topic content WebView problems
     * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
     * Sometimes topic content fails to be loaded on some low-end or large-screened devices (not sure which sets constraint)
     * LazyLayoutPinnableItem?
     * ...
-
 * Shared element & navigation-fragment-compose
 * TopAppBar and Edge-to-Edge
   * Reduce MD3 TopAppBar height to 56 dp when https://developer.android.google.cn/jetpack/androidx/releases/compose-material3#1.3.0-alpha06 enters RC
-
 * Topics sort by 
   * "Last updated" -> "active"
   * Add "New Top"
-
 * Follow/favorite/save/subscribe
   * The old local "follow"
     * Rename to favorite (inspired by Reddit)
@@ -232,13 +224,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Follow groups
   * Pin followed groups
   * Add corresponding item action
-
-* More follow/favorite/save/subscribe
-  * Save comments
-  * Subscribe topics
-  * Sync custom lists by maintaining a fake private note (日记) which holds the data
-  * Custom feeds like Reddit
-
 * Fix broken topics feed
 * “每次动态更新请求的帖子总数限制” -> “每次从n条帖子中筛选新动态”
 * Use the new nullable "edit_time" property of network posts
@@ -248,11 +233,14 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Search
   * Search group/tab posts (in-group) 
   * Search posts of all groups (global)
-
+* More follow/favorite/save/subscribe
+  * Save comments
+  * Subscribe topics
+  * Sync custom lists by maintaining a fake private note (日记) which holds the data
+  * Custom feeds like Reddit
 * Real login (which seems impossible)
 * Add load state visualization which was removed during various types of migrations
   * Paging 3 refresh, loading status ...
-
 * \[GroupDetailFragment\] WebView for group
 * Group tab: Track read
 * \[GroupDetailFragment\] Group/tab/post shortcuts
