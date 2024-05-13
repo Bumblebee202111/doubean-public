@@ -59,7 +59,7 @@ class GroupTagTopicRemoteMediator(
                     sortedByDescending(NetworkPostItem::created)
                 else this
             }
-            val nextKey = (start + topics.size).takeIf { it < response.total }
+            val nextKey = (start + response.count).takeIf { it < response.total }
 
             appDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {

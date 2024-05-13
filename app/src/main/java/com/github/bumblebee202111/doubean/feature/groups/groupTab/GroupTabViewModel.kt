@@ -1,15 +1,15 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupTab
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupUserDataRepository
-import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabFragment.Companion.ARG_GROUP_ID
-import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabFragment.Companion.ARG_TAG_ID
 import com.github.bumblebee202111.doubean.model.PostSortBy
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,18 +20,15 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-@HiltViewModel
-class GroupTabViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = GroupTabViewModel.Factory::class)
+class GroupTabViewModel @AssistedInject constructor(
+    @Assisted("groupId") val groupId: String,
+    @Assisted("tabId") val tabId: String?,
     private val groupRepository: GroupRepository,
     private val groupUserDataRepository: GroupUserDataRepository,
     private val preferenceStorage: PreferenceStorage,
-    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-
-    val tabId: String? = savedStateHandle[ARG_TAG_ID]
-    private val groupId: String = savedStateHandle[ARG_GROUP_ID]!!
 
     private val _sortBy = MutableStateFlow<PostSortBy?>(null)
 
@@ -92,5 +89,13 @@ class GroupTabViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            @Assisted("groupId") groupId: String,
+            @Assisted("tabId") tabId: String?,
+        ): GroupTabViewModel
     }
 }

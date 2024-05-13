@@ -4,7 +4,7 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
 
-The development of this app is restarted to meet the requirements the friend who filed the first issue! While we will only develop for them, this project is also going to be used as the playground for fashionable libraries/coding styles such as Jetpack Compose, partially serving the development of MinusOne Music and helping me understand declarative programming. This brings [tons of migration tasks](#migrations), and also means that old libraries and new libraries are currently mixed together.
+The development of this app is resumed to meet the requirements the friend who filed the first issue! While we will only develop for them, this project is also going to be used as the playground for fashionable libraries/coding styles such as Jetpack Compose, partially serving the development of MinusOne Music and helping me understand declarative programming. This brings [tons of migration tasks](#migrations), and also means that old libraries and new libraries are currently mixed together.
 
 It has been inactive for 8 months, as:
 * Reinforced by the org/mods, hilarious remarks can be found everywhere
@@ -31,8 +31,6 @@ Introduction
 
 The app is composed of 4 main screens, two of which are blank and left for future development.
 
-#### GroupFragment
-
 #### HomeFragment (new)
 
 - Following
@@ -40,6 +38,8 @@ The app is composed of 4 main screens, two of which are blank and left for futur
 #### ImageFragment (new)
 
 - Image view and save
+
+#### GroupFragment
 
 ##### Groups Home
 
@@ -55,7 +55,7 @@ The app is composed of 4 main screens, two of which are blank and left for futur
 * Post content
 * Post comments
 
-##### ProfileFragment
+#### ProfileFragment
 
 - Login status
 
@@ -78,7 +78,7 @@ The app is composed of 4 main screens, two of which are blank and left for futur
 
 #### Open-source?
 
-To not get this project/myself into trouble, the update of the source code of the public repo will be suspended. However, the latest release is always available.
+To not get this project/myself into trouble, the update of the source code in the public repo will be suspended. However, the latest release is always available.
 
 ### Who is it for?
 
@@ -189,12 +189,11 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 #### To-dos for current release \(0.5.8\)
 
 - Refactor group detail
-  - ViewPager2 -> HorizontalPager
   - Glide ImageView -> Coil AsyncImage
   - MaterialToolBar -> TopAppBar
   - Spinner -> Button + DropDownMenu
   - Move tab notification setting models to GroupTabViewModel
-- Finish migration to Coil
+- Complete migration to Coil
 - LazyLayoutPinnableItem?
 
 #### To-dos for next release \(0.5.9)
@@ -225,7 +224,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Sometimes topic content fails to be loaded on some low-end or large-screened devices (not sure which sets constraint)
   * ...
 * \[PostDetailFragment\] Show saves and reposts
-* Reduce MD3 TopAppBar height to 56 dp
+* Reduce MD3 TopAppBar height to 56 dp when https://developer.android.google.cn/jetpack/androidx/releases/compose-material3#1.3.0-alpha06 enters RC
 * Paging 3 refresh, loading status ...
 * Sort by "Last updated" -> "active"
 * Follow/favorite/save
