@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+## Version 0.5.8
+
+- Group detail rework. It's now much smoother.
+- Group tab / group search are rewritten with Paging3
+- Complete migrations into Ktor, Coil Compose, Pager, Paging3 and Flow
+  - Remove dependencies of Retrofit, Glide, ViewPager2, LiveData
+- Simplify network resource fetching and no longer use custom paging
+- Fix comment images not being reset when comment index changes
+- Other code optimizations 
+
 ## Version 0.5.7
 
 - New: Topic detail: Allow viewing topic reshares
