@@ -186,7 +186,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.5.9\)
 
-- Fix nullability of `create_time` of topic group
 - Optimize topic list separators
 - Allow dragging full screen images
 - Rename old "follow" to "favorite"
