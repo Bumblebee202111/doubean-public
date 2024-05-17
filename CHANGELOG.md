@@ -3,7 +3,13 @@ Change Log
 
 ## Version 0.5.9
 
-- Tab/default notifications preferences screens are temporary disabled due to some incompatibility between View system and Compose
+- ImageScreen: Support transform gestures
+- Groups: Home My Favorites area will be hidden if you have no favorites
+- Groups: Rename old local "follow" to "favorite"
+- Groups: Screens of tab/default notifications preferences are temporary disabled due to some incompatibility between View system and Compose
+- Remove unnecessary top padding of topic items
+- Support 64-bit devices only
+- Fix nullability of `create_time` of topic group (closes #2)
 
 ## Version 0.5.8
 
