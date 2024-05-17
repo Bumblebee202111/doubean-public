@@ -13,8 +13,8 @@ import com.github.bumblebee202111.doubean.data.db.dao.GroupTopicDao
 import com.github.bumblebee202111.doubean.data.db.dao.GroupTopicRemoteKeyDao
 import com.github.bumblebee202111.doubean.data.db.dao.UserDao
 import com.github.bumblebee202111.doubean.data.db.dao.UserGroupDao
-import com.github.bumblebee202111.doubean.data.db.model.FollowedGroupEntity
-import com.github.bumblebee202111.doubean.data.db.model.FollowedGroupTabEntity
+import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupEntity
+import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupTabEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupPostTagEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultItemEntity
@@ -53,12 +53,12 @@ import kotlinx.serialization.json.Json
         RecommendedGroupEntity::class,
         RecommendedGroupPost::class,
         PostTagCrossRef::class,
-        FollowedGroupEntity::class,
-        FollowedGroupTabEntity::class,
+        FavoriteGroupEntity::class,
+        FavoriteGroupTabEntity::class,
         RecommendedPostNotificationEntity::class,
         UserEntity::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(
@@ -67,7 +67,7 @@ import kotlinx.serialization.json.Json
 abstract class AppDatabase : RoomDatabase() {
     abstract fun groupDao(): GroupDao
     abstract fun userDao(): UserDao
-    abstract fun groupFollowsAndSavesDao(): UserGroupDao
+    abstract fun userGroupDao(): UserGroupDao
 
     abstract fun groupTopicDao(): GroupTopicDao
 

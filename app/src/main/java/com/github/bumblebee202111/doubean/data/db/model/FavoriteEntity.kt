@@ -3,11 +3,11 @@ package com.github.bumblebee202111.doubean.data.db.model
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import java.util.Calendar
 
-sealed interface FollowableEntity {
+sealed interface FavoriteEntity {
 
     val groupId: String
 
-    val followDate: Calendar
+    val favoriteDate: Calendar
 
     val enablePostNotifications: Boolean
 

@@ -1,12 +1,12 @@
 package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.ColumnInfo
-import com.github.bumblebee202111.doubean.model.GroupFollowItem
+import com.github.bumblebee202111.doubean.model.GroupFavoriteItem
 import java.util.Calendar
 
-data class PopulatedGroupFollowItem(
-    @ColumnInfo("follow_date")
-    val followDate: Calendar,
+data class PopulatedGroupFavoriteItem(
+    @ColumnInfo("favorite_date")
+    val favoriteDate: Calendar,
     @ColumnInfo("group_id")
     val groupId: String,
     @ColumnInfo("group_name")
@@ -19,8 +19,8 @@ data class PopulatedGroupFollowItem(
     val tabName: String? = null,
 )
 
-fun PopulatedGroupFollowItem.asExternalModel() = GroupFollowItem(
-    followDate = followDate,
+fun PopulatedGroupFavoriteItem.asExternalModel() = GroupFavoriteItem(
+    favoriteDate = favoriteDate,
     groupId = groupId,
     groupName = groupName,
     groupAvatarUrl = groupAvatarUrl,

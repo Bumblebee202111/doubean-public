@@ -32,7 +32,7 @@ data class PopulatedRecommendedGroupItemGroup(
         parentColumn = "id",
         entityColumn = "group_id"
     )
-    val followedGroup: FollowedGroupEntity?,
+    val favoriteGroup: FavoriteGroupEntity?,
 )
 
 
@@ -54,5 +54,5 @@ fun PopulatedRecommendedGroupItemGroup.asExternalModel() = RecommendedGroupItemG
     avatarUrl = partialEntity.avatarUrl,
     color = partialEntity.color,
     shortDescription = partialEntity.shortDescription,
-    isFollowed = followedGroup != null
+    isFavorite = favoriteGroup != null
 )

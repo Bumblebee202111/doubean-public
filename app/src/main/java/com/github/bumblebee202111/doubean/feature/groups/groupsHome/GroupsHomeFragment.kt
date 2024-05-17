@@ -59,7 +59,7 @@ import androidx.navigation.fragment.findNavController
 import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.ListItemRecommendedGroupBinding
-import com.github.bumblebee202111.doubean.model.GroupFollowItem
+import com.github.bumblebee202111.doubean.model.GroupFavoriteItem
 import com.github.bumblebee202111.doubean.model.GroupItem
 import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
 import com.github.bumblebee202111.doubean.ui.theme.AppTheme
@@ -102,7 +102,7 @@ fun GroupsHomeScreen(
     openGroup: (groupId: String, tabId: String?) -> Unit,
 ) {
     val joinedGroups by viewModel.joinedGroups.collectAsStateWithLifecycle()
-    val following by viewModel.follows.collectAsStateWithLifecycle()
+    val following by viewModel.favorites.collectAsStateWithLifecycle()
     val groupsOfTheDay by viewModel.groupsOfTheDay.collectAsStateWithLifecycle()
     Scaffold(
         topBar = {
@@ -151,7 +151,7 @@ fun LazyListScope.yourGroups(
 ) {
     item {
         Text(
-            "Your Groups",
+            "My Groups",
             style = MaterialTheme.typography.titleMedium
         )
         LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -194,18 +194,14 @@ fun LazyListScope.yourGroups(
 }
 
 fun LazyListScope.yourFollowing(
-    follows: List<GroupFollowItem>,
+    follows: List<GroupFavoriteItem>,
     onGroupItemClick: (groupId: String, tabId: String?) -> Unit,
 ) {
     item {
         Text(
             modifier = Modifier.padding(top = 16.dp),
-            text = "Your Following (Local)",
+            text = "Favorites (Local Feature)",
             style = MaterialTheme.typography.titleMedium
-        )
-        Text(
-            "Note: To be reworked soon",
-            style = MaterialTheme.typography.bodyMedium
         )
         LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             items(items = follows, key = { group -> listOf(group.groupId, group.tabId) }) { group ->
@@ -341,10 +337,10 @@ private fun LazyListScope.groupsOfTheDay(
 fun YourFollowingPreview(
 ) {
     val mockData = listOf(
-        GroupFollowItem(Calendar.getInstance(), "1", "123", "wwww"),
-        GroupFollowItem(Calendar.getInstance(), "12", "455234544444", "wwww"),
-        GroupFollowItem(Calendar.getInstance(), "123", "6666", "wwww"),
-        GroupFollowItem(Calendar.getInstance(), "1124", "", "wwww", "", "12345"),
+        GroupFavoriteItem(Calendar.getInstance(), "1", "123", "wwww"),
+        GroupFavoriteItem(Calendar.getInstance(), "12", "455234544444", "wwww"),
+        GroupFavoriteItem(Calendar.getInstance(), "123", "6666", "wwww"),
+        GroupFavoriteItem(Calendar.getInstance(), "1124", "", "wwww", "", "12345"),
     )
     LazyColumn {
         yourFollowing(mockData) { _, _ -> }

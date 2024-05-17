@@ -49,10 +49,10 @@ class GroupTabViewModel @AssistedInject constructor(
         _sortBy.value = topicSortBy
     }
 
-    fun addFollow() {
+    fun addFavorite() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                groupUserDataRepository.addFollowedTab(
+                groupUserDataRepository.addFavoriteTab(
                     groupId = groupId,
                     tabId = tabId!!,
                     enablePostNotifications = preferenceStorage.perFollowDefaultEnablePostNotifications.first(),
@@ -64,9 +64,9 @@ class GroupTabViewModel @AssistedInject constructor(
         }
     }
 
-    fun removeFollow() {
+    fun removeFavorite() {
         viewModelScope.launch {
-            groupUserDataRepository.removeFollowedTab(tabId!!)
+            groupUserDataRepository.removeFavoriteTab(tabId!!)
         }
     }
 
