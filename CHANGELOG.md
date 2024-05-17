@@ -3,6 +3,8 @@ Change Log
 
 ## Version 0.5.9
 
+- Tab/default notifications preferences screens are temporary disabled due to some incompatibility between View system and Compose
+
 ## Version 0.5.8
 
 - Group detail rework. It's now much smoother.

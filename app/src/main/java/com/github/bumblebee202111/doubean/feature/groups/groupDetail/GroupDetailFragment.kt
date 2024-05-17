@@ -42,7 +42,6 @@ import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.LayoutGroupDetailBinding
 import com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupNotificationsPreferenceDialogFragment.Companion.DIALOG_GROUP_NOTIFICATIONS_PREFERENCE
-import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabNotificationsPreferenceDialogFragment
 import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabScreen
 import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabViewModel
 import com.github.bumblebee202111.doubean.model.GroupDetail
@@ -71,11 +70,13 @@ class GroupDetailFragment : Fragment() {
                         .show(childFragmentManager, DIALOG_GROUP_NOTIFICATIONS_PREFERENCE)
                 },
                 showTabNotificationsPrefDialog = { tabId ->
-                    GroupTabNotificationsPreferenceDialogFragment.newInstance(tabId)
-                        .show(
-                            childFragmentManager,
-                            GroupTabNotificationsPreferenceDialogFragment.DIALOG_GROUP_TAB_NOTIFICATIONS_PREFERENCE
-                        )
+
+                    
+
+
+
+
+
 
                 },
                 onBackClick = {
@@ -121,9 +122,7 @@ fun GroupDetailScreen(
             taggedTabs = taggedTabs,
             addFavorite = groupDetailViewModel::addFavorite,
             removeFavorite = groupDetailViewModel::removeFavorite,
-            showNotificationsPrefDialog = {
-                showNotificationsPrefDialog(groupId)
-            },
+            showNotificationsPrefDialog = { showNotificationsPrefDialog(groupId) },
             showTabNotificationsPrefDialog = showTabNotificationsPrefDialog,
             onBackClick = onBackClick,
             onShareGroup = {

@@ -2,11 +2,11 @@ package com.github.bumblebee202111.doubean.feature.groups.groupTab
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.DialogGroupTabNotificationsPreferenceBinding
 import com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupDetailViewModel
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 class GroupTabNotificationsPreferenceDialogFragment : AppCompatDialogFragment() {
 
-    private val groupDetailViewModel: GroupDetailViewModel by viewModels({ requireParentFragment().requireParentFragment() })
+    private val groupDetailViewModel: GroupDetailViewModel by viewModels({ requireParentFragment() })
     private val groupTabViewModel: GroupTabViewModel by viewModels({ requireParentFragment() })
     lateinit var binding: DialogGroupTabNotificationsPreferenceBinding
     private lateinit var enableGroupNotificationsPref: SwitchMaterial
@@ -42,7 +42,7 @@ class GroupTabNotificationsPreferenceDialogFragment : AppCompatDialogFragment() 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         binding =
-            DialogGroupTabNotificationsPreferenceBinding.inflate(requireActivity().layoutInflater)
+            DialogGroupTabNotificationsPreferenceBinding.inflate(LayoutInflater.from(context))
 
         enableGroupNotificationsPref = binding.enablePostNotificationsPref
         allowDuplicateNotificationsPref = binding.allowDuplicateNotificationsPref
@@ -68,7 +68,7 @@ class GroupTabNotificationsPreferenceDialogFragment : AppCompatDialogFragment() 
         feedRequestPostCountLimitEditText.filters =
             arrayOf(MinMaxEditTextInputFilter(1, 50))
 
-        repeatWithViewLifecycle(Lifecycle.State.RESUMED) {
+        requireParentFragment().repeatWithViewLifecycle {
             launch {
                 groupDetailViewModel.group.collect { group ->
                     group?.findTab(tabId)?.let { tab ->

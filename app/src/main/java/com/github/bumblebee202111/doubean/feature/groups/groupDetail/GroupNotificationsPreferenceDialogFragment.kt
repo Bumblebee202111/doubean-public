@@ -2,11 +2,11 @@ package com.github.bumblebee202111.doubean.feature.groups.groupDetail
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.DialogGroupNotificationsPreferenceBinding
 import com.github.bumblebee202111.doubean.model.TopicSortBy
@@ -32,10 +32,10 @@ class GroupNotificationsPreferenceDialogFragment : AppCompatDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         binding =
-            DialogGroupNotificationsPreferenceBinding.inflate(requireActivity().layoutInflater)
+            DialogGroupNotificationsPreferenceBinding.inflate(LayoutInflater.from(context))
                 .apply {
                     viewModel = groupDetailViewModel
-                    lifecycleOwner = this@GroupNotificationsPreferenceDialogFragment
+                    lifecycleOwner = requireParentFragment()
                 }
 
         enableGroupNotificationsPref = binding.enablePostNotificationsPref
@@ -62,7 +62,7 @@ class GroupNotificationsPreferenceDialogFragment : AppCompatDialogFragment() {
         binding.feedRequestPostCountLimitEditText.filters =
             arrayOf(MinMaxEditTextInputFilter(1, 50))
 
-        repeatWithViewLifecycle(Lifecycle.State.RESUMED) {
+        requireParentFragment().repeatWithViewLifecycle {
             launch {
                 groupDetailViewModel.group.collect { group ->
                     group?.sortRecommendedPostsBy?.let {
