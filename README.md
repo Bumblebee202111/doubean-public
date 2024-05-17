@@ -186,9 +186,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.5.9\)
 
-- Show/hide groups home areas conditionally
-  - Your Favorites area will be hidden if you have no favorites 
-  - Your Groups area will be hidden if you are not logged in
 - Build for 64-bit only
 
 #### To-dos for next release \(0.5.10)

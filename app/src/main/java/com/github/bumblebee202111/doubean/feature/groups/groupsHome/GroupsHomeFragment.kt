@@ -133,7 +133,7 @@ fun GroupsHomeScreen(
             joinedGroups?.let { groups ->
                 yourGroups(groups) { openGroup(it, null) }
             }
-            following?.let { groups ->
+            following?.takeIf(List<GroupFavoriteItem>::isNotEmpty)?.let { groups ->
                 yourFollowing(groups, openGroup)
             }
             groupsOfTheDay?.let { groups ->
