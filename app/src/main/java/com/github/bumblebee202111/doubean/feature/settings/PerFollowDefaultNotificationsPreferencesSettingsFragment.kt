@@ -13,7 +13,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreferenceCompat
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.PostSortBy
+import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.common.repeatWithViewLifecycle
 import com.google.android.material.appbar.MaterialToolbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -117,15 +117,15 @@ class PerFollowDefaultNotificationsPreferencesSettingsFragment : PreferenceFragm
 
     private fun getSortRecommendedPostsBy(value: String) =
         when (value) {
-            getString(R.string.last_updated_value) -> PostSortBy.LAST_UPDATED
-            getString(R.string.new_top_value) -> PostSortBy.NEW_TOP
+            getString(R.string.last_updated_value) -> TopicSortBy.LAST_UPDATED
+            getString(R.string.new_top_value) -> TopicSortBy.NEW_TOP
             else -> throw IndexOutOfBoundsException()
         }
 
-    private fun getSortRecommendedPostsByValue(postSortBy: PostSortBy) =
-        when (postSortBy) {
-            PostSortBy.LAST_UPDATED -> getString(R.string.last_updated_value)
-            PostSortBy.NEW_TOP -> getString(R.string.new_top_value)
+    private fun getSortRecommendedPostsByValue(topicSortBy: TopicSortBy) =
+        when (topicSortBy) {
+            TopicSortBy.LAST_UPDATED -> getString(R.string.last_updated_value)
+            TopicSortBy.NEW_TOP -> getString(R.string.new_top_value)
             else -> throw IndexOutOfBoundsException()
         }
 

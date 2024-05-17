@@ -3,7 +3,7 @@ package com.github.bumblebee202111.doubean.data.db.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.github.bumblebee202111.doubean.model.PostSortBy
+import com.github.bumblebee202111.doubean.model.TopicSortBy
 import java.util.Calendar
 
 @Entity(
@@ -27,7 +27,7 @@ data class FollowedGroupEntity(
     override val allowDuplicateNotifications: Boolean,
 
     @ColumnInfo("sort_recommended_posts_by")
-    override val sortRecommendedPostsBy: PostSortBy,
+    override val sortRecommendedPostsBy: TopicSortBy,
 
     @ColumnInfo("last_notified_time_millis")
     override val lastNotifiedTimeMillis: Long = 0,

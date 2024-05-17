@@ -186,7 +186,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.5.9\)
 
-- Optimize topic list separators
 - Allow dragging full screen images
 - Rename old "follow" to "favorite"
 - Show/hide groups home areas conditionally
@@ -202,6 +201,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Replace content of the recommended groups area with recommended posts
   * Support pagination & add favorite tabs later
 * Gracefully remove Fragments: Stop calling Fragment methods other than onCreateView
+* No RecyclerViews
 * Gradual migrations: <span id="migrations"></span>
   * From MD2 / custom design to MD3
   * From View and data binding to Jetpack Compose

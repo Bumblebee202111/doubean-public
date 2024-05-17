@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.groups.postDetail
+package com.github.bumblebee202111.doubean.feature.groups.topicdetail
 
 import android.util.Log
 import androidx.core.text.htmlEncode
@@ -10,10 +10,10 @@ import com.github.bumblebee202111.doubean.data.repository.GroupTopicRepo
 import com.github.bumblebee202111.doubean.data.repository.PollRepository
 import com.github.bumblebee202111.doubean.model.Poll
 import com.github.bumblebee202111.doubean.model.PollId
-import com.github.bumblebee202111.doubean.model.PostCommentSortBy
 import com.github.bumblebee202111.doubean.model.Question
 import com.github.bumblebee202111.doubean.model.QuestionId
 import com.github.bumblebee202111.doubean.model.Result
+import com.github.bumblebee202111.doubean.model.TopicCommentSortBy
 import com.github.bumblebee202111.doubean.model.TopicContentEntityId
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,13 +26,13 @@ import java.math.RoundingMode
 import javax.inject.Inject
 
 @HiltViewModel
-class PostDetailViewModel @Inject constructor(
+class TopicDetailViewModel @Inject constructor(
     private val pollRepository: PollRepository,
     topicRepo: GroupTopicRepo,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    val topicId = PostDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).postId
+    val topicId = TopicDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).postId
 
     private val commentsData = topicRepo.getTopicCommentsData(topicId)
 
@@ -41,13 +41,13 @@ class PostDetailViewModel @Inject constructor(
 
     val allComments = commentsData.second.cachedIn(viewModelScope)
 
-    private val _commentsSortBy: MutableStateFlow<PostCommentSortBy> =
-        MutableStateFlow(PostCommentSortBy.ALL)
+    private val _commentsSortBy: MutableStateFlow<TopicCommentSortBy> =
+        MutableStateFlow(TopicCommentSortBy.ALL)
     val commentsSortBy = _commentsSortBy.asStateFlow()
 
     val shouldShowSpinner = commentsData.first.map { it.isNotEmpty() }.stateInUi(false)
 
-    fun updateCommentsSortBy(commentSortBy: PostCommentSortBy) {
+    fun updateCommentsSortBy(commentSortBy: TopicCommentSortBy) {
         _commentsSortBy.value = commentSortBy
     }
 

@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.github.bumblebee202111.doubean.feature.groups.postDetail
+package com.github.bumblebee202111.doubean.feature.groups.topicdetail
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -86,9 +86,9 @@ import com.github.bumblebee202111.doubean.databinding.ListItemPostCommentBinding
 import com.github.bumblebee202111.doubean.databinding.ViewPostDetailHeaderBinding
 import com.github.bumblebee202111.doubean.feature.groups.common.TopicDetailActivityItemUserProfileImage
 import com.github.bumblebee202111.doubean.model.PostComment
-import com.github.bumblebee202111.doubean.model.PostCommentSortBy
 import com.github.bumblebee202111.doubean.model.PostDetail
 import com.github.bumblebee202111.doubean.model.SizedPhoto
+import com.github.bumblebee202111.doubean.model.TopicCommentSortBy
 import com.github.bumblebee202111.doubean.ui.common.DoubeanWebView
 import com.github.bumblebee202111.doubean.ui.common.TopicWebViewClient
 import com.github.bumblebee202111.doubean.ui.common.UserProfileImage
@@ -105,14 +105,14 @@ import com.google.accompanist.web.rememberWebViewNavigator
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PostDetailFragment : Fragment() {
+class TopicDetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ) = content {
         AppTheme {
             PostDetailScreen(
-                postDetailViewModel = viewModel(),
+                topicDetailViewModel = viewModel(),
                 onBackClick = { findNavController().popBackStack() },
                 onTopicShareClick = { topic ->
                     val shareText = StringBuilder()
@@ -132,13 +132,13 @@ class PostDetailFragment : Fragment() {
                 },
                 navigateToGroup = { groupId, tabId ->
                     findNavController().navigate(
-                        PostDetailFragmentDirections.actionPostDetailToGroupDetail(groupId)
+                        TopicDetailFragmentDirections.actionPostDetailToGroupDetail(groupId)
                             .setDefaultTabId(tabId)
                     )
                 },
                 navigateToReshareStatuses = { topicId ->
                     findNavController().navigate(
-                        PostDetailFragmentDirections.actionTopicDetailToReshareStatuses(
+                        TopicDetailFragmentDirections.actionTopicDetailToReshareStatuses(
                             topicId
                         )
                     )
@@ -177,7 +177,7 @@ class PostDetailFragment : Fragment() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun PostDetailScreen(
-        postDetailViewModel: PostDetailViewModel,
+        topicDetailViewModel: TopicDetailViewModel,
         onBackClick: () -> Unit,
         onTopicShareClick: (PostDetail) -> Unit,
         navigateToWebView: (url: String) -> Unit,
@@ -189,13 +189,13 @@ class PostDetailFragment : Fragment() {
         viewInDouban: (uri: String) -> Unit,
         viewInActivity: (url: String) -> Unit,
     ) {
-        val topic by postDetailViewModel.topic.collectAsStateWithLifecycle()
-        val popularComments by postDetailViewModel.popularComments.collectAsStateWithLifecycle()
-        val allCommentLazyPagingItems = postDetailViewModel.allComments.collectAsLazyPagingItems()
-        val contentHtml by postDetailViewModel.contentHtml.collectAsStateWithLifecycle()
-        val commentSortBy by postDetailViewModel.commentsSortBy.collectAsStateWithLifecycle()
+        val topic by topicDetailViewModel.topic.collectAsStateWithLifecycle()
+        val popularComments by topicDetailViewModel.popularComments.collectAsStateWithLifecycle()
+        val allCommentLazyPagingItems = topicDetailViewModel.allComments.collectAsLazyPagingItems()
+        val contentHtml by topicDetailViewModel.contentHtml.collectAsStateWithLifecycle()
+        val commentSortBy by topicDetailViewModel.commentsSortBy.collectAsStateWithLifecycle()
         val groupColorInt = topic?.group?.color
-        val shouldShowSpinner by postDetailViewModel.shouldShowSpinner.collectAsStateWithLifecycle()
+        val shouldShowSpinner by topicDetailViewModel.shouldShowSpinner.collectAsStateWithLifecycle()
 
         var shouldShowDialog by remember {
             mutableStateOf(false)
@@ -330,13 +330,13 @@ class PostDetailFragment : Fragment() {
                     item(key = "TopicCommentSortBy", contentType = "TopicCommentSortBy") {
                         TopicCommentSortBy(
                             commentSortBy = commentSortBy,
-                            updateCommentSortBy = postDetailViewModel::updateCommentsSortBy
+                            updateCommentSortBy = topicDetailViewModel::updateCommentsSortBy
                         )
                     }
                 }
 
                 when (commentSortBy) {
-                    PostCommentSortBy.TOP -> {
+                    TopicCommentSortBy.TOP -> {
                         items(
                             count = popularComments.size,
                             key = { popularComments[it].id },
@@ -353,13 +353,12 @@ class PostDetailFragment : Fragment() {
                         }
                     }
 
-                    PostCommentSortBy.ALL -> {
+                    TopicCommentSortBy.ALL -> {
                         items(
                             count = allCommentLazyPagingItems.itemCount,
                             key = allCommentLazyPagingItems.itemKey { it.id },
                             contentType = allCommentLazyPagingItems.itemContentType { "TopicCommentAndroidView" }) { index ->
                             TopicCommentAndroidView(
-                                modifier = Modifier.padding(top = 8.dp),
                                 comment = allCommentLazyPagingItems[index],
                                 groupColorInt = groupColorInt,
                                 topic = topic,
@@ -373,7 +372,7 @@ class PostDetailFragment : Fragment() {
 
             }
         }
-        (if (commentSortBy == PostCommentSortBy.TOP) popularComments.size else topic?.commentCount)?.let {
+        (if (commentSortBy == TopicCommentSortBy.TOP) popularComments.size else topic?.commentCount)?.let {
             if (shouldShowDialog) {
 
                 JumpToCommentOfIndexDialog(
@@ -656,21 +655,21 @@ fun TopicDetailHeader(
 
 @Composable
 fun TopicCommentSortBy(
-    commentSortBy: PostCommentSortBy,
-    updateCommentSortBy: (PostCommentSortBy) -> Unit,
+    commentSortBy: TopicCommentSortBy,
+    updateCommentSortBy: (TopicCommentSortBy) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val sortCommentsByLabels =
         stringArrayResource(id = R.array.sort_comments_by_array)
 
     val indexToSortBy = mapOf(
-        0 to PostCommentSortBy.TOP,
-        1 to PostCommentSortBy.ALL
+        0 to TopicCommentSortBy.TOP,
+        1 to TopicCommentSortBy.ALL
     )
 
     val sortByToIndex = mapOf(
-        PostCommentSortBy.TOP to 0,
-        PostCommentSortBy.ALL to 1
+        TopicCommentSortBy.TOP to 0,
+        TopicCommentSortBy.ALL to 1
     )
 
     Box(

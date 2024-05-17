@@ -11,7 +11,7 @@ import com.github.bumblebee202111.doubean.data.db.model.GroupTabTopicRemoteKey
 import com.github.bumblebee202111.doubean.data.db.model.GroupTagTopicItemEntity
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostItem
 import com.github.bumblebee202111.doubean.data.db.model.UserEntity
-import com.github.bumblebee202111.doubean.model.PostSortBy
+import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.model.getRequestParamString
 import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkPostItem
@@ -23,7 +23,7 @@ import com.github.bumblebee202111.doubean.network.model.tagCrossRefs
 class GroupTagTopicRemoteMediator(
     private val groupId: String,
     private val tagId: String?,
-    private val sortBy: PostSortBy,
+    private val sortBy: TopicSortBy,
     private val service: ApiService,
     private val appDatabase: AppDatabase,
 ) : RemoteMediator<Int, PopulatedPostItem>() {
@@ -55,7 +55,7 @@ class GroupTagTopicRemoteMediator(
             )
 
             val topics = response.items.filterIsInstance<NetworkPostItem>().run {
-                if (sortBy == PostSortBy.NEW || sortBy == PostSortBy.NEW_TOP)
+                if (sortBy == TopicSortBy.NEW || sortBy == TopicSortBy.NEW_TOP)
                     sortedByDescending(NetworkPostItem::created)
                 else this
             }

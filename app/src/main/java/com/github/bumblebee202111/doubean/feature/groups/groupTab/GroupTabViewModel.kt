@@ -6,7 +6,7 @@ import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupUserDataRepository
-import com.github.bumblebee202111.doubean.model.PostSortBy
+import com.github.bumblebee202111.doubean.model.TopicSortBy
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -30,7 +30,7 @@ class GroupTabViewModel @AssistedInject constructor(
     private val preferenceStorage: PreferenceStorage,
 ) : ViewModel() {
 
-    private val _sortBy = MutableStateFlow<PostSortBy?>(null)
+    private val _sortBy = MutableStateFlow<TopicSortBy?>(null)
 
     val sortBy = _sortBy.asStateFlow()
 
@@ -45,8 +45,8 @@ class GroupTabViewModel @AssistedInject constructor(
             } ?: emptyFlow()
         }.cachedIn(viewModelScope)
 
-    fun setSortBy(postSortBy: PostSortBy) {
-        _sortBy.value = postSortBy
+    fun setSortBy(topicSortBy: TopicSortBy) {
+        _sortBy.value = topicSortBy
     }
 
     fun addFollow() {
@@ -73,7 +73,7 @@ class GroupTabViewModel @AssistedInject constructor(
     fun saveNotificationsPreference(
         enableNotifications: Boolean,
         allowNotificationUpdates: Boolean,
-        sortRecommendedPostsBy: PostSortBy,
+        sortRecommendedPostsBy: TopicSortBy,
         numberOfPostsLimitEachFeedFetch: Int,
     ) {
         viewModelScope.launch {

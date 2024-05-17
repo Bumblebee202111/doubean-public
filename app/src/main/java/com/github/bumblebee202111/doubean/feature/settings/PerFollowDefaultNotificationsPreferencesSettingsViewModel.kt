@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.coroutines.AppDispatchers
 import com.github.bumblebee202111.doubean.coroutines.Dispatcher
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
-import com.github.bumblebee202111.doubean.model.PostSortBy
+import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -43,9 +43,9 @@ class PerFollowDefaultNotificationsPreferencesSettingsViewModel @Inject construc
     val sortRecommendedPostsBy =
         preferenceStorage.perFollowDefaultSortRecommendedPostsBy.flowOn(ioDispatcher).stateInUi()
 
-    fun setSortRecommendedPostsBy(postSortBy: PostSortBy) {
+    fun setSortRecommendedPostsBy(topicSortBy: TopicSortBy) {
         viewModelScope.launch {
-            preferenceStorage.setPerFollowDefaultSortRecommendedPostsBy(postSortBy)
+            preferenceStorage.setPerFollowDefaultSortRecommendedPostsBy(topicSortBy)
         }
     }
 

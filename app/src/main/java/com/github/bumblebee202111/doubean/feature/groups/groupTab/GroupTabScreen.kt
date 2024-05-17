@@ -29,7 +29,7 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.ListItemPostBinding
 import com.github.bumblebee202111.doubean.databinding.ViewGroupTabActionsBinding
 import com.github.bumblebee202111.doubean.model.GroupDetail
-import com.github.bumblebee202111.doubean.model.PostSortBy
+import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.common.UserProfileImage
 import com.github.bumblebee202111.doubean.ui.common.rememberLazyListStatePagingWorkaround
 import com.github.bumblebee202111.doubean.util.ShareUtil
@@ -275,11 +275,11 @@ fun GroupTabScreen(
     }
 }
 
-private fun getSortByAt(position: Int): PostSortBy {
+private fun getSortByAt(position: Int): TopicSortBy {
     return when (position) {
-        0 -> PostSortBy.LAST_UPDATED
-        1 -> PostSortBy.NEW
-        2 -> PostSortBy.TOP
+        0 -> TopicSortBy.LAST_UPDATED
+        1 -> TopicSortBy.NEW
+        2 -> TopicSortBy.TOP
         else -> throw (IndexOutOfBoundsException())
     }
 }

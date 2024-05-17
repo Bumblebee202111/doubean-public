@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.github.bumblebee202111.doubean.data.db.model.GroupTabTopicRemoteKey
-import com.github.bumblebee202111.doubean.model.PostSortBy
+import com.github.bumblebee202111.doubean.model.TopicSortBy
 
 @Dao
 interface GroupTopicRemoteKeyDao {
@@ -17,9 +17,9 @@ interface GroupTopicRemoteKeyDao {
     suspend fun remoteKey(
         groupId: String,
         tabId: String,
-        sortBy: PostSortBy,
+        sortBy: TopicSortBy,
     ): GroupTabTopicRemoteKey
 
     @Query("DELETE FROM group_tab_topic_remote_keys WHERE group_id = :groupId AND tab_id = :tabId AND sort_by= :sortBy")
-    suspend fun delete(groupId: String, tabId: String, sortBy: PostSortBy)
+    suspend fun delete(groupId: String, tabId: String, sortBy: TopicSortBy)
 }

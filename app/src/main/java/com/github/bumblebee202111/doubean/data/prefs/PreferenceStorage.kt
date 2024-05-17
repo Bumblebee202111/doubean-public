@@ -18,7 +18,7 @@ import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.Preferenc
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_RECEIVE_NOTIFICATIONS
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_START_APP_WITH_GROUPS
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_UDID
-import com.github.bumblebee202111.doubean.model.PostSortBy
+import com.github.bumblebee202111.doubean.model.TopicSortBy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
@@ -98,15 +98,15 @@ class PreferenceStorage(
         it[PREF_PER_FOLLOW_ALLOW_DUPLICATE_NOTIFICATIONS] ?: false
     }
 
-    suspend fun setPerFollowDefaultSortRecommendedPostsBy(sortRecommendedPostsBy: PostSortBy) {
+    suspend fun setPerFollowDefaultSortRecommendedPostsBy(sortRecommendedPostsBy: TopicSortBy) {
         dataStore.edit {
             it[PREF_PER_FOLLOW_SORT_RECOMMENDED_POSTS_BY] = sortRecommendedPostsBy.toString()
         }
     }
 
     val perFollowDefaultSortRecommendedPostsBy = dataStore.data.map { p ->
-        p[PREF_PER_FOLLOW_SORT_RECOMMENDED_POSTS_BY]?.let { PostSortBy.valueOf(it) }
-            ?: PostSortBy.NEW_TOP
+        p[PREF_PER_FOLLOW_SORT_RECOMMENDED_POSTS_BY]?.let { TopicSortBy.valueOf(it) }
+            ?: TopicSortBy.NEW_TOP
     }
 
     suspend fun setPerFollowDefaultFeedRequestPostCountLimit(feedRequestPostCountLimit: Int) {

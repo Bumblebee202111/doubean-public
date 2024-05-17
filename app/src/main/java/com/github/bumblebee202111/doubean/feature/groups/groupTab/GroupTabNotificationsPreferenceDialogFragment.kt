@@ -10,7 +10,7 @@ import androidx.lifecycle.Lifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.DialogGroupTabNotificationsPreferenceBinding
 import com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupDetailViewModel
-import com.github.bumblebee202111.doubean.model.PostSortBy
+import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.common.repeatWithViewLifecycle
 import com.github.bumblebee202111.doubean.util.MinMaxEditTextInputFilter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -109,15 +109,15 @@ class GroupTabNotificationsPreferenceDialogFragment : AppCompatDialogFragment() 
 
     private fun getPostSortByAt(spinnerItemPosition: Int) =
         when (spinnerItemPosition) {
-            0 -> PostSortBy.LAST_UPDATED
-            1 -> PostSortBy.NEW_TOP
+            0 -> TopicSortBy.LAST_UPDATED
+            1 -> TopicSortBy.NEW_TOP
             else -> throw java.lang.IndexOutOfBoundsException()
         }
 
-    private fun getSpinnerItemPositionOf(postSortBy: PostSortBy) =
-        when (postSortBy) {
-            PostSortBy.LAST_UPDATED -> 0
-            PostSortBy.NEW_TOP -> 1
+    private fun getSpinnerItemPositionOf(topicSortBy: TopicSortBy) =
+        when (topicSortBy) {
+            TopicSortBy.LAST_UPDATED -> 0
+            TopicSortBy.NEW_TOP -> 1
             else -> throw java.lang.IndexOutOfBoundsException()
         }
 

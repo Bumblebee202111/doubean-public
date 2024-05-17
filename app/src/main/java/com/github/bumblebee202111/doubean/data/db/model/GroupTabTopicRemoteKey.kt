@@ -2,7 +2,7 @@ package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import com.github.bumblebee202111.doubean.model.PostSortBy
+import com.github.bumblebee202111.doubean.model.TopicSortBy
 
 @Entity("group_tab_topic_remote_keys", primaryKeys = ["group_id", "tab_id", "sort_by"])
 data class GroupTabTopicRemoteKey(
@@ -11,6 +11,6 @@ data class GroupTabTopicRemoteKey(
     @ColumnInfo("tab_id")
     val tabId: String,
     @ColumnInfo("sort_by")
-    val sortBy: PostSortBy,
+    val sortBy: TopicSortBy,
     val nextKey: Int?,
 )

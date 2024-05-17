@@ -8,8 +8,8 @@ import com.github.bumblebee202111.doubean.coroutines.Dispatcher
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupUserDataRepository
-import com.github.bumblebee202111.doubean.model.PostSortBy
 import com.github.bumblebee202111.doubean.model.Result
+import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -63,7 +63,7 @@ class GroupDetailViewModel @Inject constructor(
     fun saveNotificationsPreference(
         enableNotifications: Boolean,
         allowNotificationUpdates: Boolean,
-        sortRecommendedPostsBy: PostSortBy,
+        sortRecommendedPostsBy: TopicSortBy,
         numberOfPostsLimitEachFeedFetch: Int,
     ) {
         viewModelScope.launch {
