@@ -18,7 +18,7 @@ data class PopulatedGroupDetail(
         parentColumn = "id",
         entityColumn = "group_id"
     )
-    val followedGroup: FollowedGroupEntity?,
+    val favoriteGroup: FavoriteGroupEntity?,
 )
 
 data class PopulatedGroupTab(
@@ -28,14 +28,14 @@ data class PopulatedGroupTab(
         parentColumn = "id",
         entityColumn = "tab_id"
     )
-    val followedTab: FollowedGroupTabEntity?,
+    val favoriteTab: FavoriteGroupTabEntity?,
 )
 
 fun PopulatedGroupDetail.asExternalModel() = GroupDetail(
     id = partialEntity.id,
     name = partialEntity.name,
     memberCount = partialEntity.memberCount,
-    postCount = partialEntity.postCount,
+    postCount = partialEntity.topicCount,
     shareUrl = partialEntity.shareUrl,
     url = partialEntity.url,
     uri = partialEntity.uri,
@@ -45,20 +45,20 @@ fun PopulatedGroupDetail.asExternalModel() = GroupDetail(
     description = partialEntity.description,
     tabs = tabs.map { it.asExternalModel() },
     color = partialEntity.color,
-    isFollowed = followedGroup != null,
-    enableNotifications = followedGroup?.enablePostNotifications,
-    allowDuplicateNotifications = followedGroup?.allowDuplicateNotifications,
-    sortRecommendedPostsBy = followedGroup?.sortRecommendedPostsBy,
-    feedRequestPostCountLimit = followedGroup?.feedRequestPostCountLimit,
+    isFavorited = favoriteGroup != null,
+    enableNotifications = favoriteGroup?.enablePostNotifications,
+    allowDuplicateNotifications = favoriteGroup?.allowDuplicateNotifications,
+    sortRecommendedPostsBy = favoriteGroup?.sortRecommendedPostsBy,
+    feedRequestPostCountLimit = favoriteGroup?.feedRequestPostCountLimit,
 )
 
 fun PopulatedGroupTab.asExternalModel() = GroupTab(
     id = entity.id,
     name = entity.name,
     seq = entity.seq,
-    isFollowed = followedTab != null,
-    enableNotifications = followedTab?.enablePostNotifications,
-    allowDuplicateNotifications = followedTab?.allowDuplicateNotifications,
-    sortRecommendedPostsBy = followedTab?.sortRecommendedPostsBy,
-    feedRequestPostCountLimit = followedTab?.feedRequestPostCountLimit,
+    isFavorite = favoriteTab != null,
+    enableNotifications = favoriteTab?.enablePostNotifications,
+    allowDuplicateNotifications = favoriteTab?.allowDuplicateNotifications,
+    sortRecommendedPostsBy = favoriteTab?.sortRecommendedPostsBy,
+    feedRequestPostCountLimit = favoriteTab?.feedRequestPostCountLimit,
 )

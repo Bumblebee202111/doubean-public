@@ -41,9 +41,9 @@ class GroupDetailViewModel @Inject constructor(
         groupResult.filter { it is Result.Success || it is Result.Error }.map { it?.data?.tabs }
             .stateInUi()
 
-    fun addFollow() {
+    fun addFavorite() {
         viewModelScope.launch {
-            groupUserDataRepository.addFollowedGroup(
+            groupUserDataRepository.addFavoriteGroup(
                 groupId = groupId,
                 enablePostNotifications = preferenceStorage.perFollowDefaultEnablePostNotifications.first(),
                 allowsDuplicateNotifications = preferenceStorage.perFollowDefaultAllowDuplicateNotifications.first(),
@@ -54,9 +54,9 @@ class GroupDetailViewModel @Inject constructor(
 
     }
 
-    fun removeFollow() {
+    fun removeFavorite() {
         viewModelScope.launch {
-            groupUserDataRepository.removeFollowedGroup(groupId)
+            groupUserDataRepository.removeFavoriteGroup(groupId)
         }
     }
 

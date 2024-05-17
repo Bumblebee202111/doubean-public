@@ -7,18 +7,15 @@ import com.github.bumblebee202111.doubean.model.TopicSortBy
 import java.util.Calendar
 
 @Entity(
-    tableName = "followed_group_tabs",
+    tableName = "favorite_groups",
 )
-data class FollowedGroupTabEntity(
+data class FavoriteGroupEntity(
     @PrimaryKey
-    @ColumnInfo("tab_id")
-    val tabId: String,
-
     @ColumnInfo("group_id")
     override val groupId: String,
 
-    @ColumnInfo("follow_date")
-    override val followDate: Calendar = Calendar.getInstance(),
+    @ColumnInfo("favorite_date")
+    override val favoriteDate: Calendar = Calendar.getInstance(),
 
     @ColumnInfo("feed_request_post_count_limit")
     override val feedRequestPostCountLimit: Int,
@@ -34,6 +31,4 @@ data class FollowedGroupTabEntity(
 
     @ColumnInfo("last_notified_time_millis")
     override val lastNotifiedTimeMillis: Long = 0,
-
-    ) : FollowableEntity
-
+) : FavoriteEntity

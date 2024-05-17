@@ -12,7 +12,7 @@ data class GroupDetailPartialEntity(
     val memberCount: Int,
 
     @ColumnInfo("post_count")
-    val postCount: Int,
+    val topicCount: Int,
 
     @ColumnInfo("share_url")
     val shareUrl: String,

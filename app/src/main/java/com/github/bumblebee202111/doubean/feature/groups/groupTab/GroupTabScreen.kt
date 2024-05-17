@@ -99,26 +99,26 @@ fun GroupTabScreen(
                 onReset = {}
             ) {
 
-                fun setupFollowUnFollowAndMore() {
+                fun setupFavoriteButtonAndMore() {
 
                     if (tabId == null) { 
                         toggleGroup.visibility = View.GONE
                         more.visibility = View.GONE
                     } else { 
-                        followUnfollow.setOnClickListener {
+                        favoriteButton.setOnClickListener {
                             group?.findTab(tabId)?.let { tab ->
-                                if (tab.isFollowed) {
-                                    groupTabViewModel.removeFollow()
+                                if (tab.isFavorite) {
+                                    groupTabViewModel.removeFavorite()
                                     root.showSnackbar(
-                                        R.string.unfollowed_tab,
+                                        R.string.unfavorited_tab,
                                         Snackbar.LENGTH_LONG
                                     )
                                 } else {
-                                    groupTabViewModel.addFollow()
+                                    groupTabViewModel.addFavorite()
                                     root.showSnackbar(
-                                        R.string.followed_tab,
+                                        R.string.favorited_tab,
                                         Snackbar.LENGTH_LONG,
-                                        R.string.edit_follow_preferences
+                                        R.string.edit_favorite_preferences
                                     ) { showTabNotificationsPreferenceDialog(tabId) }
                                 }
                             }
@@ -156,7 +156,7 @@ fun GroupTabScreen(
                     }
                 }
 
-                setupFollowUnFollowAndMore()
+                setupFavoriteButtonAndMore()
 
                 group?.let { group ->
                     val colorSurface = context.getColorFromTheme(R.attr.colorSurface)
@@ -165,16 +165,16 @@ fun GroupTabScreen(
                     notificationButton.visibility =
                         if (group.findTab(tabId)?.enableNotifications == null) View.GONE else View.VISIBLE
                     group.findTab(tabId)?.let { tab ->
-                        with(followUnfollow) {
-                            if (tab.isFollowed) {
+                        with(favoriteButton) {
+                            if (tab.isFavorite) {
                                 setIconResource(R.drawable.ic_remove)
-                                setText(R.string.unfollow)
+                                setText(R.string.unfavorite)
                                 iconTint = ColorStateList.valueOf(groupColor)
                                 setTextColor(groupColor)
                                 setBackgroundColor(colorSurface)
                             } else {
                                 setIconResource(R.drawable.ic_add)
-                                setText(R.string.follow)
+                                setText(R.string.favorite)
                                 iconTint = ColorStateList.valueOf(colorSurface)
                                 setTextColor(colorSurface)
                                 setBackgroundColor(groupColor)

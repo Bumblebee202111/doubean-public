@@ -119,8 +119,8 @@ fun GroupDetailScreen(
             group = group,
             initialTabId = initialTabId,
             taggedTabs = taggedTabs,
-            addFollow = groupDetailViewModel::addFollow,
-            removeFollow = groupDetailViewModel::removeFollow,
+            addFavorite = groupDetailViewModel::addFavorite,
+            removeFavorite = groupDetailViewModel::removeFavorite,
             showNotificationsPrefDialog = {
                 showNotificationsPrefDialog(groupId)
             },
@@ -149,8 +149,8 @@ fun GroupDetailCoordinator(
     group: GroupDetail?,
     initialTabId: String?,
     taggedTabs: List<GroupTab>?,
-    addFollow: () -> Unit,
-    removeFollow: () -> Unit,
+    addFavorite: () -> Unit,
+    removeFavorite: () -> Unit,
     showNotificationsPrefDialog: () -> Unit,
     showTabNotificationsPrefDialog: (tabId: String) -> Unit,
     onBackClick: () -> Unit,
@@ -169,20 +169,20 @@ fun GroupDetailCoordinator(
             onReset = {}) {
             val context = root.context
 
-            followUnfollow.setOnClickListener { view ->
-                group?.isFollowed?.let { oldIsFollowed ->
+            favoriteButton.setOnClickListener { view ->
+                group?.isFavorited?.let { oldIsFollowed ->
                     if (oldIsFollowed) {
-                        removeFollow()
+                        removeFavorite()
                         view?.showSnackbar(
-                            R.string.unfollowed_group,
+                            R.string.unfavorited_group,
                             Snackbar.LENGTH_LONG,
                         )
                     } else {
-                        addFollow()
+                        addFavorite()
                         view?.showSnackbar(
-                            R.string.followed_group,
+                            R.string.favorited_group,
                             Snackbar.LENGTH_LONG,
-                            R.string.edit_follow_preferences
+                            R.string.edit_favorite_preferences
                         ) { showNotificationsPrefDialog() }
                     }
                 }
@@ -264,16 +264,16 @@ fun GroupDetailCoordinator(
                 val groupColor =
                     group.color ?: context.getColorFromTheme(R.attr.colorPrimary)
 
-                with(followUnfollow) {
-                    if (group.isFollowed) {
+                with(favoriteButton) {
+                    if (group.isFavorited) {
                         setIconResource(R.drawable.ic_remove)
-                        setText(R.string.unfollow)
+                        setText(R.string.unfavorite)
                         iconTint = ColorStateList.valueOf(groupColor)
                         setTextColor(groupColor)
                         setBackgroundColor(colorSurface)
                     } else {
                         setIconResource(R.drawable.ic_add)
-                        setText(R.string.follow)
+                        setText(R.string.favorite)
                         iconTint = ColorStateList.valueOf(colorSurface)
                         setTextColor(colorSurface)
                         setBackgroundColor(groupColor)

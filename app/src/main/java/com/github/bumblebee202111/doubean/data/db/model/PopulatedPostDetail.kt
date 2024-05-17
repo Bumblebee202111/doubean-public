@@ -43,7 +43,7 @@ data class PopulatedPostGroup(
         parentColumn = "id",
         entityColumn = "group_id"
     )
-    val followedGroup: FollowedGroupEntity?,
+    val favoriteGroup: FavoriteGroupEntity?,
 )
 
 
@@ -80,5 +80,5 @@ fun PopulatedPostGroup.asExternalModel() = PostGroup(
     memberName = partialEntity.memberName,
     shortDescription = partialEntity.shortDescription,
     color = partialEntity.color,
-    isFollowed = followedGroup != null
+    isFavorite = favoriteGroup != null
 )

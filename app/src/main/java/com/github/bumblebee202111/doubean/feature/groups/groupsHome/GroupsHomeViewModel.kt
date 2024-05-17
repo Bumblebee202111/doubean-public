@@ -29,7 +29,8 @@ class GroupsHomeViewModel @Inject constructor(
     }.stateInUi()
 
 
-    val follows = groupUserDataRepository.getAllGroupFollows().flowOn(Dispatchers.IO).stateInUi()
+    val favorites =
+        groupUserDataRepository.getAllGroupFavorites().flowOn(Dispatchers.IO).stateInUi()
 
     val groupsOfTheDay =
         groupRepository.getGroupRecommendation(GroupRecommendationType.DAILY).map { it.data }
