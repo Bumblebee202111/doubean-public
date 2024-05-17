@@ -2,7 +2,7 @@ package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import com.github.bumblebee202111.doubean.model.PostSortBy
+import com.github.bumblebee202111.doubean.model.TopicSortBy
 
 @Entity("group_tag_topics", primaryKeys = ["index", "group_id", "tag_id", "sort_by"])
 data class GroupTagTopicItemEntity(
@@ -15,5 +15,5 @@ data class GroupTagTopicItemEntity(
     @ColumnInfo("tag_id")
     val tagId: String,
     @ColumnInfo("sort_by")
-    val sortBy: PostSortBy,
+    val sortBy: TopicSortBy,
 )

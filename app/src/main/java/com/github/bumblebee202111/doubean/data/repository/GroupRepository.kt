@@ -17,9 +17,9 @@ import com.github.bumblebee202111.doubean.data.paging.GroupSearchResultItemRemot
 import com.github.bumblebee202111.doubean.data.paging.GroupTagTopicRemoteMediator
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.GroupRecommendationType
-import com.github.bumblebee202111.doubean.model.PostSortBy
 import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
 import com.github.bumblebee202111.doubean.model.Result
+import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkRecommendedGroup
 import com.github.bumblebee202111.doubean.network.model.NetworkRecommendedGroupItemPost
@@ -81,7 +81,7 @@ class GroupRepository @Inject constructor(
     ).flow.map { it.map(GroupSearchResultGroupItemPartialEntity::asExternalModel) }
 
     @OptIn(ExperimentalPagingApi::class)
-    fun getTopicsPagingData(groupId: String, tagId: String?, sortBy: PostSortBy) = Pager(
+    fun getTopicsPagingData(groupId: String, tagId: String?, sortBy: TopicSortBy) = Pager(
         PagingConfig(
             pageSize = RESULT_POSTS_PAGE_SIZE,
             prefetchDistance = RESULT_POSTS_PAGE_SIZE / 2,

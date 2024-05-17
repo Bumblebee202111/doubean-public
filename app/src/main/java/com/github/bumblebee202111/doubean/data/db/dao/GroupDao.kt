@@ -25,7 +25,7 @@ import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupItemGrou
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupPost
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupsResult
 import com.github.bumblebee202111.doubean.model.GroupRecommendationType
-import com.github.bumblebee202111.doubean.model.PostSortBy
+import com.github.bumblebee202111.doubean.model.TopicSortBy
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -105,10 +105,10 @@ interface GroupDao {
     fun groupTagTopicPagingSource(
         groupId: String,
         tagId: String,
-        sortBy: PostSortBy,
+        sortBy: TopicSortBy,
     ): PagingSource<Int, PopulatedPostItem>
 
     @Query("DELETE FROM group_tag_topics WHERE group_id = :groupId AND tag_id = :tagId AND sort_by = :sortBy")
-    fun deleteGroupTagTopicItems(groupId: String, tagId: String, sortBy: PostSortBy)
+    fun deleteGroupTagTopicItems(groupId: String, tagId: String, sortBy: TopicSortBy)
 
 }

@@ -12,7 +12,7 @@ import com.github.bumblebee202111.doubean.data.db.model.FollowedGroupTabEntity
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedGroupFollowItem
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedRecommendedPostNotificationItem
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedPostNotificationEntity
-import com.github.bumblebee202111.doubean.model.PostSortBy
+import com.github.bumblebee202111.doubean.model.TopicSortBy
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -106,7 +106,7 @@ interface UserGroupDao {
         groupId: String,
         enablePostNotifications: Boolean,
         allowDuplicateNotifications: Boolean,
-        sortRecommendedPostsBy: PostSortBy,
+        sortRecommendedPostsBy: TopicSortBy,
         feedRequestPostCountLimit: Int,
     )
 
@@ -124,7 +124,7 @@ interface UserGroupDao {
         tabId: String,
         enablePostNotifications: Boolean,
         allowDuplicateNotifications: Boolean,
-        sortRecommendedPostsBy: PostSortBy,
+        sortRecommendedPostsBy: TopicSortBy,
         apiPostCountLimitEachFeed: Int,
     )
 
