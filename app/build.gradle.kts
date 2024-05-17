@@ -32,6 +32,9 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "DOUBAN_ACCESS_KEY", "\"" + getDoubanAccess() + "\"")
+        ndk {
+            abiFilters += listOf("arm64-v8a", "x86_64")
+        }
     }
 
     hilt {
