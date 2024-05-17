@@ -186,7 +186,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.5.9\)
 
-- Fix GroupNotificationsPreferenceDialogFragment crash
 - Show/hide groups home areas conditionally
   - Your Favorites area will be hidden if you have no favorites 
   - Your Groups area will be hidden if you are not logged in
@@ -211,7 +210,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Home - Following
   * More card types
   * Pagination
-* Group Tab: Untighten tab notification settings from group model
+* Group notifications
+  * Group Tab: Untighten tab notification settings from group model
+
 * TopAppBar and Edge-to-Edge
   * Reduce MD3 TopAppBar height to 56 dp when https://developer.android.google.cn/jetpack/androidx/releases/compose-material3#1.3.0-alpha06 enters RC
 * Bring back load state visualization which was removed during various types of migrations
