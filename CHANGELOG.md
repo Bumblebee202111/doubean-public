@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.5.9
+
 ## Version 0.5.8
 
 - Group detail rework. It's now much smoother.

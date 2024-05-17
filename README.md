@@ -4,20 +4,20 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
 
-The development of this app is resumed to meet the requirements the friend who filed the first issue! While we will only develop for them, this project is also going to be used as my playground for fashionable libraries/coding styles such as Jetpack Compose. This brings [tons of migration tasks](#migrations), and also means that old libraries and new libraries are currently mixed together.
+The development of this app is resumed to meet the requests of the friend who filed the first issue! While we will only add new features for the limited number of existing users, this project is also going to be used as my playground for fashionable libraries/coding styles such as Jetpack Compose. This brings [tons of migration tasks](#migrations), and also means that old libraries and new libraries are currently mixed together.
 
 Note I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be missing.
 
 It has been inactive for 8 months, as:
 * Reinforced by the org/mods, hilarious remarks can be found everywhere
 * There are few other alternatives for me to refer to
-* Group theming is currently a mess
+* Group theming was a mess
 
 **Very important changes starting from 0.5.0:**
 
 * Repo name: `doubean` -> `doubean-public`
   - New code will only be pushed into the private `doubean`
-* New package name: com.github.bumblebee202111.doubean`
+* New package name: com.github.bumblebee202111.doubean
 
 [douban]: https://www.douban.com/
 
@@ -28,7 +28,7 @@ Introduction
 
 ### Functionality
 
-The app is composed of 4 main screens, two of which are blank and left for future development.
+The app is composed of 4 main screens
 
 #### HomeFragment (new)
 
@@ -54,7 +54,7 @@ The app is composed of 4 main screens, two of which are blank and left for futur
 * Post content
 * Post comments
 
-#### ProfileFragment
+#### ProfileFragment (raw)
 
 - Login status
 
@@ -64,7 +64,7 @@ The app is composed of 4 main screens, two of which are blank and left for futur
 
 #### NotificationFragment
 
-* Group post notifications
+* Group post notifications (the feature is broken now)
 
 ### Screenshots
 
@@ -77,7 +77,7 @@ The app is composed of 4 main screens, two of which are blank and left for futur
 ### Using this app
 
 - Supported Android versions: 8.1 - 14
-- Sometimes you need to clear app data when I forget to handle ROOM database schema change
+- Sometimes you need to manually clear app data when I forget to handle ROOM database schema change
 - Feel free to file issues 
 
 ### Open-source?
@@ -108,9 +108,8 @@ It not only implements the very basic features of Douban app, but also has its o
 * Partial offline caching support
 * Ad-free, lite \(~4MB\)
 * Partially support URL deep links
-* Paging support
 * Rooted users can use login session of Douban app
-* Support for viewing content in Douban WebView optimized for mobile reading in case of need
+* Partial support for viewing content in Douban WebView optimized for mobile reading in case of need
 * Basic use of MD2/3 (may not get along well during migration)
 * Recommended post notifications (maybe currently broken)
 
@@ -185,24 +184,54 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.5.8\)
+#### To-dos for current release \(0.5.9\)
 
-#### To-dos for next release \(0.5.9)
+- Fix nullability of `create_time` of topic group
+- Optimize topic list separators
+- Allow dragging full screen images
+- Rename old "follow" to "favorite"
+- Show/hide groups home areas conditionally
+  - Your Favorites area will be hidden if you have no favorites 
+  - Your Groups area will be hidden if you are not logged in
+- Build for 64-bit only
+
+#### To-dos for next release \(0.5.10)
 
 #### Future plans
 
-* Home - Following
-  * More card types
 * Gradually revert naming conventions to those of Douban
 * Replace content of the recommended groups area with recommended posts
-  * Add more tabs/pages later
-* Group Tab: Untighten tab notification settings from group model
+  * Support pagination & add favorite tabs later
+* Gracefully remove Fragments: Stop calling Fragment methods other than onCreateView
 * Gradual migrations: <span id="migrations"></span>
   * From MD2 / custom design to MD3
   * From View and data binding to Jetpack Compose
     * Exceptions: WebView
   * From Navigation Fragment to Navigation Compose (take action when next stable version is available)
     * From NavHostFragment to ComposableNavHostFragment
+* navigation-fragment-compose
+* Home - Following
+  * More card types
+  * Pagination
+* Group Tab: Untighten tab notification settings from group model
+* TopAppBar and Edge-to-Edge
+  * Reduce MD3 TopAppBar height to 56 dp when https://developer.android.google.cn/jetpack/androidx/releases/compose-material3#1.3.0-alpha06 enters RC
+* Bring back load state visualization which was removed during various types of migrations
+  * Paging 3 refresh, loading status ...
+* Follow/favorite/save/subscribe
+  * Local favorites needs some kind of rework since following groups (official feature) is possible now although not implemented
+  * Save topics
+  * Follow groups
+  * Pin followed groups
+  * Add corresponding item action
+* Group Detail: Collapse on entrance for the followed group/tab
+* Date & time: Yesterday
+* Allow expanding group description w/ SpannableString
+* Bring back basic support for dark mode & landscape experience
+* Topics sort by 
+  * "Last updated" -> "active"
+  * Add "New Top"
+* Shared element
 * Lazylist problems
   * Restoring scroll position is problematic
   * Topic content WebView problems
@@ -210,52 +239,33 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * Sometimes topic content fails to be loaded on some low-end or large-screened devices (not sure which sets constraint)
     * LazyLayoutPinnableItem?
     * ...
-* Shared element & navigation-fragment-compose
-* TopAppBar and Edge-to-Edge
-  * Reduce MD3 TopAppBar height to 56 dp when https://developer.android.google.cn/jetpack/androidx/releases/compose-material3#1.3.0-alpha06 enters RC
-* Topics sort by 
-  * "Last updated" -> "active"
-  * Add "New Top"
-* Follow/favorite/save/subscribe
-  * The old local "follow"
-    * Rename to favorite (inspired by Reddit)
-    * Needs some rework since following groups (official feature) is possible now although not implemented
-  * Save topics
-  * Follow groups
-  * Pin followed groups
-  * Add corresponding item action
+* Group tab: Track read
 * Fix broken topics feed
-* “每次动态更新请求的帖子总数限制” -> “每次从n条帖子中筛选新动态”
+  * Find why fail
+  * “每次动态更新请求的帖子总数限制” -> frequency (0..1) 
 * Use the new nullable "edit_time" property of network posts
-* Better model layering
-* Add `en-db` ("Douban English" locale)
-* Allow expanding group description w/ SpannableString
 * Search
   * Search group/tab posts (in-group) 
   * Search posts of all groups (global)
+* Better model layering
+* Distinguish`en-DB`/`en-US`
 * More follow/favorite/save/subscribe
   * Save comments
   * Subscribe topics
   * Sync custom lists by maintaining a fake private note (日记) which holds the data
   * Custom feeds like Reddit
-* Real login (which seems impossible)
-* Add load state visualization which was removed during various types of migrations
-  * Paging 3 refresh, loading status ...
-* \[GroupDetailFragment\] WebView for group
-* Group tab: Track read
-* \[GroupDetailFragment\] Group/tab/post shortcuts
+* Group Detail: Group/tab/post shortcuts
 * Hide officially-marked unfriendly content by default
 * Support blocking unfriendly content
-* \[GroupDetailFragment\] Collapse on entrance for the followed group/tab
-* Date & time: Yesterday
-* Bring back basic support for dark mode & landscape experience
+* NetworkManager
 * Widgets
 * \[Books\] Add T250
 * \[Movies\] Add T250
 * More features of books & movies
-* \[GroupDetailFragment\] For post items, optimize tag display, e.g., assign color to each tag mapped from name
-* \[Lists\] Reddit-like item expand/collapse
-* Network
+* Group Detail: For post items, optimize tag display, e.g., assign color to each tag mapped from name
+* Lists: Reddit-like item expand/collapse
+* Real login (which seems impossible)
+* Group Detail: WebView for group
 * Test
 
 ### Non-Todos
