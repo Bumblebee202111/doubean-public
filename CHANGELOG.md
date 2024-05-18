@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.5.10
+
 ## Version 0.5.9
 
 - ImageScreen: Support transform gestures
