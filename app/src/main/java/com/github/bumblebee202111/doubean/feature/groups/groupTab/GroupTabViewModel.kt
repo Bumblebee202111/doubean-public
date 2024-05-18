@@ -73,8 +73,8 @@ class GroupTabViewModel @AssistedInject constructor(
     fun saveNotificationsPreference(
         enableNotifications: Boolean,
         allowNotificationUpdates: Boolean,
-        sortRecommendedPostsBy: TopicSortBy,
-        numberOfPostsLimitEachFeedFetch: Int,
+        sortRecommendedTopicsBy: TopicSortBy,
+        numberOfTopicsLimitEachFeedFetch: Int,
     ) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -83,8 +83,8 @@ class GroupTabViewModel @AssistedInject constructor(
                         tabId,
                         enableNotifications,
                         allowNotificationUpdates,
-                        sortRecommendedPostsBy,
-                        numberOfPostsLimitEachFeedFetch
+                        sortRecommendedTopicsBy,
+                        numberOfTopicsLimitEachFeedFetch
                     )
                 }
             }

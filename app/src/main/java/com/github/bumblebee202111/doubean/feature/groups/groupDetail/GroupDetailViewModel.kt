@@ -63,7 +63,7 @@ class GroupDetailViewModel @Inject constructor(
     fun saveNotificationsPreference(
         enableNotifications: Boolean,
         allowNotificationUpdates: Boolean,
-        sortRecommendedPostsBy: TopicSortBy,
+        sortRecommendedTopicsBy: TopicSortBy,
         numberOfPostsLimitEachFeedFetch: Int,
     ) {
         viewModelScope.launch {
@@ -72,7 +72,7 @@ class GroupDetailViewModel @Inject constructor(
                     groupId,
                     enableNotifications,
                     allowNotificationUpdates,
-                    sortRecommendedPostsBy,
+                    sortRecommendedTopicsBy,
                     numberOfPostsLimitEachFeedFetch
                 )
             }
