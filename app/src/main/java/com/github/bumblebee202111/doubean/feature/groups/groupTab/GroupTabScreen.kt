@@ -217,7 +217,6 @@ fun GroupTabScreen(
                 onReset = {}
             ) {
                 post = topic
-                executePendingBindings()
 
                 cover.setContent {
                     AsyncImage(

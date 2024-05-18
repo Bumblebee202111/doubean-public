@@ -648,7 +648,6 @@ fun TopicDetailHeader(
                     }
                 }
             }
-            executePendingBindings()
         }
     }
 }
