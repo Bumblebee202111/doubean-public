@@ -9,21 +9,38 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.navigation.fragment.findNavController
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
+import coil.compose.AsyncImage
+import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.FragmentGroupSearchBinding
-import com.github.bumblebee202111.doubean.ui.common.repeatWithViewLifecycle
-import com.github.bumblebee202111.doubean.util.SpanCountCalculator
+import com.github.bumblebee202111.doubean.databinding.ListItemGroupBinding
+import com.github.bumblebee202111.doubean.model.GroupSearchResultGroupItem
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class GroupSearchFragment : Fragment() {
     private val groupSearchViewModel: GroupSearchViewModel by viewModels()
     lateinit var binding: FragmentGroupSearchBinding
-    private lateinit var adapter: SearchResultGroupAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -34,19 +51,53 @@ class GroupSearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecyclerView()
-        adapter = SearchResultGroupAdapter()
-        binding.groupList.adapter = adapter
-        val spanCount = SpanCountCalculator.getSpanCount(requireContext(), 500)
-        binding.groupList.layoutManager =
-            StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL)
-        binding.groupList.addItemDecoration(
-            DividerItemDecoration(
-                binding.groupList.context,
-                DividerItemDecoration.VERTICAL
+        binding.groupList.setContent {
+            val groupPagingItems = groupSearchViewModel.results.collectAsLazyPagingItems()
+            val navigateToGroup = { group: GroupSearchResultGroupItem ->
+                val direction =
+                    GroupSearchFragmentDirections.actionGroupSearchToGroupDetail(group.id)
+                findNavController().navigate(direction)
+            }
+            LazyVerticalStaggeredGrid(
+                columns = StaggeredGridCells.Adaptive(400.dp),
+                verticalItemSpacing = 4.dp,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                content = {
+                    items(
+                        count = groupPagingItems.itemCount,
+                        key = groupPagingItems.itemKey { it.id },
+                        contentType = groupPagingItems.itemContentType { "groupPagingItem" }) { index ->
+                        val group = groupPagingItems[index]
+                        AndroidViewBinding(
+                            factory = ListItemGroupBinding::inflate,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight(),
+                            onReset = {}) {
+                            this.group = group
+                            setClickListener {
+                                if (group != null) {
+                                    navigateToGroup(group)
+                                }
+                            }
+                            avatar.setContent {
+                                AsyncImage(
+                                    model = group?.avatarUrl,
+                                    contentDescription = stringResource(id = R.string.a11y_group_item_image),
+                                    modifier = Modifier
+                                        .size(dimensionResource(id = R.dimen.icon_size_extra_large))
+                                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small))),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                        }
+
+                    }
+                },
+                modifier = Modifier.fillMaxSize()
             )
-        )
-        binding.groupList.itemAnimator = null
+        }
+
         initSearchInputListener()
     }
 
@@ -73,18 +124,6 @@ class GroupSearchFragment : Fragment() {
         val query = binding.input.text.toString()
         dismissKeyboard(v.windowToken)
         groupSearchViewModel.setQuery(query)
-    }
-
-    private fun initRecyclerView() {
-        repeatWithViewLifecycle {
-            launch {
-                groupSearchViewModel.results
-                    .collect { result ->
-                        adapter.submitData(result)
-                    }
-            }
-        }
-
     }
 
     private fun dismissKeyboard(windowToken: IBinder) {
