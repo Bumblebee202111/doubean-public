@@ -186,9 +186,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.5.10\)
 
-- RecyclerView -> LazyColumn
 - Replace content of the recommended groups area with recommended posts
-- DialogFragment -> Compose counterparts
 
 #### To-dos for next release \(0.5.11)
 

@@ -48,8 +48,8 @@ fun PopulatedGroupDetail.asExternalModel() = GroupDetail(
     isFavorited = favoriteGroup != null,
     enableNotifications = favoriteGroup?.enablePostNotifications,
     allowDuplicateNotifications = favoriteGroup?.allowDuplicateNotifications,
-    sortRecommendedPostsBy = favoriteGroup?.sortRecommendedPostsBy,
-    feedRequestPostCountLimit = favoriteGroup?.feedRequestPostCountLimit,
+    sortRecommendedTopicsBy = favoriteGroup?.sortRecommendedPostsBy,
+    feedRequestTopicCountLimit = favoriteGroup?.feedRequestPostCountLimit,
 )
 
 fun PopulatedGroupTab.asExternalModel() = GroupTab(
@@ -59,6 +59,6 @@ fun PopulatedGroupTab.asExternalModel() = GroupTab(
     isFavorite = favoriteTab != null,
     enableNotifications = favoriteTab?.enablePostNotifications,
     allowDuplicateNotifications = favoriteTab?.allowDuplicateNotifications,
-    sortRecommendedPostsBy = favoriteTab?.sortRecommendedPostsBy,
-    feedRequestPostCountLimit = favoriteTab?.feedRequestPostCountLimit,
+    sortRecommendedTopicsBy = favoriteTab?.sortRecommendedPostsBy,
+    feedRequestTopicCountLimit = favoriteTab?.feedRequestPostCountLimit,
 )

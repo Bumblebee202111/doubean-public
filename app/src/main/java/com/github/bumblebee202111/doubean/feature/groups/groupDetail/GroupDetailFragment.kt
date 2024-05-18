@@ -3,7 +3,10 @@ package com.github.bumblebee202111.doubean.feature.groups.groupDetail
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,14 +18,20 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -32,6 +41,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.compose.content
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,13 +50,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.fragment.findNavController
 import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.databinding.DialogContentGroupNotificationsPreferenceBinding
 import com.github.bumblebee202111.doubean.databinding.LayoutGroupDetailBinding
-import com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupNotificationsPreferenceDialogFragment.Companion.DIALOG_GROUP_NOTIFICATIONS_PREFERENCE
 import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabScreen
 import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabViewModel
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.GroupTab
+import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.theme.AppTheme
+import com.github.bumblebee202111.doubean.util.MinMaxEditTextInputFilter
 import com.github.bumblebee202111.doubean.util.OpenInUtil
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.getColorFromTheme
@@ -65,31 +77,16 @@ class GroupDetailFragment : Fragment() {
     ) = content {
         AppTheme {
             GroupDetailScreen(groupDetailViewModel = viewModel(),
-                showNotificationsPrefDialog = { groupId ->
-                    GroupNotificationsPreferenceDialogFragment.newInstance(groupId)
-                        .show(childFragmentManager, DIALOG_GROUP_NOTIFICATIONS_PREFERENCE)
-                },
-                showTabNotificationsPrefDialog = { tabId ->
-
-                    
-
-
-
-
-
-
-                },
                 onBackClick = {
                     findNavController().popBackStack()
-                },
-                navigateToTopic = {
-                    val direction =
-                        GroupDetailFragmentDirections.actionGroupDetailToPostDetail(
-                            it
-                        )
-                    findNavController().navigate(direction)
                 }
-            )
+            ) {
+                val direction =
+                    GroupDetailFragmentDirections.actionGroupDetailToPostDetail(
+                        it
+                    )
+                findNavController().navigate(direction)
+            }
         }
     }
 
@@ -98,8 +95,6 @@ class GroupDetailFragment : Fragment() {
 @Composable
 fun GroupDetailScreen(
     groupDetailViewModel: GroupDetailViewModel,
-    showNotificationsPrefDialog: (groupId: String) -> Unit,
-    showTabNotificationsPrefDialog: (tabId: String) -> Unit,
     onBackClick: () -> Unit,
     navigateToTopic: (topicId: String) -> Unit,
 ) {
@@ -107,6 +102,7 @@ fun GroupDetailScreen(
     val group by groupDetailViewModel.group.collectAsStateWithLifecycle()
     val initialTabId = groupDetailViewModel.initialTabId
     val groupId = groupDetailViewModel.groupId
+    var openAlertDialog by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
     Column {
@@ -122,8 +118,9 @@ fun GroupDetailScreen(
             taggedTabs = taggedTabs,
             addFavorite = groupDetailViewModel::addFavorite,
             removeFavorite = groupDetailViewModel::removeFavorite,
-            showNotificationsPrefDialog = { showNotificationsPrefDialog(groupId) },
-            showTabNotificationsPrefDialog = showTabNotificationsPrefDialog,
+            showNotificationsPrefDialog = { 
+                openAlertDialog = true
+            },
             onBackClick = onBackClick,
             onShareGroup = {
                 val shareText = it.name + ' ' + it.shareUrl + "\r\n"
@@ -139,6 +136,155 @@ fun GroupDetailScreen(
         )
     }
 
+    val enableNotifications = group?.enableNotifications
+    val allowNotificationUpdates = group?.allowDuplicateNotifications
+    val sortRecommendedTopicsBy = group?.sortRecommendedTopicsBy
+    val numberOfTopicsLimitEachFeedFetch = group?.feedRequestTopicCountLimit
+
+    if (openAlertDialog && enableNotifications != null && allowNotificationUpdates != null && sortRecommendedTopicsBy != null && numberOfTopicsLimitEachFeedFetch != null) {
+        GroupNotificationsPreferenceDialog(
+            initialEnableNotifications = enableNotifications,
+            allowNotificationUpdates,
+            sortRecommendedTopicsBy,
+            numberOfTopicsLimitEachFeedFetch,
+            onDismissRequest = { openAlertDialog = false }
+        ) { enableNotificationsToSave, allowNotificationUpdatesToSave, sortRecommendedTopicsByToSave, numberOfTopicsLimitEachFeedFetchToSave ->
+            groupDetailViewModel.saveNotificationsPreference(
+                enableNotifications = enableNotificationsToSave,
+                allowNotificationUpdates = allowNotificationUpdatesToSave,
+                sortRecommendedTopicsBy = sortRecommendedTopicsByToSave,
+                numberOfPostsLimitEachFeedFetch = numberOfTopicsLimitEachFeedFetchToSave
+            )
+            openAlertDialog = false
+        }
+    }
+
+
+}
+
+@Composable
+fun GroupNotificationsPreferenceDialog(
+    initialEnableNotifications: Boolean,
+    initialAllowNotificationUpdates: Boolean,
+    initialSortRecommendedTopicsBy: TopicSortBy,
+    initialNumberOfTopicsLimitEachFeedFetch: Int,
+    onDismissRequest: () -> Unit,
+    onConfirmation: (enableNotifications: Boolean, allowNotificationUpdates: Boolean, sortRecommendedTopicsBy: TopicSortBy, numberOfTopicsLimitEachFeedFetch: Int) -> Unit,
+) {
+
+    var enableNotifications by remember {
+        mutableStateOf(initialEnableNotifications)
+    }
+
+    var allowNotificationUpdates by remember {
+        mutableStateOf(initialAllowNotificationUpdates)
+    }
+    var sortRecommendedTopicsBy by remember {
+        mutableStateOf(initialSortRecommendedTopicsBy)
+    }
+    var numberOfTopicsLimitEachFeedFetch by remember {
+        mutableIntStateOf(initialNumberOfTopicsLimitEachFeedFetch)
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        confirmButton = {
+            TextButton(onClick = {
+                onConfirmation(
+                    enableNotifications,
+                    allowNotificationUpdates,
+                    sortRecommendedTopicsBy,
+                    numberOfTopicsLimitEachFeedFetch
+                )
+            }) {
+                Text(stringResource(id = R.string.save))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismissRequest) {
+                Text(stringResource(id = R.string.cancel))
+            }
+        },
+        title = { Text(text = stringResource(id = R.string.group_notifications_preference)) },
+        text = {
+            AndroidViewBinding(factory = { inflater, root, attachToRoot ->
+                DialogContentGroupNotificationsPreferenceBinding.inflate(
+                    inflater,
+                    root,
+                    attachToRoot
+                ).apply {
+                    sortRecommendedTopicsBySpinner.adapter = ArrayAdapter.createFromResource(
+                        root.context,
+                        R.array.sort_recommended_topics_by_array,
+                        android.R.layout.simple_spinner_item
+                    )
+                        .apply { setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item) }
+                }
+            }) {
+
+                fun getTopicSortByAt(spinnerItemPosition: Int) =
+                    when (spinnerItemPosition) {
+                        0 -> TopicSortBy.LAST_UPDATED
+                        1 -> TopicSortBy.NEW_TOP
+                        else -> throw java.lang.IndexOutOfBoundsException()
+                    }
+
+                fun getSpinnerItemPositionOf(topicSortBy: TopicSortBy) =
+                    when (topicSortBy) {
+                        TopicSortBy.LAST_UPDATED -> 0
+                        TopicSortBy.NEW_TOP -> 1
+                        else -> throw java.lang.IndexOutOfBoundsException()
+                    }
+
+                enableGroupNotificationsPref.apply {
+                    isChecked = enableNotifications
+                    setOnCheckedChangeListener { _, isChecked ->
+                        enableNotifications = isChecked
+                    }
+                }
+                allowDuplicateNotificationsPref.apply {
+                    isEnabled = enableNotifications
+                    isChecked = allowNotificationUpdates
+                    setOnCheckedChangeListener { _, isChecked ->
+                        allowNotificationUpdates = isChecked
+                    }
+                }
+                sortRecommendedTopicsByTitle.isEnabled = enableNotifications
+                sortRecommendedTopicsBySpinner.apply {
+                    isEnabled = enableNotifications
+                    setSelection(getSpinnerItemPositionOf(sortRecommendedTopicsBy))
+                    onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(
+                            parent: AdapterView<*>?,
+                            view: View?,
+                            position: Int,
+                            id: Long,
+                        ) {
+                            sortRecommendedTopicsBy = getTopicSortByAt(position)
+                        }
+
+                        override fun onNothingSelected(parent: AdapterView<*>?) {
+                        }
+
+                    }
+                }
+                feedRequestTopicCountLimitTitle.isEnabled = enableNotifications
+                feedRequestTopicCountLimitEditText.apply {
+                    isEnabled = enableNotifications
+                    filters =
+                        arrayOf(MinMaxEditTextInputFilter(1, 50))
+                    setText(numberOfTopicsLimitEachFeedFetch.toString())
+                    doAfterTextChanged { text ->
+                        text.takeUnless(CharSequence?::isNullOrBlank)?.let {
+                            numberOfTopicsLimitEachFeedFetch = it.toString().toInt()
+                        }
+                    }
+
+                }
+
+            }
+        }
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -151,7 +297,6 @@ fun GroupDetailCoordinator(
     addFavorite: () -> Unit,
     removeFavorite: () -> Unit,
     showNotificationsPrefDialog: () -> Unit,
-    showTabNotificationsPrefDialog: (tabId: String) -> Unit,
     onBackClick: () -> Unit,
     onShareGroup: (group: GroupDetail) -> Unit,
     viewInDouban: (uriString: String) -> Unit,
@@ -181,7 +326,7 @@ fun GroupDetailCoordinator(
                         view?.showSnackbar(
                             R.string.favorited_group,
                             Snackbar.LENGTH_LONG,
-                            R.string.edit_favorite_preferences
+                            R.string.edit_follow_preferences
                         ) { showNotificationsPrefDialog() }
                     }
                 }
@@ -247,7 +392,6 @@ fun GroupDetailCoordinator(
                     groupId = groupId,
                     group = group,
                     navigateToTopic = navigateToTopic,
-                    showTabNotificationsPrefDialog = showTabNotificationsPrefDialog
                 )
             }
 
@@ -364,7 +508,6 @@ fun GroupPager(
     groupId: String,
     group: GroupDetail?,
     navigateToTopic: (topicId: String) -> Unit,
-    showTabNotificationsPrefDialog: (tabId: String) -> Unit,
 ) {
     HorizontalPager(state = pagerState,
         modifier = Modifier,
@@ -386,8 +529,7 @@ fun GroupPager(
                 key = groupId + tabId
             ),
             group = group,
-            navigateToTopic = navigateToTopic,
-            showTabNotificationsPreferenceDialog = showTabNotificationsPrefDialog
+            navigateToTopic = navigateToTopic
         )
 
     }
