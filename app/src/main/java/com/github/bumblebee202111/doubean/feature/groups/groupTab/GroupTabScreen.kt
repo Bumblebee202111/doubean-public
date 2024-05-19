@@ -30,7 +30,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
-import androidx.core.widget.doAfterTextChanged
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
@@ -39,11 +38,11 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.DialogContentGroupTabNotificationsPreferenceBinding
 import com.github.bumblebee202111.doubean.databinding.ListItemPostBinding
 import com.github.bumblebee202111.doubean.databinding.ViewGroupTabActionsBinding
+import com.github.bumblebee202111.doubean.feature.groups.common.TopicCountLimitEachFetchTextField
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.common.UserProfileImage
 import com.github.bumblebee202111.doubean.ui.common.rememberLazyListStatePagingWorkaround
-import com.github.bumblebee202111.doubean.util.MinMaxEditTextInputFilter
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.getColorFromTheme
 import com.github.bumblebee202111.doubean.util.showSnackbar
@@ -424,17 +423,14 @@ fun GroupTabNotificationsPreferenceDialog(
                     }
                 }
                 feedRequestTopicCountLimitTitle.isEnabled = enableNotifications
-                feedRequestTopicCountLimitEditText.apply {
-                    isEnabled = enableNotifications
-                    filters =
-                        arrayOf(MinMaxEditTextInputFilter(1, 50))
-                    setText(numberOfTopicsLimitEachFeedFetch.toString())
-                    doAfterTextChanged { text ->
-                        text.takeUnless(CharSequence?::isNullOrBlank)?.let {
-                            numberOfTopicsLimitEachFeedFetch = it.toString().toInt()
-                        }
-                    }
-
+                feedRequestTopicCountLimitTextField.setContent {
+                    TopicCountLimitEachFetchTextField(
+                        numberOfTopicsLimitEachFeedFetch = numberOfTopicsLimitEachFeedFetch,
+                        onUpdateNumberOfTopicsLimitEachFeedFetch = {
+                            numberOfTopicsLimitEachFeedFetch = it
+                        },
+                        enabled = enableNotifications
+                    )
                 }
 
             }
