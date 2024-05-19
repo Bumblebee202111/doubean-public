@@ -31,6 +31,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,7 +42,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
-import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.compose.content
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -52,13 +52,13 @@ import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.DialogContentGroupNotificationsPreferenceBinding
 import com.github.bumblebee202111.doubean.databinding.LayoutGroupDetailBinding
+import com.github.bumblebee202111.doubean.feature.groups.common.TopicCountLimitEachFetchTextField
 import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabScreen
 import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabViewModel
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.GroupTab
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.theme.AppTheme
-import com.github.bumblebee202111.doubean.util.MinMaxEditTextInputFilter
 import com.github.bumblebee202111.doubean.util.OpenInUtil
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.getColorFromTheme
@@ -184,7 +184,7 @@ fun GroupNotificationsPreferenceDialog(
     var sortRecommendedTopicsBy by remember {
         mutableStateOf(initialSortRecommendedTopicsBy)
     }
-    var numberOfTopicsLimitEachFeedFetch by remember {
+    var numberOfTopicsLimitEachFeedFetch by rememberSaveable {
         mutableIntStateOf(initialNumberOfTopicsLimitEachFeedFetch)
     }
 
@@ -271,20 +271,17 @@ fun GroupNotificationsPreferenceDialog(
                     }
                 }
                 feedRequestTopicCountLimitTitle.isEnabled = enableNotifications
-                feedRequestTopicCountLimitEditText.apply {
-                    isEnabled = enableNotifications
-                    filters =
-                        arrayOf(MinMaxEditTextInputFilter(1, 50))
-                    setText(numberOfTopicsLimitEachFeedFetch.toString())
-                    doAfterTextChanged { text ->
-                        text.takeUnless(CharSequence?::isNullOrBlank)?.let {
-                            numberOfTopicsLimitEachFeedFetch = it.toString().toInt()
-                        }
-                    }
-
+                feedRequestTopicCountLimitTextField.setContent {
+                    TopicCountLimitEachFetchTextField(
+                        numberOfTopicsLimitEachFeedFetch = numberOfTopicsLimitEachFeedFetch,
+                        onUpdateNumberOfTopicsLimitEachFeedFetch = {
+                            numberOfTopicsLimitEachFeedFetch = it
+                        },
+                        enabled = enableNotifications
+                    )
                 }
-
             }
+
         }
     )
 }
