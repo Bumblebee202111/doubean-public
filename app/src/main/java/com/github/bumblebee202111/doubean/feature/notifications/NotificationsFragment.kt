@@ -27,7 +27,6 @@ import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.FragmentNotificationsBinding
 import com.github.bumblebee202111.doubean.databinding.ListItemPostNotificationBinding
-import com.github.bumblebee202111.doubean.feature.groups.groupsHome.GroupsHomeFragmentDirections
 import com.github.bumblebee202111.doubean.model.RecommendedPostNotificationItem
 import com.github.bumblebee202111.doubean.ui.common.UserProfileImage
 import com.github.bumblebee202111.doubean.util.DEEP_LINK_SCHEME_AND_HOST
@@ -55,13 +54,6 @@ class NotificationsFragment : Fragment() {
         binding.apply {
             toolbar.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
-                    R.id.action_search -> {
-                        val action =
-                            GroupsHomeFragmentDirections.actionGroupsToGroupSearch()
-                        findNavController().navigate(action)
-                        true
-                    }
-
                     R.id.action_settings -> {
                         findNavController().navigate(R.id.nav_settings)
                         true
