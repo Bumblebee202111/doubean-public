@@ -16,12 +16,13 @@ import com.github.bumblebee202111.doubean.data.db.dao.UserGroupDao
 import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupEntity
 import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupTabEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupEntity
-import com.github.bumblebee202111.doubean.data.db.model.GroupPostTagEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultItemEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultRemoteKey
 import com.github.bumblebee202111.doubean.data.db.model.GroupTabEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTabTopicRemoteKey
 import com.github.bumblebee202111.doubean.data.db.model.GroupTagTopicItemEntity
+import com.github.bumblebee202111.doubean.data.db.model.GroupTopicTagEntity
+import com.github.bumblebee202111.doubean.data.db.model.GroupUserTopicFeedItemEntity
 import com.github.bumblebee202111.doubean.data.db.model.PostEntity
 import com.github.bumblebee202111.doubean.data.db.model.PostTagCrossRef
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupEntity
@@ -44,11 +45,12 @@ import kotlinx.serialization.json.Json
         GroupEntity::class,
         PostEntity::class,
         GroupTabEntity::class,
-        GroupPostTagEntity::class,
+        GroupTopicTagEntity::class,
         GroupSearchResultItemEntity::class,
         GroupSearchResultRemoteKey::class,
         GroupTabTopicRemoteKey::class,
         GroupTagTopicItemEntity::class,
+        GroupUserTopicFeedItemEntity::class,
         RecommendedGroupsResult::class,
         RecommendedGroupEntity::class,
         RecommendedGroupPost::class,
@@ -58,7 +60,7 @@ import kotlinx.serialization.json.Json
         RecommendedPostNotificationEntity::class,
         UserEntity::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 @TypeConverters(

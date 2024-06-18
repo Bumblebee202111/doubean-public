@@ -8,8 +8,8 @@ import androidx.room.withTransaction
 import com.github.bumblebee202111.doubean.data.db.AppDatabase
 import com.github.bumblebee202111.doubean.data.db.COLUMN_VALUE_GROUP_TAG_ID_ALL
 import com.github.bumblebee202111.doubean.data.db.model.GroupSearchResultGroupItemPartialEntity
-import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostItem
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedRecommendedGroup
+import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItem
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupsResult
 import com.github.bumblebee202111.doubean.data.db.model.UserEntity
 import com.github.bumblebee202111.doubean.data.db.model.asExternalModel
@@ -22,7 +22,7 @@ import com.github.bumblebee202111.doubean.model.Result
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkRecommendedGroup
-import com.github.bumblebee202111.doubean.network.model.NetworkRecommendedGroupItemPost
+import com.github.bumblebee202111.doubean.network.model.NetworkRecommendedGroupItemTopic
 import com.github.bumblebee202111.doubean.network.model.asEntity
 import com.github.bumblebee202111.doubean.network.model.asPartialEntity
 import com.github.bumblebee202111.doubean.network.model.postRefs
@@ -49,7 +49,7 @@ class GroupRepository @Inject constructor(
     fun getGroup(groupId: String): Flow<Result<GroupDetail>> {
         return offlineFirstApiResultFlow(
             loadFromDb = {
-                groupDao.loadGroupDetail(groupId).map { it?.asExternalModel() }
+                groupDao.getGroupDetail(groupId).map { it?.asExternalModel() }
             },
             call = {
                 ApiService.getGroup(groupId)
@@ -57,11 +57,11 @@ class GroupRepository @Inject constructor(
             saveSuccess = {
                 val groupDetails = asPartialEntity()
                 val groupTabs = tabs.map { it.asEntity(groupId) }
-                val groupPostTags = postTags.map { it.asEntity(groupId) }
+                val topicTags = topicTags.map { it.asEntity(groupId) }
                 appDatabase.withTransaction {
                     groupDao.upsertGroupDetail(groupDetails)
                     groupDao.insertGroupTabs(groupTabs)
-                    groupDao.insertGroupPostTags(groupPostTags)
+                    groupDao.insertTopicTags(topicTags)
                 }
             }
         )
@@ -83,9 +83,9 @@ class GroupRepository @Inject constructor(
     @OptIn(ExperimentalPagingApi::class)
     fun getTopicsPagingData(groupId: String, tagId: String?, sortBy: TopicSortBy) = Pager(
         PagingConfig(
-            pageSize = RESULT_POSTS_PAGE_SIZE,
-            prefetchDistance = RESULT_POSTS_PAGE_SIZE / 2,
-            initialLoadSize = RESULT_POSTS_PAGE_SIZE
+            pageSize = RESULT_TOPICS_PAGE_SIZE,
+            prefetchDistance = RESULT_TOPICS_PAGE_SIZE / 2,
+            initialLoadSize = RESULT_TOPICS_PAGE_SIZE
         ),
         remoteMediator = GroupTagTopicRemoteMediator(
             groupId = groupId,
@@ -99,7 +99,7 @@ class GroupRepository @Inject constructor(
                 sortBy = sortBy
             )
         }
-    ).flow.map { it.map(PopulatedPostItem::asExternalModel) }
+    ).flow.map { it.map(PopulatedTopicItem::asExternalModel) }
 
     fun getGroupRecommendation(type: GroupRecommendationType): Flow<Result<List<RecommendedGroupItem>>> {
         return offlineFirstApiResultFlow(
@@ -130,9 +130,9 @@ class GroupRepository @Inject constructor(
                     g.posts.map { p -> p.asPartialEntity(g.group.id) }
                 }
                 val postIds =
-                    items.flatMap { it.posts.map(NetworkRecommendedGroupItemPost::id) }
+                    items.flatMap { it.posts.map(NetworkRecommendedGroupItemTopic::id) }
                 val postTagCrossRefs =
-                    items.flatMap { it.posts.map(NetworkRecommendedGroupItemPost::tagCrossRefs) }
+                    items.flatMap { it.posts.map(NetworkRecommendedGroupItemTopic::tagCrossRefs) }
                         .flatten()
                 val postsAuthors =
                     items.flatMap { g -> g.posts.map { p -> p.author.asEntity() } }
@@ -157,7 +157,7 @@ class GroupRepository @Inject constructor(
     }
 
     companion object {
-        const val RESULT_POSTS_PAGE_SIZE = 40
+        const val RESULT_TOPICS_PAGE_SIZE = 40
     }
 }
 

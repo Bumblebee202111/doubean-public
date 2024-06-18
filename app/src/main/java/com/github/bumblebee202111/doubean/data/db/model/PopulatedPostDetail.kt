@@ -17,14 +17,14 @@ data class PopulatedPostDetail(
     @Relation(
         parentColumn = "id",
         entityColumn = "id",
-        entity = GroupPostTagEntity::class,
+        entity = GroupTopicTagEntity::class,
         associateBy = Junction(
             PostTagCrossRef::class,
             parentColumn = "post_id",
             entityColumn = "tag_id"
         )
     )
-    val postTags: List<GroupPostTagEntity>,
+    val postTags: List<GroupTopicTagEntity>,
     @Relation(
         parentColumn = "group_id",
         entityColumn = "id",
@@ -60,7 +60,7 @@ fun PopulatedPostDetail.asExternalModel() = PostDetail(
     commentCount = partialEntity.commentCount,
     shortContent = partialEntity.shortContent,
     content = partialEntity.content,
-    tags = postTags.map(GroupPostTagEntity::asExternalModel),
+    tags = postTags.map(GroupTopicTagEntity::asExternalModel),
     coverUrl = partialEntity.coverUrl,
     url = partialEntity.url,
     group = group?.asExternalModel(),

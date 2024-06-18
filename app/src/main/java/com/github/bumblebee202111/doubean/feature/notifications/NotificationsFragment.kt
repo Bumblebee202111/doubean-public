@@ -4,17 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -23,15 +16,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
-import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.FragmentNotificationsBinding
-import com.github.bumblebee202111.doubean.databinding.ListItemPostNotificationBinding
-import com.github.bumblebee202111.doubean.model.RecommendedPostNotificationItem
-import com.github.bumblebee202111.doubean.ui.common.UserProfileImage
+import com.github.bumblebee202111.doubean.feature.groups.common.TopicItemWithGroupAndroidView
 import com.github.bumblebee202111.doubean.util.DEEP_LINK_SCHEME_AND_HOST
 import com.github.bumblebee202111.doubean.util.GROUP_PATH
-import com.github.bumblebee202111.doubean.util.POST_PATH
+import com.github.bumblebee202111.doubean.util.TOPIC_PATH
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -65,9 +55,9 @@ class NotificationsFragment : Fragment() {
             notifications.setContent {
                 val notificationPagingItems =
                     notificationsViewModel.notifications.collectAsLazyPagingItems()
-                val navigateToTopic = { notification: RecommendedPostNotificationItem ->
+                val navigateToTopic = { topicId: String ->
                     val request =
-                        NavDeepLinkRequest.Builder.fromUri(notification.postDeepLinkUri()).build()
+                        NavDeepLinkRequest.Builder.fromUri(topicId.topicDeepLinkUri()).build()
                     findNavController().navigate(request)
                 }
                 LazyColumn(Modifier.nestedScroll(rememberNestedScrollInteropConnection())) {
@@ -75,34 +65,10 @@ class NotificationsFragment : Fragment() {
                         notificationPagingItems.itemCount,
                         notificationPagingItems.itemKey { it.id },
                         notificationPagingItems.itemContentType { "notification" }) { index ->
-                        AndroidViewBinding(
-                            factory = ListItemPostNotificationBinding::inflate,
-                            onReset = {}) {
-                            val notification = notificationPagingItems[index]
-                            post = notification
-                            //TODO Do not use Circle for group avatars
-                            groupAvatar.setContent {
-                                UserProfileImage(
-                                    url = notification?.group?.avatarUrl,
-                                    size = dimensionResource(id = R.dimen.icon_size_extra_small)
-                                )
-                            }
-                            cover.setContent {
-                                notification?.coverUrl?.let {
-                                    AsyncImage(
-                                        model = it, contentDescription = null,
-                                        modifier = Modifier
-                                            .size(80.dp)
-                                            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_normal))),
-                                        contentScale = ContentScale.Crop
-                                    )
-                                }
-
-                            }
-                            card.setOnClickListener {
-                                notification?.let(navigateToTopic)
-                            }
-                        }
+                        TopicItemWithGroupAndroidView(
+                            notificationPagingItems[index],
+                            navigateToTopic
+                        )
                     }
                 }
             }
@@ -110,5 +76,5 @@ class NotificationsFragment : Fragment() {
     }
 }
 
-private fun RecommendedPostNotificationItem.postDeepLinkUri() =
-    "$DEEP_LINK_SCHEME_AND_HOST/$GROUP_PATH/$POST_PATH/$id".toUri()
+fun String.topicDeepLinkUri() =
+    "$DEEP_LINK_SCHEME_AND_HOST/$GROUP_PATH/$TOPIC_PATH/$this".toUri()

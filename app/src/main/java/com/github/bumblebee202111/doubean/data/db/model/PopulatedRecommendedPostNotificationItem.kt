@@ -2,7 +2,7 @@ package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.github.bumblebee202111.doubean.model.RecommendedPostNotificationItem
+import com.github.bumblebee202111.doubean.model.TopicItemWithGroup
 
 class PopulatedRecommendedPostNotificationItem(
     @Embedded
@@ -13,12 +13,12 @@ class PopulatedRecommendedPostNotificationItem(
         entityColumn = "id",
         entity = PostEntity::class
     )
-    val postWithGroup: PopulatedPostItemWithGroup,
+    val postWithGroup: PopulatedTopicItemWithGroup,
 )
 
-fun PopulatedRecommendedPostNotificationItem.asExternalModel(): RecommendedPostNotificationItem {
+fun PopulatedRecommendedPostNotificationItem.asExternalModel(): TopicItemWithGroup {
     val postItemWithGroup = postWithGroup.asExternalModel()
-    return RecommendedPostNotificationItem(
+    return TopicItemWithGroup(
         postItemWithGroup.id,
         postItemWithGroup.title,
         postItemWithGroup.author,

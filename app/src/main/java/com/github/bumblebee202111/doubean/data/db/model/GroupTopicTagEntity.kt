@@ -3,10 +3,10 @@ package com.github.bumblebee202111.doubean.data.db.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.github.bumblebee202111.doubean.model.GroupPostTag
+import com.github.bumblebee202111.doubean.model.GroupTopicTag
 
 @Entity("group_post_tags")
-data class GroupPostTagEntity(
+data class GroupTopicTagEntity(
     @PrimaryKey
     val id: String,
     val name: String,
@@ -14,7 +14,7 @@ data class GroupPostTagEntity(
     val groupId: String,
 )
 
-fun GroupPostTagEntity.asExternalModel() = GroupPostTag(
+fun GroupTopicTagEntity.asExternalModel() = GroupTopicTag(
     id = id,
     name = name
 )
