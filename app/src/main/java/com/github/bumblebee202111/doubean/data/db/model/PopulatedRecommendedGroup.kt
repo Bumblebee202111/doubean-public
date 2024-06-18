@@ -6,7 +6,7 @@ import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
 import com.github.bumblebee202111.doubean.model.RecommendedGroupItemGroup
 
 
-class PopulatedRecommendedGroup(
+data class PopulatedRecommendedGroup(
     @Embedded
     val entity: RecommendedGroupEntity,
 

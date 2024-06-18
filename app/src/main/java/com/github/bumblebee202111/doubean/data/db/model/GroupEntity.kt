@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 
 @Entity(tableName = "groups")
-class GroupEntity(
+data class GroupEntity(
     @PrimaryKey
     val id: String,
     val name: String,
