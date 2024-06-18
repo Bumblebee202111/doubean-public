@@ -47,7 +47,7 @@ class GroupSearchResultItemRemoteMediator(
                 }
                 groupSearchResultRemoteKeyDao.insert(GroupSearchResultRemoteKey(query, nextKey))
                 groupDao.apply {
-                    upsertSearchResultGroups(response.items.map { it.group.asPartialEntity() })
+                    upsertSearchResultGroupItems(response.items.map { it.group.asPartialEntity() })
                     insertGroupSearchResultItems(response.items.mapIndexed { index, networkItem ->
                         GroupSearchResultItemEntity(query, start + index, networkItem.group.id)
                     })

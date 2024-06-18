@@ -9,8 +9,10 @@ import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
 import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupEntity
 import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupTabEntity
+import com.github.bumblebee202111.doubean.data.db.model.GroupUserTopicFeedItemEntity
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedGroupFavoriteItem
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedRecommendedPostNotificationItem
+import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItemWithGroup
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedPostNotificationEntity
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import kotlinx.coroutines.flow.Flow
@@ -159,4 +161,23 @@ interface UserGroupDao {
     """
     )
     suspend fun getLeastRecentlyNotifiedTab(): FavoriteGroupTabEntity?
+
+    @Transaction
+    @RewriteQueriesToDropUnusedColumns
+    @Query(
+        """
+SELECT * FROM group_user_topic_feed_items LEFT JOIN posts 
+ON group_user_topic_feed_items.id == posts.id 
+ORDER BY created DESC 
+"""
+    )
+    fun getTopicsFeed(): Flow<List<PopulatedTopicItemWithGroup>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTopicsFeed(topicFeedItems: List<GroupUserTopicFeedItemEntity>)
+
+    @Query("DELETE FROM group_user_topic_feed_items")
+    suspend fun deleteTopicsFeed()
+
+
 }

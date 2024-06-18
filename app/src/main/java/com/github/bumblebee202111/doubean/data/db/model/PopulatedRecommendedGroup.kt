@@ -22,7 +22,7 @@ class PopulatedRecommendedGroup(
         entityColumn = "id",
         entity = PostEntity::class
     )
-    val posts: List<PopulatedPostItem>,
+    val posts: List<PopulatedTopicItem>,
 )
 
 data class PopulatedRecommendedGroupItemGroup(

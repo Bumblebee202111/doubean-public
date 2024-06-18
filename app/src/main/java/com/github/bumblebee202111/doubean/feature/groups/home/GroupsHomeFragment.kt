@@ -1,13 +1,13 @@
-package com.github.bumblebee202111.doubean.feature.groups.groupsHome
+package com.github.bumblebee202111.doubean.feature.groups.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
@@ -27,6 +26,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -40,30 +40,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.compose.content
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
 import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.databinding.ListItemRecommendedGroupBinding
+import com.github.bumblebee202111.doubean.feature.groups.common.TopicItemWithGroupAndroidView
+import com.github.bumblebee202111.doubean.feature.groups.common.groupsOfTheDay
+import com.github.bumblebee202111.doubean.feature.notifications.topicDeepLinkUri
 import com.github.bumblebee202111.doubean.model.GroupFavoriteItem
 import com.github.bumblebee202111.doubean.model.GroupItem
-import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
+import com.github.bumblebee202111.doubean.model.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.ui.theme.AppTheme
-import com.github.bumblebee202111.doubean.util.TopItemNoBackgroundUtil
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 
@@ -86,6 +84,11 @@ class GroupsHomeFragment : Fragment() {
                         ).setDefaultTabId(tabId)
                     )
                 },
+                navigateToTopic = { topicId: String ->
+                    val request =
+                        NavDeepLinkRequest.Builder.fromUri(topicId.topicDeepLinkUri()).build()
+                    findNavController().navigate(request)
+                }
             )
 
         }
@@ -100,10 +103,12 @@ fun GroupsHomeScreen(
     openSearch: () -> Unit,
     openSettings: () -> Unit,
     openGroup: (groupId: String, tabId: String?) -> Unit,
+    navigateToTopic: (topicId: String) -> Unit,
 ) {
     val joinedGroups by viewModel.joinedGroups.collectAsStateWithLifecycle()
-    val following by viewModel.favorites.collectAsStateWithLifecycle()
+    val favorites by viewModel.favorites.collectAsStateWithLifecycle()
     val groupsOfTheDay by viewModel.groupsOfTheDay.collectAsStateWithLifecycle()
+    val recentTopicsFeed by viewModel.recentTopicsFeed.collectAsStateWithLifecycle()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -129,32 +134,39 @@ fun GroupsHomeScreen(
             )
         }
     ) { innerPadding ->
-        LazyColumn(Modifier.padding(16.dp), contentPadding = innerPadding) {
+        LazyColumn(contentPadding = innerPadding) {
             joinedGroups?.let { groups ->
-                yourGroups(groups) { openGroup(it, null) }
+                myGroups(groups) { openGroup(it, null) }
             }
-            following?.takeIf(List<GroupFavoriteItem>::isNotEmpty)?.let { groups ->
-                yourFollowing(groups, openGroup)
+            favorites?.takeIf(List<GroupFavoriteItem>::isNotEmpty)?.let { groups ->
+                favorites(groups, openGroup)
             }
             groupsOfTheDay?.let { groups ->
                 groupsOfTheDay(groups) { openGroup(it, null) }
-
+            }
+            recentTopicsFeed?.let { topic ->
+                myTopics(topic, navigateToTopic)
             }
         }
 
     }
 }
 
-fun LazyListScope.yourGroups(
+fun LazyListScope.myGroups(
     groups: List<GroupItem>,
     onGroupItemClick: (groupId: String) -> Unit,
 ) {
-    item {
+    item(key = "myGroups", contentType = "myGroups") {
         Text(
             "My Groups",
+            modifier = Modifier.padding(horizontal = 16.dp),
             style = MaterialTheme.typography.titleMedium
         )
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        Spacer(modifier = Modifier.size(4.dp))
+        LazyRow(
+            modifier = Modifier.padding(start = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
             items(items = groups, key = { group -> group.id }) { group ->
                 Card(
                     colors = CardDefaults.cardColors(
@@ -193,11 +205,11 @@ fun LazyListScope.yourGroups(
 
 }
 
-fun LazyListScope.yourFollowing(
+fun LazyListScope.favorites(
     follows: List<GroupFavoriteItem>,
     onGroupItemClick: (groupId: String, tabId: String?) -> Unit,
 ) {
-    item {
+    item(key = "favorites", contentType = "favorites") {
         Text(
             modifier = Modifier.padding(top = 16.dp),
             text = "Favorites (Local Feature)",
@@ -271,63 +283,34 @@ fun LazyListScope.yourFollowing(
 
         }
     }
-
-
 }
 
-private fun LazyListScope.groupsOfTheDay(
-    recommendedGroups: List<RecommendedGroupItem>,
-    onGroupItemClick: (groupId: String) -> Unit,
+
+private fun LazyListScope.myTopics(
+    topics: List<TopicItemWithGroup>,
+    navigateToTopic: (topicId: String) -> Unit,
 ) {
 
     item {
-        Column {
-            Text(
-                text = "Groups of the Day",
-                modifier = Modifier.padding(top = 16.dp),
-                style = MaterialTheme.typography.titleMedium
-            )
-            Text(
-                "Note: to be replaced by posts feed",
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
 
+        Text(
+            text = "My Topics",
+            modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
+            style = MaterialTheme.typography.titleMedium
+        )
+        Spacer(modifier = Modifier.size(4.dp))
     }
 
     itemsIndexed(
-        recommendedGroups,
-        key = { _, recommendedGroup -> recommendedGroup.group.id }) { index, group ->
-        AndroidViewBinding({ inflater, root, attachToRoot ->
-            ListItemRecommendedGroupBinding.inflate(
-                inflater,
-                root,
-                attachToRoot
-            )
-        }, update = fun ListItemRecommendedGroupBinding.() {
-            val context = this.root.context
-            val noColor = TopItemNoBackgroundUtil.getNoBackground(
-                context,
-                index,
-                recommendedGroups.size
-            )
-            avatar.setContent {
-                AsyncImage(
-                    model = group.group.avatarUrl,
-                    contentDescription = stringResource(id = R.string.a11y_group_item_image),
-                    modifier = Modifier
-                        .size(dimensionResource(id = R.dimen.icon_size_extra_large))
-                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small))),
-                    contentScale = ContentScale.Crop
-                )
-            }
-            this.noBackground = noColor
-            this.recommendedGroup = group
-            this.no.text = group.no.toString()
-            this.clickListener = View.OnClickListener { onGroupItemClick(group.group.id) }
-        })
-    }
+        items = topics,
+        key = { _, topic -> topic.id },
+        contentType = { _, _ -> "topicItemWithGroup" }) { index, item ->
+        if (index != 0) {
+            HorizontalDivider()
+        }
+        TopicItemWithGroupAndroidView(topicItemWithGroup = item, navigateToTopic)
 
+    }
 
 }
 
@@ -343,7 +326,7 @@ fun YourFollowingPreview(
         GroupFavoriteItem(Calendar.getInstance(), "1124", "", "wwww", "", "12345"),
     )
     LazyColumn {
-        yourFollowing(mockData) { _, _ -> }
+        favorites(mockData) { _, _ -> }
     }
 
 }
@@ -358,6 +341,6 @@ private fun JoinedGroupsPreview() {
         GroupItem("1324", "wwww", "avatar"),
     )
     LazyColumn {
-        yourGroups(mockData) { }
+        myGroups(mockData) { }
     }
 }

@@ -13,10 +13,10 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.PostItemWithGroup
+import com.github.bumblebee202111.doubean.model.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.util.DEEP_LINK_SCHEME_AND_HOST
 import com.github.bumblebee202111.doubean.util.GROUP_PATH
-import com.github.bumblebee202111.doubean.util.POST_PATH
+import com.github.bumblebee202111.doubean.util.TOPIC_PATH
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.ZoneId
 import javax.inject.Inject
@@ -31,7 +31,7 @@ private const val POST_NOTIFICATION_REQUEST_CODE = 0
 
 @Singleton
 class Notifier @Inject constructor(@ApplicationContext private val context: Context) {
-    fun postRecommendedPostNotifications(posts: List<PostItemWithGroup>) {
+    fun postRecommendedPostNotifications(posts: List<TopicItemWithGroup>) {
         if (ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.POST_NOTIFICATIONS,
@@ -87,7 +87,7 @@ class Notifier @Inject constructor(@ApplicationContext private val context: Cont
     }
 }
 
-fun postPendingIntent(context: Context, post: PostItemWithGroup): PendingIntent =
+fun postPendingIntent(context: Context, post: TopicItemWithGroup): PendingIntent =
     PendingIntent.getActivity(
         context, POST_NOTIFICATION_REQUEST_CODE,
         Intent().apply {
@@ -116,10 +116,10 @@ private fun Context.ensureNotificationChannelExists() {
     NotificationManagerCompat.from(this).createNotificationChannel(channel)
 }
 
-private fun PostItemWithGroup.postDeepLinkUri() =
-    "$DEEP_LINK_SCHEME_AND_HOST/$GROUP_PATH/$POST_PATH/$id".toUri()
+private fun TopicItemWithGroup.postDeepLinkUri() =
+    "$DEEP_LINK_SCHEME_AND_HOST/$GROUP_PATH/$TOPIC_PATH/$id".toUri()
 
-private fun PostItemWithGroup.notificationContentText(): String {
+private fun TopicItemWithGroup.notificationContentText(): String {
     return with(StringBuilder()) {
         append(group.name[0])
         tag?.let { append("·${it.name[0]}") }

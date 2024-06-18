@@ -8,13 +8,13 @@ import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
 import androidx.room.Upsert
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostDetail
-import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostItem
-import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostItemWithGroup
+import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItem
+import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItemWithGroup
 import com.github.bumblebee202111.doubean.data.db.model.PostDetailPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.PostEntity
-import com.github.bumblebee202111.doubean.data.db.model.PostItemPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.PostTagCrossRef
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupItemPostPartialEntity
+import com.github.bumblebee202111.doubean.data.db.model.TopicItemPartialEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -23,7 +23,7 @@ interface GroupTopicDao {
     @Transaction
     @Query("SELECT * FROM posts WHERE id IN (:postIds)")
     @RewriteQueriesToDropUnusedColumns
-    fun loadPosts(postIds: List<String>): Flow<List<PopulatedPostItem>>
+    fun loadPosts(postIds: List<String>): Flow<List<PopulatedTopicItem>>
     fun loadOrderedPosts(postIds: List<String>) = loadPosts(postIds).map { posts ->
         posts.sortedWith(compareBy { o -> postIds.indexOf(o.partialEntity.id) })
     }
@@ -31,7 +31,7 @@ interface GroupTopicDao {
     @Transaction
     @Query("SELECT * FROM posts WHERE id IN (:postIds)")
     @RewriteQueriesToDropUnusedColumns
-    fun loadPostsWithGroups(postIds: List<String>): Flow<List<PopulatedPostItemWithGroup>>
+    fun loadPostsWithGroups(postIds: List<String>): Flow<List<PopulatedTopicItemWithGroup>>
 
     fun loadOrderedPostsWithGroups(postIds: List<String>) =
         loadPostsWithGroups(postIds).map { posts ->
@@ -43,7 +43,7 @@ interface GroupTopicDao {
 
     @Upsert(entity = PostEntity::class)
     @RewriteQueriesToDropUnusedColumns
-    suspend fun upsertPosts(posts: List<PostItemPartialEntity>)
+    suspend fun upsertTopics(posts: List<TopicItemPartialEntity>)
 
     @Upsert(entity = PostEntity::class)
     @RewriteQueriesToDropUnusedColumns
@@ -51,7 +51,7 @@ interface GroupTopicDao {
 
     @Transaction
     @Query("SELECT * FROM posts WHERE id=:postId")
-    fun loadPost(postId: String): Flow<PopulatedPostDetail>
+    fun loadPost(postId: String): Flow<PopulatedPostDetail?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPostTagCrossRefs(postTagCrossRefs: List<PostTagCrossRef>)

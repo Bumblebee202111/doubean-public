@@ -186,14 +186,13 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.5.10\)
 
-- Replace content of the recommended groups area with recommended posts
-
 #### To-dos for next release \(0.5.11)
 
 #### Future plans
 
+* Date & time: `Yesterday hh:mm`
 * Gradually revert naming conventions to those of Douban
-* Gracefully remove Fragments: Stop calling Fragment methods other than onCreateView
+* Gracefully remove Fragments: Reduce uses of Fragment methods
 * Gradual migrations: <span id="migrations"></span>
   * From MD2 / custom design to MD3
   * From View and data binding to Jetpack Compose
@@ -201,13 +200,12 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From Navigation Fragment to Navigation Compose (take action when next stable version is available)
     * From NavHostFragment to ComposableNavHostFragment
 * navigation-fragment-compose
-* GroupsHome: Support pagination & add favorite tabs for topic list area
+* GroupsHome: Support pagination? & add favorite tabs for topic list area
 * Home - Following
   * More card types
   * Pagination
 * Group notifications
   * Group Tab: Untighten tab notification settings from group model
-
 * TopAppBar and Edge-to-Edge
   * Reduce MD3 TopAppBar height to 56 dp when https://developer.android.google.cn/jetpack/androidx/releases/compose-material3#1.3.0-alpha06 enters RC
 * Bring back load state visualization which was removed during various types of migrations
@@ -219,7 +217,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Pin followed groups
   * Add corresponding item actions
 * Group Detail: Collapse on entrance for the followed group/tab
-* Date & time: Yesterday
 * Allow expanding group description w/ SpannableString
 * Bring back basic support for dark mode & landscape experience
 * Topics sort by 
@@ -258,7 +255,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * More features of books & movies
 * Group Detail: For post items, optimize tag display, e.g., assign color to each tag mapped from name
 * Lists: Reddit-like item expand/collapse
-* Real login (which seems impossible)
+* Real login (seems impossible)
+* Find API for all followed topics (seems impossible)
 * Group Detail: WebView for group
 * Test
 

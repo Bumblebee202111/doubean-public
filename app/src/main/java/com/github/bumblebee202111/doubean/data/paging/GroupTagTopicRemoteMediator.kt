@@ -9,12 +9,12 @@ import com.github.bumblebee202111.doubean.data.db.AppDatabase
 import com.github.bumblebee202111.doubean.data.db.COLUMN_VALUE_GROUP_TAG_ID_ALL
 import com.github.bumblebee202111.doubean.data.db.model.GroupTabTopicRemoteKey
 import com.github.bumblebee202111.doubean.data.db.model.GroupTagTopicItemEntity
-import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostItem
+import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItem
 import com.github.bumblebee202111.doubean.data.db.model.UserEntity
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.model.getRequestParamString
 import com.github.bumblebee202111.doubean.network.ApiService
-import com.github.bumblebee202111.doubean.network.model.NetworkPostItem
+import com.github.bumblebee202111.doubean.network.model.NetworkTopicItem
 import com.github.bumblebee202111.doubean.network.model.asEntity
 import com.github.bumblebee202111.doubean.network.model.asPartialEntity
 import com.github.bumblebee202111.doubean.network.model.tagCrossRefs
@@ -26,7 +26,7 @@ class GroupTagTopicRemoteMediator(
     private val sortBy: TopicSortBy,
     private val service: ApiService,
     private val appDatabase: AppDatabase,
-) : RemoteMediator<Int, PopulatedPostItem>() {
+) : RemoteMediator<Int, PopulatedTopicItem>() {
     private val groupDao = appDatabase.groupDao()
     private val topicDao = appDatabase.groupTopicDao()
     private val userDao = appDatabase.userDao()
@@ -34,7 +34,7 @@ class GroupTagTopicRemoteMediator(
     private val tagIdColumnValue = tagId ?: COLUMN_VALUE_GROUP_TAG_ID_ALL
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, PopulatedPostItem>,
+        state: PagingState<Int, PopulatedTopicItem>,
     ): MediatorResult {
         val start = when (loadType) {
             LoadType.REFRESH -> 0
@@ -54,9 +54,9 @@ class GroupTagTopicRemoteMediator(
                 count = if (start == 0) state.config.initialLoadSize else state.config.pageSize
             )
 
-            val topics = response.items.filterIsInstance<NetworkPostItem>().run {
+            val topics = response.items.filterIsInstance<NetworkTopicItem>().run {
                 if (sortBy == TopicSortBy.NEW || sortBy == TopicSortBy.NEW_TOP)
-                    sortedByDescending(NetworkPostItem::created)
+                    sortedByDescending(NetworkTopicItem::created)
                 else this
             }
             val nextKey = (start + response.count).takeIf { it < response.total }
@@ -93,19 +93,19 @@ class GroupTagTopicRemoteMediator(
                     )
                 }
 
-                val topicIds = topics.map(NetworkPostItem::id)
+                val topicIds = topics.map(NetworkTopicItem::id)
 
                 val postEntities = topics.map { it.asPartialEntity(groupId) }
 
                 val postTagCrossRefs =
-                    topics.flatMap(NetworkPostItem::tagCrossRefs)
+                    topics.flatMap(NetworkTopicItem::tagCrossRefs)
                 val authors = topics.map { it.author.asEntity() }.distinctBy(UserEntity::id)
 
                 groupDao.apply {
                     groupDao.insertGroupTopicItems(topicItems)
                     topicDao.deletePostTagCrossRefsByPostIds(topicIds)
                     topicDao.insertPostTagCrossRefs(postTagCrossRefs)
-                    topicDao.upsertPosts(postEntities)
+                    topicDao.upsertTopics(postEntities)
                     userDao.insertUsers(authors)
                 }
             }

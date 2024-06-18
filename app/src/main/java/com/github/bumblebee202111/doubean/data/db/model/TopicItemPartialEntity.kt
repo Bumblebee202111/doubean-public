@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import com.github.bumblebee202111.doubean.model.SizedImage
 import java.time.LocalDateTime
 
-data class PostItemPartialEntity(
+data class TopicItemPartialEntity(
     val id: String,
 
     val title: String,

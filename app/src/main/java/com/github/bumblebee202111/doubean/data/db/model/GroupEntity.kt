@@ -18,7 +18,7 @@ class GroupEntity(
     val postCount: Int? = null,
 
     @ColumnInfo("share_url")
-    val shareUrl: String,
+    val shareUrl: String? = null,
 
     val url: String,
 
