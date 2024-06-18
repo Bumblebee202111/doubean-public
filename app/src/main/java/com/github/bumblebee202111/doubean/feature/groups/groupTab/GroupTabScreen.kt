@@ -151,7 +151,10 @@ fun GroupTabScreen(
                                                 ?.let { tab ->
                                                     shareText.append(tab.name)
                                                 }
-                                            shareText.append(' ' + group.shareUrl + "\r\n")
+                                            group.shareUrl?.let { shareUrl ->
+                                                shareText.append(" $shareUrl\r\n")
+                                            }
+
                                             ShareUtil.share(context, shareText)
                                             true
                                         }

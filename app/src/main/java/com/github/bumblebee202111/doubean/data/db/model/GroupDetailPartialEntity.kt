@@ -15,7 +15,7 @@ data class GroupDetailPartialEntity(
     val topicCount: Int,
 
     @ColumnInfo("share_url")
-    val shareUrl: String,
+    val shareUrl: String?,
 
     val url: String,
 
@@ -26,7 +26,7 @@ data class GroupDetailPartialEntity(
     val dateCreated: LocalDateTime?,
 
     @ColumnInfo("member_name")
-    val memberName: String,
+    val memberName: String? = null,
 
     val description: String?,
 
