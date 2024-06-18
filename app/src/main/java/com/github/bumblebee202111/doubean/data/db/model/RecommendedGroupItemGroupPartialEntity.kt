@@ -2,7 +2,7 @@ package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.ColumnInfo
 
-class RecommendedGroupItemGroupPartialEntity(
+data class RecommendedGroupItemGroupPartialEntity(
     val id: String,
     val name: String,
 

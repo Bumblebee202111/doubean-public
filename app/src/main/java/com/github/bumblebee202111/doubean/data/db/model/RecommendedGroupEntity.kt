@@ -5,7 +5,7 @@ import androidx.room.Entity
 import com.github.bumblebee202111.doubean.model.GroupRecommendationType
 
 @Entity(tableName = "recommended_groups", primaryKeys = ["recommendation_type", "no"])
-class RecommendedGroupEntity(
+data class RecommendedGroupEntity(
     @ColumnInfo("recommendation_type")
     val recommendationType: GroupRecommendationType,
     val no: Int,

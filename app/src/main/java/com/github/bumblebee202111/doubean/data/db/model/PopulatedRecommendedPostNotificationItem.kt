@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.github.bumblebee202111.doubean.model.TopicItemWithGroup
 
-class PopulatedRecommendedPostNotificationItem(
+data class PopulatedRecommendedPostNotificationItem(
     @Embedded
     val entity: RecommendedPostNotificationEntity,
 
