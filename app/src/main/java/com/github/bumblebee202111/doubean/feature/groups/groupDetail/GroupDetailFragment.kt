@@ -353,7 +353,7 @@ fun GroupDetailCoordinator(
                         }
 
                         R.id.action_view_in_browser -> {
-                            viewInBrowser(group.shareUrl)
+                            group.shareUrl?.let(viewInBrowser)
                             true
                         }
 
