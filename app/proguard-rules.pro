@@ -23,3 +23,11 @@
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 
 -keepattributes Signature
+
+# https://issuetracker.google.com/issues/346808608#comment6
+-if public class androidx.compose.ui.platform.AndroidCompositionLocals_androidKt {
+    public static *** getLocalLifecycleOwner();
+}
+-keep public class androidx.compose.ui.platform.AndroidCompositionLocals_androidKt {
+    public static *** getLocalLifecycleOwner();
+}
