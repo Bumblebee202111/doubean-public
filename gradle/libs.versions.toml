@@ -17,6 +17,7 @@ junit = "4.13.2"
 libsu = "5.2.2"
 kotlin = "1.9.24"
 kotlinxCoroutines = "1.8.1"
+#noinspection GradleDependency blocked by project kotlin version
 kotlinxSerializationJson = "1.6.3"
 ksp = "1.9.24-1.0.20"
 ktor = "2.3.11"
