@@ -186,7 +186,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.5.10\)
 
-#### To-dos for next release \(0.5.11)
+#### To-dos for next release \(0..)
 
 #### Future plans
 
@@ -220,10 +220,10 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Allow expanding group description w/ SpannableString
 * Bring back basic support for dark mode & landscape experience
 * Topics sort by 
-  * "Last updated" -> "active"
+  * "Last updated" -> "New (last updated)"
   * Add "New Top"
 * Shared element
-* Lazylist problems
+* `Lazylist` problems
   * Restoration of scroll position is problematic
   * Topic content WebView problems
     * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
