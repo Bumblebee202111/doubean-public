@@ -184,9 +184,12 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.5.10\)
+#### To-dos for current release \(0.6.0\)
 
-#### To-dos for next release \(0..)
+- Kotlin 2.0
+- Migrations
+
+#### To-dos for next release \(0.6.1)
 
 #### Future plans
 
