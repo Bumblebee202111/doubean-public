@@ -1,11 +1,15 @@
 Change Log
 ==========
 
+## Version 0.6.0(600)
+
+- Fix Groups Home crash due to ridiculously non-sense API change. 
+
 ## Version 0.5.10
 
 - For logged-in users, the new "my topics" section is shown in GroupsHomeScreen, replacing "groups of the day" section
   - They can still browse "Groups of the day" section in GroupsSearchScreen when the query is empty
-- Fix a ROOM typo which may cause crash: @Update -> @Upsert
+- Fix a ROOM typo which may cause crash: `@Update` -> `@Upsert`
 - Migrate DialogFragment/EditText/RecyclerView to Compose couterparts
 - Code optimizations and cleanups
 
