@@ -30,6 +30,7 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
 
     val sessionLoginResult = MutableStateFlow<Boolean?>(null)
     fun loginWithDoubanSession(sessionPref: String) {
+        sessionLoginResult.value = null
         sessionLoginResult.value = authRepository.loginWithDoubanSessionPref(sessionPref)
     }
 
