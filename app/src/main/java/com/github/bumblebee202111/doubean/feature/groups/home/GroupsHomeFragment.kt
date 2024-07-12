@@ -164,10 +164,12 @@ fun LazyListScope.myGroups(
         )
         Spacer(modifier = Modifier.size(4.dp))
         LazyRow(
-            modifier = Modifier.padding(start = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             items(items = groups, key = { group -> group.id }) { group ->
+                if (groups.first() == group) {
+                    Spacer(modifier = Modifier.size(16.dp))
+                }
                 Card(
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface,
@@ -197,10 +199,12 @@ fun LazyListScope.myGroups(
                         )
                     }
                 }
-
+                if (groups.last() == group) {
+                    Spacer(modifier = Modifier.size(16.dp))
+                }
             }
-
         }
+        Spacer(Modifier.size(16.dp))
     }
 
 }
@@ -211,12 +215,17 @@ fun LazyListScope.favorites(
 ) {
     item(key = "favorites", contentType = "favorites") {
         Text(
-            modifier = Modifier.padding(top = 16.dp),
+            modifier = Modifier.padding(horizontal = 16.dp),
             text = "Favorites (Local Feature)",
             style = MaterialTheme.typography.titleMedium
         )
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
             items(items = follows, key = { group -> listOf(group.groupId, group.tabId) }) { group ->
+                if (follows.first() == group) {
+                    Spacer(modifier = Modifier.size(16.dp))
+                }
                 Card(
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface,
@@ -278,10 +287,13 @@ fun LazyListScope.favorites(
                         }
                     }
                 }
-
+                if (follows.last() == group) {
+                    Spacer(modifier = Modifier.size(16.dp))
+                }
             }
 
         }
+        Spacer(Modifier.size(16.dp))
     }
 }
 
@@ -295,7 +307,7 @@ private fun LazyListScope.myTopics(
 
         Text(
             text = "My Topics",
-            modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
+            modifier = Modifier.padding(horizontal = 16.dp),
             style = MaterialTheme.typography.titleMedium
         )
         Spacer(modifier = Modifier.size(4.dp))
