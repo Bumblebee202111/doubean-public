@@ -186,7 +186,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.6.0\)
 
-- Kotlin 2.0
 - Migrations
 
 #### To-dos for next release \(0.6.1)
