@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
@@ -817,9 +818,21 @@ fun TopicCommentAndroidView(
                 repliedToAuthorOp.setTextColor(it)
             }
 
-            likeIcon.isVisible = comment?.voteCount?.takeIf { it != 0 } != null
-            likeCount.isVisible = comment?.voteCount?.takeIf { it != 0 } != null
-            likeCount.text = comment?.voteCount?.toString()
+            likeIcon.setContent {
+                if (comment?.voteCount?.takeIf { it != 0 } != null) {
+                    Icon(
+                        imageVector = Icons.Outlined.ThumbUp,
+                        contentDescription = null,
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size_extra_small))
+                    )
+                }
+
+            }
+
+            likeCount.apply {
+                isVisible = comment?.voteCount?.takeIf { it != 0 } != null
+                text = comment?.voteCount?.toString()
+            }
         },
         onReset = {},
         

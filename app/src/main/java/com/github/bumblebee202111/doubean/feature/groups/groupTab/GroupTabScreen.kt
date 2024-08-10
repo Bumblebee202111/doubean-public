@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -280,11 +283,18 @@ fun GroupTabScreen(
                     )
                 }
 
+                commentIcon.setContent {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Outlined.Comment,
+                        contentDescription = null,
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size_extra_small))
+                    )
+                }
+
             }
             if (index != topicPagingItems.itemCount - 1) {
                 HorizontalDivider()
             }
-
 
         }
     }
