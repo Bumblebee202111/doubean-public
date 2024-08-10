@@ -3,6 +3,8 @@ Change Log
 
 ## Version 0.6.1(601)
 
+- Update some MD2 icons to MD3
+
 ## Version 0.6.0(600)
 
 - Kotlin 2.0 & K2 Compiler!

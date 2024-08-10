@@ -19,8 +19,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Tab
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -42,7 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -247,9 +249,9 @@ fun LazyListScope.favorites(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Icon(
-                                painterResource(R.drawable.ic_baseline_group),
-                                null,
-                                Modifier.size(16.dp)
+                                imageVector = Icons.Filled.Group,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp)
                             )
                             Text(
                                 text = group.groupName ?: "",
@@ -269,9 +271,9 @@ fun LazyListScope.favorites(
                                 modifier = Modifier.padding(start = 4.dp, end = 4.dp, bottom = 4.dp)
                             ) {
                                 Icon(
-                                    painter = painterResource(R.drawable.ic_baseline_tab),
+                                    imageVector = Icons.Filled.Tab,
                                     contentDescription = null,
-                                    modifier = Modifier.size(16.dp),
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size_extra_small)),
                                 )
                                 Text(
                                     text = group.groupTabName ?: "",
@@ -287,6 +289,7 @@ fun LazyListScope.favorites(
                         }
                     }
                 }
+
                 if (follows.last() == group) {
                     Spacer(modifier = Modifier.size(16.dp))
                 }

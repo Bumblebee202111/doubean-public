@@ -2,6 +2,9 @@ package com.github.bumblebee202111.doubean.feature.groups.common
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Comment
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +48,13 @@ fun TopicItemWithGroupAndroidView(
         }
         card.setOnClickListener {
             topicItemWithGroup?.let { navigateToTopic(it.id) }
+        }
+        commentIcon.setContent {
+            Icon(
+                imageVector = Icons.AutoMirrored.Outlined.Comment,
+                contentDescription = null,
+                modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size_extra_small))
+            )
         }
     }
 }
