@@ -3,7 +3,7 @@ package com.github.bumblebee202111.doubean.data.db.model
 import androidx.room.ColumnInfo
 import java.time.LocalDateTime
 
-data class RecommendedGroupItemPostPartialEntity(
+data class RecommendedGroupItemTopicPartialEntity(
     val id: String,
 
     val title: String,

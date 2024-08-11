@@ -4,61 +4,56 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
 import androidx.room.Upsert
-import com.github.bumblebee202111.doubean.data.db.model.PopulatedPostDetail
+import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicDetail
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItem
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItemWithGroup
-import com.github.bumblebee202111.doubean.data.db.model.PostDetailPartialEntity
-import com.github.bumblebee202111.doubean.data.db.model.PostEntity
-import com.github.bumblebee202111.doubean.data.db.model.PostTagCrossRef
-import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupItemPostPartialEntity
+import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupItemTopicPartialEntity
+import com.github.bumblebee202111.doubean.data.db.model.TopicDetailPartialEntity
+import com.github.bumblebee202111.doubean.data.db.model.TopicEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicItemPartialEntity
+import com.github.bumblebee202111.doubean.data.db.model.TopicTagCrossRef
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 @Dao
 interface GroupTopicDao {
     @Transaction
-    @Query("SELECT * FROM posts WHERE id IN (:postIds)")
-    @RewriteQueriesToDropUnusedColumns
-    fun loadPosts(postIds: List<String>): Flow<List<PopulatedTopicItem>>
-    fun loadOrderedPosts(postIds: List<String>) = loadPosts(postIds).map { posts ->
-        posts.sortedWith(compareBy { o -> postIds.indexOf(o.partialEntity.id) })
+    @Query("SELECT * FROM topics WHERE id IN (:topicIds)")
+    fun loadTopics(topicIds: List<String>): Flow<List<PopulatedTopicItem>>
+    fun loadOrderedTopics(topicIds: List<String>) = loadTopics(topicIds).map { topics ->
+        topics.sortedWith(compareBy { o -> topicIds.indexOf(o.partialEntity.id) })
     }
 
     @Transaction
-    @Query("SELECT * FROM posts WHERE id IN (:postIds)")
-    @RewriteQueriesToDropUnusedColumns
-    fun loadPostsWithGroups(postIds: List<String>): Flow<List<PopulatedTopicItemWithGroup>>
+    @Query("SELECT * FROM topics WHERE id IN (:topicIds)")
+    fun loadTopicsWithGroups(topicIds: List<String>): Flow<List<PopulatedTopicItemWithGroup>>
 
-    fun loadOrderedPostsWithGroups(postIds: List<String>) =
-        loadPostsWithGroups(postIds).map { posts ->
-            posts.sortedWith(compareBy { o -> postIds.indexOf(o.partialEntity.id) })
+    fun loadOrderedTopicsWithGroups(topicIds: List<String>) =
+        loadTopicsWithGroups(topicIds).map { topics ->
+            topics.sortedWith(compareBy { o -> topicIds.indexOf(o.partialEntity.id) })
         }
 
-    @Insert(entity = PostEntity::class, onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPostDetail(post: PostDetailPartialEntity)
+    @Insert(entity = TopicEntity::class, onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTopicDetail(topic: TopicDetailPartialEntity)
 
-    @Upsert(entity = PostEntity::class)
-    @RewriteQueriesToDropUnusedColumns
-    suspend fun upsertTopics(posts: List<TopicItemPartialEntity>)
+    @Upsert(entity = TopicEntity::class)
+    suspend fun upsertTopics(topics: List<TopicItemPartialEntity>)
 
-    @Upsert(entity = PostEntity::class)
-    @RewriteQueriesToDropUnusedColumns
-    suspend fun upsertRecommendedGroupItemPosts(posts: List<RecommendedGroupItemPostPartialEntity>)
+    @Upsert(entity = TopicEntity::class)
+    suspend fun upsertRecommendedGroupItemTopics(topics: List<RecommendedGroupItemTopicPartialEntity>)
 
     @Transaction
-    @Query("SELECT * FROM posts WHERE id=:postId")
-    fun loadPost(postId: String): Flow<PopulatedPostDetail?>
+    @Query("SELECT * FROM topics WHERE id=:topicId")
+    fun loadTopic(topicId: String): Flow<PopulatedTopicDetail?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPostTagCrossRefs(postTagCrossRefs: List<PostTagCrossRef>)
+    suspend fun insertTopicTagCrossRefs(topicTagCrossRefs: List<TopicTagCrossRef>)
 
-    @Query("DELETE FROM posts_tags WHERE post_id =:postId")
-    suspend fun deletePostTagCrossRefsByPostId(postId: String)
+    @Query("DELETE FROM topics_tags WHERE topic_id =:topicId")
+    suspend fun deleteTopicTagCrossRefsByTopicId(topicId: String)
 
-    @Query("DELETE FROM posts_tags WHERE post_id IN (:postIds)")
-    suspend fun deletePostTagCrossRefsByPostIds(postIds: List<String>)
+    @Query("DELETE FROM topics_tags WHERE topic_id IN (:topicIds)")
+    suspend fun deleteTopicTagCrossRefsByTopicIds(topicIds: List<String>)
 }

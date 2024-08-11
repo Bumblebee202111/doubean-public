@@ -3,12 +3,12 @@ package com.github.bumblebee202111.doubean.data.db.model
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import com.github.bumblebee202111.doubean.model.PostDetail
-import com.github.bumblebee202111.doubean.model.PostGroup
+import com.github.bumblebee202111.doubean.model.TopicDetail
+import com.github.bumblebee202111.doubean.model.TopicGroup
 
-data class PopulatedPostDetail(
+data class PopulatedTopicDetail(
     @Embedded
-    val partialEntity: PostDetailPartialEntity,
+    val partialEntity: TopicDetailPartialEntity,
     @Relation(
         parentColumn = "author_id",
         entityColumn = "id"
@@ -19,26 +19,26 @@ data class PopulatedPostDetail(
         entityColumn = "id",
         entity = GroupTopicTagEntity::class,
         associateBy = Junction(
-            PostTagCrossRef::class,
-            parentColumn = "post_id",
+            TopicTagCrossRef::class,
+            parentColumn = "topic_id",
             entityColumn = "tag_id"
         )
     )
-    val postTags: List<GroupTopicTagEntity>,
+    val topicTags: List<GroupTopicTagEntity>,
     @Relation(
         parentColumn = "group_id",
         entityColumn = "id",
         entity = GroupEntity::class
     )
-    val group: PopulatedPostGroup? = null,
+    val group: PopulatedTopicGroup? = null,
 
     //@Relation(...)
-    //val viewedPost
+    //val viewedTopic
 )
 
-data class PopulatedPostGroup(
+data class PopulatedTopicGroup(
     @Embedded
-    val partialEntity: PostGroupPartialEntity,
+    val partialEntity: TopicGroupPartialEntity,
     @Relation(
         parentColumn = "id",
         entityColumn = "group_id"
@@ -47,7 +47,7 @@ data class PopulatedPostGroup(
 )
 
 
-fun PopulatedPostDetail.asExternalModel() = PostDetail(
+fun PopulatedTopicDetail.asExternalModel() = TopicDetail(
     id = partialEntity.id,
     title = partialEntity.title,
     author = author.asExternalModel(),
@@ -60,7 +60,7 @@ fun PopulatedPostDetail.asExternalModel() = PostDetail(
     commentCount = partialEntity.commentCount,
     shortContent = partialEntity.shortContent,
     content = partialEntity.content,
-    tags = postTags.map(GroupTopicTagEntity::asExternalModel),
+    tags = topicTags.map(GroupTopicTagEntity::asExternalModel),
     coverUrl = partialEntity.coverUrl,
     url = partialEntity.url,
     group = group?.asExternalModel(),
@@ -69,11 +69,11 @@ fun PopulatedPostDetail.asExternalModel() = PostDetail(
     ipLocation = partialEntity.ipLocation
 )
 
-fun PopulatedPostGroup.asExternalModel() = PostGroup(
+fun PopulatedTopicGroup.asExternalModel() = TopicGroup(
     id = partialEntity.id,
     name = partialEntity.name,
     memberCount = partialEntity.memberCount,
-    postCount = partialEntity.postCount,
+    topicCount = partialEntity.topicCount,
     dateCreated = partialEntity.dateCreated,
     url = partialEntity.url,
     avatarUrl = partialEntity.avatarUrl,

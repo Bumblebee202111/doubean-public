@@ -39,9 +39,9 @@ class PerFollowDefaultNotificationsPreferencesSettingsFragment : PreferenceFragm
         allowDuplicateNotificationsSwitchPreference =
             preferenceManager.findPreference("allow_duplicate_notifications")
         sortRecommendedPostsByListPreference =
-            preferenceManager.findPreference("sort_recommended_posts_by")
+            preferenceManager.findPreference("sort_recommended_topics_by")
         feedRequestPostCountLimitSeekBarPreference =
-            preferenceManager.findPreference("feed_request_post_count_limit")
+            preferenceManager.findPreference("feed_request_topic_count_limit")
     }
 
     override fun onCreateView(

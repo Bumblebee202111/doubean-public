@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 
-data class PostGroupPartialEntity(
+data class TopicGroupPartialEntity(
     @PrimaryKey
     val id: String,
 
@@ -13,8 +13,8 @@ data class PostGroupPartialEntity(
     @ColumnInfo("member_count")
     val memberCount: Int = 0,
 
-    @ColumnInfo("post_count")
-    val postCount: Int = 0,
+    @ColumnInfo("topic_count")
+    val topicCount: Int = 0,
 
     @ColumnInfo("date_created")
     val dateCreated: LocalDateTime? = null,

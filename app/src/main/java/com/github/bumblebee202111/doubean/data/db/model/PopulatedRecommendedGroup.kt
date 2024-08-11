@@ -20,9 +20,9 @@ data class PopulatedRecommendedGroup(
     @Relation(
         parentColumn = "group_id",
         entityColumn = "id",
-        entity = PostEntity::class
+        entity = TopicEntity::class
     )
-    val posts: List<PopulatedTopicItem>,
+    val topics: List<PopulatedTopicItem>,
 )
 
 data class PopulatedRecommendedGroupItemGroup(
@@ -39,7 +39,7 @@ data class PopulatedRecommendedGroupItemGroup(
 fun PopulatedRecommendedGroup.asExternalModel() = RecommendedGroupItem(
     no = entity.no,
     group = group.asExternalModel(),
-    //posts = posts.map { it.asExternalModel() },
+    //topics = topics.map { it.asExternalModel() },
 )
 
 fun PopulatedRecommendedGroupItemGroup.asExternalModel() = RecommendedGroupItemGroup(
@@ -47,7 +47,7 @@ fun PopulatedRecommendedGroupItemGroup.asExternalModel() = RecommendedGroupItemG
     name = partialEntity.name,
     memberCount = partialEntity.memberCount,
     memberName = partialEntity.memberName,
-    postCount = partialEntity.postCount,
+    topicCount = partialEntity.topicCount,
     shareUrl = partialEntity.shareUrl,
     url = partialEntity.url,
     uri = partialEntity.uri,

@@ -11,6 +11,6 @@ data class RecommendedGroupEntity(
     val no: Int,
     @ColumnInfo("group_id")
     val groupId: String,
-    //@ColumnInfo("post_ids")
-    //val postIds: List<String>
+    //@ColumnInfo("topic_ids")
+    //val topicIds: List<String>
 )

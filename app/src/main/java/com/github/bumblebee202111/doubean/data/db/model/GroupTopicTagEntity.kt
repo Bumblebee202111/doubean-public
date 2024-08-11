@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.github.bumblebee202111.doubean.model.GroupTopicTag
 
-@Entity("group_post_tags")
+@Entity("group_topic_tags")
 data class GroupTopicTagEntity(
     @PrimaryKey
     val id: String,

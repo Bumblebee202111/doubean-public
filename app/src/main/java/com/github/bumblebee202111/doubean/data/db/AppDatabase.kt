@@ -2,6 +2,7 @@ package com.github.bumblebee202111.doubean.data.db
 
 import android.content.Context
 import androidx.room.Database
+import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Room.databaseBuilder
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -23,13 +24,14 @@ import com.github.bumblebee202111.doubean.data.db.model.GroupTabTopicRemoteKey
 import com.github.bumblebee202111.doubean.data.db.model.GroupTagTopicItemEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTopicTagEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupUserTopicFeedItemEntity
-import com.github.bumblebee202111.doubean.data.db.model.PostEntity
-import com.github.bumblebee202111.doubean.data.db.model.PostTagCrossRef
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupEntity
-import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupPost
+import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupTopic
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupsResult
-import com.github.bumblebee202111.doubean.data.db.model.RecommendedPostNotificationEntity
+import com.github.bumblebee202111.doubean.data.db.model.RecommendedTopicNotificationEntity
+import com.github.bumblebee202111.doubean.data.db.model.TopicEntity
+import com.github.bumblebee202111.doubean.data.db.model.TopicTagCrossRef
 import com.github.bumblebee202111.doubean.data.db.model.UserEntity
+import com.github.bumblebee202111.doubean.data.db.model.UserJoinedGroupIdEntity
 import com.github.bumblebee202111.doubean.util.DATABASE_NAME
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +45,7 @@ import kotlinx.serialization.json.Json
 @Database(
     entities = [
         GroupEntity::class,
-        PostEntity::class,
+        TopicEntity::class,
         GroupTabEntity::class,
         GroupTopicTagEntity::class,
         GroupSearchResultItemEntity::class,
@@ -53,19 +55,21 @@ import kotlinx.serialization.json.Json
         GroupUserTopicFeedItemEntity::class,
         RecommendedGroupsResult::class,
         RecommendedGroupEntity::class,
-        RecommendedGroupPost::class,
-        PostTagCrossRef::class,
+        RecommendedGroupTopic::class,
+        TopicTagCrossRef::class,
+        UserJoinedGroupIdEntity::class,
         FavoriteGroupEntity::class,
         FavoriteGroupTabEntity::class,
-        RecommendedPostNotificationEntity::class,
+        RecommendedTopicNotificationEntity::class,
         UserEntity::class,
     ],
-    version = 6,
+    version = 7,
     exportSchema = false
 )
 @TypeConverters(
     Converters::class
 )
+@RewriteQueriesToDropUnusedColumns
 abstract class AppDatabase : RoomDatabase() {
     abstract fun groupDao(): GroupDao
     abstract fun userDao(): UserDao

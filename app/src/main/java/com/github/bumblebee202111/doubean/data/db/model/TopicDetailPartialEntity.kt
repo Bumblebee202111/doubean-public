@@ -1,17 +1,11 @@
 package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.github.bumblebee202111.doubean.model.SizedImage
 import java.time.LocalDateTime
 
-/**
- * Class officially known as topic/话题
- */
-@Entity(tableName = "posts")
-data class PostEntity(
-    @PrimaryKey
+data class TopicDetailPartialEntity(
+
     val id: String,
 
     val title: String,
@@ -19,11 +13,10 @@ data class PostEntity(
     @ColumnInfo("author_id")
     val authorId: String,
 
-    @ColumnInfo("created")
-    val created: LocalDateTime,
+    val created: LocalDateTime? = null,
 
     @ColumnInfo("last_updated")
-    val lastUpdated: LocalDateTime,
+    val lastUpdated: LocalDateTime? = null,
 
     @ColumnInfo("like_count")
     val likeCount: Int? = null,
@@ -51,15 +44,11 @@ data class PostEntity(
     val url: String,
 
     val uri: String,
-
     @ColumnInfo("group_id")
     val groupId: String,
 
-    val images: List<SizedImage>?,
+    val images: List<SizedImage>? = null,
 
     @ColumnInfo("ip_location")
-    val ipLocation: String?,
+    val ipLocation: String? = null,
 )
-
-
-
