@@ -17,17 +17,16 @@ data class FavoriteGroupEntity(
     @ColumnInfo("favorite_date")
     override val favoriteDate: Calendar = Calendar.getInstance(),
 
-    @ColumnInfo("feed_request_post_count_limit")
-    override val feedRequestPostCountLimit: Int,
+    @ColumnInfo("feed_request_topic_count_limit") override val feedRequestTopicCountLimit: Int,
 
     @ColumnInfo("enable_notifications")
-    override val enablePostNotifications: Boolean,
+    override val enableTopicNotifications: Boolean,
 
     @ColumnInfo("allow_duplicate_notifications")
     override val allowDuplicateNotifications: Boolean,
 
-    @ColumnInfo("sort_recommended_posts_by")
-    override val sortRecommendedPostsBy: TopicSortBy,
+    @ColumnInfo("sort_recommended_topics_by")
+    override val sortRecommendedTopicsBy: TopicSortBy,
 
     @ColumnInfo("last_notified_time_millis")
     override val lastNotifiedTimeMillis: Long = 0,

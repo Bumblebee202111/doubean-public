@@ -172,11 +172,13 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.6.1\)
 
-- Cache "My Groups" to fix initial position of LazyColumn
-- Follow groups (online)
+- Join/Follow groups (online)
 - Date & time: `Yesterday hh:mm`
+- Add translations
 
 #### To-dos for next release \(0.6.2)
+
+- Reuse item logic of search result groups / groups of the day
 
 #### Future plans
 
@@ -248,6 +250,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * More features of books & movies
 * Lists: Reddit-like item expand/collapse
 * Group Detail: For topic items, optimize tag display, e.g., assign color to each tag mapped from ID
+* Reuse more existing Douban preferences
 * Independent login (seems impossible)
 * Find API for all followed topics (seems impossible)
 * Group Detail: WebView for group

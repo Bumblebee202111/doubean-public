@@ -25,8 +25,8 @@ import com.github.bumblebee202111.doubean.network.model.NetworkRecommendedGroup
 import com.github.bumblebee202111.doubean.network.model.NetworkRecommendedGroupItemTopic
 import com.github.bumblebee202111.doubean.network.model.asEntity
 import com.github.bumblebee202111.doubean.network.model.asPartialEntity
-import com.github.bumblebee202111.doubean.network.model.postRefs
 import com.github.bumblebee202111.doubean.network.model.tagCrossRefs
+import com.github.bumblebee202111.doubean.network.model.topicRefs
 import com.github.bumblebee202111.doubean.util.RESULT_GROUPS_COUNT
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -126,31 +126,31 @@ class GroupRepository @Inject constructor(
                         index + 1
                     )
                 }
-                val posts = items.flatMap { g ->
-                    g.posts.map { p -> p.asPartialEntity(g.group.id) }
+                val topics = items.flatMap { g ->
+                    g.topics.map { p -> p.asPartialEntity(g.group.id) }
                 }
-                val postIds =
-                    items.flatMap { it.posts.map(NetworkRecommendedGroupItemTopic::id) }
-                val postTagCrossRefs =
-                    items.flatMap { it.posts.map(NetworkRecommendedGroupItemTopic::tagCrossRefs) }
+                val topicIds =
+                    items.flatMap { it.topics.map(NetworkRecommendedGroupItemTopic::id) }
+                val topicTagCrossRefs =
+                    items.flatMap { it.topics.map(NetworkRecommendedGroupItemTopic::tagCrossRefs) }
                         .flatten()
-                val postsAuthors =
-                    items.flatMap { g -> g.posts.map { p -> p.author.asEntity() } }
+                val topicsAuthors =
+                    items.flatMap { g -> g.topics.map { p -> p.author.asEntity() } }
                         .distinctBy(UserEntity::id)
                 val recommendedGroupsResult = RecommendedGroupsResult(
                     type, items.map { it.group.id }
                 )
-                val recommendedGroupPostRefs =
-                    items.flatMap(NetworkRecommendedGroup::postRefs)
+                val recommendedGroupTopicRefs =
+                    items.flatMap(NetworkRecommendedGroup::topicRefs)
                 appDatabase.withTransaction {
                     groupDao.upsertRecommendedGroupItemGroups(recommendedGroupItemGroups)
                     groupDao.upsertRecommendedGroups(recommendedGroups)
-                    groupTopicDao.upsertRecommendedGroupItemPosts(posts)
-                    groupTopicDao.deletePostTagCrossRefsByPostIds(postIds)
-                    groupTopicDao.insertPostTagCrossRefs(postTagCrossRefs)
-                    userDao.insertUsers(postsAuthors)
+                    groupTopicDao.upsertRecommendedGroupItemTopics(topics)
+                    groupTopicDao.deleteTopicTagCrossRefsByTopicIds(topicIds)
+                    groupTopicDao.insertTopicTagCrossRefs(topicTagCrossRefs)
+                    userDao.insertUsers(topicsAuthors)
                     groupDao.insertRecommendedGroupsResult(recommendedGroupsResult)
-                    groupDao.insertRecommendedGroupPosts(recommendedGroupPostRefs)
+                    groupDao.insertRecommendedGroupTopics(recommendedGroupTopicRefs)
                 }
             }
         )

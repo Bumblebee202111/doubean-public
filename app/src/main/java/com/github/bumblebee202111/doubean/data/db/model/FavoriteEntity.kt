@@ -9,13 +9,13 @@ sealed interface FavoriteEntity {
 
     val favoriteDate: Calendar
 
-    val enablePostNotifications: Boolean
+    val enableTopicNotifications: Boolean
 
     val allowDuplicateNotifications: Boolean
 
-    val sortRecommendedPostsBy: TopicSortBy
+    val sortRecommendedTopicsBy: TopicSortBy
 
-    val feedRequestPostCountLimit: Int
+    val feedRequestTopicCountLimit: Int
 
     val lastNotifiedTimeMillis: Long
 

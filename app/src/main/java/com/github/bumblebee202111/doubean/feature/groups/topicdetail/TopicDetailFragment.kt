@@ -86,10 +86,10 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.ListItemPostCommentBinding
 import com.github.bumblebee202111.doubean.databinding.ViewPostDetailHeaderBinding
 import com.github.bumblebee202111.doubean.feature.groups.common.TopicDetailActivityItemUserProfileImage
-import com.github.bumblebee202111.doubean.model.PostComment
-import com.github.bumblebee202111.doubean.model.PostDetail
 import com.github.bumblebee202111.doubean.model.SizedPhoto
+import com.github.bumblebee202111.doubean.model.TopicComment
 import com.github.bumblebee202111.doubean.model.TopicCommentSortBy
+import com.github.bumblebee202111.doubean.model.TopicDetail
 import com.github.bumblebee202111.doubean.ui.common.DoubeanWebView
 import com.github.bumblebee202111.doubean.ui.common.TopicWebViewClient
 import com.github.bumblebee202111.doubean.ui.common.UserProfileImage
@@ -180,7 +180,7 @@ class TopicDetailFragment : Fragment() {
     fun PostDetailScreen(
         topicDetailViewModel: TopicDetailViewModel,
         onBackClick: () -> Unit,
-        onTopicShareClick: (PostDetail) -> Unit,
+        onTopicShareClick: (TopicDetail) -> Unit,
         navigateToWebView: (url: String) -> Unit,
         navigateToGroup: (groupId: String, tabId: String?) -> Unit,
         navigateToReshareStatuses: (topicId: String) -> Unit,
@@ -454,7 +454,7 @@ fun JumpToCommentSliderPreview() {
 @SuppressLint("ClickableViewAccessibility")
 @Composable
 fun TopicDetailHeader(
-    topic: PostDetail,
+    topic: TopicDetail,
     contentHtml: String?,
     viewInActivity: (url: String) -> Unit,
     navigateToImage: (url: String) -> Unit,
@@ -707,9 +707,9 @@ fun TopicCommentSortBy(
 @Composable
 fun TopicCommentAndroidView(
     modifier: Modifier = Modifier,
-    comment: PostComment?,
+    comment: TopicComment?,
     groupColorInt: Int?,
-    topic: PostDetail?,
+    topic: TopicDetail?,
     navigateToImage: (url: String) -> Unit,
 ) {
 

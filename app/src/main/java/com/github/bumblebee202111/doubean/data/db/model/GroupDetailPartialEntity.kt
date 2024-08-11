@@ -11,7 +11,7 @@ data class GroupDetailPartialEntity(
     @ColumnInfo("member_count")
     val memberCount: Int,
 
-    @ColumnInfo("post_count")
+    @ColumnInfo("topic_count")
     val topicCount: Int,
 
     @ColumnInfo("share_url")

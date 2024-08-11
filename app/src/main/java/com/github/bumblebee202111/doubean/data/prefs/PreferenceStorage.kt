@@ -13,8 +13,8 @@ import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.Preferenc
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_DOUBAN_USER_ID
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_PER_FOLLOW_ALLOW_DUPLICATE_NOTIFICATIONS
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_PER_FOLLOW_DEFAULT_ENABLE_POST_NOTIFICATIONS
-import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_PER_FOLLOW_FEED_REQUEST_POST_COUNT_LIMIT
-import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_PER_FOLLOW_SORT_RECOMMENDED_POSTS_BY
+import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_PER_FOLLOW_feed_request_topic_count_limit
+import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_PER_FOLLOW_sort_recommended_topics_by
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_RECEIVE_NOTIFICATIONS
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_START_APP_WITH_GROUPS
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_UDID
@@ -45,10 +45,10 @@ class PreferenceStorage(
             booleanPreferencesKey("per_follow_enable_post_notifications")
         val PREF_PER_FOLLOW_ALLOW_DUPLICATE_NOTIFICATIONS =
             booleanPreferencesKey("per_follow_allow_duplicate_notifications")
-        val PREF_PER_FOLLOW_SORT_RECOMMENDED_POSTS_BY =
-            stringPreferencesKey("per_follow_sort_recommended_posts_by")
-        val PREF_PER_FOLLOW_FEED_REQUEST_POST_COUNT_LIMIT =
-            intPreferencesKey("per_follow_feed_request_post_count_limit")
+        val PREF_PER_FOLLOW_sort_recommended_topics_by =
+            stringPreferencesKey("per_follow_sort_recommended_topics_by")
+        val PREF_PER_FOLLOW_feed_request_topic_count_limit =
+            intPreferencesKey("per_follow_feed_request_topic_count_limit")
         val PREF_UDID = stringPreferencesKey("udid")
         val PREF_ACCESS_TOKEN = stringPreferencesKey("auth_token")
         val PREF_DOUBAN_USER_NAME = stringPreferencesKey("douban_user_name")
@@ -100,23 +100,23 @@ class PreferenceStorage(
 
     suspend fun setPerFollowDefaultSortRecommendedPostsBy(sortRecommendedPostsBy: TopicSortBy) {
         dataStore.edit {
-            it[PREF_PER_FOLLOW_SORT_RECOMMENDED_POSTS_BY] = sortRecommendedPostsBy.toString()
+            it[PREF_PER_FOLLOW_sort_recommended_topics_by] = sortRecommendedPostsBy.toString()
         }
     }
 
     val perFollowDefaultSortRecommendedPostsBy = dataStore.data.map { p ->
-        p[PREF_PER_FOLLOW_SORT_RECOMMENDED_POSTS_BY]?.let { TopicSortBy.valueOf(it) }
+        p[PREF_PER_FOLLOW_sort_recommended_topics_by]?.let { TopicSortBy.valueOf(it) }
             ?: TopicSortBy.NEW_TOP
     }
 
     suspend fun setPerFollowDefaultFeedRequestPostCountLimit(feedRequestPostCountLimit: Int) {
         dataStore.edit {
-            it[PREF_PER_FOLLOW_FEED_REQUEST_POST_COUNT_LIMIT] = feedRequestPostCountLimit
+            it[PREF_PER_FOLLOW_feed_request_topic_count_limit] = feedRequestPostCountLimit
         }
     }
 
     val perFollowDefaultFeedRequestPostCountLimit = dataStore.data.map { p ->
-        p[PREF_PER_FOLLOW_FEED_REQUEST_POST_COUNT_LIMIT] ?: 3
+        p[PREF_PER_FOLLOW_feed_request_topic_count_limit] ?: 3
     }
 
     suspend fun setUDID(udid: String) {

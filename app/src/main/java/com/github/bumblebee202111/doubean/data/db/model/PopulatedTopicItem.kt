@@ -18,12 +18,12 @@ data class PopulatedTopicItem(
         entityColumn = "id",
         entity = GroupTopicTagEntity::class,
         associateBy = Junction(
-            PostTagCrossRef::class,
-            parentColumn = "post_id",
+            TopicTagCrossRef::class,
+            parentColumn = "topic_id",
             entityColumn = "tag_id"
         )
     )
-    val postTags: List<GroupTopicTagEntity>,
+    val topicTags: List<GroupTopicTagEntity>,
 
     
     
@@ -36,7 +36,7 @@ fun PopulatedTopicItem.asExternalModel() = TopicItem(
     created = partialEntity.created,
     lastUpdated = partialEntity.lastUpdated,
     commentCount = partialEntity.commentCount,
-    tags = postTags.map(GroupTopicTagEntity::asExternalModel),
+    tags = topicTags.map(GroupTopicTagEntity::asExternalModel),
     coverUrl = partialEntity.coverUrl,
     url = partialEntity.url,
     uri = partialEntity.uri

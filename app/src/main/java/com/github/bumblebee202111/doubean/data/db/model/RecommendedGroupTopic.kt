@@ -6,8 +6,8 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 
 @Entity(
-    tableName = "recommended_group_posts",
-    primaryKeys = ["group_id", "post_id"],
+    tableName = "recommended_group_topics",
+    primaryKeys = ["group_id", "topic_id"],
     foreignKeys = [
         ForeignKey(
             entity = GroupEntity::class,
@@ -16,20 +16,20 @@ import androidx.room.Index
             onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
-            entity = PostEntity::class,
+            entity = TopicEntity::class,
             parentColumns = ["id"],
-            childColumns = ["post_id"],
+            childColumns = ["topic_id"],
             onDelete = ForeignKey.CASCADE,
         ),
     ],
     indices = [
         Index(value = ["group_id"]),
-        Index(value = ["post_id"]),
+        Index(value = ["topic_id"]),
     ],
 )
-data class RecommendedGroupPost(
+data class RecommendedGroupTopic(
     @ColumnInfo(name = "group_id")
     val groupId: String,
-    @ColumnInfo("post_id")
-    val postId: String,
+    @ColumnInfo("topic_id")
+    val topicId: String,
 )

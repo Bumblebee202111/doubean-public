@@ -5,21 +5,34 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
 import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupEntity
 import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupTabEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupUserTopicFeedItemEntity
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedGroupFavoriteItem
-import com.github.bumblebee202111.doubean.data.db.model.PopulatedRecommendedPostNotificationItem
+import com.github.bumblebee202111.doubean.data.db.model.PopulatedRecommendedTopicNotificationItem
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItemWithGroup
-import com.github.bumblebee202111.doubean.data.db.model.RecommendedPostNotificationEntity
+import com.github.bumblebee202111.doubean.data.db.model.RecommendedTopicNotificationEntity
+import com.github.bumblebee202111.doubean.data.db.model.SimpleGroupPartialEntity
+import com.github.bumblebee202111.doubean.data.db.model.UserJoinedGroupIdEntity
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import kotlinx.coroutines.flow.Flow
 
 
 @Dao
 interface UserGroupDao {
+
+    @Query(
+        """SELECT groups.* FROM user_joined_group_ids LEFT JOIN groups 
+ON user_joined_group_ids.group_id = groups.id WHERE user_id=:userId ORDER BY `index`"""
+    )
+    fun getUserJoinedGroups(userId: String): Flow<List<SimpleGroupPartialEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertUserJoinedGroupIds(userJoinedGroupIds: List<UserJoinedGroupIdEntity>)
+
+    @Query("DELETE FROM user_joined_group_ids")
+    fun deleteAllUserJoinedGroupIds()
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFavoriteGroup(favoriteGroup: FavoriteGroupEntity)
 
@@ -67,21 +80,20 @@ interface UserGroupDao {
         ORDER BY favorite_date
         """
     )
-    @RewriteQueriesToDropUnusedColumns
     fun loadAllFavorites(): Flow<List<PopulatedGroupFavoriteItem>>
 
-    @Query("SELECT * FROM recommended_post_notifications")
-    suspend fun getRecommendedPostNotifications(): List<RecommendedPostNotificationEntity>
+    @Query("SELECT * FROM recommended_topic_notifications")
+    suspend fun getRecommendedTopicNotifications(): List<RecommendedTopicNotificationEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRecommendedPostNotifications(recommendedPostNotifications: List<RecommendedPostNotificationEntity>)
+    suspend fun insertRecommendedTopicNotifications(recommendedTopicNotifications: List<RecommendedTopicNotificationEntity>)
 
     @Transaction
-    @Query("SELECT * FROM recommended_post_notifications ORDER BY notified_last_updated DESC")
-    fun recommendedPostNotificationsPagingSource(): PagingSource<Int, PopulatedRecommendedPostNotificationItem>
+    @Query("SELECT * FROM recommended_topic_notifications ORDER BY notified_last_updated DESC")
+    fun recommendedTopicNotificationsPagingSource(): PagingSource<Int, PopulatedRecommendedTopicNotificationItem>
 
     @Query("UPDATE favorite_groups SET enable_notifications = 0 WHERE group_id = :groupId")
-    suspend fun disableFollowedGroupNotifications(groupId: String)
+    suspend fun disableFavoritedGroupNotifications(groupId: String)
 
     @Query("UPDATE favorite_groups SET enable_notifications = 1 WHERE group_id = :groupId")
     suspend fun enableGroupNotifications(groupId: String)
@@ -95,37 +107,37 @@ interface UserGroupDao {
     @Query(
         """
         UPDATE favorite_groups SET 
-        enable_notifications = :enablePostNotifications, 
+        enable_notifications = :enableTopicNotifications, 
         allow_duplicate_notifications = :allowDuplicateNotifications, 
-        sort_recommended_posts_by = :sortRecommendedPostsBy, 
-        feed_request_post_count_limit = :feedRequestPostCountLimit 
+        sort_recommended_topics_by = :sortRecommendedTopicsBy, 
+        feed_request_topic_count_limit = :feedRequestTopicCountLimit 
         WHERE group_id = :groupId
     """
     )
-    suspend fun updateFollowedGroupNotificationsPref(
+    suspend fun updateFavoritedGroupNotificationsPref(
         groupId: String,
-        enablePostNotifications: Boolean,
+        enableTopicNotifications: Boolean,
         allowDuplicateNotifications: Boolean,
-        sortRecommendedPostsBy: TopicSortBy,
-        feedRequestPostCountLimit: Int,
+        sortRecommendedTopicsBy: TopicSortBy,
+        feedRequestTopicCountLimit: Int,
     )
 
     @Query(
         """
         UPDATE favorite_group_tabs SET 
-        enable_notifications = :enablePostNotifications, 
+        enable_notifications = :enableTopicNotifications, 
         allow_duplicate_notifications = :allowDuplicateNotifications, 
-        sort_recommended_posts_by = :sortRecommendedPostsBy, 
-        feed_request_post_count_limit = :apiPostCountLimitEachFeed 
+        sort_recommended_topics_by = :sortRecommendedTopicsBy, 
+        feed_request_topic_count_limit = :apiTopicCountLimitEachFeed 
         WHERE tab_id = :tabId
     """
     )
     suspend fun updateFollowedTabNotificationsPref(
         tabId: String,
-        enablePostNotifications: Boolean,
+        enableTopicNotifications: Boolean,
         allowDuplicateNotifications: Boolean,
-        sortRecommendedPostsBy: TopicSortBy,
-        apiPostCountLimitEachFeed: Int,
+        sortRecommendedTopicsBy: TopicSortBy,
+        apiTopicCountLimitEachFeed: Int,
     )
 
     @Query(
@@ -135,7 +147,7 @@ interface UserGroupDao {
         WHERE group_id = :groupId
     """
     )
-    suspend fun updateFollowedGroupLastNotifiedTimeMillis(
+    suspend fun updateFavoritedGroupLastNotifiedTimeMillis(
         groupId: String,
         lastNotifiedTimeMillis: Long,
     )
@@ -153,7 +165,6 @@ interface UserGroupDao {
     suspend fun getLeastRecentlyNotifiedGroup(): FavoriteGroupEntity?
 
     @Transaction
-    @RewriteQueriesToDropUnusedColumns
     @Query(
         """SELECT * FROM favorite_group_tabs
         WHERE enable_notifications = 1 
@@ -163,11 +174,10 @@ interface UserGroupDao {
     suspend fun getLeastRecentlyNotifiedTab(): FavoriteGroupTabEntity?
 
     @Transaction
-    @RewriteQueriesToDropUnusedColumns
     @Query(
         """
-SELECT * FROM group_user_topic_feed_items LEFT JOIN posts 
-ON group_user_topic_feed_items.id == posts.id 
+SELECT * FROM group_user_topic_feed_items LEFT JOIN topics 
+ON group_user_topic_feed_items.id == topics.id 
 ORDER BY created DESC 
 """
     )

@@ -56,7 +56,7 @@ class GroupTagTopicRemoteMediator(
 
             val topics = response.items.filterIsInstance<NetworkTopicItem>().run {
                 if (sortBy == TopicSortBy.NEW || sortBy == TopicSortBy.NEW_TOP)
-                    sortedByDescending(NetworkTopicItem::created)
+                    sortedByDescending(NetworkTopicItem::createTime)
                 else this
             }
             val nextKey = (start + response.count).takeIf { it < response.total }
@@ -83,10 +83,10 @@ class GroupTagTopicRemoteMediator(
                     )
                 )
 
-                val topicItems = topics.mapIndexed { index, networkPostItem ->
+                val topicItems = topics.mapIndexed { index, networkTopicItem ->
                     GroupTagTopicItemEntity(
                         start + index,
-                        networkPostItem.id,
+                        networkTopicItem.id,
                         groupId,
                         tagIdColumnValue,
                         sortBy
@@ -95,17 +95,17 @@ class GroupTagTopicRemoteMediator(
 
                 val topicIds = topics.map(NetworkTopicItem::id)
 
-                val postEntities = topics.map { it.asPartialEntity(groupId) }
+                val topicEntities = topics.map { it.asPartialEntity(groupId) }
 
-                val postTagCrossRefs =
+                val topicTagCrossRefs =
                     topics.flatMap(NetworkTopicItem::tagCrossRefs)
                 val authors = topics.map { it.author.asEntity() }.distinctBy(UserEntity::id)
 
                 groupDao.apply {
                     groupDao.insertGroupTopicItems(topicItems)
-                    topicDao.deletePostTagCrossRefsByPostIds(topicIds)
-                    topicDao.insertPostTagCrossRefs(postTagCrossRefs)
-                    topicDao.upsertTopics(postEntities)
+                    topicDao.deleteTopicTagCrossRefsByTopicIds(topicIds)
+                    topicDao.insertTopicTagCrossRefs(topicTagCrossRefs)
+                    topicDao.upsertTopics(topicEntities)
                     userDao.insertUsers(authors)
                 }
             }

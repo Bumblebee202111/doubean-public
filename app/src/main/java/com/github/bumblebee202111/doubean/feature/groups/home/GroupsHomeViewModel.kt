@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class GroupsHomeViewModel @Inject constructor(
     groupRepository: GroupRepository,
@@ -26,9 +27,11 @@ class GroupsHomeViewModel @Inject constructor(
     authRepository: AuthRepository,
 ) : ViewModel() {
 
-    val joinedGroups = authRepository.observeLoggedInUserId().map {
-        it?.let {
-            groupsRepo.getUserJoinedGroups(it).getOrNull()
+    val joinedGroups = authRepository.observeLoggedInUserId().flatMapLatest { userId ->
+        when (userId) {
+            null -> flowOf(null)
+            else ->
+                groupsRepo.getUserJoinedGroups(userId).map { it.data }
         }
     }.stateInUi()
 

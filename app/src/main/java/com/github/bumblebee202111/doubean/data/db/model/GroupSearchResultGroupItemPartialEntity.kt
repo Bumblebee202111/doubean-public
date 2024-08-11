@@ -19,8 +19,8 @@ data class GroupSearchResultGroupItemPartialEntity(
     @ColumnInfo("member_count")
     val memberCount: Int? = null,
 
-    @ColumnInfo("post_count")
-    val postCount: Int? = null,
+    @ColumnInfo("topic_count")
+    val topicCount: Int? = null,
 
     @ColumnInfo("date_created")
     val dateCreated: LocalDateTime? = null,
@@ -42,7 +42,7 @@ fun GroupSearchResultGroupItemPartialEntity.asExternalModel() = GroupSearchResul
     avatarUrl = avatarUrl,
     memberName = memberName,
     memberCount = memberCount,
-    topicCount = postCount,
+    topicCount = topicCount,
     dateCreated = dateCreated,
     shortDescription = shortDescription,
     shareUrl = shareUrl,

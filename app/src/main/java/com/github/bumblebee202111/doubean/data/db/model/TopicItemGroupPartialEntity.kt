@@ -1,7 +1,7 @@
 package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.ColumnInfo
-import com.github.bumblebee202111.doubean.model.TopicItemGroup
+import com.github.bumblebee202111.doubean.model.GroupItem
 
 data class TopicItemGroupPartialEntity(
     val id: String,
@@ -17,10 +17,8 @@ data class TopicItemGroupPartialEntity(
 
 )
 
-fun TopicItemGroupPartialEntity.asExternalModel() = TopicItemGroup(
+fun TopicItemGroupPartialEntity.asExternalModel() = GroupItem(
     id = id,
     name = name,
-    url = url,
-    uri = uri,
     avatarUrl = avatarUrl
 )

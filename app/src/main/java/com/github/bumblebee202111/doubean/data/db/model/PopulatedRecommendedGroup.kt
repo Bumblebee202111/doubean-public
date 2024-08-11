@@ -20,9 +20,9 @@ data class PopulatedRecommendedGroup(
     @Relation(
         parentColumn = "group_id",
         entityColumn = "id",
-        entity = PostEntity::class
+        entity = TopicEntity::class
     )
-    val posts: List<PopulatedTopicItem>,
+    val topics: List<PopulatedTopicItem>,
 )
 
 data class PopulatedRecommendedGroupItemGroup(
@@ -47,7 +47,7 @@ fun PopulatedRecommendedGroupItemGroup.asExternalModel() = RecommendedGroupItemG
     name = partialEntity.name,
     memberCount = partialEntity.memberCount,
     memberName = partialEntity.memberName,
-    postCount = partialEntity.postCount,
+    topicCount = partialEntity.topicCount,
     shareUrl = partialEntity.shareUrl,
     url = partialEntity.url,
     uri = partialEntity.uri,
