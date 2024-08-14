@@ -47,6 +47,7 @@ Introduction
 ##### Groups Search
 
 * Search groups
+* Groups of the day
 
 #### Profile Screen
 
@@ -77,7 +78,7 @@ Introduction
 
 ### Open-source?
 
-To not get this project/myself into trouble, the update of the source code in the public repo will be suspended. However, the latest release is always available.
+To not get this project/myself into trouble, the update of the source code in the public repo has been suspended. However, the latest release is always available.
 
 ### Who is it for?
 
@@ -98,7 +99,7 @@ It not only implements some features (mainly of Groups) of Douban app, but also 
 * Partially support URL deep links
 * Rooted users can reuse login session of Douban app
 * Partial support for viewing content in Douban WebView optimized for mobile reading in case of need (no longer updated)
-* Basic use of MD2/3 (the two may not get along well during migration)
+* Basic use of MD2/3 (UI may not look well during migration)
 * Recommended topic notifications (maybe currently broken)
 
 Libraries Used
@@ -124,10 +125,10 @@ Libraries Used
 * Behavior
   * [Notifications][notifications]
 * Third party and miscellaneous libraries
-  * Ktor
-  * Coil
   * [Kotlin Coroutines][kotlin-coroutines]
   * Kotlinx Serialization
+  * Ktor
+  * Coil
   * libsu
 
 [foundation]: https://developer.android.com/jetpack/components
@@ -172,12 +173,10 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.6.1\)
 
-- Join/Follow groups (online)
-- Date & time: `Yesterday hh:mm`
-- Add translations
-
 #### To-dos for next release \(0.6.2)
 
+- Date & time: `Yesterday hh:mm`
+- Add translations
 - Reuse item logic of search result groups / groups of the day
 
 #### Future plans
@@ -197,11 +196,10 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Home - Following
   * More card types
   * Pagination
-* Notifications
-  * Group Tab: Untighten tab notification settings from group model
 * TopAppBar and Edge-to-Edge
   * Reduce TopAppBar height to 56 dp when https://developer.android.google.cn/jetpack/androidx/releases/compose-material3#1.3.0-beta05 enters RC
-* Bring back load state visualization which was removed during various types of migrations
+* Show error messages
+* Bring back load state visualization which was removed for simplicity during various types of migrations
   * Paging 3 refresh, loading status ...
 * Follow/favorite/save/subscribe
   * Save topics
@@ -217,15 +215,20 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Shared element
 * `Lazylist` problems
   * Restoration of scroll position is problematic
-  * Topic content WebView problems
-    * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
-    * Sometimes topic content fails to be loaded on some low-end or large-screened devices (not sure which sets constraint)
-    * LazyLayoutPinnableItem?
-    * ...
+* Topic content WebView problems
+  * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
+  * Sometimes topic content fails to be loaded on some low-end or large-screened devices, or of special layout (not sure which sets constraint)
+  * LazyLayoutPinnableItem?
+  * ...
 * Group tab: Track read
-* Topics feed
-  * Find why it is broken
-  * “每次动态更新请求的帖子总数限制” -> frequency (0..1) 
+* Topics feed (notifications)
+  * Find why it is broken and fix it
+  * Clarify:
+    * Improper use may disturb you and drain phone battery (untested)
+    * Better keep app in background
+    * Mechanism: Actively query group topics (without tab_id parameter, to increase efficiency) by each group
+  * “每次动态更新请求的帖子总数限制” -> ?
+  * Create reusable class for all notification settings
 * Use the new nullable "edit_time" property of network topics
 * Search
   * Search group/tab topics (in-group) 
@@ -307,7 +310,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 [google-chrome]:https://www.google.com/chrome/
 
-### Donation:coffee:
+### Stars:star: & Donation:coffee:
 
-Contact me by creating an issue, or ...
+I'm totally aware that this app is mediocre. However, the increasing number of stars keep me motivated! Thank you!
+
+If you find it really useful and would like to buy me a coffee, which I am not ready for, please contact me by creating an issue.
 

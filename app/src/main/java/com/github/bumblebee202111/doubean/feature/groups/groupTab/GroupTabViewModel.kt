@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
-import com.github.bumblebee202111.doubean.data.repository.GroupUserDataRepository
+import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -26,7 +26,7 @@ class GroupTabViewModel @AssistedInject constructor(
     @Assisted("groupId") val groupId: String,
     @Assisted("tabId") val tabId: String?,
     private val groupRepository: GroupRepository,
-    private val groupUserDataRepository: GroupUserDataRepository,
+    private val userGroupRepository: UserGroupRepository,
     private val preferenceStorage: PreferenceStorage,
 ) : ViewModel() {
 
@@ -52,7 +52,7 @@ class GroupTabViewModel @AssistedInject constructor(
     fun addFavorite() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                groupUserDataRepository.addFavoriteTab(
+                userGroupRepository.addFavoriteTab(
                     groupId = groupId,
                     tabId = tabId!!,
                     enablePostNotifications = preferenceStorage.perFollowDefaultEnablePostNotifications.first(),
@@ -66,7 +66,7 @@ class GroupTabViewModel @AssistedInject constructor(
 
     fun removeFavorite() {
         viewModelScope.launch {
-            groupUserDataRepository.removeFavoriteTab(tabId!!)
+            userGroupRepository.removeFavoriteTab(tabId!!)
         }
     }
 
@@ -79,7 +79,7 @@ class GroupTabViewModel @AssistedInject constructor(
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 if (tabId != null) {
-                    groupUserDataRepository.updateTabNotificationsPref(
+                    userGroupRepository.updateTabNotificationsPref(
                         tabId,
                         enableNotifications,
                         allowNotificationUpdates,

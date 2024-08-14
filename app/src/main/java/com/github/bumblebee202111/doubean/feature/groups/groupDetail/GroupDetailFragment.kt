@@ -1,8 +1,8 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupDetail
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -19,6 +19,10 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
@@ -52,16 +56,17 @@ import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.DialogContentGroupNotificationsPreferenceBinding
 import com.github.bumblebee202111.doubean.databinding.LayoutGroupDetailBinding
+import com.github.bumblebee202111.doubean.feature.groups.common.NotificationsButton
 import com.github.bumblebee202111.doubean.feature.groups.common.TopicCountLimitEachFetchTextField
 import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabScreen
 import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabViewModel
 import com.github.bumblebee202111.doubean.model.GroupDetail
+import com.github.bumblebee202111.doubean.model.GroupMemberRole
 import com.github.bumblebee202111.doubean.model.GroupTab
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.theme.AppTheme
 import com.github.bumblebee202111.doubean.util.OpenInUtil
 import com.github.bumblebee202111.doubean.util.ShareUtil
-import com.github.bumblebee202111.doubean.util.getColorFromTheme
 import com.github.bumblebee202111.doubean.util.showSnackbar
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -116,6 +121,12 @@ fun GroupDetailScreen(
             group = group,
             initialTabId = initialTabId,
             taggedTabs = taggedTabs,
+            subscribeGroup = {
+                groupDetailViewModel.subscribe()
+            },
+            unsubscribeGroup = {
+                groupDetailViewModel.unsubscribe()
+            },
             addFavorite = groupDetailViewModel::addFavorite,
             removeFavorite = groupDetailViewModel::removeFavorite,
             showNotificationsPrefDialog = { 
@@ -158,7 +169,6 @@ fun GroupDetailScreen(
             openAlertDialog = false
         }
     }
-
 
 }
 
@@ -265,7 +275,6 @@ fun GroupNotificationsPreferenceDialog(
 
                         override fun onNothingSelected(parent: AdapterView<*>?) {
                         }
-
                     }
                 }
                 feedRequestTopicCountLimitTitle.isEnabled = enableNotifications
@@ -291,6 +300,8 @@ fun GroupDetailCoordinator(
     group: GroupDetail?,
     initialTabId: String?,
     taggedTabs: List<GroupTab>?,
+    subscribeGroup: () -> Unit,
+    unsubscribeGroup: () -> Unit,
     addFavorite: () -> Unit,
     removeFavorite: () -> Unit,
     showNotificationsPrefDialog: () -> Unit,
@@ -310,26 +321,84 @@ fun GroupDetailCoordinator(
             onReset = {}) {
             val context = root.context
 
-            favoriteButton.setOnClickListener { view ->
-                group?.isFavorited?.let { oldIsFollowed ->
-                    if (oldIsFollowed) {
-                        removeFavorite()
-                        view?.showSnackbar(
-                            R.string.unfavorited_group,
-                            Snackbar.LENGTH_LONG,
-                        )
-                    } else {
-                        addFavorite()
-                        view?.showSnackbar(
-                            R.string.favorited_group,
-                            Snackbar.LENGTH_LONG,
-                            R.string.edit_follow_preferences
-                        ) { showNotificationsPrefDialog() }
+            notificationsButton.setContent {
+                @Suppress("ConstantConditionIf") 
+                if (false) {
+                    group?.apply {
+                        val memberRole = memberRole
+                        val isSubscribed = isSubscribed
+                        val isFavorited = group.isFavorited
+                        if (isFavorited || isSubscribed == true || memberRole in setOf(
+                                GroupMemberRole.MEMBER,
+                                GroupMemberRole.MEMBER_ADMIN,
+                            )
+                        ) { 
+                            NotificationsButton(
+                                groupColor = group.color?.let {
+                                    Color(it)
+                                } ?: LocalContentColor.current,
+                                enableNotifications = enableNotifications ?: false,
+                                showPrefDialog = showNotificationsPrefDialog)
+                        }
+                    }
+                }
+
+            }
+
+            joinButton.setContent {
+                group?.apply {
+                    val isSubscriptionEnabled = isSubscriptionEnabled ?: return@apply
+                    val memberRole = memberRole ?: return@apply
+                    val isSubscribed = isSubscribed
+                    when {
+
+                        isSubscriptionEnabled && isSubscribed == false && memberRole in setOf(
+                            GroupMemberRole.NOT_MEMBER,
+                            GroupMemberRole.MEMBER_INVITED,
+                            GroupMemberRole.MEMBER_INVITED_WAIT_FOR_ADMIN,
+                            GroupMemberRole.MEMBER_REQUESTED_WAIT_FOR_ADMIN
+                        ) -> {
+                            Button(
+                                onClick = subscribeGroup,
+                                colors = ButtonDefaults.buttonColors().run {
+                                    group.color?.let {
+                                        copy(containerColor = Color(it))
+                                    } ?: this
+                                }
+                            ) {
+                                Text(text = stringResource(id = R.string.subscribe))
+                            }
+                        }
+
+                        isSubscriptionEnabled && isSubscribed == true -> {
+                            OutlinedButton(
+                                onClick = unsubscribeGroup,
+                                colors = ButtonDefaults.outlinedButtonColors().run {
+                                    group.color?.let {
+                                        copy(contentColor = Color(it))
+                                    } ?: this
+                                }
+                            ) {
+                                Text(text = stringResource(id = R.string.subscribed))
+                            }
+                        }
+
+                        memberRole in setOf(
+                            GroupMemberRole.MEMBER,
+                            GroupMemberRole.MEMBER_ADMIN,
+                        ) -> {
+                            TextButton(
+                                onClick = {},
+                                enabled = false
+                            ) {
+                                Text(text = stringResource(id = R.string.joined))
+                            }
+                        }
+
+                        
                     }
                 }
             }
-
-            notificationButton.setOnClickListener { showNotificationsPrefDialog() }
 
             toolbarLayout.setCollapsedTitleTextColor(context.getColor(R.color.doubean_white))
             appbar.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
@@ -337,9 +406,56 @@ fun GroupDetailCoordinator(
                 val shouldShowToolbar = verticalOffset + appBarLayout.totalScrollRange == 0
                 appbar.isActivated = shouldShowToolbar
             }
-            toolbar.setOnMenuItemClickListener { item ->
-                return@setOnMenuItemClickListener group?.let { group ->
-                    when (item.itemId) {
+
+            fun updateFavoriteMenuItem(favoriteMenuItem: MenuItem, isFavorited: Boolean) {
+                when (isFavorited) {
+                    true -> {
+                        favoriteMenuItem.apply {
+                            setTitle(R.string.unfavorite)
+                            setIcon(R.drawable.ic_star)
+                        }
+                    }
+
+                    false -> {
+                        favoriteMenuItem.apply {
+                            setTitle(R.string.favorite)
+                            setIcon(R.drawable.ic_star_border)
+                        }
+                    }
+                }
+            }
+
+            group?.let { group ->
+                val favoriteMenuItem = toolbar.menu.findItem(R.id.action_favorite)
+                updateFavoriteMenuItem(favoriteMenuItem, group.isFavorited)
+                toolbar.setOnMenuItemClickListener { item ->
+                    return@setOnMenuItemClickListener when (item.itemId) {
+                        R.id.action_favorite -> {
+                            when (group.isFavorited) {
+                                true -> {
+                                    removeFavorite()
+                                    root.showSnackbar(
+                                        R.string.unfavorited_group,
+                                        Snackbar.LENGTH_LONG,
+                                    )
+                                }
+
+                                false -> {
+                                    addFavorite()
+                                    root.showSnackbar(
+                                        R.string.favorited_group,
+                                        Snackbar.LENGTH_LONG,
+                                        R.string.edit_follow_preferences
+                                    ) { showNotificationsPrefDialog() }
+                                }
+                            }
+                            updateFavoriteMenuItem(
+                                favoriteMenuItem,
+                                isFavorited = !group.isFavorited
+                            )
+                            true
+                        }
+
                         R.id.action_share -> {
                             onShareGroup(group)
                             true
@@ -358,8 +474,9 @@ fun GroupDetailCoordinator(
                         else -> {
                             false
                         }
+
                     }
-                } ?: false
+                }
             }
             toolbar.setNavigationOnClickListener { onBackClick() }
 
@@ -370,7 +487,6 @@ fun GroupDetailCoordinator(
                         .size(dimensionResource(id = R.dimen.icon_size_extra_large))
                         .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small))),
                     contentScale = ContentScale.Crop
-
                 )
             }
 
@@ -399,50 +515,12 @@ fun GroupDetailCoordinator(
                     toolbarLayout.setContentScrimColor(color)
                     toolbarLayout.setStatusBarScrimColor(color)
                 }
-
-                val colorSurface = context.getColorFromTheme(R.attr.colorSurface)
-                val groupColor =
-                    group.color ?: context.getColorFromTheme(R.attr.colorPrimary)
-
-                with(favoriteButton) {
-                    if (group.isFavorited) {
-                        setIconResource(R.drawable.ic_remove)
-                        setText(R.string.unfavorite)
-                        iconTint = ColorStateList.valueOf(groupColor)
-                        setTextColor(groupColor)
-                        setBackgroundColor(colorSurface)
-                    } else {
-                        setIconResource(R.drawable.ic_add)
-                        setText(R.string.favorite)
-                        iconTint = ColorStateList.valueOf(colorSurface)
-                        setTextColor(colorSurface)
-                        setBackgroundColor(groupColor)
-                    }
-                }
-
-                with(notificationButton) {
-                    when (group.enableNotifications) {
-                        true -> {
-                            setIconResource(R.drawable.ic_notifications)
-                            iconTint = ColorStateList.valueOf(groupColor)
-                            setBackgroundColor(colorSurface)
-                        }
-
-                        false -> {
-                            setIconResource(R.drawable.ic_notification_add)
-                            iconTint = ColorStateList.valueOf(colorSurface)
-                            setBackgroundColor(groupColor)
-                        }
-
-                        else -> {
-                        }
-                    }
-                }
             }
         }
     }
 
 }
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

@@ -7,7 +7,7 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.github.bumblebee202111.doubean.coroutines.AppDispatchers
 import com.github.bumblebee202111.doubean.coroutines.Dispatcher
-import com.github.bumblebee202111.doubean.data.repository.GroupUserDataRepository
+import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -19,7 +19,7 @@ import kotlinx.coroutines.withContext
 @HiltWorker
 class RecommendPostsWorker @AssistedInject constructor(
     @Assisted appContext: Context, @Assisted params: WorkerParameters,
-    private val groupUserDataRepository: GroupUserDataRepository,
+    private val userGroupRepository: UserGroupRepository,
     @Dispatcher(
         AppDispatchers.IO
     ) private val ioDispatcher: CoroutineDispatcher,
@@ -31,7 +31,7 @@ class RecommendPostsWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         return withContext(ioDispatcher) {
-            val loadedSuccessfully = groupUserDataRepository.getRecommendedPosts()
+            val loadedSuccessfully = userGroupRepository.getRecommendedPosts()
             if (loadedSuccessfully)
                 Result.success()
             else

@@ -3,7 +3,17 @@ Change Log
 
 ## Version 0.6.1(601)
 
+- Support subscribing (关注) groups
+  - Adjust favorite buttons
+  - No longer show notifications buttons (the feature of topic notifications is currently broken)
+
 - Update some MD2 icons to MD3
+- "My Groups" data is now cached
+  - Fixes initial scroll position of Groups Home
+  - Makes UX smoother
+
+- Fix app crash due to "topic not found"
+- Code optimizations
 
 ## Version 0.6.0(600)
 

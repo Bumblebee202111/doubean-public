@@ -15,6 +15,7 @@ import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -25,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -41,6 +43,7 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.DialogContentGroupTabNotificationsPreferenceBinding
 import com.github.bumblebee202111.doubean.databinding.ListItemPostBinding
 import com.github.bumblebee202111.doubean.databinding.ViewGroupTabActionsBinding
+import com.github.bumblebee202111.doubean.feature.groups.common.NotificationsButton
 import com.github.bumblebee202111.doubean.feature.groups.common.TopicCountLimitEachFetchTextField
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.TopicSortBy
@@ -116,7 +119,8 @@ fun GroupTabScreen(
                 fun setupFavoriteButtonAndMore() {
 
                     if (tabId == null) { 
-                        toggleGroup.visibility = View.GONE
+                        notificationsButton.visibility = View.GONE
+                        favoriteButton.visibility = View.GONE
                         more.visibility = View.GONE
                     } else { 
                         favoriteButton.setOnClickListener {
@@ -138,8 +142,22 @@ fun GroupTabScreen(
                             }
                         }
 
-                        notificationButton.setOnClickListener {
-                            openAlertDialog = true
+                        @Suppress("ConstantConditionIf") 
+                        if (false) {
+                            notificationsButton.setContent {
+                                group?.let { group ->
+                                    group.findTab(tabId)?.let { tab ->
+                                        NotificationsButton(
+                                            groupColor = group.color?.let {
+                                                Color(it)
+                                            } ?: LocalContentColor.current,
+                                            enableNotifications = tab.enableNotifications ?: false
+                                        ) {
+                                            openAlertDialog = true
+                                        }
+                                    }
+                                }
+                            }
                         }
 
                         more.setOnClickListener { v ->
@@ -179,18 +197,17 @@ fun GroupTabScreen(
                     val colorSurface = context.getColorFromTheme(R.attr.colorSurface)
                     val groupColor =
                         group.color ?: context.getColorFromTheme(R.attr.colorPrimary)
-                    notificationButton.visibility =
-                        if (group.findTab(tabId)?.enableNotifications == null) View.GONE else View.VISIBLE
+
                     group.findTab(tabId)?.let { tab ->
                         with(favoriteButton) {
                             if (tab.isFavorite) {
-                                setIconResource(R.drawable.ic_remove)
-                                setText(R.string.unfavorite)
+                                setIconResource(R.drawable.ic_star)
+                                setText(R.string.favorited)
                                 iconTint = ColorStateList.valueOf(groupColor)
                                 setTextColor(groupColor)
                                 setBackgroundColor(colorSurface)
                             } else {
-                                setIconResource(R.drawable.ic_add)
+                                setIconResource(R.drawable.ic_star)
                                 setText(R.string.favorite)
                                 iconTint = ColorStateList.valueOf(colorSurface)
                                 setTextColor(colorSurface)
@@ -198,25 +215,6 @@ fun GroupTabScreen(
                             }
                         }
 
-                        with(notificationButton) {
-                            when (tab.enableNotifications) {
-                                true -> {
-                                    setIconResource(R.drawable.ic_notifications)
-                                    iconTint = ColorStateList.valueOf(groupColor)
-                                    setBackgroundColor(colorSurface)
-                                }
-
-                                false -> {
-                                    setIconResource(R.drawable.ic_notification_add)
-                                    iconTint = ColorStateList.valueOf(colorSurface)
-                                    setBackgroundColor(groupColor)
-                                }
-
-                                else -> {
-
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -228,8 +226,6 @@ fun GroupTabScreen(
             contentType = topicPagingItems.itemContentType { "topicLazyPagingItem" }
         ) { index ->
             val topic = topicPagingItems[index]
-
-
             AndroidViewBinding(factory = ListItemPostBinding::inflate,
                 modifier = Modifier.fillMaxWidth(),
                 onReset = {}

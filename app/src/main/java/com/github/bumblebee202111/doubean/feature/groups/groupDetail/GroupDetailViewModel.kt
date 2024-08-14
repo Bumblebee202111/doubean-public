@@ -7,7 +7,8 @@ import com.github.bumblebee202111.doubean.coroutines.AppDispatchers
 import com.github.bumblebee202111.doubean.coroutines.Dispatcher
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
-import com.github.bumblebee202111.doubean.data.repository.GroupUserDataRepository
+import com.github.bumblebee202111.doubean.data.repository.GroupsRepo
+import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
 import com.github.bumblebee202111.doubean.model.Result
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
@@ -25,7 +26,8 @@ import javax.inject.Inject
 @HiltViewModel
 class GroupDetailViewModel @Inject constructor(
     groupRepository: GroupRepository,
-    private val groupUserDataRepository: GroupUserDataRepository,
+    private val groupsRepo: GroupsRepo,
+    private val userGroupRepository: UserGroupRepository,
     private val preferenceStorage: PreferenceStorage,
     savedStateHandle: SavedStateHandle,
     @Dispatcher(AppDispatchers.IO) ioDispatcher: CoroutineDispatcher,
@@ -41,9 +43,25 @@ class GroupDetailViewModel @Inject constructor(
         groupResult.filter { it is Result.Success || it is Result.Error }.map { it?.data?.tabs }
             .stateInUi()
 
+    fun subscribe() {
+        viewModelScope.launch {
+            userGroupRepository.subscribeGroup(groupId)
+            groupsRepo.updateCachedIsSubscribed(id = groupId, isSubscribed = true)
+
+        }
+    }
+
+    fun unsubscribe() {
+        viewModelScope.launch {
+            userGroupRepository.unsubscribeGroup(groupId)
+            groupsRepo.updateCachedIsSubscribed(id = groupId, isSubscribed = false)
+        }
+    }
+
+
     fun addFavorite() {
         viewModelScope.launch {
-            groupUserDataRepository.addFavoriteGroup(
+            userGroupRepository.addFavoriteGroup(
                 groupId = groupId,
                 enablePostNotifications = preferenceStorage.perFollowDefaultEnablePostNotifications.first(),
                 allowsDuplicateNotifications = preferenceStorage.perFollowDefaultAllowDuplicateNotifications.first(),
@@ -56,7 +74,7 @@ class GroupDetailViewModel @Inject constructor(
 
     fun removeFavorite() {
         viewModelScope.launch {
-            groupUserDataRepository.removeFavoriteGroup(groupId)
+            userGroupRepository.removeFavoriteGroup(groupId)
         }
     }
 
@@ -68,7 +86,7 @@ class GroupDetailViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                groupUserDataRepository.updateGroupNotificationsPref(
+                userGroupRepository.updateGroupNotificationsPref(
                     groupId,
                     enableNotifications,
                     allowNotificationUpdates,
