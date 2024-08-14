@@ -5,8 +5,8 @@ package com.github.bumblebee202111.doubean.feature.groups.home
 import androidx.lifecycle.ViewModel
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
-import com.github.bumblebee202111.doubean.data.repository.GroupUserDataRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupsRepo
+import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
 import com.github.bumblebee202111.doubean.model.GroupRecommendationType
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class GroupsHomeViewModel @Inject constructor(
     groupRepository: GroupRepository,
-    groupUserDataRepository: GroupUserDataRepository,
+    userGroupRepository: UserGroupRepository,
     groupsRepo: GroupsRepo,
     authRepository: AuthRepository,
 ) : ViewModel() {
@@ -31,13 +31,13 @@ class GroupsHomeViewModel @Inject constructor(
         when (userId) {
             null -> flowOf(null)
             else ->
-                groupsRepo.getUserJoinedGroups(userId).map { it.data }
+                userGroupRepository.getUserJoinedGroups(userId).map { it.data }
         }
     }.stateInUi()
 
 
     val favorites =
-        groupUserDataRepository.getAllGroupFavorites().flowOn(Dispatchers.IO).stateInUi()
+        userGroupRepository.getAllGroupFavorites().flowOn(Dispatchers.IO).stateInUi()
 
     val groupsOfTheDay = authRepository.isLoggedIn().flatMapLatest {
         when (it) {
@@ -50,7 +50,7 @@ class GroupsHomeViewModel @Inject constructor(
 
     val recentTopicsFeed = authRepository.isLoggedIn().flatMapLatest {
         when (it) {
-            true -> groupUserDataRepository.getRecentTopicsFeed().map { it.data }
+            true -> userGroupRepository.getRecentTopicsFeed().map { it.data }
             false -> flowOf(null)
         }
     }.stateInUi()

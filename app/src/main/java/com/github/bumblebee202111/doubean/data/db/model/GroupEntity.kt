@@ -3,6 +3,7 @@ package com.github.bumblebee202111.doubean.data.db.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.github.bumblebee202111.doubean.model.GroupMemberRole
 import java.time.LocalDateTime
 
 @Entity(tableName = "groups")
@@ -28,6 +29,12 @@ data class GroupEntity(
     val shortDescription: String? = null,
     val description: String? = null,
     val color: Int? = null,
+    @ColumnInfo("member_role")
+    val memberRole: GroupMemberRole? = null,
+    @ColumnInfo("is_subscription_enabled")
+    val isSubscriptionEnabled: Boolean? = null,
+    @ColumnInfo("is_subscribed")
+    val isSubscribed: Boolean? = null,
 )
 
 

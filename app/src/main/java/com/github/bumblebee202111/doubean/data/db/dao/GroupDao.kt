@@ -106,4 +106,7 @@ interface GroupDao {
     @Query("DELETE FROM group_tag_topics WHERE group_id = :groupId AND tag_id = :tagId AND sort_by = :sortBy")
     fun deleteGroupTagTopicItems(groupId: String, tagId: String, sortBy: TopicSortBy)
 
+    @Query("UPDATE groups SET is_subscribed = :isSubscribed WHERE id=:id")
+    suspend fun updateIsSubscribed(id: String, isSubscribed: Boolean?)
+
 }
