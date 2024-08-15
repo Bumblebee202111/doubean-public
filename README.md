@@ -99,7 +99,7 @@ It not only implements some features (mainly of Groups) of Douban app, but also 
 * Partially support URL deep links
 * Rooted users can reuse login session of Douban app
 * Partial support for viewing content in Douban WebView optimized for mobile reading in case of need (no longer updated)
-* Basic use of MD2/3 (UI may not look well during migration)
+* Basic use of MD2/3 (UI may not look good during migration)
 * Recommended topic notifications (maybe currently broken)
 
 Libraries Used
@@ -171,13 +171,13 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.6.1\)
-
-#### To-dos for next release \(0.6.2)
+#### To-dos for current release \(0.6.2\)
 
 - Date & time: `Yesterday hh:mm`
 - Add translations
 - Reuse item logic of search result groups / groups of the day
+
+#### To-dos for next release \(0.6.3)
 
 #### Future plans
 
@@ -310,7 +310,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 [google-chrome]:https://www.google.com/chrome/
 
-### Stars:star: & Donation:coffee:
+### Stars :star: & Donation :coffee:
 
 I'm totally aware that this app is mediocre. However, the increasing number of stars keep me motivated! Thank you!
 
