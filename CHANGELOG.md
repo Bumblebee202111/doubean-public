@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.6.2(602)
+
 ## Version 0.6.1(601)
 
 - Support subscribing (关注) groups
