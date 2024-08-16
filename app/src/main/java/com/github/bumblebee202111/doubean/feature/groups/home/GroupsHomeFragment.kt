@@ -150,15 +150,14 @@ fun GroupsHomeScreen(
                 myTopics(topic, navigateToTopic)
             }
         }
-
     }
 }
 
-fun LazyListScope.myGroups(
+private fun LazyListScope.myGroups(
     groups: List<GroupItem>,
     onGroupItemClick: (groupId: String) -> Unit,
 ) {
-    item(key = "myGroups", contentType = "myGroups") {
+    item(contentType = "myGroups") {
         Text(
             "My Groups",
             modifier = Modifier.padding(horizontal = 16.dp),
@@ -211,11 +210,11 @@ fun LazyListScope.myGroups(
 
 }
 
-fun LazyListScope.favorites(
+private fun LazyListScope.favorites(
     follows: List<GroupFavoriteItem>,
     onGroupItemClick: (groupId: String, tabId: String?) -> Unit,
 ) {
-    item(key = "favorites", contentType = "favorites") {
+    item(contentType = "favorites") {
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
             text = "Favorites (Local Feature)",
@@ -305,9 +304,7 @@ private fun LazyListScope.myTopics(
     topics: List<TopicItemWithGroup>,
     navigateToTopic: (topicId: String) -> Unit,
 ) {
-
-    item {
-
+    item(contentType = "myTopicsTitle") {
         Text(
             text = "My Topics",
             modifier = Modifier.padding(horizontal = 16.dp),
@@ -324,7 +321,6 @@ private fun LazyListScope.myTopics(
             HorizontalDivider()
         }
         TopicItemWithGroupAndroidView(topicItemWithGroup = item, navigateToTopic)
-
     }
 
 }
@@ -332,7 +328,7 @@ private fun LazyListScope.myTopics(
 
 @Composable
 @Preview(showBackground = true)
-fun YourFollowingPreview(
+fun MyGroupsPreview(
 ) {
     val mockData = listOf(
         GroupFavoriteItem(Calendar.getInstance(), "1", "123", "wwww"),
