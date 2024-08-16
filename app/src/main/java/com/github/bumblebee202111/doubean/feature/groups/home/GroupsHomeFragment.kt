@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -130,7 +131,10 @@ fun GroupsHomeScreen(
                         )
                     }
                     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                        DropdownMenuItem(text = { Text("Settings") }, onClick = openSettings)
+                        DropdownMenuItem(
+                            text = { Text(stringResource(id = R.string.settings)) },
+                            onClick = openSettings
+                        )
                     }
                 }
             )
@@ -159,7 +163,7 @@ private fun LazyListScope.myGroups(
 ) {
     item(contentType = "myGroups") {
         Text(
-            "My Groups",
+            stringResource(id = R.string.title_my_groups),
             modifier = Modifier.padding(horizontal = 16.dp),
             style = MaterialTheme.typography.titleMedium
         )
@@ -217,7 +221,7 @@ private fun LazyListScope.favorites(
     item(contentType = "favorites") {
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = "Favorites (Local Feature)",
+            text = stringResource(id = R.string.title_my_groups),
             style = MaterialTheme.typography.titleMedium
         )
         LazyRow(
