@@ -173,11 +173,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.6.2\)
 
-- Date & time: `Yesterday hh:mm`
-- Add translations
-- Reuse item logic of search result groups / groups of the day
-
 #### To-dos for next release \(0.6.3)
+
+- Reuse item logic of search result groups / groups of the day
 
 #### Future plans
 
@@ -187,7 +185,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From MD2 / custom design to MD3
   * From View and Data Binding to Jetpack Compose
     * Exceptions: WebView/RatingBar
-  * From Navigation Fragment to Navigation Compose (take action when type-safe navigation is stable)
+  * From Navigation Fragment to Navigation Compose (when type-safe navigation is stable)
     * From NavHostFragment to ComposableNavHostFragment
 * navigation-fragment-compose
 * Groups - Home

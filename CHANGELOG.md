@@ -3,7 +3,12 @@ Change Log
 
 ## Version 0.6.2(602)
 
-- ~~Fixes initial scroll position of Groups Home~~
+- Add some Chinese translations
+- Update date & time
+  - Fully migrated into Compose
+  - Add new format for date-time of yesterday for topic items: `Yesterday HH:mm`
+- Fix initial scroll position of Groups Home (the previous fix does not work) 
+- Code optimizations and cleanups
 
 ## Version 0.6.1(601)
 
