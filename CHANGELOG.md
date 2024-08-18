@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+## Version 0.6.2(602)
+
+- Add some Chinese translations
+- Update date & time
+  - Fully migrated into Compose
+  - Add new format for date-time of yesterday for topic items: `Yesterday HH:mm`
+- Fix initial scroll position of Groups Home (the previous fix does not work) 
+- Code optimizations and cleanups
+
 ## Version 0.6.1(601)
 
 - Support subscribing (关注) groups
@@ -9,7 +18,7 @@ Change Log
 
 - Update some MD2 icons to MD3
 - "My Groups" data is now cached
-  - Fixes initial scroll position of Groups Home
+  - ~~Fixes initial scroll position of Groups Home~~
   - Makes UX smoother
 
 - Fix app crash due to "topic not found"
