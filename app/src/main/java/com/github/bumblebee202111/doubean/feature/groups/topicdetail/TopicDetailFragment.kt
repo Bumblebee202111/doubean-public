@@ -93,13 +93,14 @@ import com.github.bumblebee202111.doubean.model.TopicDetail
 import com.github.bumblebee202111.doubean.ui.common.DoubeanWebView
 import com.github.bumblebee202111.doubean.ui.common.TopicWebViewClient
 import com.github.bumblebee202111.doubean.ui.common.UserProfileImage
-import com.github.bumblebee202111.doubean.ui.common.bindDateTimeStringAndStyle
+import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.ListItemImages
 import com.github.bumblebee202111.doubean.ui.theme.AppTheme
-import com.github.bumblebee202111.doubean.util.DateTimeStyle
 import com.github.bumblebee202111.doubean.util.OpenInUtil
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.TOPIC_CSS_FILENAME
+import com.github.bumblebee202111.doubean.util.fullDateTimeString
+import com.github.bumblebee202111.doubean.util.intermediateDateTimeString
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberSaveableWebViewState
 import com.google.accompanist.web.rememberWebViewNavigator
@@ -478,6 +479,12 @@ fun TopicDetailHeader(
             
         ) {
 
+            postCreated.setContent {
+                topic.created?.let {
+                    DateTimeText(text = it.fullDateTimeString())
+                }
+            }
+
             postTag.setOnClickListener {
                 topic.group?.let { group ->
                     navigateToGroup(
@@ -722,7 +729,11 @@ fun TopicCommentAndroidView(
             }
             authorName.text = comment?.author?.name
             authorMiddleDot.isVisible = comment?.author != null
-            created.bindDateTimeStringAndStyle(comment?.created, DateTimeStyle.Normal)
+            created.setContent {
+                comment?.created?.let {
+                    DateTimeText(text = it.intermediateDateTimeString())
+                }
+            }
             ipLocation.text = comment?.ipLocation
             more.setOnClickListener { v ->
                 val context = v.context
@@ -795,10 +806,11 @@ fun TopicCommentAndroidView(
             repliedToAuthorOp.isVisible =
                 comment?.repliedTo?.author?.id?.let { it == topic?.author?.id } ?: false
             repliedToAuthorName.text = comment?.repliedTo?.author?.name
-            repliedToCreated.bindDateTimeStringAndStyle(
-                comment?.repliedTo?.created,
-                DateTimeStyle.Normal
-            )
+            repliedToCreated.setContent {
+                comment?.repliedTo?.created?.let {
+                    DateTimeText(text = it.intermediateDateTimeString())
+                }
+            }
             repliedToMiddleDot.isVisible = comment?.repliedTo?.author != null
             repliedToText.apply {
                 text = comment?.repliedTo?.text

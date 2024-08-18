@@ -49,7 +49,9 @@ import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.common.UserProfileImage
 import com.github.bumblebee202111.doubean.ui.common.rememberLazyListStatePagingWorkaround
+import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.util.ShareUtil
+import com.github.bumblebee202111.doubean.util.abbreviatedDateTimeString
 import com.github.bumblebee202111.doubean.util.getColorFromTheme
 import com.github.bumblebee202111.doubean.util.showSnackbar
 import com.google.android.material.snackbar.Snackbar
@@ -279,12 +281,24 @@ fun GroupTabScreen(
                     )
                 }
 
+                created.setContent {
+                    topic?.created?.let {
+                        DateTimeText(text = it.abbreviatedDateTimeString(LocalContext.current))
+                    }
+                }
+
                 commentIcon.setContent {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.Comment,
                         contentDescription = null,
                         modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size_extra_small))
                     )
+                }
+
+                lastUpdated.setContent {
+                    topic?.lastUpdated?.let {
+                        DateTimeText(text = it.abbreviatedDateTimeString(LocalContext.current))
+                    }
                 }
 
             }

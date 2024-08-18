@@ -26,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.compose.content
@@ -38,9 +37,9 @@ import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.common.TopicDetailActivityItemUserProfileImage
 import com.github.bumblebee202111.doubean.feature.home.UserNameText
+import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.theme.AppTheme
-import com.github.bumblebee202111.doubean.util.DateTimeStyle
-import com.github.bumblebee202111.doubean.util.dateTimeText
+import com.github.bumblebee202111.doubean.util.intermediateDateTimeString
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -114,12 +113,9 @@ fun ReshareStatusesScreen(viewModel: ReshareStatusesViewModel, onBackClick: () -
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             UserNameText(reshareStatus?.author?.name ?: "")
                             reshareStatus?.createTime?.let {
-                                Text(
-                                    text = dateTimeText(it, DateTimeStyle.Normal),
+                                DateTimeText(
                                     modifier = Modifier.padding(start = 4.dp),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.outline,
-                                    fontWeight = FontWeight.Light,
+                                    text = it.intermediateDateTimeString(),
                                 )
                             }
                         }
