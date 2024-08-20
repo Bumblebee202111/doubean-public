@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.6.3(603)
+
 ## Version 0.6.2(602)
 
 - Add some Chinese translations

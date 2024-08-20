@@ -68,6 +68,7 @@ Introduction
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
 <img src="screenshots/phone_group_search.png" alt="phone_group_search" height="300" />
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
+
 ### Getting Started
 
 ### Using this app
@@ -171,11 +172,12 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.6.2\)
+#### To-dos for current release \(0.6.3\)
 
-#### To-dos for next release \(0.6.3)
-
+- Fix translation mistakes
 - Reuse item logic of search result groups / groups of the day
+
+#### To-dos for next release \(0.6.4)
 
 #### Future plans
 
@@ -199,12 +201,11 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Show error messages
 * Bring back load state visualization which was removed for simplicity during various types of migrations
   * Paging 3 refresh, loading status ...
-* Follow/favorite/save/subscribe
+* Subscribe/favorite/save
   * Save topics
   * Pin my groups
   * Add corresponding item actions
-  * Follow groups (locally for guests)
-* Group Detail: Collapse on entrance for the followed/favorited group/tab
+* Group Detail: Collapse on entrance for the subscribed/favorited group/tab
 * Allow expanding group description w/ SpannableString
 * Bring back basic support for dark mode & landscape experience
 * Topics sort by 
@@ -236,7 +237,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Translations
   * Option
   * Distinguish`en-DB`/`en-US`
-* More follow/favorite/save/subscribe
+* More subscribe/favorite/save
   * Save comments
   * Subscribe topics
   * Sync custom lists by maintaining a fake private note which holds the data
