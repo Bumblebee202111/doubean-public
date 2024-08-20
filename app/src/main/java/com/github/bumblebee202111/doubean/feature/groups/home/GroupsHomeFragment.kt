@@ -221,7 +221,7 @@ private fun LazyListScope.favorites(
     item(contentType = "favorites") {
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = stringResource(id = R.string.title_my_groups),
+            text = stringResource(id = R.string.title_favorites_local_feature),
             style = MaterialTheme.typography.titleMedium
         )
         LazyRow(
@@ -310,7 +310,7 @@ private fun LazyListScope.myTopics(
 ) {
     item(contentType = "myTopicsTitle") {
         Text(
-            text = "My Topics",
+            text = stringResource(R.string.title_my_topics),
             modifier = Modifier.padding(horizontal = 16.dp),
             style = MaterialTheme.typography.titleMedium
         )
