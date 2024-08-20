@@ -3,9 +3,13 @@ Change Log
 
 ## Version 0.6.3(603)
 
+- Groups Home: Fix translation mistakes
+
 ## Version 0.6.2(602)
 
 - Add some Chinese translations
+  - **Known issue: some titles of Groups Home are not correctly translated**
+
 - Update date & time
   - Fully migrated into Compose
   - Add new format for date-time of yesterday for topic items: `Yesterday HH:mm`

@@ -174,7 +174,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.6.3\)
 
-- Fix translation mistakes
 - Reuse item logic of search result groups / groups of the day
 
 #### To-dos for next release \(0.6.4)
