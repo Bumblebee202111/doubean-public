@@ -175,6 +175,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 #### To-dos for current release \(0.6.3\)
 
 - Reuse item logic of search result groups / groups of the day
+- Update project-related links
 
 #### To-dos for next release \(0.6.4)
 
@@ -186,7 +187,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From MD2 / custom design to MD3
   * From View and Data Binding to Jetpack Compose
     * Exceptions: WebView/RatingBar
-  * From Navigation Fragment to Navigation Compose (when type-safe navigation is stable)
+  * From Navigation Fragment to Navigation Compose
     * From NavHostFragment to ComposableNavHostFragment
 * navigation-fragment-compose
 * Groups - Home
@@ -196,7 +197,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * More card types
   * Pagination
 * TopAppBar and Edge-to-Edge
-  * Reduce TopAppBar height to 56 dp when https://developer.android.google.cn/jetpack/androidx/releases/compose-material3#1.3.0-beta05 enters RC
+  * Reduce TopAppBar height to 56 dp
 * Show error messages
 * Bring back load state visualization which was removed for simplicity during various types of migrations
   * Paging 3 refresh, loading status ...
