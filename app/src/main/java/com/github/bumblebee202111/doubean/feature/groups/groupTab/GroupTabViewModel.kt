@@ -1,5 +1,8 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupTab
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -45,29 +48,41 @@ class GroupTabViewModel @AssistedInject constructor(
             } ?: emptyFlow()
         }.cachedIn(viewModelScope)
 
+    var shouldDisplayFavoritedTab by mutableStateOf(false)
+
+    var shouldDisplayUnfavoritedTab by mutableStateOf(false)
+
     fun setSortBy(topicSortBy: TopicSortBy) {
         _sortBy.value = topicSortBy
     }
 
     fun addFavorite() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                userGroupRepository.addFavoriteTab(
-                    groupId = groupId,
-                    tabId = tabId!!,
-                    enablePostNotifications = preferenceStorage.perFollowDefaultEnablePostNotifications.first(),
-                    allowsDuplicateNotifications = preferenceStorage.perFollowDefaultAllowDuplicateNotifications.first(),
-                    sortRecommendedPostsBy = preferenceStorage.perFollowDefaultSortRecommendedPostsBy.first(),
-                    feedRequestPostCountLimit = preferenceStorage.perFollowDefaultFeedRequestPostCountLimit.first()
-                )
-            }
+            userGroupRepository.addFavoriteTab(
+                groupId = groupId,
+                tabId = tabId!!,
+                enablePostNotifications = preferenceStorage.perFollowDefaultEnablePostNotifications.first(),
+                allowsDuplicateNotifications = preferenceStorage.perFollowDefaultAllowDuplicateNotifications.first(),
+                sortRecommendedPostsBy = preferenceStorage.perFollowDefaultSortRecommendedPostsBy.first(),
+                feedRequestPostCountLimit = preferenceStorage.perFollowDefaultFeedRequestPostCountLimit.first()
+            )
+            shouldDisplayFavoritedTab = true
         }
     }
 
     fun removeFavorite() {
         viewModelScope.launch {
             userGroupRepository.removeFavoriteTab(tabId!!)
+            shouldDisplayUnfavoritedTab = false
         }
+    }
+
+    fun clearFavoritedTabState() {
+        shouldDisplayFavoritedTab = false
+    }
+
+    fun clearUnfavoritedTabState() {
+        shouldDisplayUnfavoritedTab = false
     }
 
     fun saveNotificationsPreference(

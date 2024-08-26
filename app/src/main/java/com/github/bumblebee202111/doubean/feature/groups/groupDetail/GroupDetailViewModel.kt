@@ -1,5 +1,8 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupDetail
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -43,6 +46,10 @@ class GroupDetailViewModel @Inject constructor(
         groupResult.filter { it is Result.Success || it is Result.Error }.map { it?.data?.tabs }
             .stateInUi()
 
+    var shouldDisplayFavoritedGroup by mutableStateOf(false)
+
+    var shouldDisplayUnfavoritedGroup by mutableStateOf(false)
+
     fun subscribe() {
         viewModelScope.launch {
             userGroupRepository.subscribeGroup(groupId)
@@ -58,7 +65,6 @@ class GroupDetailViewModel @Inject constructor(
         }
     }
 
-
     fun addFavorite() {
         viewModelScope.launch {
             userGroupRepository.addFavoriteGroup(
@@ -68,6 +74,7 @@ class GroupDetailViewModel @Inject constructor(
                 sortRecommendedPostsBy = preferenceStorage.perFollowDefaultSortRecommendedPostsBy.first(),
                 feedRequestPostCountLimit = preferenceStorage.perFollowDefaultFeedRequestPostCountLimit.first()
             )
+            shouldDisplayFavoritedGroup = true
         }
 
     }
@@ -76,6 +83,14 @@ class GroupDetailViewModel @Inject constructor(
         viewModelScope.launch {
             userGroupRepository.removeFavoriteGroup(groupId)
         }
+    }
+
+    fun clearFavoritedGroupState() {
+        shouldDisplayFavoritedGroup = false
+    }
+
+    fun clearUnfavoritedGroupState() {
+        shouldDisplayUnfavoritedGroup = false
     }
 
     fun saveNotificationsPreference(

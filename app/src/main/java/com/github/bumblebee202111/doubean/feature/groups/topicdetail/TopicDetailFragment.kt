@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.webkit.WebView
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,6 +43,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -113,8 +114,8 @@ class TopicDetailFragment : Fragment() {
         savedInstanceState: Bundle?,
     ) = content {
         AppTheme {
-            PostDetailScreen(
-                topicDetailViewModel = viewModel(),
+            TopicDetailScreen(
+                viewModel = viewModel(),
                 onBackClick = { findNavController().popBackStack() },
                 onTopicShareClick = { topic ->
                     val shareText = StringBuilder()
@@ -159,9 +160,6 @@ class TopicDetailFragment : Fragment() {
                         NavDeepLinkRequest.Builder.fromUri(url.toUri()).build()
                     findNavController().navigate(request)
                 },
-                onShowToast = {
-                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-                },
                 viewInDouban = { uri ->
                     OpenInUtil.openInDouban(requireContext(), uri)
                 }
@@ -178,8 +176,8 @@ class TopicDetailFragment : Fragment() {
     @SuppressLint("ClickableViewAccessibility")
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun PostDetailScreen(
-        topicDetailViewModel: TopicDetailViewModel,
+    fun TopicDetailScreen(
+        viewModel: TopicDetailViewModel,
         onBackClick: () -> Unit,
         onTopicShareClick: (TopicDetail) -> Unit,
         navigateToWebView: (url: String) -> Unit,
@@ -187,17 +185,17 @@ class TopicDetailFragment : Fragment() {
         navigateToReshareStatuses: (topicId: String) -> Unit,
         navigateToImage: (url: String) -> Unit,
         navigateWithDeepLinkUrl: (url: String) -> Unit,
-        onShowToast: (text: String) -> Unit,
         viewInDouban: (uri: String) -> Unit,
         viewInActivity: (url: String) -> Unit,
     ) {
-        val topic by topicDetailViewModel.topic.collectAsStateWithLifecycle()
-        val popularComments by topicDetailViewModel.popularComments.collectAsStateWithLifecycle()
-        val allCommentLazyPagingItems = topicDetailViewModel.allComments.collectAsLazyPagingItems()
-        val contentHtml by topicDetailViewModel.contentHtml.collectAsStateWithLifecycle()
-        val commentSortBy by topicDetailViewModel.commentsSortBy.collectAsStateWithLifecycle()
+        val topic by viewModel.topic.collectAsStateWithLifecycle()
+        val popularComments by viewModel.popularComments.collectAsStateWithLifecycle()
+        val allCommentLazyPagingItems = viewModel.allComments.collectAsLazyPagingItems()
+        val contentHtml by viewModel.contentHtml.collectAsStateWithLifecycle()
+        val commentSortBy by viewModel.commentsSortBy.collectAsStateWithLifecycle()
         val groupColorInt = topic?.group?.color
-        val shouldShowSpinner by topicDetailViewModel.shouldShowSpinner.collectAsStateWithLifecycle()
+        val shouldShowSpinner by viewModel.shouldShowSpinner.collectAsStateWithLifecycle()
+        val shouldDisplayInvalidImageUrl = viewModel.shouldDisplayInvalidImageUrl
 
         var shouldShowDialog by remember {
             mutableStateOf(false)
@@ -206,6 +204,9 @@ class TopicDetailFragment : Fragment() {
             mutableStateOf(null)
         }
         val listState = rememberLazyListState()
+        val snackbarHostState = remember {
+            SnackbarHostState()
+        }
 
         var itemCountBeforeComments = 0
         if (topic != null) itemCountBeforeComments++
@@ -219,6 +220,13 @@ class TopicDetailFragment : Fragment() {
                 }.awaitNotLoading()
                 listState.scrollToItem(itemCountBeforeComments + index)
                 scrollToCommentItemIndex = null
+            }
+        }
+
+        LaunchedEffect(shouldDisplayInvalidImageUrl) {
+            if (shouldDisplayInvalidImageUrl) {
+                snackbarHostState.showSnackbar("Invalid Image Url")
+                viewModel.clearInvalidImageUrlState()
             }
         }
 
@@ -305,6 +313,9 @@ class TopicDetailFragment : Fragment() {
                         } ?: this
                     })
             },
+            snackbarHost = {
+                SnackbarHost(hostState = snackbarHostState)
+            },
             modifier = Modifier.fillMaxSize()
         ) { paddingValues ->
             LazyColumn(
@@ -323,7 +334,7 @@ class TopicDetailFragment : Fragment() {
                             navigateToGroup = navigateToGroup,
                             navigateToReshareStatuses = navigateToReshareStatuses,
                             navigateWithDeepLinkUrl = navigateWithDeepLinkUrl,
-                            onShowToast = onShowToast
+                            displayInvalidImageUrl = viewModel::displayInvalidImageUrl
                         )
                     }
                 }
@@ -332,7 +343,7 @@ class TopicDetailFragment : Fragment() {
                     item(key = "TopicCommentSortBy", contentType = "TopicCommentSortBy") {
                         TopicCommentSortBy(
                             commentSortBy = commentSortBy,
-                            updateCommentSortBy = topicDetailViewModel::updateCommentsSortBy
+                            updateCommentSortBy = viewModel::updateCommentsSortBy
                         )
                     }
                 }
@@ -462,7 +473,7 @@ fun TopicDetailHeader(
     navigateToGroup: (groupId: String, tabId: String?) -> Unit,
     navigateToReshareStatuses: (topicId: String) -> Unit,
     navigateWithDeepLinkUrl: (url: String) -> Unit,
-    onShowToast: (text: String) -> Unit,
+    displayInvalidImageUrl: () -> Unit,
 ) {
     Column {
         AndroidViewBinding(
@@ -585,7 +596,7 @@ fun TopicDetailHeader(
                                                     topic.images!!.first { it.normal.url == imageUrl }.large.url
                                                 navigateToImage(largeImageUrl)
                                             } else {
-                                                onShowToast("Invalid Image Url")
+                                                displayInvalidImageUrl()
                                             }
                                         }
                                     }

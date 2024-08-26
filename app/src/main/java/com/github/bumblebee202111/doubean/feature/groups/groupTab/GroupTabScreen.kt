@@ -19,6 +19,7 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -53,20 +54,40 @@ import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.abbreviatedDateTimeString
 import com.github.bumblebee202111.doubean.util.getColorFromTheme
-import com.github.bumblebee202111.doubean.util.showSnackbar
-import com.google.android.material.snackbar.Snackbar
 
 @Composable
 fun GroupTabScreen(
-    groupTabViewModel: GroupTabViewModel,
+    viewModel: GroupTabViewModel,
     group: GroupDetail?,
     navigateToTopic: (topicId: String) -> Unit,
+    onShowSnackbar: suspend (message: String) -> Unit,
 ) {
 
-    val topicPagingItems = groupTabViewModel.topicsPagingData.collectAsLazyPagingItems()
-    val tabId = groupTabViewModel.tabId
+    val topicPagingItems = viewModel.topicsPagingData.collectAsLazyPagingItems()
+    val tabId = viewModel.tabId
+    val shouldDisplayFavoritedGroup = viewModel.shouldDisplayFavoritedTab
+    val shouldDisplayUnfavoritedTab = viewModel.shouldDisplayUnfavoritedTab
     val context = LocalContext.current
+
     var openAlertDialog by remember { mutableStateOf(false) }
+
+    val favoritedTabMessage = stringResource(id = R.string.favorited_tab)
+
+    LaunchedEffect(key1 = shouldDisplayFavoritedGroup) {
+        if (shouldDisplayFavoritedGroup) {
+            onShowSnackbar(favoritedTabMessage)
+            viewModel.clearFavoritedTabState()
+        }
+    }
+
+    val unfavoritedTabMessage = stringResource(id = R.string.unfavorited_tab)
+
+    LaunchedEffect(key1 = shouldDisplayUnfavoritedTab) {
+        if (shouldDisplayUnfavoritedTab) {
+            onShowSnackbar(unfavoritedTabMessage)
+            viewModel.clearUnfavoritedTabState()
+        }
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -104,7 +125,7 @@ fun GroupTabScreen(
                                         position: Int,
                                         id: Long,
                                     ) {
-                                        groupTabViewModel.setSortBy(getSortByAt(position))
+                                        viewModel.setSortBy(getSortByAt(position))
                                     }
 
                                     override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -128,18 +149,9 @@ fun GroupTabScreen(
                         favoriteButton.setOnClickListener {
                             group?.findTab(tabId)?.let { tab ->
                                 if (tab.isFavorite) {
-                                    groupTabViewModel.removeFavorite()
-                                    root.showSnackbar(
-                                        R.string.unfavorited_tab,
-                                        Snackbar.LENGTH_LONG
-                                    )
+                                    viewModel.removeFavorite()
                                 } else {
-                                    groupTabViewModel.addFavorite()
-                                    root.showSnackbar(
-                                        R.string.favorited_tab,
-                                        Snackbar.LENGTH_LONG,
-                                        R.string.edit_follow_preferences
-                                    ) { openAlertDialog = true }
+                                    viewModel.addFavorite()
                                 }
                             }
                         }
@@ -325,7 +337,7 @@ fun GroupTabScreen(
                     onDismissRequest = {
                         openAlertDialog = false
                     }) { enableNotificationsToSave, allowNotificationUpdatesToSave, sortRecommendedTopicsByToSave, numberOfTopicsLimitEachFeedFetchToSave ->
-                    groupTabViewModel.saveNotificationsPreference(
+                    viewModel.saveNotificationsPreference(
                         enableNotifications = enableNotificationsToSave,
                         allowNotificationUpdates = allowNotificationUpdatesToSave,
                         sortRecommendedTopicsBy = sortRecommendedTopicsByToSave,

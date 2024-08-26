@@ -32,6 +32,10 @@ class VerifyPhoneViewModel @Inject constructor(
     var isCodeValid by mutableStateOf(false)
         private set
 
+    var displaySuccess by mutableStateOf(false)
+
+    var errorMessage by mutableStateOf<String?>(null)
+
     fun requestSendCode() {
         viewModelScope.launch {
             requestCodeResult.value = authRepository.verifyPhoneRequestSendCode(userId)
@@ -40,14 +44,36 @@ class VerifyPhoneViewModel @Inject constructor(
 
     fun submitCode() {
         viewModelScope.launch {
-            verifyCodeResult.value = authRepository.verifyPhoneVerifyCode(userId, code)
+            val result = authRepository.verifyPhoneVerifyCode(userId, code)
+            verifyCodeResult.value = result
+            when (result) {
+                VerifyPhoneVerifyCodeResult.Success -> {
+                    displaySuccess = true
+                    errorMessage = null
 
+                }
+
+                is VerifyPhoneVerifyCodeResult.Error -> {
+                    displaySuccess = false
+                    errorMessage = result.message
+                }
+
+
+            }
         }
     }
 
     fun updateCodeInput(codeInput: String) {
         code = codeInput
         isCodeValid = codeInput.length == 4
+    }
+
+    fun clearDisplaySuccessState() {
+        displaySuccess = false
+    }
+
+    fun clearDisplayErrorState() {
+        errorMessage = null
     }
 
 }

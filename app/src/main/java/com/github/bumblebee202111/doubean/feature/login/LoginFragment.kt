@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,10 +16,13 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +36,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.fragment.compose.content
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
 import com.github.bumblebee202111.doubean.model.LoginResult
@@ -72,7 +75,7 @@ class LoginFragment : Fragment() {
                         }
 
                         is LoginResult.Error -> {
-                            showErrorMessage()
+                            
                         }
 
                         is LoginResult.ShouldVerifyPhone -> {
@@ -95,11 +98,7 @@ class LoginFragment : Fragment() {
                     when (it) {
                         true -> findNavController().popBackStack()
                         false -> {
-                            Toast.makeText(
-                                requireContext(),
-                                "Login failed. Check your input.",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            
                         }
 
                         null -> {
@@ -113,19 +112,33 @@ class LoginFragment : Fragment() {
 
     }
 
-    private fun showErrorMessage() {
-        Toast.makeText(requireContext(), "Login failed", Toast.LENGTH_SHORT).show()
-    }
-
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun LoginScreen(
         viewModel: LoginViewModel = this@LoginFragment.viewModel,
     ) {
         
+
+        val message by viewModel.errorMessage.collectAsStateWithLifecycle()
+
+        val snackbarHostState = remember {
+            SnackbarHostState()
+        }
+
+        LaunchedEffect(message) {
+            message?.let {
+                snackbarHostState.showSnackbar(it)
+                viewModel.clearMessage()
+            }
+        }
+
+
         Scaffold(
             topBar = {
                 TopAppBar(title = { Text(text = "Login") })
+            },
+            snackbarHost = {
+                SnackbarHost(hostState = snackbarHostState)
             }
         ) { innerPadding ->
             Column(
