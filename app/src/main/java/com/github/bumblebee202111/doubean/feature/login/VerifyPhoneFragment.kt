@@ -4,17 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -45,12 +51,10 @@ class VerifyPhoneFragment : Fragment() {
                 viewModel.verifyCodeResult.collect {
                     when (it) {
                         is VerifyPhoneVerifyCodeResult.Success -> {
-                            Toast.makeText(requireContext(), "SUCCESS", Toast.LENGTH_SHORT).show()
                             findNavController().popBackStack(R.id.nav_login, false)
                         }
 
                         is VerifyPhoneVerifyCodeResult.Error -> {
-                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                         }
 
                         null -> {
@@ -65,29 +69,58 @@ class VerifyPhoneFragment : Fragment() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun VerifyPhoneScreen(viewModel: VerifyPhoneViewModel = this@VerifyPhoneFragment.viewModel) {
-        Column {
-            TopAppBar(
-                {
-                    Text("123")
-                })
-            TextButton(onClick = viewModel::requestSendCode) {
-                Text("Send")
+        val displaySuccess = viewModel.displaySuccess
+        val errorMessage = viewModel.errorMessage
+
+        val snackbarHostState = remember {
+            SnackbarHostState()
+        }
+
+        LaunchedEffect(key1 = displaySuccess) {
+            if (displaySuccess) {
+                snackbarHostState.showSnackbar("SUCCESS")
+                viewModel.clearDisplaySuccessState()
+            }
+        }
+
+        LaunchedEffect(key1 = errorMessage) {
+            if (errorMessage != null) {
+                snackbarHostState.showSnackbar(errorMessage)
+                viewModel.clearDisplayErrorState()
+            }
+        }
+
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    { Text("Verify Phone") })
+            },
+            snackbarHost = {
+                SnackbarHost(hostState = snackbarHostState)
             }
 
-            val requestCodeResult by viewModel.requestCodeResult.collectAsState()
-            TextField(
-                value = viewModel.code,
-                onValueChange = { viewModel.updateCodeInput(it) },
-                enabled = requestCodeResult is VerifyPhoneRequestCodeResult.Success,
-                label = { Text("Enter received verification code") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-            )
-            TextButton(
-                onClick = viewModel::submitCode,
-                enabled = viewModel.isCodeValid
-            ) {
-                Text("Verify")
+        ) { paddingValues ->
+            Column(Modifier.padding(paddingValues)) {
+                TextButton(onClick = viewModel::requestSendCode) {
+                    Text("Send")
+                }
+
+                val requestCodeResult by viewModel.requestCodeResult.collectAsState()
+                TextField(
+                    value = viewModel.code,
+                    onValueChange = { viewModel.updateCodeInput(it) },
+                    enabled = requestCodeResult is VerifyPhoneRequestCodeResult.Success,
+                    label = { Text("Enter received verification code") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                )
+                TextButton(
+                    onClick = viewModel::submitCode,
+                    enabled = viewModel.isCodeValid
+                ) {
+                    Text("Verify")
+                }
             }
+
         }
     }
 

@@ -10,6 +10,7 @@ import com.github.bumblebee202111.doubean.model.LoginResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,14 +30,27 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
     val loginResult: StateFlow<LoginResult?> get() = _loginResult
 
     val sessionLoginResult = MutableStateFlow<Boolean?>(null)
+
+    private val _errorMessage = MutableStateFlow<String?>(null)
+
+    val errorMessage = _errorMessage.asStateFlow()
+
     fun loginWithDoubanSession(sessionPref: String) {
         sessionLoginResult.value = null
-        sessionLoginResult.value = authRepository.loginWithDoubanSessionPref(sessionPref)
+        val loginResult = authRepository.loginWithDoubanSessionPref(sessionPref)
+        sessionLoginResult.value = loginResult
+        if (!loginResult) {
+            _errorMessage.value = "Login failed. Check your input."
+        }
     }
 
     fun login() {
         viewModelScope.launch {
-            _loginResult.value = authRepository.login(phoneNumber, password)
+            val loginResult = authRepository.login(phoneNumber, password)
+            _loginResult.value = loginResult
+            if (loginResult is LoginResult.Error) {
+                _errorMessage.value = "Login failed"
+            }
         }
     }
 
@@ -52,6 +66,10 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
 
     private fun updateFormValid() {
         _isFormValid.value = phoneNumber.length == 11 && password.length >= 6
+    }
+
+    fun clearMessage() {
+        _errorMessage.value = null
     }
 
 }

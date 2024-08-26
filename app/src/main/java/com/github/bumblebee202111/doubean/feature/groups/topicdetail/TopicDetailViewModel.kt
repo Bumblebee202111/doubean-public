@@ -1,6 +1,9 @@
 package com.github.bumblebee202111.doubean.feature.groups.topicdetail
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.text.htmlEncode
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -46,10 +49,6 @@ class TopicDetailViewModel @Inject constructor(
     val commentsSortBy = _commentsSortBy.asStateFlow()
 
     val shouldShowSpinner = commentsData.first.map { it.isNotEmpty() }.stateInUi(false)
-
-    fun updateCommentsSortBy(commentSortBy: TopicCommentSortBy) {
-        _commentsSortBy.value = commentSortBy
-    }
 
     private val postResult = topicRepo.getTopic(topicId).flowOn(Dispatchers.IO).stateInUi()
 
@@ -182,9 +181,22 @@ class TopicDetailViewModel @Inject constructor(
                     """.trimIndent()
     }.stateInUi()
 
+    var shouldDisplayInvalidImageUrl by mutableStateOf(false)
+
+    fun updateCommentsSortBy(commentSortBy: TopicCommentSortBy) {
+        _commentsSortBy.value = commentSortBy
+    }
 
     private fun roundedPercentage(f: Float): Double {
         return f.toBigDecimal().setScale(1, RoundingMode.UP).toDouble()
+    }
+
+    fun displayInvalidImageUrl() {
+        shouldDisplayInvalidImageUrl = true
+    }
+
+    fun clearInvalidImageUrlState() {
+        shouldDisplayInvalidImageUrl = false
     }
 
 }
