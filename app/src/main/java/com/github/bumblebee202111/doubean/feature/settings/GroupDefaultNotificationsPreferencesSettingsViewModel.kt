@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PerFollowDefaultNotificationsPreferencesSettingsViewModel @Inject constructor(
+class GroupDefaultNotificationsPreferencesSettingsViewModel @Inject constructor(
     private val preferenceStorage: PreferenceStorage,
     @Dispatcher(
         AppDispatchers.IO

@@ -245,11 +245,12 @@ class TopicDetailFragment : Fragment() {
                     }
                 },
                     navigationIcon = {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                            Modifier.clickable(onClick = onBackClick)
-                        )
+                        IconButton(onClick = onBackClick) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = null,
+                            )
+                        }
                     },
                     actions = {
 

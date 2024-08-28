@@ -1,12 +1,8 @@
 package com.github.bumblebee202111.doubean.feature.settings
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -15,7 +11,6 @@ import androidx.preference.SwitchPreferenceCompat
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.common.repeatWithViewLifecycle
-import com.google.android.material.appbar.MaterialToolbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -23,9 +18,9 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class PerFollowDefaultNotificationsPreferencesSettingsFragment : PreferenceFragmentCompat() {
+class GroupDefaultNotificationsPreferencesSettingsContentFragment : PreferenceFragmentCompat() {
 
-    private val viewModel: PerFollowDefaultNotificationsPreferencesSettingsViewModel by viewModels()
+    private val viewModel: GroupDefaultNotificationsPreferencesSettingsViewModel by viewModels()
 
     private var postNotificationsSwitchPreference: SwitchPreferenceCompat? = null
     private var allowDuplicateNotificationsSwitchPreference: SwitchPreferenceCompat? = null
@@ -44,18 +39,6 @@ class PerFollowDefaultNotificationsPreferencesSettingsFragment : PreferenceFragm
             preferenceManager.findPreference("feed_request_topic_count_limit")
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        val linearLayout =
-            super.onCreateView(inflater, container, savedInstanceState) as LinearLayout
-        linearLayout.fitsSystemWindows = true
-        addToolbar(linearLayout)
-
-        return linearLayout
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -129,15 +112,4 @@ class PerFollowDefaultNotificationsPreferencesSettingsFragment : PreferenceFragm
             else -> throw IndexOutOfBoundsException()
         }
 
-    private fun addToolbar(linearLayout: LinearLayout) {
-        
-        val toolbar = LayoutInflater.from(context)
-            .inflate(
-                R.layout.toolbar_per_follow_default_notifications_settings,
-                linearLayout,
-                false
-            ) as MaterialToolbar
-        toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
-        linearLayout.addView(toolbar, 0)
-    }
 }

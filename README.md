@@ -174,6 +174,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.6.3\)
 
+- Remove `+` in app version text (which is a mistake)
 - Reuse item logic of search result groups / groups of the day
 
 #### To-dos for next release \(0.6.4)
@@ -204,7 +205,10 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Save topics
   * Pin my groups
   * Add corresponding item actions
-* Group Detail: Collapse on entrance for the subscribed/favorited group/tab
+* Group Detail
+  * Compose collapsing toolbar when more convenient
+  * Collapse on entrance for the subscribed/favorited group/tab
+
 * Allow expanding group description w/ SpannableString
 * Bring back basic support for dark mode & landscape experience
 * Topics sort by 
