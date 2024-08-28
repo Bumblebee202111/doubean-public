@@ -1,26 +1,21 @@
-package com.github.bumblebee202111.doubean.feature.groups.webView
+package com.github.bumblebee202111.doubean.feature.settings
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.compose.content
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.github.bumblebee202111.doubean.ui.theme.AppTheme
 
-class WebViewFragment : Fragment() {
-    private val args: WebViewFragmentArgs by navArgs()
-
-    @SuppressLint("SetJavaScriptEnabled")
+class GroupDefaultNotificationsPreferencesSettingsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ) = content {
         AppTheme {
-            WebViewScreen(url = args.url) {
+            GroupDefaultNotificationsPreferencesSettingsScreen {
                 findNavController().navigateUp()
             }
         }

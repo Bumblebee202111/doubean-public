@@ -68,7 +68,8 @@ fun NotificationsScreen(
         TopAppBar(title = {}, actions = {
             IconButton(onClick = openSettings) {
                 Icon(
-                    Icons.Filled.Settings, contentDescription = null
+                    imageVector = Icons.Filled.Settings,
+                    contentDescription = null
                 )
             }
         })
