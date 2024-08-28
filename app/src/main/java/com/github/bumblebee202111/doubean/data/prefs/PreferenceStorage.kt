@@ -65,7 +65,7 @@ class PreferenceStorage(
     }
 
     val preferToReceiveNotifications = dataStore.data.map {
-        it[PREF_RECEIVE_NOTIFICATIONS] ?: true
+        it[PREF_RECEIVE_NOTIFICATIONS] ?: false
     }
 
     suspend fun setStartAppWithGroups(startAppWithGroups: Boolean) {
