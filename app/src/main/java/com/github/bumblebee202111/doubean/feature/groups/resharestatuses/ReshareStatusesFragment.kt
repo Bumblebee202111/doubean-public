@@ -20,12 +20,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.compose.content
@@ -38,6 +36,7 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.common.TopicDetailActivityItemUserProfileImage
 import com.github.bumblebee202111.doubean.feature.home.UserNameText
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
+import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.theme.AppTheme
 import com.github.bumblebee202111.doubean.util.intermediateDateTimeString
 import dagger.hilt.android.AndroidEntryPoint
@@ -68,8 +67,8 @@ fun ReshareStatusesScreen(viewModel: ReshareStatusesViewModel, onBackClick: () -
         viewModel.reshareStatusesPagingData.collectAsLazyPagingItems()
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(id = R.string.title_reshare_statuses)) },
+            DoubeanTopAppBar(
+                titleResId = R.string.title_reshare_statuses,
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,

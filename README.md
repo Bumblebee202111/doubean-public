@@ -186,7 +186,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Gradual migrations: <span id="migrations"></span>
   * From MD2 / custom design to MD3
   * From View and Data Binding to Jetpack Compose
-    * Exceptions: WebView/RatingBar
+    * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout
   * From Navigation Fragment to Navigation Compose
     * From NavHostFragment to ComposableNavHostFragment
 * navigation-fragment-compose
@@ -196,8 +196,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Home - Following
   * More card types
   * Pagination
-* TopAppBar and Edge-to-Edge
-  * Reduce TopAppBar height to 56 dp
+* Edge-to-Edge
 * Show error messages
 * Bring back load state visualization which was removed for simplicity during various types of migrations
   * Paging 3 refresh, loading status ...
