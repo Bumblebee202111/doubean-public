@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
@@ -132,9 +131,10 @@ fun GroupDetailScreen(
         }
     }
 
-    Scaffold(snackbarHost = {
-        SnackbarHost(hostState = snackbarHostState)
-    }) { paddingValues ->
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        }) { paddingValues ->
 
         GroupDetailCoordinator(
             modifier = Modifier.padding(paddingValues),
@@ -317,7 +317,6 @@ fun GroupNotificationsPreferenceDialog(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GroupDetailCoordinator(
     modifier: Modifier = Modifier,
@@ -345,7 +344,7 @@ fun GroupDetailCoordinator(
             pageCount = { taggedTabs.size + 1 }
         )
         AndroidViewBinding(factory = LayoutGroupDetailBinding::inflate,
-            modifier = Modifier,
+            modifier = modifier,
             onReset = {}) {
             val context = root.context
 
