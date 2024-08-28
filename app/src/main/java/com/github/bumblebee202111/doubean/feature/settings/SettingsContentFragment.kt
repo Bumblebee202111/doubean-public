@@ -36,7 +36,7 @@ class SettingsContentFragment : PreferenceFragmentCompat() {
             preferenceManager.findPreference("notifications")
         appVersionPreference = preferenceManager.findPreference("app_version")
         appVersionPreference?.summary =
-            "${BuildConfig.VERSION_NAME}+(${BuildConfig.VERSION_CODE})"
+            "${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
