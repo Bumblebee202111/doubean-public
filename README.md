@@ -174,10 +174,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.6.3\)
 
-- Remove `+` in app version text (which is a mistake)
-- Reuse item logic of search result groups / groups of the day
-
 #### To-dos for next release \(0.6.4)
+
+- Reuse item logic of search result groups / groups of the day
 
 #### Future plans
 
