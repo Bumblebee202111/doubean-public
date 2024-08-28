@@ -34,7 +34,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,6 +63,7 @@ import com.github.bumblebee202111.doubean.feature.notifications.topicDeepLinkUri
 import com.github.bumblebee202111.doubean.model.GroupFavoriteItem
 import com.github.bumblebee202111.doubean.model.GroupItem
 import com.github.bumblebee202111.doubean.model.TopicItemWithGroup
+import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
@@ -114,7 +114,7 @@ fun GroupsHomeScreen(
     val recentTopicsFeed by viewModel.recentTopicsFeed.collectAsStateWithLifecycle()
     Scaffold(
         topBar = {
-            TopAppBar(
+            DoubeanTopAppBar(
                 title = {},
                 actions = {
                     IconButton(onClick = openSearch) {

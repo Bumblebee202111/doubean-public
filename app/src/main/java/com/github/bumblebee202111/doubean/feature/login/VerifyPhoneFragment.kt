@@ -14,7 +14,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -30,6 +29,7 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.VerifyPhoneRequestCodeResult
 import com.github.bumblebee202111.doubean.model.VerifyPhoneVerifyCodeResult
 import com.github.bumblebee202111.doubean.ui.common.repeatWithViewLifecycle
+import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -92,8 +92,7 @@ class VerifyPhoneFragment : Fragment() {
 
         Scaffold(
             topBar = {
-                TopAppBar(
-                    { Text("Verify Phone") })
+                DoubeanTopAppBar(titleText = "Verify Phone")
             },
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState)

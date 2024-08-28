@@ -46,7 +46,6 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -95,6 +94,7 @@ import com.github.bumblebee202111.doubean.ui.common.DoubeanWebView
 import com.github.bumblebee202111.doubean.ui.common.TopicWebViewClient
 import com.github.bumblebee202111.doubean.ui.common.UserProfileImage
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
+import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.ListItemImages
 import com.github.bumblebee202111.doubean.ui.theme.AppTheme
 import com.github.bumblebee202111.doubean.util.OpenInUtil
@@ -235,7 +235,8 @@ class TopicDetailFragment : Fragment() {
                 var appBarMenuExpanded by remember { mutableStateOf(false) }
                 var viewInMenuExpanded by remember { mutableStateOf(false) }
                 val groupColor = groupColorInt?.let(::Color)
-                TopAppBar(title = {
+                DoubeanTopAppBar(
+                    title = {
                     topic?.title?.let {
                         Text(
                             text = it,

@@ -8,8 +8,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import com.github.bumblebee202111.doubean.databinding.ViewWebViewContentBinding
 import com.github.bumblebee202111.doubean.ui.common.DoubanWebViewClient
+import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.util.DOUBAN_WEB_CSS_FILENAME
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,13 +29,9 @@ fun WebViewScreen(url: String, navigateUp: () -> Unit) {
     }
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    webpageTitle?.let {
-                        Text(it)
-                    }
-
-                },
+            DoubeanTopAppBar(
+                titleText =
+                webpageTitle,
                 navigationIcon = {
                     IconButton(onClick = navigateUp) {
                         Icon(
