@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.github.bumblebee202111.doubean.coroutines.AppDispatchers
 import com.github.bumblebee202111.doubean.coroutines.Dispatcher
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
@@ -35,8 +36,8 @@ class GroupDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     @Dispatcher(AppDispatchers.IO) ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
-    val groupId = GroupDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).groupId
-    val initialTabId = GroupDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).defaultTabId
+    val groupId = savedStateHandle.toRoute<GroupDetailRoute>().groupId
+    val initialTabId = savedStateHandle.toRoute<GroupDetailRoute>().defaultTabId
 
     private val groupResult = groupRepository.getGroup(groupId).flowOn(ioDispatcher).stateInUi()
 

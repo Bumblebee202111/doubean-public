@@ -24,6 +24,7 @@ class SettingsContentFragment : PreferenceFragmentCompat() {
     private var startAppWithGroupsPreference: SwitchPreferenceCompat? = null
     private var notificationsSwitchPreference: SwitchPreferenceCompat? = null
     private var appVersionPreference: Preference? = null
+    lateinit var onGroupDefaultNotificationsPreferencesSettingsClick: () -> Unit
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)

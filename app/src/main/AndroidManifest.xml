@@ -28,7 +28,6 @@
             android:name=".MainActivity"
             android:theme="@style/Theme.Doubean.NoActionBar"
             android:exported="true">
-            <nav-graph android:value="@navigation/mobile_navigation" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

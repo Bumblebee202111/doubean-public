@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.groups.groupSearch
+package com.github.bumblebee202111.doubean.feature.groups.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,7 +19,7 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class GroupSearchViewModel @Inject constructor(private val groupRepository: GroupRepository) :
+class GroupsSearchViewModel @Inject constructor(private val groupRepository: GroupRepository) :
     ViewModel() {
     private val query = MutableStateFlow<String?>(null)
 

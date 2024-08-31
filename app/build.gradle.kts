@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.navigation.safeargs)
     alias(libs.plugins.room)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kapt)
@@ -99,9 +98,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.savedstate)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.paging)
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.preference.ktx)
@@ -109,7 +106,6 @@ dependencies {
     implementation(libs.androidx.room.paging)
     implementation(libs.androidx.lifecycle.runtime.compose)
     ksp(libs.androidx.room.compiler)
-    implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.webkit)
     implementation(libs.androidx.work.runtime.ktx)
 

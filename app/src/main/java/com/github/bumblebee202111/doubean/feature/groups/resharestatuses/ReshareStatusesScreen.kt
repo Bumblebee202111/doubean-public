@@ -1,8 +1,5 @@
 package com.github.bumblebee202111.doubean.feature.groups.resharestatuses
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,53 +15,44 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
-import androidx.fragment.compose.content
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.fragment.findNavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.common.TopicDetailActivityItemUserProfileImage
 import com.github.bumblebee202111.doubean.feature.home.UserNameText
+import com.github.bumblebee202111.doubean.model.GroupTopicCommentReshareItem
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
-import com.github.bumblebee202111.doubean.ui.theme.AppTheme
 import com.github.bumblebee202111.doubean.util.intermediateDateTimeString
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
-class ReshareStatusesFragment : Fragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ) = content {
-        val viewModel: ReshareStatusesViewModel = viewModel()
-        AppTheme {
-            Surface {
-                ReshareStatusesScreen(viewModel = viewModel) {
-                    findNavController().popBackStack()
-                }
-            }
-
-        }
-    }
+@Composable
+fun ReshareStatusesScreen(
+    onBackClick: () -> Unit,
+    viewModel: ReshareStatusesViewModel = hiltViewModel(),
+) {
+    val reshareStatusLazyPagingItems =
+        viewModel.reshareStatusesPagingData.collectAsLazyPagingItems()
+    ReshareStatusesScreen(
+        reshareStatusLazyPagingItems = reshareStatusLazyPagingItems,
+        onBackClick = onBackClick
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReshareStatusesScreen(viewModel: ReshareStatusesViewModel, onBackClick: () -> Unit) {
-    val reshareStatusLazyPagingItems =
-        viewModel.reshareStatusesPagingData.collectAsLazyPagingItems()
+fun ReshareStatusesScreen(
+    reshareStatusLazyPagingItems: LazyPagingItems<GroupTopicCommentReshareItem>,
+    onBackClick: () -> Unit,
+) {
     Scaffold(
         topBar = {
             DoubeanTopAppBar(

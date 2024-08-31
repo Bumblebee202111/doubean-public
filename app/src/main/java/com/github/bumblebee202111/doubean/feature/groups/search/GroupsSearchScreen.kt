@@ -1,8 +1,5 @@
-package com.github.bumblebee202111.doubean.feature.groups.groupSearch
+package com.github.bumblebee202111.doubean.feature.groups.search
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -36,11 +33,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
-import androidx.fragment.app.Fragment
-import androidx.fragment.compose.content
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.fragment.findNavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
@@ -50,31 +44,33 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.ListItemGroupBinding
 import com.github.bumblebee202111.doubean.feature.groups.common.groupsOfTheDay
 import com.github.bumblebee202111.doubean.model.GroupSearchResultGroupItem
-import com.github.bumblebee202111.doubean.ui.theme.AppTheme
-import dagger.hilt.android.AndroidEntryPoint
-
-@AndroidEntryPoint
-class GroupSearchFragment : Fragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ) = content {
-        AppTheme {
-            GroupSearchScreen(viewModel = viewModel()) { group: String ->
-                val direction =
-                    GroupSearchFragmentDirections.actionGroupSearchToGroupDetail(group)
-                findNavController().navigate(direction)
-            }
-        }
-    }
-
-}
+import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
 
 @Composable
-fun GroupSearchScreen(viewModel: GroupSearchViewModel, navigateToGroup: (String) -> Unit) {
+fun GroupsSearchRoute(
+    onGroupClick: (String) -> Unit,
+    viewModel: GroupsSearchViewModel = hiltViewModel(),
+) {
     val groupPagingItems = viewModel.results.collectAsLazyPagingItems()
     val groupsOfTheDay by viewModel.groupsOfTheDay.collectAsStateWithLifecycle()
     val shouldShowGroupsOfTheDay by viewModel.shouldShowGroupsOfTheDay.collectAsStateWithLifecycle()
+    GroupsSearchScreen(
+        groupPagingItems = groupPagingItems,
+        groupsOfTheDay = groupsOfTheDay,
+        shouldShowGroupsOfTheDay = shouldShowGroupsOfTheDay,
+        setQuery = viewModel::setQuery,
+        onGroupClick = onGroupClick
+    )
+}
+
+@Composable
+fun GroupsSearchScreen(
+    groupPagingItems: LazyPagingItems<GroupSearchResultGroupItem>,
+    groupsOfTheDay: List<RecommendedGroupItem>?,
+    shouldShowGroupsOfTheDay: Boolean,
+    setQuery: (originalInput: String) -> Unit,
+    onGroupClick: (groupId: String) -> Unit,
+) {
     Column {
         Spacer(
             Modifier.windowInsetsTopHeight(
@@ -86,20 +82,20 @@ fun GroupSearchScreen(viewModel: GroupSearchViewModel, navigateToGroup: (String)
                 .padding(top = 8.dp, start = 8.dp, end = 8.dp)
                 .fillMaxWidth()
         ) { query ->
-            viewModel.setQuery(query)
+            setQuery(query)
         }
 
         if (shouldShowGroupsOfTheDay) {
             groupsOfTheDay?.let {
                 LazyColumn {
-                    groupsOfTheDay(it, navigateToGroup)
+                    groupsOfTheDay(it, onGroupClick)
                 }
             }
         } else {
             GroupList(
                 modifier = Modifier.padding(vertical = 8.dp),
-                groupPagingItems = groupPagingItems, navigateToGroup =
-                navigateToGroup
+                groupPagingItems = groupPagingItems,
+                onGroupClick = onGroupClick
             )
         }
     }
@@ -135,7 +131,7 @@ fun SearchTextField(
 fun GroupList(
     modifier: Modifier,
     groupPagingItems: LazyPagingItems<GroupSearchResultGroupItem>,
-    navigateToGroup: (String) -> Unit,
+    onGroupClick: (String) -> Unit,
 ) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Adaptive(400.dp),
@@ -157,7 +153,7 @@ fun GroupList(
                     this.group = group
                     setClickListener {
                         if (group != null) {
-                            navigateToGroup(group.id)
+                            onGroupClick(group.id)
                         }
                     }
                     avatar.setContent {

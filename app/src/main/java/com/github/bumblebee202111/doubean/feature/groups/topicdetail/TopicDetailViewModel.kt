@@ -8,6 +8,7 @@ import androidx.core.text.htmlEncode
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.repository.GroupTopicRepo
 import com.github.bumblebee202111.doubean.data.repository.PollRepository
@@ -35,7 +36,7 @@ class TopicDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    val topicId = TopicDetailFragmentArgs.fromSavedStateHandle(savedStateHandle).postId
+    val topicId = savedStateHandle.toRoute<TopicDetailRoute>().topicId
 
     private val commentsData = topicRepo.getTopicCommentsData(topicId)
 

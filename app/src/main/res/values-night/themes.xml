@@ -7,6 +7,5 @@
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorOnSurface">@color/doubean_white</item>
         <item name="colorOnBackground">@color/doubean_white</item>
-        <item name="bottomNavigationStyle">@style/Widget.Doubean.BottomNavigationView</item>
     </style>
 </resources>
