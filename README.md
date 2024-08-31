@@ -176,9 +176,9 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.6.3\)
+#### To-dos for current release \(0.6.4\)
 
-#### To-dos for next release \(0.6.4)
+#### To-dos for next release \(0..)
 
 - Reuse item logic of search result groups / groups of the day
 
