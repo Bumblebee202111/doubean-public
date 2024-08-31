@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.model.VerifyPhoneRequestCodeResult
 import com.github.bumblebee202111.doubean.model.VerifyPhoneVerifyCodeResult
@@ -20,7 +21,7 @@ class VerifyPhoneViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val userId = VerifyPhoneFragmentArgs.fromSavedStateHandle(savedStateHandle).userId
+    private val userId = savedStateHandle.toRoute<VerifyPhoneRoute>().userId
     var requestCodeResult: MutableStateFlow<VerifyPhoneRequestCodeResult?> = MutableStateFlow(null)
         private set
 
@@ -52,13 +53,10 @@ class VerifyPhoneViewModel @Inject constructor(
                     errorMessage = null
 
                 }
-
                 is VerifyPhoneVerifyCodeResult.Error -> {
                     displaySuccess = false
                     errorMessage = result.message
                 }
-
-
             }
         }
     }

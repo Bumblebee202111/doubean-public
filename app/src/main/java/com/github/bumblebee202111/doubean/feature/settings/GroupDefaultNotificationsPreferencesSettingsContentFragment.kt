@@ -39,7 +39,6 @@ class GroupDefaultNotificationsPreferencesSettingsContentFragment : PreferenceFr
             preferenceManager.findPreference("feed_request_topic_count_limit")
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

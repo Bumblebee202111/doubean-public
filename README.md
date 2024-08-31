@@ -4,7 +4,7 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
 
-Note: I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be missing. Only features demanded by me and other users are possible to be added. This project is also going to be used as my playground for trending technologies such as Jetpack Compose. This brings [tons of migration tasks](#migrations), and also means that old and new libraries are currently mixed.
+Note: I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be missing. Only features demanded by me and other users are possible to be added. This project is also going to be used as my playground for trending technologies such as Jetpack Compose. This brings tons of migration tasks ([remaining ones](#migrations)), and also means that old and new libraries are currently mixed.
 
 *The development of this app is slowed down again so that I can spend more time on the exploration of the backend and frontend areas.*
 
@@ -174,6 +174,10 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.6.3\)
 
+"Sync is expected to be done ..."
+
+"Too hard to implement"
+
 #### To-dos for next release \(0.6.4)
 
 - Reuse item logic of search result groups / groups of the day
@@ -186,9 +190,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From MD2 / custom design to MD3
   * From View and Data Binding to Jetpack Compose
     * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout
-  * From Navigation Fragment to Navigation Compose
-    * From NavHostFragment to ComposableNavHostFragment
-* navigation-fragment-compose
 * Groups - Home
   * Support pagination?
   * Add favorite tabs for topic list area
@@ -206,7 +207,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Group Detail
   * Compose collapsing toolbar when more convenient
   * Collapse on entrance for the subscribed/favorited group/tab
-
 * Allow expanding group description w/ SpannableString
 * Bring back basic support for dark mode & landscape experience
 * Topics sort by 

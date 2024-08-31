@@ -1,8 +1,5 @@
 package com.github.bumblebee202111.doubean.feature.notifications
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -18,55 +15,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.fragment.app.Fragment
-import androidx.fragment.compose.content
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavDeepLinkRequest
-import androidx.navigation.fragment.findNavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.common.TopicItemWithGroupAndroidView
+import com.github.bumblebee202111.doubean.model.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
-import com.github.bumblebee202111.doubean.ui.theme.AppTheme
 import com.github.bumblebee202111.doubean.util.DEEP_LINK_SCHEME_AND_HOST
 import com.github.bumblebee202111.doubean.util.GROUP_PATH
 import com.github.bumblebee202111.doubean.util.TOPIC_PATH
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
-class NotificationsFragment : Fragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?,
-    ) = content {
-        AppTheme {
-            NotificationsScreen(
-                viewModel = viewModel(),
-                navigateToTopic = { topicId ->
-                    val request =
-                        NavDeepLinkRequest.Builder.fromUri(topicId.topicDeepLinkUri()).build()
-                    findNavController().navigate(request)
-                },
-                openSettings = {
-                    findNavController().navigate(R.id.nav_settings)
-                }
-            )
-        }
-    }
+@Composable
+fun NotificationsScreen(
+    onTopicClick: (topicId: String) -> Unit,
+    onSettingsClick: () -> Unit,
+    viewModel: NotificationsViewModel = hiltViewModel(),
+) {
+    val notificationPagingItems = viewModel.notifications.collectAsLazyPagingItems()
+    NotificationsScreen(
+        notificationPagingItems = notificationPagingItems,
+        onTopicClick = onTopicClick,
+        onSettingsClick = onSettingsClick
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationsScreen(
-    viewModel: NotificationsViewModel,
-    navigateToTopic: (topicId: String) -> Unit,
-    openSettings: () -> Unit,
+    notificationPagingItems: LazyPagingItems<TopicItemWithGroup>,
+    onTopicClick: (topicId: String) -> Unit,
+    onSettingsClick: () -> Unit,
 ) {
     Scaffold(topBar = {
         DoubeanTopAppBar(title = {}, actions = {
-            IconButton(onClick = openSettings) {
+            IconButton(onClick = onSettingsClick) {
                 Icon(
                     imageVector = Icons.Filled.Settings,
                     contentDescription = null
@@ -74,8 +59,6 @@ fun NotificationsScreen(
             }
         })
     }) { innerPadding ->
-        val notificationPagingItems = viewModel.notifications.collectAsLazyPagingItems()
-
         LazyColumn(
             contentPadding = innerPadding,
         ) {
@@ -90,7 +73,7 @@ fun NotificationsScreen(
                 notificationPagingItems.itemKey { it.id },
                 notificationPagingItems.itemContentType { "notification" }) { index ->
                 TopicItemWithGroupAndroidView(
-                    notificationPagingItems[index], navigateToTopic
+                    notificationPagingItems[index], onTopicClick
                 )
             }
         }

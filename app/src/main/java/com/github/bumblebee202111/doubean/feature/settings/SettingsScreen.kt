@@ -16,14 +16,15 @@ import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    navigateUp: () -> Unit,
+    onBackClick: () -> Unit,
+    onGroupDefaultNotificationsPreferencesSettingsClick: () -> Unit,
 ) {
     Scaffold(
         topBar = {
             DoubeanTopAppBar(
                 titleResId = R.string.settings,
                 navigationIcon = {
-                    IconButton(onClick = navigateUp) {
+                    IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null,
@@ -32,6 +33,9 @@ fun SettingsScreen(
                 })
         }
     ) {
-        AndroidFragment<SettingsContentFragment>(modifier = Modifier.padding(it))
+        AndroidFragment<SettingsContentFragment>(modifier = Modifier.padding(it)) { fragment ->
+            fragment.onGroupDefaultNotificationsPreferencesSettingsClick =
+                onGroupDefaultNotificationsPreferencesSettingsClick
+        }
     }
 }

@@ -24,7 +24,7 @@ import com.github.bumblebee202111.doubean.util.abbreviatedDateTimeString
 @Composable
 fun TopicItemWithGroupAndroidView(
     topicItemWithGroup: TopicItemWithGroup?,
-    navigateToTopic: (id: String) -> Unit,
+    onTopicClick: (id: String) -> Unit,
 ) {
     AndroidViewBinding(
         factory = ListItemPostNotificationBinding::inflate,
@@ -58,7 +58,7 @@ fun TopicItemWithGroupAndroidView(
         }
 
         card.setOnClickListener {
-            topicItemWithGroup?.let { navigateToTopic(it.id) }
+            topicItemWithGroup?.let { onTopicClick(it.id) }
         }
 
         commentIcon.setContent {

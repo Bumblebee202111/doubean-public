@@ -59,7 +59,7 @@ import com.github.bumblebee202111.doubean.util.getColorFromTheme
 fun GroupTabScreen(
     viewModel: GroupTabViewModel,
     group: GroupDetail?,
-    navigateToTopic: (topicId: String) -> Unit,
+    onTopicClick: (topicId: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
 ) {
 
@@ -257,7 +257,7 @@ fun GroupTabScreen(
                 }
 
                 clickListener =
-                    View.OnClickListener { topic?.let { navigateToTopic(it.id) } }
+                    View.OnClickListener { topic?.let { onTopicClick(it.id) } }
                 showPopup = View.OnClickListener { v ->
                     val popupMenu = PopupMenu(v.context, more)
                     popupMenu.inflate(R.menu.menu_post_item)

@@ -20,9 +20,14 @@ import com.github.bumblebee202111.doubean.ui.common.DoubanWebViewClient
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.util.DOUBAN_WEB_CSS_FILENAME
 
+@Composable
+fun WebViewRoute(url: String, onBackClick: () -> Unit) {
+    WebViewScreen(url = url, onBackClick = onBackClick)
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WebViewScreen(url: String, navigateUp: () -> Unit) {
+fun WebViewScreen(url: String, onBackClick: () -> Unit) {
 
     var webpageTitle by remember {
         mutableStateOf<String?>(null)
@@ -33,7 +38,7 @@ fun WebViewScreen(url: String, navigateUp: () -> Unit) {
                 titleText =
                 webpageTitle,
                 navigationIcon = {
-                    IconButton(onClick = navigateUp) {
+                    IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null,

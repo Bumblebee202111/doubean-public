@@ -1,8 +1,5 @@
 package com.github.bumblebee202111.doubean.feature.groups.home
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -49,75 +46,61 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
-import androidx.fragment.compose.content
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavDeepLinkRequest
-import androidx.navigation.fragment.findNavController
 import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.common.TopicItemWithGroupAndroidView
 import com.github.bumblebee202111.doubean.feature.groups.common.groupsOfTheDay
-import com.github.bumblebee202111.doubean.feature.notifications.topicDeepLinkUri
 import com.github.bumblebee202111.doubean.model.GroupFavoriteItem
 import com.github.bumblebee202111.doubean.model.GroupItem
+import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
 import com.github.bumblebee202111.doubean.model.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
-import com.github.bumblebee202111.doubean.ui.theme.AppTheme
-import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 
-@AndroidEntryPoint
-
-class GroupsHomeFragment : Fragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?,
-    ) = content {
-        AppTheme {
-            GroupsHomeScreen(
-                viewModel = viewModel(),
-                openSearch = { findNavController().navigate(R.id.nav_group_search) },
-                openSettings = { findNavController().navigate(R.id.nav_settings) },
-                openGroup = { groupId, tabId ->
-                    findNavController().navigate(
-                        GroupsHomeFragmentDirections.actionGroupsToGroupDetail(
-                            groupId
-                        ).setDefaultTabId(tabId)
-                    )
-                },
-                navigateToTopic = { topicId: String ->
-                    val request =
-                        NavDeepLinkRequest.Builder.fromUri(topicId.topicDeepLinkUri()).build()
-                    findNavController().navigate(request)
-                }
-            )
-
-        }
-    }
-}
-
-
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun GroupsHomeScreen(
-    viewModel: GroupsHomeViewModel,
-    openSearch: () -> Unit,
-    openSettings: () -> Unit,
-    openGroup: (groupId: String, tabId: String?) -> Unit,
-    navigateToTopic: (topicId: String) -> Unit,
+    viewModel: GroupsHomeViewModel = hiltViewModel(),
+    onSearchClick: () -> Unit,
+    onSettingsClick: () -> Unit,
+    onGroupClick: (groupId: String, tabId: String?) -> Unit,
+    onTopicClick: (topicId: String) -> Unit,
 ) {
     val joinedGroups by viewModel.joinedGroups.collectAsStateWithLifecycle()
     val favorites by viewModel.favorites.collectAsStateWithLifecycle()
     val groupsOfTheDay by viewModel.groupsOfTheDay.collectAsStateWithLifecycle()
     val recentTopicsFeed by viewModel.recentTopicsFeed.collectAsStateWithLifecycle()
+    GroupsHomeScreen(
+        joinedGroups = joinedGroups,
+        favorites = favorites,
+        groupsOfTheDay = groupsOfTheDay,
+        recentTopicsFeed = recentTopicsFeed,
+        onSearchClick = onSearchClick,
+        onSettingsClick = onSettingsClick,
+        onGroupClick = onGroupClick,
+        onTopicClick = onTopicClick,
+    )
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun GroupsHomeScreen(
+    joinedGroups: List<GroupItem>?,
+    favorites: List<GroupFavoriteItem>?,
+    groupsOfTheDay: List<RecommendedGroupItem>?,
+    recentTopicsFeed: List<TopicItemWithGroup>?,
+    onSearchClick: () -> Unit,
+    onSettingsClick: () -> Unit,
+    onGroupClick: (groupId: String, tabId: String?) -> Unit,
+    onTopicClick: (topicId: String) -> Unit,
+) {
     Scaffold(
         topBar = {
             DoubeanTopAppBar(
                 title = {},
                 actions = {
-                    IconButton(onClick = openSearch) {
+                    IconButton(onClick = onSearchClick) {
                         Icon(
                             Icons.Filled.Search,
                             contentDescription = null
@@ -133,7 +116,7 @@ fun GroupsHomeScreen(
                     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                         DropdownMenuItem(
                             text = { Text(stringResource(id = R.string.settings)) },
-                            onClick = openSettings
+                            onClick = onSettingsClick
                         )
                     }
                 }
@@ -142,16 +125,16 @@ fun GroupsHomeScreen(
     ) { innerPadding ->
         LazyColumn(contentPadding = innerPadding) {
             joinedGroups?.let { groups ->
-                myGroups(groups) { openGroup(it, null) }
+                myGroups(groups) { onGroupClick(it, null) }
             }
             favorites?.takeIf(List<GroupFavoriteItem>::isNotEmpty)?.let { groups ->
-                favorites(groups, openGroup)
+                favorites(groups, onGroupClick)
             }
             groupsOfTheDay?.let { groups ->
-                groupsOfTheDay(groups) { openGroup(it, null) }
+                groupsOfTheDay(groups) { onGroupClick(it, null) }
             }
             recentTopicsFeed?.let { topic ->
-                myTopics(topic, navigateToTopic)
+                myTopics(topic, onTopicClick)
             }
         }
     }
@@ -303,10 +286,9 @@ private fun LazyListScope.favorites(
     }
 }
 
-
 private fun LazyListScope.myTopics(
     topics: List<TopicItemWithGroup>,
-    navigateToTopic: (topicId: String) -> Unit,
+    onTopicClick: (topicId: String) -> Unit,
 ) {
     item(contentType = "myTopicsTitle") {
         Text(
@@ -324,11 +306,9 @@ private fun LazyListScope.myTopics(
         if (index != 0) {
             HorizontalDivider()
         }
-        TopicItemWithGroupAndroidView(topicItemWithGroup = item, navigateToTopic)
+        TopicItemWithGroupAndroidView(topicItemWithGroup = item, onTopicClick)
     }
-
 }
-
 
 @Composable
 @Preview(showBackground = true)

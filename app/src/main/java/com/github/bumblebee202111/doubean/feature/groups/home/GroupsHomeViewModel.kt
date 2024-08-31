@@ -35,7 +35,6 @@ class GroupsHomeViewModel @Inject constructor(
         }
     }.stateInUi()
 
-
     val favorites =
         userGroupRepository.getAllGroupFavorites().flowOn(Dispatchers.IO).stateInUi()
 

@@ -1,10 +1,7 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupDetail
 
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.compose.foundation.layout.padding
@@ -20,8 +17,6 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -45,12 +40,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
-import androidx.fragment.app.Fragment
-import androidx.fragment.compose.content
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.fragment.findNavController
 import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.DialogContentGroupNotificationsPreferenceBinding
@@ -63,64 +54,81 @@ import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.GroupMemberRole
 import com.github.bumblebee202111.doubean.model.GroupTab
 import com.github.bumblebee202111.doubean.model.TopicSortBy
-import com.github.bumblebee202111.doubean.ui.theme.AppTheme
 import com.github.bumblebee202111.doubean.util.OpenInUtil
 import com.github.bumblebee202111.doubean.util.ShareUtil
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-/**
- * A fragment representing a single Group detail screen.
- */
-@AndroidEntryPoint
-class GroupDetailFragment : Fragment() {
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ) = content {
-        AppTheme {
-            GroupDetailScreen(
-                viewModel = viewModel(),
-                onBackClick = {
-                    findNavController().popBackStack()
-                }
-            ) {
-                val direction =
-                    GroupDetailFragmentDirections.actionGroupDetailToPostDetail(
-                        it
-                    )
-                findNavController().navigate(direction)
-            }
-        }
-    }
-
-}
 
 @Composable
 fun GroupDetailScreen(
-    viewModel: GroupDetailViewModel,
     onBackClick: () -> Unit,
-    navigateToTopic: (topicId: String) -> Unit,
+    onTopicClick: (topicId: String) -> Unit,
+    viewModel: GroupDetailViewModel = hiltViewModel(),
+    onShowSnackbar: suspend (String) -> Unit,
 ) {
-    val taggedTabs by viewModel.tabs.collectAsStateWithLifecycle()
-    val group by viewModel.group.collectAsStateWithLifecycle()
-    val initialTabId = viewModel.initialTabId
-    val groupId = viewModel.groupId
-    var openAlertDialog by remember { mutableStateOf(false) }
-    val shouldDisplayFavoritedGroup = viewModel.shouldDisplayFavoritedGroup
+    val taggedTabs: List<GroupTab>? by viewModel.tabs.collectAsStateWithLifecycle()
+    val group: GroupDetail? by viewModel.group.collectAsStateWithLifecycle()
+    val initialTabId: String? = viewModel.initialTabId
+    val groupId: String = viewModel.groupId
+    val shouldDisplayFavoritedGroup: Boolean = viewModel.shouldDisplayFavoritedGroup
     val shouldDisplayUnfavoritedGroup = viewModel.shouldDisplayUnfavoritedGroup
 
-    val context = LocalContext.current
+    GroupDetailScreen(
+        group = group,
+        taggedTabs = taggedTabs,
+        initialTabId = initialTabId,
+        groupId = groupId,
+        subscribeGroup = viewModel::subscribe,
+        unsubscribeGroup = viewModel::unsubscribe,
+        addFavorite = viewModel::addFavorite,
+        removeFavorite = viewModel::removeFavorite,
+        shouldDisplayFavoritedGroup = shouldDisplayFavoritedGroup,
+        shouldDisplayUnfavoritedGroup = shouldDisplayUnfavoritedGroup,
+        clearFavoritedGroupState = viewModel::clearFavoritedGroupState,
+        clearUnfavoritedGroupState = viewModel::clearUnfavoritedGroupState,
+        saveNotificationsPreference = viewModel::saveNotificationsPreference,
+        onBackClick = onBackClick,
+        onTopicClick = onTopicClick,
+        onShowSnackbar = onShowSnackbar
+    )
+}
 
-    val snackbarHostState = remember { SnackbarHostState() }
+/**
+ * Representing a single group detail screen.
+ */
+@Composable
+fun GroupDetailScreen(
+    group: GroupDetail?,
+    taggedTabs: List<GroupTab>?,
+    initialTabId: String?,
+    groupId: String,
+    shouldDisplayFavoritedGroup: Boolean,
+    shouldDisplayUnfavoritedGroup: Boolean,
+    subscribeGroup: () -> Unit,
+    unsubscribeGroup: () -> Unit,
+    addFavorite: () -> Unit,
+    removeFavorite: () -> Unit,
+    clearFavoritedGroupState: () -> Unit,
+    clearUnfavoritedGroupState: () -> Unit,
+    saveNotificationsPreference: (
+        enableNotifications: Boolean,
+        allowNotificationUpdates: Boolean,
+        sortRecommendedTopicsBy: TopicSortBy,
+        numberOfPostsLimitEachFeedFetch: Int,
+    ) -> Unit,
+    onBackClick: () -> Unit,
+    onTopicClick: (topicId: String) -> Unit,
+    onShowSnackbar: suspend (message: String) -> Unit,
+) {
+    var openAlertDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     val favoritedGroupMessage = stringResource(id = R.string.favorited_group)
 
     LaunchedEffect(key1 = shouldDisplayFavoritedGroup) {
         if (shouldDisplayFavoritedGroup) {
-            snackbarHostState.showSnackbar(favoritedGroupMessage)
-            viewModel.clearFavoritedGroupState()
+            onShowSnackbar(favoritedGroupMessage)
+            clearFavoritedGroupState()
         }
     }
 
@@ -128,30 +136,22 @@ fun GroupDetailScreen(
 
     LaunchedEffect(key1 = shouldDisplayUnfavoritedGroup) {
         if (shouldDisplayUnfavoritedGroup) {
-            snackbarHostState.showSnackbar(unfavoritedGroupMessage)
-            viewModel.clearUnfavoritedGroupState()
+            onShowSnackbar(unfavoritedGroupMessage)
+            clearUnfavoritedGroupState()
         }
     }
 
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        }) { paddingValues ->
-
+    Scaffold { paddingValues ->
         GroupDetailCoordinator(
             modifier = Modifier.padding(paddingValues),
             groupId = groupId,
             group = group,
             initialTabId = initialTabId,
             taggedTabs = taggedTabs,
-            subscribeGroup = {
-                viewModel.subscribe()
-            },
-            unsubscribeGroup = {
-                viewModel.unsubscribe()
-            },
-            addFavorite = viewModel::addFavorite,
-            removeFavorite = viewModel::removeFavorite,
+            subscribeGroup = subscribeGroup,
+            unsubscribeGroup = unsubscribeGroup,
+            addFavorite = addFavorite,
+            removeFavorite = removeFavorite,
             showNotificationsPrefDialog = { //showNotificationsPrefDialog(groupId)
                 openAlertDialog = true
             },
@@ -166,10 +166,8 @@ fun GroupDetailScreen(
             viewInBrowser = {
                 OpenInUtil.openInBrowser(context, it)
             },
-            navigateToTopic = navigateToTopic,
-            onShowSnackbar = {
-                snackbarHostState.showSnackbar(it)
-            }
+            onTopicClick = onTopicClick,
+            onShowSnackbar = onShowSnackbar
         )
     }
 
@@ -186,11 +184,11 @@ fun GroupDetailScreen(
             numberOfTopicsLimitEachFeedFetch,
             onDismissRequest = { openAlertDialog = false }
         ) { enableNotificationsToSave, allowNotificationUpdatesToSave, sortRecommendedTopicsByToSave, numberOfTopicsLimitEachFeedFetchToSave ->
-            viewModel.saveNotificationsPreference(
-                enableNotifications = enableNotificationsToSave,
-                allowNotificationUpdates = allowNotificationUpdatesToSave,
-                sortRecommendedTopicsBy = sortRecommendedTopicsByToSave,
-                numberOfPostsLimitEachFeedFetch = numberOfTopicsLimitEachFeedFetchToSave
+            saveNotificationsPreference(
+                enableNotificationsToSave,
+                allowNotificationUpdatesToSave,
+                sortRecommendedTopicsByToSave,
+                numberOfTopicsLimitEachFeedFetchToSave
             )
             openAlertDialog = false
         }
@@ -335,11 +333,9 @@ fun GroupDetailCoordinator(
     onShareGroup: (group: GroupDetail) -> Unit,
     viewInDouban: (uriString: String) -> Unit,
     viewInBrowser: (urlString: String) -> Unit,
-    navigateToTopic: (topicId: String) -> Unit,
+    onTopicClick: (topicId: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
 ) {
-
-
     taggedTabs?.let {
         val pagerState = rememberPagerState(
             initialPage = taggedTabs.indexOfFirst { it.id == initialTabId } + 1,
@@ -524,7 +520,7 @@ fun GroupDetailCoordinator(
                     taggedTabs = taggedTabs,
                     groupId = groupId,
                     group = group,
-                    navigateToTopic = navigateToTopic,
+                    onTopicClick = onTopicClick,
                     onShowSnackbar = onShowSnackbar
                 )
             }
@@ -539,9 +535,7 @@ fun GroupDetailCoordinator(
             }
         }
     }
-
 }
-
 
 @Composable
 fun GroupTabRow(pagerState: PagerState, taggedTabs: List<GroupTab>, groupColor: Int?) {
@@ -601,7 +595,7 @@ fun GroupPager(
     taggedTabs: List<GroupTab>,
     groupId: String,
     group: GroupDetail?,
-    navigateToTopic: (topicId: String) -> Unit,
+    onTopicClick: (topicId: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
 ) {
     HorizontalPager(state = pagerState,
@@ -624,9 +618,8 @@ fun GroupPager(
                 key = groupId + tabId
             ),
             group = group,
-            navigateToTopic = navigateToTopic,
+            onTopicClick = onTopicClick,
             onShowSnackbar = onShowSnackbar
         )
-
     }
 }

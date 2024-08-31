@@ -3,14 +3,10 @@
 package com.github.bumblebee202111.doubean.feature.groups.topicdetail
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
-import android.os.Bundle
+import android.content.Context
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.webkit.WebView
 import android.widget.PopupMenu
@@ -43,8 +39,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -59,29 +53,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.compose.ui.window.Dialog
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import androidx.fragment.compose.content
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavDeepLinkRequest
-import androidx.navigation.fragment.findNavController
 import androidx.paging.awaitNotLoading
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
-import com.github.bumblebee202111.doubean.MobileNavigationDirections
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.ListItemPostCommentBinding
 import com.github.bumblebee202111.doubean.databinding.ViewPostDetailHeaderBinding
@@ -96,7 +87,6 @@ import com.github.bumblebee202111.doubean.ui.common.UserProfileImage
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.ListItemImages
-import com.github.bumblebee202111.doubean.ui.theme.AppTheme
 import com.github.bumblebee202111.doubean.util.OpenInUtil
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.TOPIC_CSS_FILENAME
@@ -105,138 +95,114 @@ import com.github.bumblebee202111.doubean.util.intermediateDateTimeString
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberSaveableWebViewState
 import com.google.accompanist.web.rememberWebViewNavigator
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
-class TopicDetailFragment : Fragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ) = content {
-        AppTheme {
-            TopicDetailScreen(
-                viewModel = viewModel(),
-                onBackClick = { findNavController().popBackStack() },
-                onTopicShareClick = { topic ->
-                    val shareText = StringBuilder()
-                    topic.group?.name.let { groupName ->
-                        shareText.append(groupName)
-                    }
-                    topic.tag?.let { tag -> shareText.append("|" + tag.name) }
-                    shareText.append("@${topic.author.name}： ${topic.title}${topic.url}${topic.content}")
-                    ShareUtil.share(requireContext(), shareText)
-                },
-                navigateToWebView = { url ->
-                    findNavController().navigate(
-                        MobileNavigationDirections.actionGlobalNavWebView(
-                            url
-                        )
-                    )
-                },
-                navigateToGroup = { groupId, tabId ->
-                    findNavController().navigate(
-                        TopicDetailFragmentDirections.actionPostDetailToGroupDetail(groupId)
-                            .setDefaultTabId(tabId)
-                    )
-                },
-                navigateToReshareStatuses = { topicId ->
-                    findNavController().navigate(
-                        TopicDetailFragmentDirections.actionTopicDetailToReshareStatuses(
-                            topicId
-                        )
-                    )
-                },
-                navigateToImage = { url ->
-                    findNavController().navigate(
-                        MobileNavigationDirections.actionGlobalNavImage(
-                            url
-                        )
-                    )
-                    //TODO https://developer.android.google.cn/develop/ui/compose/touch-input/pointer-input/tap-and-press
-                    // shared element
-                },
-                navigateWithDeepLinkUrl = { url ->
-                    val request =
-                        NavDeepLinkRequest.Builder.fromUri(url.toUri()).build()
-                    findNavController().navigate(request)
-                },
-                viewInDouban = { uri ->
-                    OpenInUtil.openInDouban(requireContext(), uri)
-                }
-            ) { url ->
-                Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
-                    startActivity(this)
-                }
-            }
+@Composable
+fun TopicDetailScreen(
+    onBackClick: () -> Unit,
+    onWebViewClick: (url: String) -> Unit,
+    onGroupClick: (groupId: String, tabId: String?) -> Unit,
+    onReshareStatusesClick: (topicId: String) -> Unit,
+    onImageClick: (url: String) -> Unit,
+    onOpenDeepLinkUrl: (url: String) -> Unit,
+    viewModel: TopicDetailViewModel = hiltViewModel(),
+    onShowSnackbar: suspend (String) -> Unit,
+) {
+    val topic by viewModel.topic.collectAsStateWithLifecycle()
+    val popularComments: List<TopicComment> by viewModel.popularComments.collectAsStateWithLifecycle()
+    val allCommentLazyPagingItems = viewModel.allComments.collectAsLazyPagingItems()
+    val contentHtml by viewModel.contentHtml.collectAsStateWithLifecycle()
+    val commentSortBy by viewModel.commentsSortBy.collectAsStateWithLifecycle()
+    val groupColorInt = topic?.group?.color
+    val shouldShowSpinner by viewModel.shouldShowSpinner.collectAsStateWithLifecycle()
+    val shouldDisplayInvalidImageUrl = viewModel.shouldDisplayInvalidImageUrl
+
+    TopicDetailScreen(
+        topic = topic,
+        popularComments = popularComments,
+        allCommentLazyPagingItems = allCommentLazyPagingItems,
+        contentHtml = contentHtml,
+        commentSortBy = commentSortBy,
+        groupColorInt = groupColorInt,
+        shouldShowSpinner = shouldShowSpinner,
+        shouldDisplayInvalidImageUrl = shouldDisplayInvalidImageUrl,
+        updateCommentSortBy = viewModel::updateCommentsSortBy,
+        displayInvalidImageUrl = viewModel::displayInvalidImageUrl,
+        clearInvalidImageUrlState = viewModel::clearInvalidImageUrlState,
+        onBackClick = onBackClick,
+        onWebViewClick = onWebViewClick,
+        onGroupClick = onGroupClick,
+        onReshareStatusesClick = onReshareStatusesClick,
+        // TODO
+        // https://developer.android.google.cn/develop/ui/compose/touch-input/pointer-input/tap-and-press
+        // shared element
+        onImageClick = onImageClick,
+        onOpenDeepLinkUrl = onOpenDeepLinkUrl,
+        onShowSnackbar = onShowSnackbar
+    )
+}
+
+@SuppressLint("ClickableViewAccessibility")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopicDetailScreen(
+    topic: TopicDetail?,
+    popularComments: List<TopicComment>,
+    allCommentLazyPagingItems: LazyPagingItems<TopicComment>,
+    contentHtml: String?,
+    commentSortBy: TopicCommentSortBy,
+    groupColorInt: Int?,
+    shouldShowSpinner: Boolean,
+    shouldDisplayInvalidImageUrl: Boolean,
+    updateCommentSortBy: (TopicCommentSortBy) -> Unit,
+    displayInvalidImageUrl: () -> Unit,
+    clearInvalidImageUrlState: () -> Unit,
+    onBackClick: () -> Unit,
+    onWebViewClick: (url: String) -> Unit,
+    onGroupClick: (groupId: String, tabId: String?) -> Unit,
+    onReshareStatusesClick: (topicId: String) -> Unit,
+    onImageClick: (url: String) -> Unit,
+    onOpenDeepLinkUrl: (url: String) -> Unit,
+    onShowSnackbar: suspend (String) -> Unit,
+) {
+
+    val context = LocalContext.current
+    var shouldShowDialog by remember {
+        mutableStateOf(false)
+    }
+    var scrollToCommentItemIndex: Int? by remember {
+        mutableStateOf(null)
+    }
+    val listState = rememberLazyListState()
+
+    var itemCountBeforeComments = 0
+    if (topic != null) itemCountBeforeComments++
+    if (shouldShowSpinner) itemCountBeforeComments++
+
+    scrollToCommentItemIndex?.let { index ->
+        LaunchedEffect(index) {
+            listState.scrollToItem(itemCountBeforeComments + index)
+            snapshotFlow {
+                allCommentLazyPagingItems.loadState
+            }.awaitNotLoading()
+            listState.scrollToItem(itemCountBeforeComments + index)
+            scrollToCommentItemIndex = null
         }
-
     }
 
-
-    @SuppressLint("ClickableViewAccessibility")
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun TopicDetailScreen(
-        viewModel: TopicDetailViewModel,
-        onBackClick: () -> Unit,
-        onTopicShareClick: (TopicDetail) -> Unit,
-        navigateToWebView: (url: String) -> Unit,
-        navigateToGroup: (groupId: String, tabId: String?) -> Unit,
-        navigateToReshareStatuses: (topicId: String) -> Unit,
-        navigateToImage: (url: String) -> Unit,
-        navigateWithDeepLinkUrl: (url: String) -> Unit,
-        viewInDouban: (uri: String) -> Unit,
-        viewInActivity: (url: String) -> Unit,
-    ) {
-        val topic by viewModel.topic.collectAsStateWithLifecycle()
-        val popularComments by viewModel.popularComments.collectAsStateWithLifecycle()
-        val allCommentLazyPagingItems = viewModel.allComments.collectAsLazyPagingItems()
-        val contentHtml by viewModel.contentHtml.collectAsStateWithLifecycle()
-        val commentSortBy by viewModel.commentsSortBy.collectAsStateWithLifecycle()
-        val groupColorInt = topic?.group?.color
-        val shouldShowSpinner by viewModel.shouldShowSpinner.collectAsStateWithLifecycle()
-        val shouldDisplayInvalidImageUrl = viewModel.shouldDisplayInvalidImageUrl
-
-        var shouldShowDialog by remember {
-            mutableStateOf(false)
+    LaunchedEffect(shouldDisplayInvalidImageUrl) {
+        if (shouldDisplayInvalidImageUrl) {
+            onShowSnackbar("Invalid Image Url")
+            clearInvalidImageUrlState()
         }
-        var scrollToCommentItemIndex: Int? by remember {
-            mutableStateOf(null)
-        }
-        val listState = rememberLazyListState()
-        val snackbarHostState = remember {
-            SnackbarHostState()
-        }
+    }
 
-        var itemCountBeforeComments = 0
-        if (topic != null) itemCountBeforeComments++
-        if (shouldShowSpinner) itemCountBeforeComments++
-
-        scrollToCommentItemIndex?.let { index ->
-            LaunchedEffect(index) {
-                listState.scrollToItem(itemCountBeforeComments + index)
-                snapshotFlow {
-                    allCommentLazyPagingItems.loadState
-                }.awaitNotLoading()
-                listState.scrollToItem(itemCountBeforeComments + index)
-                scrollToCommentItemIndex = null
-            }
-        }
-
-        LaunchedEffect(shouldDisplayInvalidImageUrl) {
-            if (shouldDisplayInvalidImageUrl) {
-                snackbarHostState.showSnackbar("Invalid Image Url")
-                viewModel.clearInvalidImageUrlState()
-            }
-        }
-
-        Scaffold(
-            topBar = {
-                var appBarMenuExpanded by remember { mutableStateOf(false) }
-                var viewInMenuExpanded by remember { mutableStateOf(false) }
-                val groupColor = groupColorInt?.let(::Color)
-                DoubeanTopAppBar(
-                    title = {
+    Scaffold(
+        topBar = {
+            var appBarMenuExpanded by remember { mutableStateOf(false) }
+            var viewInMenuExpanded by remember { mutableStateOf(false) }
+            val groupColor = groupColorInt?.let(::Color)
+            DoubeanTopAppBar(
+                title = {
                     topic?.title?.let {
                         Text(
                             text = it,
@@ -245,168 +211,165 @@ class TopicDetailFragment : Fragment() {
                         )
                     }
                 },
-                    navigationIcon = {
-                        IconButton(onClick = onBackClick) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = null,
-                            )
-                        }
-                    },
-                    actions = {
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null,
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        topic?.let { shareTopic(context, it) }
 
-                        IconButton(onClick = {
-                            topic?.let { onTopicShareClick(it) }
+                    }) {
+                        Icon(
+                            Icons.Filled.Share,
+                            contentDescription = null
+                        )
+                    }
 
-                        }) {
-                            Icon(
-                                Icons.Filled.Share,
-                                contentDescription = null
-                            )
-                        }
+                    IconButton(onClick = { appBarMenuExpanded = !appBarMenuExpanded }) {
+                        Icon(
+                            Icons.Filled.MoreVert,
+                            contentDescription = null
+                        )
+                    }
 
-                        IconButton(onClick = { appBarMenuExpanded = !appBarMenuExpanded }) {
-                            Icon(
-                                Icons.Filled.MoreVert,
-                                contentDescription = null
-                            )
-                        }
+                    DropdownMenu(
+                        expanded = appBarMenuExpanded,
+                        onDismissRequest = { appBarMenuExpanded = false }) {
+                        DropdownMenuItem(text = {
+                            Text(text = "Jump to comment")
+                        },
+                            onClick = {
+                                appBarMenuExpanded = false
+                                shouldShowDialog = true
+                            })
 
-                        DropdownMenu(
-                            expanded = appBarMenuExpanded,
-                            onDismissRequest = { appBarMenuExpanded = false }) {
-                            DropdownMenuItem(text = {
-                                Text(text = "Jump to comment")
+                        DropdownMenuItem(text = {
+                            Text(text = stringResource(R.string.view_in))
+                        },
+                            trailingIcon = {
+                                Icon(
+                                    imageVector = Icons.Filled.ChevronRight,
+                                    contentDescription = null
+                                )
                             },
-                                onClick = {
-                                    appBarMenuExpanded = false
-                                    shouldShowDialog = true
-                                })
+                            onClick = {
+                                appBarMenuExpanded = false
+                                viewInMenuExpanded = true
+                            })
+                    }
 
-                            DropdownMenuItem(text = {
-                                Text(text = getString(R.string.view_in))
-                            },
-                                trailingIcon = {
-                                    Icon(
-                                        imageVector = Icons.Filled.ChevronRight,
-                                        contentDescription = null
-                                    )
-                                },
-                                onClick = {
-                                    appBarMenuExpanded = false
-                                    viewInMenuExpanded = true
-                                })
-                        }
+                    DropdownMenu(
+                        expanded = viewInMenuExpanded,
+                        onDismissRequest = { viewInMenuExpanded = false }) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.view_in_web)) },
+                            onClick = { topic?.url?.let(onWebViewClick) })
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.view_in_douban)) },
+                            onClick = {
+                                topic?.uri?.let {
+                                    OpenInUtil.openInDouban(context, it)
+                                }
+                            })
 
-                        DropdownMenu(
-                            expanded = viewInMenuExpanded,
-                            onDismissRequest = { viewInMenuExpanded = false }) {
-                            DropdownMenuItem(
-                                text = { Text(getString(R.string.view_in_web)) },
-                                onClick = { topic?.url?.let(navigateToWebView) })
-                            DropdownMenuItem(
-                                text = { Text(getString(R.string.view_in_douban)) },
-                                onClick = { topic?.uri?.let(viewInDouban) })
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors().run {
-                        groupColor?.let {
-                            copy(containerColor = it)
-                        } ?: this
-                    })
-            },
-            snackbarHost = {
-                SnackbarHost(hostState = snackbarHostState)
-            },
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors().run {
+                    groupColor?.let {
+                        copy(containerColor = it)
+                    } ?: this
+                })
+        },
+        modifier = Modifier.fillMaxSize()
+    ) { paddingValues ->
+        LazyColumn(
+            contentPadding = paddingValues,
+            state = listState,
             modifier = Modifier.fillMaxSize()
-        ) { paddingValues ->
-            LazyColumn(
-                contentPadding = paddingValues,
-                state = listState,
-                modifier = Modifier.fillMaxSize()
-            ) {
+        ) {
 
-                topic?.let { topic ->
-                    item(key = "TopicDetailHeader", contentType = "TopicDetailHeader") {
-                        TopicDetailHeader(
+            topic?.let { topic ->
+                item(key = "TopicDetailHeader", contentType = "TopicDetailHeader") {
+                    TopicDetailHeader(
+                        topic = topic,
+                        contentHtml = contentHtml,
+                        displayInvalidImageUrl = displayInvalidImageUrl,
+                        onImageClick = onImageClick,
+                        onGroupClick = onGroupClick,
+                        onReshareStatusesClick = onReshareStatusesClick,
+                        onOpenDeepLinkUrl = onOpenDeepLinkUrl,
+                    )
+                }
+            }
+
+            if (shouldShowSpinner) {
+                item(key = "TopicCommentSortBy", contentType = "TopicCommentSortBy") {
+                    TopicCommentSortBy(
+                        commentSortBy = commentSortBy,
+                        updateCommentSortBy = updateCommentSortBy
+                    )
+                }
+            }
+
+            when (commentSortBy) {
+                TopicCommentSortBy.TOP -> {
+                    items(
+                        count = popularComments.size,
+                        key = { popularComments[it].id },
+                        contentType = { "TopicCommentAndroidView" }) { index ->
+                        TopicCommentAndroidView(
+                            modifier = Modifier.padding(top = 8.dp),
+                            comment = popularComments[index],
+                            groupColorInt = groupColorInt,
                             topic = topic,
-                            contentHtml = contentHtml,
-                            viewInActivity = viewInActivity,
-                            navigateToImage = navigateToImage,
-                            navigateToGroup = navigateToGroup,
-                            navigateToReshareStatuses = navigateToReshareStatuses,
-                            navigateWithDeepLinkUrl = navigateWithDeepLinkUrl,
-                            displayInvalidImageUrl = viewModel::displayInvalidImageUrl
+                            onImageClick = onImageClick
                         )
+                        if (index < popularComments.size - 1)
+                            HorizontalDivider(thickness = 1.dp)
                     }
                 }
 
-                if (shouldShowSpinner) {
-                    item(key = "TopicCommentSortBy", contentType = "TopicCommentSortBy") {
-                        TopicCommentSortBy(
-                            commentSortBy = commentSortBy,
-                            updateCommentSortBy = viewModel::updateCommentsSortBy
+                TopicCommentSortBy.ALL -> {
+                    items(
+                        count = allCommentLazyPagingItems.itemCount,
+                        key = allCommentLazyPagingItems.itemKey { it.id },
+                        contentType = allCommentLazyPagingItems.itemContentType { "TopicCommentAndroidView" }) { index ->
+                        TopicCommentAndroidView(
+                            comment = allCommentLazyPagingItems[index],
+                            groupColorInt = groupColorInt,
+                            topic = topic,
+                            onImageClick = onImageClick
                         )
+                        if (index < allCommentLazyPagingItems.itemCount - 1)
+                            HorizontalDivider(thickness = 1.dp)
                     }
-                }
-
-                when (commentSortBy) {
-                    TopicCommentSortBy.TOP -> {
-                        items(
-                            count = popularComments.size,
-                            key = { popularComments[it].id },
-                            contentType = { "TopicCommentAndroidView" }) { index ->
-                            TopicCommentAndroidView(
-                                modifier = Modifier.padding(top = 8.dp),
-                                comment = popularComments[index],
-                                groupColorInt = groupColorInt,
-                                topic = topic,
-                                navigateToImage = navigateToImage
-                            )
-                            if (index < popularComments.size - 1)
-                                HorizontalDivider(thickness = 1.dp)
-                        }
-                    }
-
-                    TopicCommentSortBy.ALL -> {
-                        items(
-                            count = allCommentLazyPagingItems.itemCount,
-                            key = allCommentLazyPagingItems.itemKey { it.id },
-                            contentType = allCommentLazyPagingItems.itemContentType { "TopicCommentAndroidView" }) { index ->
-                            TopicCommentAndroidView(
-                                comment = allCommentLazyPagingItems[index],
-                                groupColorInt = groupColorInt,
-                                topic = topic,
-                                navigateToImage = navigateToImage
-                            )
-                            if (index < allCommentLazyPagingItems.itemCount - 1)
-                                HorizontalDivider(thickness = 1.dp)
-                        }
-                    }
-                }
-
-            }
-        }
-        (if (commentSortBy == TopicCommentSortBy.TOP) popularComments.size else topic?.commentCount)?.let {
-            if (shouldShowDialog) {
-
-                JumpToCommentOfIndexDialog(
-                    currentCommentIndex = (listState.firstVisibleItemIndex - itemCountBeforeComments).coerceAtLeast(
-                        0
-                    ),
-                    commentCount = it,
-                    onDismissRequest = {
-                        shouldShowDialog = false
-                    }) { index ->
-                    scrollToCommentItemIndex = index
                 }
             }
-        }
 
+        }
+    }
+    (if (commentSortBy == TopicCommentSortBy.TOP) popularComments.size else topic?.commentCount)?.let {
+        if (shouldShowDialog) {
+
+            JumpToCommentOfIndexDialog(
+                currentCommentIndex = (listState.firstVisibleItemIndex - itemCountBeforeComments).coerceAtLeast(
+                    0
+                ),
+                commentCount = it,
+                onDismissRequest = {
+                    shouldShowDialog = false
+                }) { index ->
+                scrollToCommentItemIndex = index
+            }
+        }
     }
 
 }
-
 
 @Composable
 fun JumpToCommentOfIndexDialog(
@@ -470,13 +433,13 @@ fun JumpToCommentSliderPreview() {
 fun TopicDetailHeader(
     topic: TopicDetail,
     contentHtml: String?,
-    viewInActivity: (url: String) -> Unit,
-    navigateToImage: (url: String) -> Unit,
-    navigateToGroup: (groupId: String, tabId: String?) -> Unit,
-    navigateToReshareStatuses: (topicId: String) -> Unit,
-    navigateWithDeepLinkUrl: (url: String) -> Unit,
+    onImageClick: (url: String) -> Unit,
+    onGroupClick: (groupId: String, tabId: String?) -> Unit,
+    onReshareStatusesClick: (topicId: String) -> Unit,
+    onOpenDeepLinkUrl: (url: String) -> Unit,
     displayInvalidImageUrl: () -> Unit,
 ) {
+    val context = LocalContext.current
     Column {
         AndroidViewBinding(
             factory = { inflater, root, attachToRoot ->
@@ -500,7 +463,7 @@ fun TopicDetailHeader(
 
             postTag.setOnClickListener {
                 topic.group?.let { group ->
-                    navigateToGroup(
+                    onGroupClick(
                         group.id,
                         topic.id
                     )
@@ -510,7 +473,7 @@ fun TopicDetailHeader(
 
             val groupOnClickListener = View.OnClickListener {
                 topic.group?.let { group ->
-                    navigateToGroup(
+                    onGroupClick(
                         group.id, null
                     )
                 }
@@ -566,10 +529,10 @@ fun TopicDetailHeader(
                                     if (url == null) return false
 
                                     try {
-                                        navigateWithDeepLinkUrl(url)
+                                        onOpenDeepLinkUrl(url)
                                     } catch (e: IllegalArgumentException) {
                                         Log.i("doubean", "shouldOverrideUrlLoading: $e")
-                                        viewInActivity(url)
+                                        OpenInUtil.viewInActivity(context, url)
                                     }
                                     return true
                                 }
@@ -596,18 +559,16 @@ fun TopicDetailHeader(
                                             if (URLUtil.isValidUrl(imageUrl)) {
                                                 val largeImageUrl =
                                                     topic.images!!.first { it.normal.url == imageUrl }.large.url
-                                                navigateToImage(largeImageUrl)
+                                                onImageClick(largeImageUrl)
                                             } else {
                                                 displayInvalidImageUrl()
                                             }
                                         }
                                     }
-
                                     return@setOnTouchListener false
                                 }
                             }
                         })
-
 
                 }
             }
@@ -641,7 +602,7 @@ fun TopicDetailHeader(
                             modifier = Modifier.run {
                                 if (it != 0) {
                                     clickable {
-                                        navigateToReshareStatuses(topic.id)
+                                        onReshareStatusesClick(topic.id)
                                     }
                                 } else {
                                     this
@@ -730,7 +691,7 @@ fun TopicCommentAndroidView(
     comment: TopicComment?,
     groupColorInt: Int?,
     topic: TopicDetail?,
-    navigateToImage: (url: String) -> Unit,
+    onImageClick: (url: String) -> Unit,
 ) {
 
     AndroidViewBinding(
@@ -799,7 +760,7 @@ fun TopicCommentAndroidView(
                 comment?.photos.takeUnless(List<SizedPhoto>?::isNullOrEmpty)?.let {
                     ListItemImages(
                         images = it.map(SizedPhoto::image),
-                        onImageClick = { image -> navigateToImage(image.large.url) }
+                        onImageClick = { image -> onImageClick(image.large.url) }
                     )
                 }
             }
@@ -833,7 +794,7 @@ fun TopicCommentAndroidView(
                 comment?.repliedTo?.photos.takeUnless(List<SizedPhoto>?::isNullOrEmpty)?.let {
                     ListItemImages(
                         images = it.map(SizedPhoto::image),
-                        onImageClick = { image -> navigateToImage(image.large.url) }
+                        onImageClick = { image -> onImageClick(image.large.url) }
                     )
                 }
             }
@@ -862,4 +823,14 @@ fun TopicCommentAndroidView(
         onReset = {},
         //onRelease = {}
     )
+}
+
+private fun shareTopic(context: Context, topic: TopicDetail) {
+    val shareText = StringBuilder()
+    topic.group?.name.let { groupName ->
+        shareText.append(groupName)
+    }
+    topic.tag?.let { tag -> shareText.append("|" + tag.name) }
+    shareText.append("@${topic.author.name}： ${topic.title}${topic.url}${topic.content}")
+    ShareUtil.share(context = context, shareText = shareText)
 }
