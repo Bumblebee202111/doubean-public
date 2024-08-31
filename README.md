@@ -4,7 +4,7 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
 
-Note: I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be missing. Only features demanded by me and other users are possible to be added. This project is also going to be used as my playground for trending technologies such as Jetpack Compose. This brings [tons of migration tasks](#migrations), and also means that old and new libraries are currently mixed.
+Note: I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be missing. Only features demanded by me and other users are possible to be added. This project is also going to be used as my playground for trending technologies such as Jetpack Compose. This brings tons of migration tasks ([remaining ones](#migrations)), and also means that old and new libraries are currently mixed.
 
 *The development of this app is slowed down again so that I can spend more time on the exploration of the backend and frontend areas.*
 
@@ -34,17 +34,21 @@ Introduction
 * My topics (or groups of the day, for guests)
 
 
-##### Group Detail
+##### Group Detail Screen
 
 * Group information
 * Group tabs
 
-##### Topic Detail
+##### Topic Detail Screen
 
 * Topic content
 * Topic comments
 
-##### Groups Search
+##### Reshare Statuses Screen
+
+- Reshare statuses
+
+##### Groups Search  Screen
 
 * Search groups
 * Groups of the day
@@ -68,6 +72,7 @@ Introduction
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
 <img src="screenshots/phone_group_search.png" alt="phone_group_search" height="300" />
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
+
 ### Getting Started
 
 ### Using this app
@@ -100,7 +105,7 @@ It not only implements some features (mainly of Groups) of Douban app, but also 
 * Rooted users can reuse login session of Douban app
 * Partial support for viewing content in Douban WebView optimized for mobile reading in case of need (no longer updated)
 * Basic use of MD2/3 (UI may not look good during migration)
-* Recommended topic notifications (maybe currently broken)
+* ~~Recommended topic notifications (broken)~~
 
 Libraries Used
 --------------
@@ -171,9 +176,9 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.6.2\)
+#### To-dos for current release \(0.6.3\)
 
-#### To-dos for next release \(0.6.3)
+#### To-dos for next release \(0.6.4)
 
 - Reuse item logic of search result groups / groups of the day
 
@@ -184,49 +189,25 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Gradual migrations: <span id="migrations"></span>
   * From MD2 / custom design to MD3
   * From View and Data Binding to Jetpack Compose
-    * Exceptions: WebView/RatingBar
-  * From Navigation Fragment to Navigation Compose (when type-safe navigation is stable)
-    * From NavHostFragment to ComposableNavHostFragment
-* navigation-fragment-compose
+    * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout
 * Groups - Home
   * Support pagination?
   * Add favorite tabs for topic list area
-* Home - Following
-  * More card types
-  * Pagination
-* TopAppBar and Edge-to-Edge
-  * Reduce TopAppBar height to 56 dp when https://developer.android.google.cn/jetpack/androidx/releases/compose-material3#1.3.0-beta05 enters RC
+* Status bar color
 * Show error messages
 * Bring back load state visualization which was removed for simplicity during various types of migrations
   * Paging 3 refresh, loading status ...
-* Follow/favorite/save/subscribe
+* Subscribe/favorite/save
   * Save topics
   * Pin my groups
   * Add corresponding item actions
-  * Follow groups (locally for guests)
-* Group Detail: Collapse on entrance for the followed/favorited group/tab
-* Allow expanding group description w/ SpannableString
+* Allow expanding group descriptions
 * Bring back basic support for dark mode & landscape experience
 * Topics sort by 
   * "Last updated" -> "New (last updated)"
-  * Add "New Top"
+  * Add "Hot (last created)"
 * Shared element
-* `Lazylist` problems
-  * Restoration of scroll position is problematic
-* Topic content WebView problems
-  * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
-  * Sometimes topic content fails to be loaded on some low-end or large-screened devices, or of special layout (not sure which sets constraint)
-  * LazyLayoutPinnableItem?
-  * ...
 * Group tab: Track read
-* Topics feed (notifications)
-  * Find why it is broken and fix it
-  * Clarify:
-    * Improper use may disturb you and drain phone battery (untested)
-    * Better keep app in background
-    * Mechanism: Actively query group topics (without tab_id parameter, to increase efficiency) by each group
-  * “每次动态更新请求的帖子总数限制” -> ?
-  * Create reusable class for all notification settings
 * Use the new nullable "edit_time" property of network topics
 * Search
   * Search group/tab topics (in-group) 
@@ -234,9 +215,36 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Better model layering
 * Languages
   * Translations
-  * Option
-  * Distinguish`en-DB`/`en-US`
-* More follow/favorite/save/subscribe
+  * Pick language
+* Books/Movies
+  * NavigationBarItem/TabRow
+  * T250
+  * Mine
+  * More features
+
+* Home - Following
+  * More card types
+  * Pagination
+* Group Detail
+  * Compose collapsing toolbar when more convenient
+  * Collapse on entrance for the subscribed/favorited group/tab
+* `Lazylist` problems
+  * Restoration of scroll position is problematic
+* Topic content WebView problems
+  * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
+  * Sometimes topic content fails to be loaded on some low-end or large-screened devices, or of special layout (not sure which sets constraint)
+  * LazyLayoutPinnableItem?
+  * ...
+* Topics feed (notifications)
+  * Move from NavigationBar to Groups Home Toolbar
+  * Find why it is broken and fix it
+  * Clarify:
+    * Improper use may disturb you and drain phone battery (untested)
+    * Better keep app in background
+    * Mechanism: Actively query group topics (without tab_id parameter, to increase efficiency) by each group
+  * “每次动态更新请求的帖子总数限制” -> ?
+  * Create reusable class for all notification settings
+* More subscribe/favorite/save
   * Save comments
   * Subscribe topics
   * Sync custom lists by maintaining a fake private note which holds the data
@@ -246,9 +254,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Support blocking unfriendly content
 * NetworkManager
 * Widgets
-* \[Books\] Add T250
-* [Movies\] Add T250
-* More features of books & movies
 * Lists: Reddit-like item expand/collapse
 * Group Detail: For topic items, optimize tag display, e.g., assign color to each tag mapped from ID
 * Reuse more existing Douban preferences

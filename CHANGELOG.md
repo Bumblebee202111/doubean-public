@@ -1,9 +1,20 @@
 Change Log
 ==========
 
+## Version 0.6.3(603)
+
+- Groups Home: Fix translation mistakes
+- Migrate Fragment Navigation to Compose Navigation
+  - Remove shell Fragments
+  - Only usages of Fragment: PreferenceFragmentCompat
+- Migrate most usages of MaterialToolBar to Compose TopAppBar
+- Minor tweaks and optimizations
+
 ## Version 0.6.2(602)
 
 - Add some Chinese translations
+  - **Known issue: some titles of Groups Home are not correctly translated**
+
 - Update date & time
   - Fully migrated into Compose
   - Add new format for date-time of yesterday for topic items: `Yesterday HH:mm`
