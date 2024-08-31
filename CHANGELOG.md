@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.6.4(604)
+
 ## Version 0.6.3(603)
 
 - Groups Home: Fix translation mistakes
