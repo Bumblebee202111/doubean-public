@@ -4,6 +4,13 @@ Change Log
 ## Version 0.6.3(603)
 
 - Groups Home: Fix translation mistakes
+- Migrate Fragment Navigation to Compose Navigation
+  - Remove shell Fragments
+  - Only usages of Fragment: PreferenceFragmentCompat
+- Migrate most usages of MaterialToolBar to Compose TopAppBar
+  - Reduce TopAppBar height to 56 dp
+
+- Minor tweaks and optimizations
 
 ## Version 0.6.2(602)
 
