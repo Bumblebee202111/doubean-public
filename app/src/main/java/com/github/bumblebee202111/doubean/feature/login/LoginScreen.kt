@@ -132,7 +132,7 @@ fun LoginScreen(
                         "Manual syncing is highly discouraged since\n" +
                         "1. The feature is not carefully designed and you may meet weird bugs\n" +
                         "2. It requires many steps and extra care\n" +
-                        "Sync usually can be done automatically at app startup if root is granted",
+                        "Sync is expected to be done automatically at app startup if root is granted",
                 style = MaterialTheme.typography.bodyMedium
             )
             var pref by remember { mutableStateOf("") }
@@ -173,7 +173,7 @@ fun LoginScreen(
                 style = MaterialTheme.typography.titleLarge
             )
             Text(
-                text = "Not implemented now and not very likely to be implemented in the future due to its difficulty",
+                text = "Too hard to implement",
                 style = MaterialTheme.typography.titleMedium
             )
             OutlinedTextField(

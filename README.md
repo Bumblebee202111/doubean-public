@@ -174,10 +174,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.6.3\)
 
-"Sync is expected to be done ..."
-
-"Too hard to implement"
-
 #### To-dos for next release \(0.6.4)
 
 - Reuse item logic of search result groups / groups of the day
