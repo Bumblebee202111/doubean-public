@@ -4,7 +4,7 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
 
-Note: I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be missing. Only features demanded by me and other users are possible to be added. This project is also going to be used as my playground for trending technologies such as Jetpack Compose. This brings tons of migration tasks ([remaining ones](#migrations)), and also means that old and new libraries are currently mixed.
+Note: I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be missing. This project implements some essential features as well as user requested ones which are practical. It is also going to be used as my playground for trending technologies such as Jetpack Compose. This brings tons of migration tasks ([remaining ones](#migrations)), and also means that old and new libraries are currently mixed.
 
 *The development of this app is slowed down again so that I can spend more time on the exploration of the backend and frontend areas.*
 
@@ -178,6 +178,10 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.6.4\)
 
+- Optimize nav code
+- Move notifications from NavigationBar to Groups Home Toolbar
+- Compose migration
+
 #### To-dos for next release \(0..)
 
 - Reuse item logic of search result groups / groups of the day
@@ -236,7 +240,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * LazyLayoutPinnableItem?
   * ...
 * Topics feed (notifications)
-  * Move from NavigationBar to Groups Home Toolbar
   * Find why it is broken and fix it
   * Clarify:
     * Improper use may disturb you and drain phone battery (untested)

@@ -11,7 +11,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.plus
@@ -21,7 +20,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 internal object DataModule {
 
-    @OptIn(ExperimentalSerializationApi::class)
     @Singleton
     @Provides
     fun provideJson(): Json =
