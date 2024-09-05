@@ -47,7 +47,7 @@ import com.github.bumblebee202111.doubean.model.GroupSearchResultGroupItem
 import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
 
 @Composable
-fun GroupsSearchRoute(
+fun GroupsSearchScreen(
     onGroupClick: (String) -> Unit,
     viewModel: GroupsSearchViewModel = hiltViewModel(),
 ) {
