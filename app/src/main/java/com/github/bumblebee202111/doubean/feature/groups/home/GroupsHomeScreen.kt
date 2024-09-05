@@ -116,7 +116,10 @@ fun GroupsHomeScreen(
                     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                         DropdownMenuItem(
                             text = { Text(stringResource(id = R.string.settings)) },
-                            onClick = onSettingsClick
+                            onClick = {
+                                expanded = false
+                                onSettingsClick()
+                            }
                         )
                     }
                 }
