@@ -1,6 +1,0 @@
-package com.github.bumblebee202111.doubean.feature.settings
-
-import kotlinx.serialization.Serializable
-
-@Serializable
-data object SettingsRoute

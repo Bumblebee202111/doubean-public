@@ -20,10 +20,6 @@ import com.github.bumblebee202111.doubean.ui.common.DoubanWebViewClient
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.util.DOUBAN_WEB_CSS_FILENAME
 
-@Composable
-fun WebViewRoute(url: String, onBackClick: () -> Unit) {
-    WebViewScreen(url = url, onBackClick = onBackClick)
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

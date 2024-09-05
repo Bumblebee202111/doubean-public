@@ -178,8 +178,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.6.4\)
 
-- Optimize nav code
-- Move notifications from NavigationBar to Groups Home Toolbar
+- Move notifications from NavigationBar to Groups Home TopAppBar of Groups Home
 - Compose migration
 
 #### To-dos for next release \(0..)

@@ -1,0 +1,29 @@
+package com.github.bumblebee202111.doubean.navigation
+
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
+import com.github.bumblebee202111.doubean.ui.BottomNavScreen
+import kotlinx.serialization.Serializable
+
+@Serializable
+data object BottomNavRoute
+
+fun NavGraphBuilder.bottomNavScreen(
+    startWithGroups: Boolean,
+    navigateToSearch: () -> Unit,
+    navigateToSettings: () -> Unit,
+    navigateToGroup: (groupId: String, defaultTabId: String?) -> Unit,
+    navigateToTopic: (topicId: String) -> Unit,
+    navigateToLogin: () -> Unit,
+    onShowSnackbar: suspend (String) -> Unit,
+): Unit = composable<BottomNavRoute> {
+    BottomNavScreen(
+        startWithGroups = startWithGroups,
+        navigateToSearch = navigateToSearch,
+        navigateToSettings = navigateToSettings,
+        navigateToGroup = navigateToGroup,
+        navigateToTopic = navigateToTopic,
+        navigateToLogin = navigateToLogin,
+        onShowSnackbar = onShowSnackbar
+    )
+}

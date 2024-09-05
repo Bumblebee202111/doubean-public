@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
+import com.github.bumblebee202111.doubean.feature.login.navigation.VerifyPhoneRoute
 import com.github.bumblebee202111.doubean.model.VerifyPhoneRequestCodeResult
 import com.github.bumblebee202111.doubean.model.VerifyPhoneVerifyCodeResult
 import dagger.hilt.android.lifecycle.HiltViewModel

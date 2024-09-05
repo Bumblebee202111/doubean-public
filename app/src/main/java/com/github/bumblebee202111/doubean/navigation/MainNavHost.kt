@@ -2,34 +2,29 @@ package com.github.bumblebee202111.doubean.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.core.net.toUri
-import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.navDeepLink
-import androidx.navigation.toRoute
-import com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupDetailRoute
-import com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupDetailScreen
-import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.ReshareStatusesRoute
-import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.ReshareStatusesScreen
-import com.github.bumblebee202111.doubean.feature.groups.search.GroupsSearchRoute
-import com.github.bumblebee202111.doubean.feature.groups.topicdetail.TopicDetailRoute
-import com.github.bumblebee202111.doubean.feature.groups.topicdetail.TopicDetailScreen
-import com.github.bumblebee202111.doubean.feature.groups.webView.WebViewRoute
-import com.github.bumblebee202111.doubean.feature.image.ImageRoute
-import com.github.bumblebee202111.doubean.feature.image.ImageScreen
+import com.github.bumblebee202111.doubean.feature.groups.groupDetail.navigation.groupDetailScreen
+import com.github.bumblebee202111.doubean.feature.groups.groupDetail.navigation.navigateToGroup
+import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.navigateToReshareStatuses
+import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.reshareStatusesScreen
+import com.github.bumblebee202111.doubean.feature.groups.search.navigation.groupsSearchScreen
+import com.github.bumblebee202111.doubean.feature.groups.search.navigation.navigateToSearch
+import com.github.bumblebee202111.doubean.feature.groups.topicdetail.navigation.navigateToTopic
+import com.github.bumblebee202111.doubean.feature.groups.topicdetail.navigation.topicDetailScreen
+import com.github.bumblebee202111.doubean.feature.groups.webView.navigation.navigateToWebView
+import com.github.bumblebee202111.doubean.feature.groups.webView.navigation.webViewScreen
+import com.github.bumblebee202111.doubean.feature.image.navigation.imageScreen
+import com.github.bumblebee202111.doubean.feature.image.navigation.navigateToImage
 import com.github.bumblebee202111.doubean.feature.login.LOGIN_SUCCESSFUL
-import com.github.bumblebee202111.doubean.feature.login.LoginRoute
-import com.github.bumblebee202111.doubean.feature.login.LoginScreen
-import com.github.bumblebee202111.doubean.feature.login.VerifyPhoneRoute
-import com.github.bumblebee202111.doubean.feature.login.VerifyPhoneScreen
-import com.github.bumblebee202111.doubean.feature.settings.GroupDefaultNotificationsPreferencesSettingsRoute
-import com.github.bumblebee202111.doubean.feature.settings.GroupDefaultNotificationsPreferencesSettingsScreen
-import com.github.bumblebee202111.doubean.feature.settings.SettingsRoute
-import com.github.bumblebee202111.doubean.feature.settings.SettingsScreen
-import com.github.bumblebee202111.doubean.ui.BottomNavRoute
-import com.github.bumblebee202111.doubean.ui.BottomNavScreen
+import com.github.bumblebee202111.doubean.feature.login.navigation.LoginRoute
+import com.github.bumblebee202111.doubean.feature.login.navigation.loginScreen
+import com.github.bumblebee202111.doubean.feature.login.navigation.navigateToLogin
+import com.github.bumblebee202111.doubean.feature.login.navigation.verifyPhoneScreen
+import com.github.bumblebee202111.doubean.feature.settings.navigation.groupDefaultNotificationsPreferencesSettingsScreen
+import com.github.bumblebee202111.doubean.feature.settings.navigation.navigateToGroupDefaultNotificationsPreferencesSettings
+import com.github.bumblebee202111.doubean.feature.settings.navigation.navigateToSettings
+import com.github.bumblebee202111.doubean.feature.settings.navigation.settingsScreen
 
 @Composable
 fun MainNavHost(
@@ -39,147 +34,61 @@ fun MainNavHost(
     startWithGroups: Boolean,
     modifier: Modifier = Modifier,
 ) {
+
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier
     ) {
-        composable<BottomNavRoute> {
-            BottomNavScreen(
-                startWithGroups = startWithGroups,
-                navigateToSearch = {
-                    navController.navigate(GroupsSearchRoute)
-                },
-                navigateToSettings = {
-                    navController.navigate(SettingsRoute)
-                },
-                navigateToGroup = { groupId, defaultTabId ->
-                    navController.navigate(GroupDetailRoute(groupId, defaultTabId))
-                },
-                navigateToTopic = {
-                    navController.navigate(TopicDetailRoute(it))
-                },
-                navigateToLogin = {
-                    navController.navigate(LoginRoute)
-                },
-                onShowSnackbar = onShowSnackbar
-            )
-        }
-
-        composable<GroupsSearchRoute> {
-            GroupsSearchRoute(onGroupClick = {
-                navController.navigate(GroupDetailRoute(it))
-            })
-        }
-
-        composable<GroupDetailRoute>(
-            deepLinks = listOf(
-                navDeepLink {
-                    uriPattern = "https://m.douban.com/group/{groupId}/"
-                },
-                navDeepLink {
-                    uriPattern = "https://www.douban.com/group/{groupId}/"
-                },
-            )
-        ) {
-            navController.previousBackStackEntry
-            GroupDetailScreen(
-                onBackClick = navController::navigateUp,
-                onTopicClick = { navController.navigate(TopicDetailRoute(it)) },
-                onShowSnackbar = onShowSnackbar
-            )
-        }
-
-        composable<TopicDetailRoute>(
-            deepLinks = listOf(
-                navDeepLink {
-                    uriPattern = "https://github.com/Bumblebee202111/doubean/group/topic/{topicId}"
-                }
-            )
-        ) {
-            TopicDetailScreen(
-                onBackClick = navController::navigateUp,
-                onWebViewClick = {
-                    navController.navigate(WebViewRoute(it))
-                },
-                onGroupClick = { groupId, tabId ->
-                    navController.navigate(GroupDetailRoute(groupId, tabId))
-                },
-                onReshareStatusesClick = {
-                    navController.navigate(ReshareStatusesRoute(it))
-                },
-                onImageClick = { navController.navigate(ImageRoute(it)) },
-                onOpenDeepLinkUrl = { url ->
-                    val request =
-                        NavDeepLinkRequest.Builder.fromUri(url.toUri()).build()
-                    navController.navigate(request)
-                },
-                onShowSnackbar = onShowSnackbar
-            )
-        }
-
-        composable<ReshareStatusesRoute> {
-            ReshareStatusesScreen(
-                onBackClick = navController::navigateUp,
-            )
-        }
-
-        composable<WebViewRoute> {
-            WebViewRoute(
-                it.toRoute<WebViewRoute>().url,
-                onBackClick = navController::navigateUp,
-            )
-        }
-
-        composable<LoginRoute> {
-            LoginScreen(onSaveIsLoginSuccessSuccessfulChange = {
+        bottomNavScreen(
+            startWithGroups = startWithGroups,
+            navigateToSearch = navController::navigateToSearch,
+            navigateToSettings = navController::navigateToSettings,
+            navigateToGroup = navController::navigateToGroup,
+            navigateToTopic = navController::navigateToTopic,
+            navigateToLogin = navController::navigateToLogin,
+            onShowSnackbar = onShowSnackbar
+        )
+        groupsSearchScreen(onGroupClick = navController::navigateToGroup)
+        groupDetailScreen(
+            onBackClick = navController::navigateUp,
+            onTopicClick = navController::navigateToTopic,
+            onShowSnackbar = onShowSnackbar
+        )
+        topicDetailScreen(
+            onBackClick = navController::navigateUp,
+            onWebViewClick = navController::navigateToWebView,
+            onGroupClick = navController::navigateToGroup,
+            onReshareStatusesClick = navController::navigateToReshareStatuses,
+            onImageClick = navController::navigateToImage,
+            onOpenDeepLinkUrl = navController::navigateWithDeepLinkUrl,
+            onShowSnackbar = onShowSnackbar
+        )
+        reshareStatusesScreen(onBackClick = navController::navigateUp)
+        webViewScreen(onBackClick = navController::navigateUp)
+        loginScreen(
+            onSaveIsLoginSuccessSuccessfulChange = {
                 navController.previousBackStackEntry!!.savedStateHandle[LOGIN_SUCCESSFUL] = it
-            }, onPopBackStack = {
-                navController.popBackStack()
-            }, onOpenDeepLinkUrl = { url ->
-                val request =
-                    NavDeepLinkRequest.Builder.fromUri(url.toUri()).build()
-                navController.navigate(request)
             },
-                onShowSnackbar = onShowSnackbar
-            )
-        }
-
-        composable<VerifyPhoneRoute>(
-            deepLinks =
-            listOf(
-                navDeepLink {
-                    uriPattern = "douban://douban.com/account/login_verify_phone?user_id={userId}"
-                }
-            )
-
-        ) {
-            VerifyPhoneScreen(
-                onPopBackStack = { navController.popBackStack(LoginRoute, false) },
-                onShowSnackbar = onShowSnackbar
-            )
-        }
-
-        composable<SettingsRoute> {
-            SettingsScreen(
-                onBackClick = navController::navigateUp,
-                onGroupDefaultNotificationsPreferencesSettingsClick = {
-                    navController.navigate(GroupDefaultNotificationsPreferencesSettingsRoute)
-                }
-            )
-        }
-
-        composable<GroupDefaultNotificationsPreferencesSettingsRoute> {
-            GroupDefaultNotificationsPreferencesSettingsScreen(
-                onBackClick = navController::navigateUp,
-            )
-        }
-
-        composable<ImageRoute> {
-            ImageScreen(
-                navigateUp = navController::navigateUp,
-                onShowSnackbar = onShowSnackbar
-            )
-        }
+            onPopBackStack = navController::popBackStack,
+            onOpenDeepLinkUrl = navController::navigateWithDeepLinkUrl,
+            onShowSnackbar = onShowSnackbar
+        )
+        verifyPhoneScreen(
+            onPopBackStack = { navController.popBackStack(LoginRoute, false) },
+            onShowSnackbar = onShowSnackbar
+        )
+        settingsScreen(
+            onBackClick = navController::navigateUp,
+            onGroupDefaultNotificationsPreferencesSettingsClick =
+            navController::navigateToGroupDefaultNotificationsPreferencesSettings
+        )
+        groupDefaultNotificationsPreferencesSettingsScreen(
+            onBackClick = navController::navigateUp,
+        )
+        imageScreen(
+            navigateUp = navController::navigateUp,
+            onShowSnackbar = onShowSnackbar
+        )
     }
 }

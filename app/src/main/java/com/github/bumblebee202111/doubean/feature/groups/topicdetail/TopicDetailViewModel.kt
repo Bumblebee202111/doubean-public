@@ -12,6 +12,7 @@ import androidx.navigation.toRoute
 import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.repository.GroupTopicRepo
 import com.github.bumblebee202111.doubean.data.repository.PollRepository
+import com.github.bumblebee202111.doubean.feature.groups.topicdetail.navigation.TopicDetailRoute
 import com.github.bumblebee202111.doubean.model.Poll
 import com.github.bumblebee202111.doubean.model.PollId
 import com.github.bumblebee202111.doubean.model.Question
