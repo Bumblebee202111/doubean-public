@@ -17,9 +17,9 @@ Introduction
 
 ### Screens
 
-#### Home Screen
+#### Statuses Screen
 
-- Following
+- Following statuses
 
 #### Image Screen
 
@@ -68,10 +68,11 @@ Introduction
 
 ### Screenshots
 
-<p><img src="screenshots/phone_groups.png" alt="phone_groups" height="300" />
+<p><img src="screenshots/phone_groups_home.png" alt="phone_groups" height="300" />
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
 <img src="screenshots/phone_group_search.png" alt="phone_group_search" height="300" />
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
+
 
 ### Getting Started
 
@@ -178,8 +179,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.6.4\)
 
-- Move Notifications from NavigationBar to Groups Home app bar
-- "Home" -> "Following"
 - Compose migration
 
 #### To-dos for next release \(0..)
