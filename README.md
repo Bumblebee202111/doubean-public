@@ -4,7 +4,7 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
 
-Note: I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be missing. Only features demanded by me and other users are possible to be added. This project is also going to be used as my playground for trending technologies such as Jetpack Compose. This brings tons of migration tasks ([remaining ones](#migrations)), and also means that old and new libraries are currently mixed.
+Note: I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be missing. This project implements some essential features as well as user requested ones which are practical. It is also going to be used as my playground for trending technologies such as Jetpack Compose. This brings tons of migration tasks ([remaining ones](#migrations)), and also means that old and new libraries are currently mixed.
 
 *The development of this app is slowed down again so that I can spend more time on the exploration of the backend and frontend areas.*
 
@@ -17,9 +17,9 @@ Introduction
 
 ### Screens
 
-#### Home Screen
+#### Statuses Screen
 
-- Following
+- Following statuses
 
 #### Image Screen
 
@@ -68,11 +68,10 @@ Introduction
 
 ### Screenshots
 
-<p><img src="screenshots/phone_groups.png" alt="phone_groups" height="300" />
+<p><img src="screenshots/phone_groups_home.png" alt="phone_groups" height="300" />
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
 <img src="screenshots/phone_group_search.png" alt="phone_group_search" height="300" />
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
-
 ### Getting Started
 
 ### Using this app
@@ -176,11 +175,13 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.6.3\)
+#### To-dos for current release \(0.6.4\)
 
-#### To-dos for next release \(0.6.4)
+#### To-dos for next release \(0.7.0)
 
+- Top 250 movies (first page, no pagination)
 - Reuse item logic of search result groups / groups of the day
+- Compose migration
 
 #### Future plans
 
@@ -190,6 +191,12 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From MD2 / custom design to MD3
   * From View and Data Binding to Jetpack Compose
     * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout
+* Books/Movies
+  * NavigationBarItem/TabRow
+  * T250
+  * Mine
+  * More features
+
 * Groups - Home
   * Support pagination?
   * Add favorite tabs for topic list area
@@ -216,12 +223,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Languages
   * Translations
   * Pick language
-* Books/Movies
-  * NavigationBarItem/TabRow
-  * T250
-  * Mine
-  * More features
-
 * Home - Following
   * More card types
   * Pagination
@@ -236,7 +237,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * LazyLayoutPinnableItem?
   * ...
 * Topics feed (notifications)
-  * Move from NavigationBar to Groups Home Toolbar
   * Find why it is broken and fix it
   * Clarify:
     * Improper use may disturb you and drain phone battery (untested)

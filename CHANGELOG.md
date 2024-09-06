@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+## Version 0.6.4(604)
+
+- Move Notifications from NavigationBar to Groups Home app bar
+- "Home" -> "Statuses" (because it is not necessarily the "home" tab)
+- Fix NavigationBarItem selection not shown
+- Groups Home: Fix menu not being closed immediately on Settings click
+- Code optimizations
+
 ## Version 0.6.3(603)
 
 - Groups Home: Fix translation mistakes
@@ -8,6 +16,8 @@ Change Log
   - Remove shell Fragments
   - Only usages of Fragment: PreferenceFragmentCompat
 - Migrate most usages of MaterialToolBar to Compose TopAppBar
+  - Reduce TopAppBar height to 56 dp
+
 - Minor tweaks and optimizations
 
 ## Version 0.6.2(602)
