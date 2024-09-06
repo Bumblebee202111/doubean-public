@@ -11,6 +11,7 @@ data object BottomNavRoute
 fun NavGraphBuilder.bottomNavScreen(
     startWithGroups: Boolean,
     navigateToSearch: () -> Unit,
+    navigateToNotifications: () -> Unit,
     navigateToSettings: () -> Unit,
     navigateToGroup: (groupId: String, defaultTabId: String?) -> Unit,
     navigateToTopic: (topicId: String) -> Unit,
@@ -20,6 +21,7 @@ fun NavGraphBuilder.bottomNavScreen(
     BottomNavScreen(
         startWithGroups = startWithGroups,
         navigateToSearch = navigateToSearch,
+        navigateToNotifications = navigateToNotifications,
         navigateToSettings = navigateToSettings,
         navigateToGroup = navigateToGroup,
         navigateToTopic = navigateToTopic,

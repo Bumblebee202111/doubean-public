@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Tab
 import androidx.compose.material3.Card
@@ -63,6 +64,7 @@ import java.util.Calendar
 fun GroupsHomeScreen(
     viewModel: GroupsHomeViewModel = hiltViewModel(),
     onSearchClick: () -> Unit,
+    onNotificationsClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onGroupClick: (groupId: String, tabId: String?) -> Unit,
     onTopicClick: (topicId: String) -> Unit,
@@ -77,6 +79,7 @@ fun GroupsHomeScreen(
         groupsOfTheDay = groupsOfTheDay,
         recentTopicsFeed = recentTopicsFeed,
         onSearchClick = onSearchClick,
+        onNotificationsClick = onNotificationsClick,
         onSettingsClick = onSettingsClick,
         onGroupClick = onGroupClick,
         onTopicClick = onTopicClick,
@@ -91,6 +94,7 @@ fun GroupsHomeScreen(
     groupsOfTheDay: List<RecommendedGroupItem>?,
     recentTopicsFeed: List<TopicItemWithGroup>?,
     onSearchClick: () -> Unit,
+    onNotificationsClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onGroupClick: (groupId: String, tabId: String?) -> Unit,
     onTopicClick: (topicId: String) -> Unit,
@@ -102,14 +106,20 @@ fun GroupsHomeScreen(
                 actions = {
                     IconButton(onClick = onSearchClick) {
                         Icon(
-                            Icons.Filled.Search,
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = null
+                        )
+                    }
+                    IconButton(onClick = onNotificationsClick) {
+                        Icon(
+                            imageVector = Icons.Filled.Notifications,
                             contentDescription = null
                         )
                     }
                     var expanded by remember { mutableStateOf(false) }
                     IconButton(onClick = { expanded = !expanded }) {
                         Icon(
-                            Icons.Filled.MoreVert,
+                            imageVector = Icons.Filled.MoreVert,
                             contentDescription = null
                         )
                     }
