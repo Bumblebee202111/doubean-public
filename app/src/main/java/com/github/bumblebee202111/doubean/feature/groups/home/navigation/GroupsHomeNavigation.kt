@@ -11,6 +11,7 @@ data object GroupsHomeRoute
 
 fun NavGraphBuilder.groupsHomeScreen(
     onSearchClick: () -> Unit,
+    onNotificationsClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onGroupClick: (groupId: String, tabId: String?) -> Unit,
     onTopicClick: (topicId: String) -> Unit,
@@ -26,6 +27,7 @@ fun NavGraphBuilder.groupsHomeScreen(
 ) {
     GroupsHomeScreen(
         onSearchClick = onSearchClick,
+        onNotificationsClick = onNotificationsClick,
         onSettingsClick = onSettingsClick,
         onGroupClick = onGroupClick,
         onTopicClick = onTopicClick

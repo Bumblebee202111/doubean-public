@@ -3,6 +3,7 @@ package com.github.bumblebee202111.doubean.feature.notifications
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -30,6 +31,7 @@ import com.github.bumblebee202111.doubean.util.TOPIC_PATH
 
 @Composable
 fun NotificationsScreen(
+    onBackClick: () -> Unit,
     onTopicClick: (topicId: String) -> Unit,
     onSettingsClick: () -> Unit,
     viewModel: NotificationsViewModel = hiltViewModel(),
@@ -38,6 +40,7 @@ fun NotificationsScreen(
     NotificationsScreen(
         notificationPagingItems = notificationPagingItems,
         onTopicClick = onTopicClick,
+        onBackClick = onBackClick,
         onSettingsClick = onSettingsClick
     )
 }
@@ -46,18 +49,29 @@ fun NotificationsScreen(
 @Composable
 fun NotificationsScreen(
     notificationPagingItems: LazyPagingItems<TopicItemWithGroup>,
+    onBackClick: () -> Unit,
     onTopicClick: (topicId: String) -> Unit,
     onSettingsClick: () -> Unit,
 ) {
     Scaffold(topBar = {
-        DoubeanTopAppBar(title = {}, actions = {
-            IconButton(onClick = onSettingsClick) {
-                Icon(
-                    imageVector = Icons.Filled.Settings,
-                    contentDescription = null
-                )
-            }
-        })
+        DoubeanTopAppBar(
+            title = {},
+            navigationIcon = {
+                IconButton(onClick = onBackClick) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null
+                    )
+                }
+            },
+            actions = {
+                IconButton(onClick = onSettingsClick) {
+                    Icon(
+                        imageVector = Icons.Filled.Settings,
+                        contentDescription = null
+                    )
+                }
+            })
     }) { innerPadding ->
         LazyColumn(
             contentPadding = innerPadding,

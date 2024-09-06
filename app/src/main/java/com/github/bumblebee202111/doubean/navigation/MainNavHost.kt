@@ -21,6 +21,8 @@ import com.github.bumblebee202111.doubean.feature.login.navigation.LoginRoute
 import com.github.bumblebee202111.doubean.feature.login.navigation.loginScreen
 import com.github.bumblebee202111.doubean.feature.login.navigation.navigateToLogin
 import com.github.bumblebee202111.doubean.feature.login.navigation.verifyPhoneScreen
+import com.github.bumblebee202111.doubean.feature.notifications.navigation.navigateToNotifications
+import com.github.bumblebee202111.doubean.feature.notifications.navigation.notificationsScreen
 import com.github.bumblebee202111.doubean.feature.settings.navigation.groupDefaultNotificationsPreferencesSettingsScreen
 import com.github.bumblebee202111.doubean.feature.settings.navigation.navigateToGroupDefaultNotificationsPreferencesSettings
 import com.github.bumblebee202111.doubean.feature.settings.navigation.navigateToSettings
@@ -43,6 +45,7 @@ fun MainNavHost(
         bottomNavScreen(
             startWithGroups = startWithGroups,
             navigateToSearch = navController::navigateToSearch,
+            navigateToNotifications = navController::navigateToNotifications,
             navigateToSettings = navController::navigateToSettings,
             navigateToGroup = navController::navigateToGroup,
             navigateToTopic = navController::navigateToTopic,
@@ -50,6 +53,11 @@ fun MainNavHost(
             onShowSnackbar = onShowSnackbar
         )
         groupsSearchScreen(onGroupClick = navController::navigateToGroup)
+        notificationsScreen(
+            onBackClick = navController::navigateUp,
+            onTopicClick = navController::navigateToTopic,
+            onSettingsClick = navController::navigateToSettings
+        )
         groupDetailScreen(
             onBackClick = navController::navigateUp,
             onTopicClick = navController::navigateToTopic,

@@ -6,7 +6,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.github.bumblebee202111.doubean.feature.groups.home.navigation.groupsHomeScreen
 import com.github.bumblebee202111.doubean.feature.home.navigation.homeScreen
-import com.github.bumblebee202111.doubean.feature.notifications.navigation.notificationsScreen
 import com.github.bumblebee202111.doubean.feature.profile.navigation.profileScreen
 
 @Composable
@@ -14,6 +13,7 @@ fun BottomNavHost(
     navController: NavHostController,
     startDestination: Any,
     navigateToSearch: () -> Unit,
+    navigateToNotifications: () -> Unit,
     navigateToSettings: () -> Unit,
     navigateToGroupDetail: (groupId: String, defaultTabId: String?) -> Unit,
     navigateToTopic: (topicId: String) -> Unit,
@@ -27,15 +27,12 @@ fun BottomNavHost(
     ) {
         homeScreen(onSettingsClick = navigateToSettings)
         groupsHomeScreen(
-                onSearchClick = navigateToSearch,
-                onSettingsClick = navigateToSettings,
-                onGroupClick = navigateToGroupDetail,
-                onTopicClick = navigateToTopic
-            )
-        notificationsScreen(
-                onTopicClick = navigateToTopic,
-                onSettingsClick = navigateToSettings
-            )
+            onSearchClick = navigateToSearch,
+            onNotificationsClick = navigateToNotifications,
+            onSettingsClick = navigateToSettings,
+            onGroupClick = navigateToGroupDetail,
+            onTopicClick = navigateToTopic
+        )
         profileScreen(onLoginClick = navigateToLogin)
     }
 }
