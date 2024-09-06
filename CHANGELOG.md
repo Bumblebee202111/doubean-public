@@ -3,6 +3,12 @@ Change Log
 
 ## Version 0.6.4(604)
 
+- Move Notifications from NavigationBar to Groups Home app bar
+- "Home" -> "Statuses" (because it is not necessarily the "home" tab)
+- Fix NavigationBarItem selection not shown
+- Groups Home: Fix menu not being closed immediately on Settings click
+- Code optimizations
+
 ## Version 0.6.3(603)
 
 - Groups Home: Fix translation mistakes

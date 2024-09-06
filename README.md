@@ -72,8 +72,6 @@ Introduction
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
 <img src="screenshots/phone_group_search.png" alt="phone_group_search" height="300" />
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
-
-
 ### Getting Started
 
 ### Using this app
@@ -179,11 +177,11 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.6.4\)
 
-- Compose migration
+#### To-dos for next release \(0.7.0)
 
-#### To-dos for next release \(0..)
-
+- Top 250 movies (first page, no pagination)
 - Reuse item logic of search result groups / groups of the day
+- Compose migration
 
 #### Future plans
 
@@ -193,6 +191,12 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From MD2 / custom design to MD3
   * From View and Data Binding to Jetpack Compose
     * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout
+* Books/Movies
+  * NavigationBarItem/TabRow
+  * T250
+  * Mine
+  * More features
+
 * Groups - Home
   * Support pagination?
   * Add favorite tabs for topic list area
@@ -219,12 +223,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Languages
   * Translations
   * Pick language
-* Books/Movies
-  * NavigationBarItem/TabRow
-  * T250
-  * Mine
-  * More features
-
 * Home - Following
   * More card types
   * Pagination
