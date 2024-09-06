@@ -16,6 +16,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -53,6 +54,7 @@ import com.github.bumblebee202111.doubean.ui.common.rememberLazyListStatePagingW
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.abbreviatedDateTimeString
+import com.github.bumblebee202111.doubean.util.buildGroupTopicAndTagText
 import com.github.bumblebee202111.doubean.util.getColorFromTheme
 
 @Composable
@@ -245,6 +247,15 @@ fun GroupTabScreen(
                 onReset = {}
             ) {
                 post = topic
+
+                postTitle.setContent {
+                    val text = topic?.let { topic ->
+                        topic.tag?.name?.let { tagName ->
+                            buildGroupTopicAndTagText(tagName, topic.title)
+                        } ?: topic.title
+                    } ?: ""
+                    Text(text = text, style = MaterialTheme.typography.bodyLarge)
+                }
 
                 cover.setContent {
                     AsyncImage(

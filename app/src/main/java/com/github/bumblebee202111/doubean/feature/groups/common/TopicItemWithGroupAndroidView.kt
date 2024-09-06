@@ -5,6 +5,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,6 +22,7 @@ import com.github.bumblebee202111.doubean.model.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.ui.common.UserProfileImage
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.util.abbreviatedDateTimeString
+import com.github.bumblebee202111.doubean.util.buildGroupTopicAndTagText
 
 @Composable
 fun TopicItemWithGroupAndroidView(
@@ -42,6 +45,15 @@ fun TopicItemWithGroupAndroidView(
             topicItemWithGroup?.created?.let {
                 DateTimeText(text = it.abbreviatedDateTimeString(LocalContext.current))
             }
+        }
+
+        postTitle.setContent {
+            val text = topicItemWithGroup?.let { topic ->
+                topic.tag?.name?.let { tagName ->
+                    buildGroupTopicAndTagText(tagName, topic.title)
+                } ?: topic.title
+            } ?: ""
+            Text(text = text, style = MaterialTheme.typography.bodyLarge)
         }
 
         cover.setContent {
