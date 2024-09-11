@@ -175,13 +175,20 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.6.4\)
+#### To-dos for current release \(0.7.0\)
 
-#### To-dos for next release \(0.7.0)
-
+- Sort topics by spinner
+  - Fix selected item not being remembered
+  - Wrap it in Composable 
+  - Update labels
+    - "Last updated" -> "New"
+    - \+ "Hot (last created)"
 - Top 250 movies (first page, no pagination)
-- Reuse item logic of search result groups / groups of the day
 - Compose migration
+
+#### To-dos for next release \(0.7.1)
+
+- Reuse item logic of search result groups / groups of the day
 
 #### Future plans
 
@@ -190,13 +197,12 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Gradual migrations: <span id="migrations"></span>
   * From MD2 / custom design to MD3
   * From View and Data Binding to Jetpack Compose
-    * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout
+    * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout/Spinner
 * Books/Movies
   * NavigationBarItem/TabRow
   * T250
   * Mine
   * More features
-
 * Groups - Home
   * Support pagination?
   * Add favorite tabs for topic list area
@@ -210,9 +216,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Add corresponding item actions
 * Allow expanding group descriptions
 * Bring back basic support for dark mode & landscape experience
-* Topics sort by 
-  * "Last updated" -> "New (last updated)"
-  * Add "Hot (last created)"
 * Shared element
 * Group tab: Track read
 * Use the new nullable "edit_time" property of network topics

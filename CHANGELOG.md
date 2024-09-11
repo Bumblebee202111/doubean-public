@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.7.0(700)
+
 ## Version 0.6.4(604)
 
 - Move Notifications from NavigationBar to Groups Home app bar
