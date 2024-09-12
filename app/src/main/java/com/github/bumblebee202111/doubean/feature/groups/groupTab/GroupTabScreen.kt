@@ -2,8 +2,6 @@ package com.github.bumblebee202111.doubean.feature.groups.groupTab
 
 import android.content.res.ColorStateList
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import androidx.appcompat.widget.PopupMenu
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -54,6 +52,7 @@ import com.github.bumblebee202111.doubean.feature.groups.common.TopicCountLimitE
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.TopicItem
 import com.github.bumblebee202111.doubean.model.TopicSortBy
+import com.github.bumblebee202111.doubean.ui.SortTopicsBySpinner
 import com.github.bumblebee202111.doubean.ui.common.UserProfileImage
 import com.github.bumblebee202111.doubean.ui.common.rememberLazyListStatePagingWorkaround
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
@@ -151,7 +150,7 @@ fun GroupTabScreen(
             group = group,
             sortBy = sortBy,
             onOpenAlertDialog = { openAlertDialog = true },
-            updateSortBy = updateSortBy,
+            onSortByClick = updateSortBy,
             removeFavorite = removeFavorite,
             addFavorite = addFavorite
         )
@@ -193,7 +192,7 @@ private fun LazyListScope.tabActionsItem(
     group: GroupDetail?,
     sortBy: TopicSortBy?,
     onOpenAlertDialog: () -> Unit,
-    updateSortBy: (topicSortBy: TopicSortBy) -> Unit,
+    onSortByClick: (topicSortBy: TopicSortBy) -> Unit,
     removeFavorite: () -> Unit,
     addFavorite: () -> Unit,
 ) {
@@ -202,9 +201,6 @@ private fun LazyListScope.tabActionsItem(
         key = "tab_actions", contentType = "tab_actions"
     ) {
         val context = LocalContext.current
-        val selectedPosition by remember(sortBy) {
-            mutableIntStateOf(sortBy?.let(::getPositionOfSortBy) ?: 0)
-        }
 
         AndroidViewBinding(
             factory = { inflater, parent, attachToParent ->
@@ -213,32 +209,12 @@ private fun LazyListScope.tabActionsItem(
                     parent,
                     attachToParent
                 ).apply {
-                    fun setupSpinner() {
-                        val arrayAdapter = ArrayAdapter.createFromResource(
-                            context,
-                            R.array.sort_topics_by_array,
-                            android.R.layout.simple_spinner_item
+                    sortTopicsBySpinner.setContent {
+                        SortTopicsBySpinner(
+                            initialSelectedItem = sortBy,
+                            onItemSelected = onSortByClick
                         )
-                        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
-                        sortTopicsBySpinner.adapter = arrayAdapter
-                        sortTopicsBySpinner.setSelection(selectedPosition)
-                        sortTopicsBySpinner.onItemSelectedListener =
-                            object : AdapterView.OnItemSelectedListener {
-                                override fun onItemSelected(
-                                    parent: AdapterView<*>?,
-                                    
-                                    view: View?,
-                                    position: Int,
-                                    id: Long,
-                                ) {
-                                    updateSortBy(getSortByAt(position))
-                                }
-
-                                override fun onNothingSelected(parent: AdapterView<*>?) {
-                                }
-                            }
                     }
-                    setupSpinner()
                 }
             },
             modifier = Modifier.fillMaxWidth(),
@@ -494,12 +470,11 @@ private fun GroupTabNotificationsPreferenceDialog(
                     root,
                     attachToRoot
                 ).apply {
-                    sortRecommendedTopicsBySpinner.adapter = ArrayAdapter.createFromResource(
-                        root.context,
-                        R.array.sort_recommended_topics_by_array,
-                        android.R.layout.simple_spinner_item
-                    )
-                        .apply { setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item) }
+                    sortRecommendedTopicsBySpinner.setContent {
+                        SortTopicsBySpinner(initialSelectedItem = sortRecommendedTopicsBy) {
+                            sortRecommendedTopicsBy = it
+                        }
+                    }
                 }
             }) {
 
@@ -531,24 +506,7 @@ private fun GroupTabNotificationsPreferenceDialog(
                     }
                 }
                 sortRecommendedTopicsByTitle.isEnabled = enableNotifications
-                sortRecommendedTopicsBySpinner.apply {
-                    isEnabled = enableNotifications
-                    setSelection(getSpinnerItemPositionOf(sortRecommendedTopicsBy))
-                    onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(
-                            parent: AdapterView<*>?,
-                            view: View?,
-                            position: Int,
-                            id: Long,
-                        ) {
-                            sortRecommendedTopicsBy = getTopicSortByAt(position)
-                        }
-
-                        override fun onNothingSelected(parent: AdapterView<*>?) {
-                        }
-
-                    }
-                }
+                sortRecommendedTopicsBySpinner.isEnabled = enableNotifications
                 feedRequestTopicCountLimitTitle.isEnabled = enableNotifications
                 feedRequestTopicCountLimitTextField.setContent {
                     TopicCountLimitEachFetchTextField(
@@ -564,25 +522,5 @@ private fun GroupTabNotificationsPreferenceDialog(
         }
     )
 }
-
-private fun getSortByAt(position: Int): TopicSortBy {
-    return when (position) {
-        0 -> TopicSortBy.LAST_UPDATED
-        1 -> TopicSortBy.NEW
-        2 -> TopicSortBy.TOP
-        else -> throw IndexOutOfBoundsException()
-    }
-}
-
-private fun getPositionOfSortBy(sortBy: TopicSortBy): Int {
-    return when (sortBy) {
-        TopicSortBy.LAST_UPDATED -> 0
-        TopicSortBy.NEW -> 1
-        TopicSortBy.TOP -> 2
-        else -> throw IndexOutOfBoundsException()
-    }
-}
-
-
 
 
