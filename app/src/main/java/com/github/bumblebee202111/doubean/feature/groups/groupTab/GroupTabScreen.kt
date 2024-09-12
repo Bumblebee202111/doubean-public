@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Comment
@@ -37,6 +38,9 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
@@ -48,6 +52,7 @@ import com.github.bumblebee202111.doubean.databinding.ViewGroupTabActionsBinding
 import com.github.bumblebee202111.doubean.feature.groups.common.NotificationsButton
 import com.github.bumblebee202111.doubean.feature.groups.common.TopicCountLimitEachFetchTextField
 import com.github.bumblebee202111.doubean.model.GroupDetail
+import com.github.bumblebee202111.doubean.model.TopicItem
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.common.UserProfileImage
 import com.github.bumblebee202111.doubean.ui.common.rememberLazyListStatePagingWorkaround
@@ -59,16 +64,58 @@ import com.github.bumblebee202111.doubean.util.getColorFromTheme
 
 @Composable
 fun GroupTabScreen(
-    viewModel: GroupTabViewModel,
+    groupId: String,
+    tabId: String?,
     group: GroupDetail?,
     onTopicClick: (topicId: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
+    viewModel: GroupTabViewModel = hiltViewModel<GroupTabViewModel, GroupTabViewModel.Factory>(
+        creationCallback = { factory ->
+            factory.create(groupId, tabId)
+        },
+        key = groupId + tabId
+    ),
 ) {
-
     val topicPagingItems = viewModel.topicsPagingData.collectAsLazyPagingItems()
-    val tabId = viewModel.tabId
-    val shouldDisplayFavoritedGroup = viewModel.shouldDisplayFavoritedTab
+    val shouldDisplayFavoritedTab = viewModel.shouldDisplayFavoritedTab
     val shouldDisplayUnfavoritedTab = viewModel.shouldDisplayUnfavoritedTab
+    val sortBy by viewModel.sortBy.collectAsStateWithLifecycle()
+
+    GroupTabScreen(
+        tabId = tabId,
+        topicPagingItems = topicPagingItems,
+        shouldDisplayFavoritedGroup = shouldDisplayFavoritedTab,
+        shouldDisplayUnfavoritedTab = shouldDisplayUnfavoritedTab,
+        sortBy = sortBy,
+        group = group,
+        clearFavoritedTabState = viewModel::clearFavoritedTabState,
+        clearUnfavoritedTabState = viewModel::clearUnfavoritedTabState,
+        updateSortBy = viewModel::updateSortBy,
+        removeFavorite = viewModel::removeFavorite,
+        addFavorite = viewModel::addFavorite,
+        saveNotificationsPreference = viewModel::saveNotificationsPreference,
+        onTopicClick = onTopicClick,
+        onShowSnackbar = onShowSnackbar
+    )
+}
+
+@Composable
+fun GroupTabScreen(
+    tabId: String?,
+    topicPagingItems: LazyPagingItems<TopicItem>,
+    shouldDisplayFavoritedGroup: Boolean,
+    shouldDisplayUnfavoritedTab: Boolean,
+    sortBy: TopicSortBy?,
+    group: GroupDetail?,
+    clearFavoritedTabState: () -> Unit,
+    clearUnfavoritedTabState: () -> Unit,
+    updateSortBy: (topicSortBy: TopicSortBy) -> Unit,
+    removeFavorite: () -> Unit,
+    addFavorite: () -> Unit,
+    saveNotificationsPreference: (enableNotifications: Boolean, allowNotificationUpdates: Boolean, sortRecommendedTopicsBy: TopicSortBy, numberOfTopicsLimitEachFeedFetch: Int) -> Unit,
+    onTopicClick: (topicId: String) -> Unit,
+    onShowSnackbar: suspend (message: String) -> Unit,
+) {
     val context = LocalContext.current
 
     var openAlertDialog by remember { mutableStateOf(false) }
@@ -78,7 +125,7 @@ fun GroupTabScreen(
     LaunchedEffect(key1 = shouldDisplayFavoritedGroup) {
         if (shouldDisplayFavoritedGroup) {
             onShowSnackbar(favoritedTabMessage)
-            viewModel.clearFavoritedTabState()
+            clearFavoritedTabState()
         }
     }
 
@@ -87,7 +134,7 @@ fun GroupTabScreen(
     LaunchedEffect(key1 = shouldDisplayUnfavoritedTab) {
         if (shouldDisplayUnfavoritedTab) {
             onShowSnackbar(unfavoritedTabMessage)
-            viewModel.clearUnfavoritedTabState()
+            clearUnfavoritedTabState()
         }
     }
 
@@ -99,237 +146,17 @@ fun GroupTabScreen(
 
     ) {
 
-        item(
-            key = "tab_actions", contentType = "tab_actions"
-        ) {
+        tabActionsItem(
+            tabId = tabId,
+            group = group,
+            sortBy = sortBy,
+            onOpenAlertDialog = { openAlertDialog = true },
+            updateSortBy = updateSortBy,
+            removeFavorite = removeFavorite,
+            addFavorite = addFavorite
+        )
 
-            AndroidViewBinding(
-                factory = { inflater, parent, attachToParent ->
-                    ViewGroupTabActionsBinding.inflate(
-                        inflater,
-                        parent,
-                        attachToParent
-                    ).apply {
-                        fun setupSpinner() {
-                            val arrayAdapter = ArrayAdapter.createFromResource(
-                                context,
-                                R.array.sort_topics_by_array,
-                                android.R.layout.simple_spinner_item
-                            )
-                            arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
-                            sortTopicsBySpinner.adapter = arrayAdapter
-                            sortTopicsBySpinner.onItemSelectedListener =
-                                object : AdapterView.OnItemSelectedListener {
-                                    override fun onItemSelected(
-                                        parent: AdapterView<*>?,
-                                        
-                                        view: View?,
-                                        position: Int,
-                                        id: Long,
-                                    ) {
-                                        viewModel.setSortBy(getSortByAt(position))
-                                    }
-
-                                    override fun onNothingSelected(parent: AdapterView<*>?) {
-                                    }
-                                }
-                        }
-                        setupSpinner()
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(),
-                onReset = {}
-            ) {
-
-                fun setupFavoriteButtonAndMore() {
-
-                    if (tabId == null) { 
-                        notificationsButton.visibility = View.GONE
-                        favoriteButton.visibility = View.GONE
-                        more.visibility = View.GONE
-                    } else { 
-                        favoriteButton.setOnClickListener {
-                            group?.findTab(tabId)?.let { tab ->
-                                if (tab.isFavorite) {
-                                    viewModel.removeFavorite()
-                                } else {
-                                    viewModel.addFavorite()
-                                }
-                            }
-                        }
-
-                        @Suppress("ConstantConditionIf") 
-                        if (false) {
-                            notificationsButton.setContent {
-                                group?.let { group ->
-                                    group.findTab(tabId)?.let { tab ->
-                                        NotificationsButton(
-                                            groupColor = group.color?.let {
-                                                Color(it)
-                                            } ?: LocalContentColor.current,
-                                            enableNotifications = tab.enableNotifications ?: false
-                                        ) {
-                                            openAlertDialog = true
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        more.setOnClickListener { v ->
-                            val popup = PopupMenu(context, v)
-                            popup.setOnMenuItemClickListener { item ->
-                                when (item.itemId) {
-                                    R.id.action_share -> {
-                                        val shareText = StringBuilder()
-                                        group?.let { group ->
-                                            shareText.append(group.name + "|")
-                                            group.tabs?.first { it.id == tabId }
-                                                ?.let { tab ->
-                                                    shareText.append(tab.name)
-                                                }
-                                            group.shareUrl?.let { shareUrl ->
-                                                shareText.append(" $shareUrl\r\n")
-                                            }
-
-                                            ShareUtil.share(context, shareText)
-                                            true
-                                        }
-
-                                    }
-                                }
-                                false
-                            }
-
-                            popup.inflate(R.menu.menu_group_tab)
-                            popup.show()
-                        }
-                    }
-                }
-
-                setupFavoriteButtonAndMore()
-
-                group?.let { group ->
-                    val colorSurface = context.getColorFromTheme(R.attr.colorSurface)
-                    val groupColor =
-                        group.color ?: context.getColorFromTheme(R.attr.colorPrimary)
-
-                    group.findTab(tabId)?.let { tab ->
-                        with(favoriteButton) {
-                            if (tab.isFavorite) {
-                                setIconResource(R.drawable.ic_star)
-                                setText(R.string.favorited)
-                                iconTint = ColorStateList.valueOf(groupColor)
-                                setTextColor(groupColor)
-                                setBackgroundColor(colorSurface)
-                            } else {
-                                setIconResource(R.drawable.ic_star)
-                                setText(R.string.favorite)
-                                iconTint = ColorStateList.valueOf(colorSurface)
-                                setTextColor(colorSurface)
-                                setBackgroundColor(groupColor)
-                            }
-                        }
-
-                    }
-                }
-            }
-        }
-
-        items(
-            count = topicPagingItems.itemCount,
-            key = topicPagingItems.itemKey { it.id },
-            contentType = topicPagingItems.itemContentType { "topicLazyPagingItem" }
-        ) { index ->
-            val topic = topicPagingItems[index]
-            AndroidViewBinding(factory = ListItemPostBinding::inflate,
-                modifier = Modifier.fillMaxWidth(),
-                onReset = {}
-            ) {
-                post = topic
-
-                postTitle.setContent {
-                    val text = topic?.let { topic ->
-                        topic.tag?.name?.let { tagName ->
-                            buildGroupTopicAndTagText(tagName, topic.title)
-                        } ?: topic.title
-                    } ?: ""
-                    Text(text = text, style = MaterialTheme.typography.bodyLarge)
-                }
-
-                cover.setContent {
-                    AsyncImage(
-                        model = topic?.coverUrl, contentDescription = null,
-                        modifier = Modifier
-                            .size(80.dp)
-                            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_normal))),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-
-                clickListener =
-                    View.OnClickListener { topic?.let { onTopicClick(it.id) } }
-                showPopup = View.OnClickListener { v ->
-                    val popupMenu = PopupMenu(v.context, more)
-                    popupMenu.inflate(R.menu.menu_post_item)
-                    popupMenu.setOnMenuItemClickListener { item ->
-                        topic?.let {
-                            when (item.itemId) {
-                                R.id.action_share -> {
-                                    val shareText = StringBuilder()
-                                    group?.let { group ->
-                                        shareText.append(group.name + "|")
-                                    }
-
-                                    it.tag?.let { tag ->
-                                        shareText.append(tag.name)
-                                    }
-                                    shareText.append("@${it.author.name}${context.getString(R.string.colon)} ${it.title} ${it.url}")
-                                    ShareUtil.share(context, shareText)
-                                    false
-                                }
-
-                                else -> false
-                            }
-                        }
-                        false
-                    }
-                    popupMenu.show()
-                }
-
-                authorAvatar.setContent {
-                    UserProfileImage(
-                        url = topic?.author?.avatarUrl,
-                        size = dimensionResource(id = R.dimen.icon_size_extra_small)
-                    )
-                }
-
-                created.setContent {
-                    topic?.created?.let {
-                        DateTimeText(text = it.abbreviatedDateTimeString(LocalContext.current))
-                    }
-                }
-
-                commentIcon.setContent {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.Comment,
-                        contentDescription = null,
-                        modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size_extra_small))
-                    )
-                }
-
-                lastUpdated.setContent {
-                    topic?.lastUpdated?.let {
-                        DateTimeText(text = it.abbreviatedDateTimeString(LocalContext.current))
-                    }
-                }
-
-            }
-            if (index != topicPagingItems.itemCount - 1) {
-                HorizontalDivider()
-            }
-
-        }
+        topicItems(topicPagingItems = topicPagingItems, group = group, onTopicClick = onTopicClick)
     }
 
     if (openAlertDialog) {
@@ -348,22 +175,276 @@ fun GroupTabScreen(
                     onDismissRequest = {
                         openAlertDialog = false
                     }) { enableNotificationsToSave, allowNotificationUpdatesToSave, sortRecommendedTopicsByToSave, numberOfTopicsLimitEachFeedFetchToSave ->
-                    viewModel.saveNotificationsPreference(
-                        enableNotifications = enableNotificationsToSave,
-                        allowNotificationUpdates = allowNotificationUpdatesToSave,
-                        sortRecommendedTopicsBy = sortRecommendedTopicsByToSave,
-                        numberOfTopicsLimitEachFeedFetch = numberOfTopicsLimitEachFeedFetchToSave
+                    saveNotificationsPreference(
+                        enableNotificationsToSave,
+                        allowNotificationUpdatesToSave,
+                        sortRecommendedTopicsByToSave,
+                        numberOfTopicsLimitEachFeedFetchToSave
                     )
                     openAlertDialog = false
                 }
             }
-
         }
     }
 }
 
+private fun LazyListScope.tabActionsItem(
+    tabId: String?,
+    group: GroupDetail?,
+    sortBy: TopicSortBy?,
+    onOpenAlertDialog: () -> Unit,
+    updateSortBy: (topicSortBy: TopicSortBy) -> Unit,
+    removeFavorite: () -> Unit,
+    addFavorite: () -> Unit,
+) {
+
+    item(
+        key = "tab_actions", contentType = "tab_actions"
+    ) {
+        val context = LocalContext.current
+        val selectedPosition by remember(sortBy) {
+            mutableIntStateOf(sortBy?.let(::getPositionOfSortBy) ?: 0)
+        }
+
+        AndroidViewBinding(
+            factory = { inflater, parent, attachToParent ->
+                ViewGroupTabActionsBinding.inflate(
+                    inflater,
+                    parent,
+                    attachToParent
+                ).apply {
+                    fun setupSpinner() {
+                        val arrayAdapter = ArrayAdapter.createFromResource(
+                            context,
+                            R.array.sort_topics_by_array,
+                            android.R.layout.simple_spinner_item
+                        )
+                        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+                        sortTopicsBySpinner.adapter = arrayAdapter
+                        sortTopicsBySpinner.setSelection(selectedPosition)
+                        sortTopicsBySpinner.onItemSelectedListener =
+                            object : AdapterView.OnItemSelectedListener {
+                                override fun onItemSelected(
+                                    parent: AdapterView<*>?,
+                                    
+                                    view: View?,
+                                    position: Int,
+                                    id: Long,
+                                ) {
+                                    updateSortBy(getSortByAt(position))
+                                }
+
+                                override fun onNothingSelected(parent: AdapterView<*>?) {
+                                }
+                            }
+                    }
+                    setupSpinner()
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            onReset = {}
+        ) {
+
+            fun setupFavoriteButtonAndMore() {
+
+                if (tabId == null) { 
+                    notificationsButton.visibility = View.GONE
+                    favoriteButton.visibility = View.GONE
+                    more.visibility = View.GONE
+                } else { 
+                    favoriteButton.setOnClickListener {
+                        group?.findTab(tabId)?.let { tab ->
+                            if (tab.isFavorite) {
+                                removeFavorite()
+                            } else {
+                                addFavorite()
+                            }
+                        }
+                    }
+
+                    @Suppress("ConstantConditionIf") 
+                    if (false) {
+                        notificationsButton.setContent {
+                            group?.let { group ->
+                                group.findTab(tabId)?.let { tab ->
+                                    NotificationsButton(
+                                        groupColor = group.color?.let {
+                                            Color(it)
+                                        } ?: LocalContentColor.current,
+                                        enableNotifications = tab.enableNotifications ?: false
+                                    ) {
+                                        onOpenAlertDialog()
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    more.setOnClickListener { v ->
+                        val popup = PopupMenu(context, v)
+                        popup.setOnMenuItemClickListener { item ->
+                            when (item.itemId) {
+                                R.id.action_share -> {
+                                    val shareText = StringBuilder()
+                                    group?.let { group ->
+                                        shareText.append(group.name + "|")
+                                        group.tabs?.first { it.id == tabId }
+                                            ?.let { tab ->
+                                                shareText.append(tab.name)
+                                            }
+                                        group.shareUrl?.let { shareUrl ->
+                                            shareText.append(" $shareUrl\r\n")
+                                        }
+
+                                        ShareUtil.share(context, shareText)
+                                        true
+                                    }
+
+                                }
+                            }
+                            false
+                        }
+
+                        popup.inflate(R.menu.menu_group_tab)
+                        popup.show()
+                    }
+                }
+            }
+
+            setupFavoriteButtonAndMore()
+
+            group?.let { group ->
+                val colorSurface = context.getColorFromTheme(R.attr.colorSurface)
+                val groupColor =
+                    group.color ?: context.getColorFromTheme(R.attr.colorPrimary)
+
+                group.findTab(tabId)?.let { tab ->
+                    with(favoriteButton) {
+                        if (tab.isFavorite) {
+                            setIconResource(R.drawable.ic_star)
+                            setText(R.string.favorited)
+                            iconTint = ColorStateList.valueOf(groupColor)
+                            setTextColor(groupColor)
+                            setBackgroundColor(colorSurface)
+                        } else {
+                            setIconResource(R.drawable.ic_star)
+                            setText(R.string.favorite)
+                            iconTint = ColorStateList.valueOf(colorSurface)
+                            setTextColor(colorSurface)
+                            setBackgroundColor(groupColor)
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+}
+
+private fun LazyListScope.topicItems(
+    topicPagingItems: LazyPagingItems<TopicItem>,
+    group: GroupDetail?,
+    onTopicClick: (topicId: String) -> Unit,
+) {
+    items(
+        count = topicPagingItems.itemCount,
+        key = topicPagingItems.itemKey { it.id },
+        contentType = topicPagingItems.itemContentType { "topicItem" }
+    ) { index ->
+        val topic = topicPagingItems[index]
+        val context = LocalContext.current
+        AndroidViewBinding(factory = ListItemPostBinding::inflate,
+            modifier = Modifier.fillMaxWidth(),
+            onReset = {}
+        ) {
+            post = topic
+
+            postTitle.setContent {
+                val text = topic?.let { topic ->
+                    topic.tag?.name?.let { tagName ->
+                        buildGroupTopicAndTagText(tagName, topic.title)
+                    } ?: topic.title
+                } ?: ""
+                Text(text = text, style = MaterialTheme.typography.bodyLarge)
+            }
+
+            cover.setContent {
+                AsyncImage(
+                    model = topic?.coverUrl, contentDescription = null,
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_normal))),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            clickListener =
+                View.OnClickListener { topic?.let { onTopicClick(it.id) } }
+            showPopup = View.OnClickListener { v ->
+                val popupMenu = PopupMenu(v.context, more)
+                popupMenu.inflate(R.menu.menu_post_item)
+                popupMenu.setOnMenuItemClickListener { item ->
+                    topic?.let {
+                        when (item.itemId) {
+                            R.id.action_share -> {
+                                val shareText = StringBuilder()
+                                group?.let { group ->
+                                    shareText.append(group.name + "|")
+                                }
+
+                                it.tag?.let { tag ->
+                                    shareText.append(tag.name)
+                                }
+                                shareText.append("@${it.author.name}${context.getString(R.string.colon)} ${it.title} ${it.url}")
+                                ShareUtil.share(context, shareText)
+                                false
+                            }
+
+                            else -> false
+                        }
+                    }
+                    false
+                }
+                popupMenu.show()
+            }
+
+            authorAvatar.setContent {
+                UserProfileImage(
+                    url = topic?.author?.avatarUrl,
+                    size = dimensionResource(id = R.dimen.icon_size_extra_small)
+                )
+            }
+
+            created.setContent {
+                topic?.created?.let {
+                    DateTimeText(text = it.abbreviatedDateTimeString(LocalContext.current))
+                }
+            }
+
+            commentIcon.setContent {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.Comment,
+                    contentDescription = null,
+                    modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size_extra_small))
+                )
+            }
+
+            lastUpdated.setContent {
+                topic?.lastUpdated?.let {
+                    DateTimeText(text = it.abbreviatedDateTimeString(LocalContext.current))
+                }
+            }
+
+        }
+        if (index != topicPagingItems.itemCount - 1) {
+            HorizontalDivider()
+        }
+
+    }
+}
+
 @Composable
-fun GroupTabNotificationsPreferenceDialog(
+private fun GroupTabNotificationsPreferenceDialog(
     initialEnableNotifications: Boolean,
     initialAllowNotificationUpdates: Boolean,
     initialSortRecommendedTopicsBy: TopicSortBy,
@@ -433,7 +514,7 @@ fun GroupTabNotificationsPreferenceDialog(
                     when (topicSortBy) {
                         TopicSortBy.LAST_UPDATED -> 0
                         TopicSortBy.NEW_TOP -> 1
-                        else -> throw java.lang.IndexOutOfBoundsException()
+                        else -> throw IndexOutOfBoundsException()
                     }
 
                 enableGroupNotificationsPref.apply {
@@ -489,7 +570,19 @@ private fun getSortByAt(position: Int): TopicSortBy {
         0 -> TopicSortBy.LAST_UPDATED
         1 -> TopicSortBy.NEW
         2 -> TopicSortBy.TOP
-        else -> throw (IndexOutOfBoundsException())
+        else -> throw IndexOutOfBoundsException()
     }
 }
+
+private fun getPositionOfSortBy(sortBy: TopicSortBy): Int {
+    return when (sortBy) {
+        TopicSortBy.LAST_UPDATED -> 0
+        TopicSortBy.NEW -> 1
+        TopicSortBy.TOP -> 2
+        else -> throw IndexOutOfBoundsException()
+    }
+}
+
+
+
 
