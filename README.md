@@ -178,7 +178,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 #### To-dos for current release \(0.7.0\)
 
 - Sort topics by spinner
-  - Fix selected item not being remembered
   - Wrap it in Composable 
   - Update labels
     - "Last updated" -> "New"

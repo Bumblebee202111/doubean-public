@@ -49,7 +49,6 @@ import com.github.bumblebee202111.doubean.databinding.LayoutGroupDetailBinding
 import com.github.bumblebee202111.doubean.feature.groups.common.NotificationsButton
 import com.github.bumblebee202111.doubean.feature.groups.common.TopicCountLimitEachFetchTextField
 import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabScreen
-import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabViewModel
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.GroupMemberRole
 import com.github.bumblebee202111.doubean.model.GroupTab
@@ -611,12 +610,8 @@ fun GroupPager(
             else -> taggedTabs[page - 1].id
         }
         GroupTabScreen(
-            viewModel = hiltViewModel<GroupTabViewModel, GroupTabViewModel.Factory>(
-                creationCallback = { factory ->
-                    factory.create(groupId, tabId)
-                },
-                key = groupId + tabId
-            ),
+            groupId = groupId,
+            tabId = tabId,
             group = group,
             onTopicClick = onTopicClick,
             onShowSnackbar = onShowSnackbar

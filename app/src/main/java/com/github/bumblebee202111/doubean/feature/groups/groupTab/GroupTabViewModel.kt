@@ -52,7 +52,7 @@ class GroupTabViewModel @AssistedInject constructor(
 
     var shouldDisplayUnfavoritedTab by mutableStateOf(false)
 
-    fun setSortBy(topicSortBy: TopicSortBy) {
+    fun updateSortBy(topicSortBy: TopicSortBy) {
         _sortBy.value = topicSortBy
     }
 
