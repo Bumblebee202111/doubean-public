@@ -182,6 +182,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   - Update labels
     - "Last updated" -> "New"
     - \+ "Hot (last created)"
+- Fix topic position not being remembered introduced in v0.6.3(603)
 - Top 250 movies (first page, no pagination)
 - Compose migration
 

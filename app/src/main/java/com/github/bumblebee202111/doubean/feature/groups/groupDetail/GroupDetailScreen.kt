@@ -1,9 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupDetail
 
 import android.view.MenuItem
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
@@ -53,6 +50,7 @@ import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.GroupMemberRole
 import com.github.bumblebee202111.doubean.model.GroupTab
 import com.github.bumblebee202111.doubean.model.TopicSortBy
+import com.github.bumblebee202111.doubean.ui.SortTopicsBySpinner
 import com.github.bumblebee202111.doubean.util.OpenInUtil
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import kotlinx.coroutines.launch
@@ -246,29 +244,13 @@ fun GroupNotificationsPreferenceDialog(
                     root,
                     attachToRoot
                 ).apply {
-                    sortRecommendedTopicsBySpinner.adapter = ArrayAdapter.createFromResource(
-                        root.context,
-                        R.array.sort_recommended_topics_by_array,
-                        android.R.layout.simple_spinner_item
-                    )
-                        .apply { setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item) }
+                    sortRecommendedTopicsBySpinner.setContent {
+                        SortTopicsBySpinner(initialSelectedItem = sortRecommendedTopicsBy) {
+                            sortRecommendedTopicsBy = it
+                        }
+                    }
                 }
             }) {
-
-                fun getTopicSortByAt(spinnerItemPosition: Int) =
-                    when (spinnerItemPosition) {
-                        0 -> TopicSortBy.LAST_UPDATED
-                        1 -> TopicSortBy.NEW_TOP
-                        else -> throw java.lang.IndexOutOfBoundsException()
-                    }
-
-                fun getSpinnerItemPositionOf(topicSortBy: TopicSortBy) =
-                    when (topicSortBy) {
-                        TopicSortBy.LAST_UPDATED -> 0
-                        TopicSortBy.NEW_TOP -> 1
-                        else -> throw java.lang.IndexOutOfBoundsException()
-                    }
-
                 enableGroupNotificationsPref.apply {
                     isChecked = enableNotifications
                     setOnCheckedChangeListener { _, isChecked ->
@@ -283,23 +265,7 @@ fun GroupNotificationsPreferenceDialog(
                     }
                 }
                 sortRecommendedTopicsByTitle.isEnabled = enableNotifications
-                sortRecommendedTopicsBySpinner.apply {
-                    isEnabled = enableNotifications
-                    setSelection(getSpinnerItemPositionOf(sortRecommendedTopicsBy))
-                    onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(
-                            parent: AdapterView<*>?,
-                            view: View?,
-                            position: Int,
-                            id: Long,
-                        ) {
-                            sortRecommendedTopicsBy = getTopicSortByAt(position)
-                        }
-
-                        override fun onNothingSelected(parent: AdapterView<*>?) {
-                        }
-                    }
-                }
+                sortRecommendedTopicsBySpinner.isEnabled = enableNotifications
                 feedRequestTopicCountLimitTitle.isEnabled = enableNotifications
                 feedRequestTopicCountLimitTextField.setContent {
                     TopicCountLimitEachFetchTextField(
@@ -375,7 +341,6 @@ fun GroupDetailCoordinator(
                     val memberRole = memberRole ?: return@apply
                     val isSubscribed = isSubscribed
                     when {
-
                         isSubscriptionEnabled && isSubscribed == false && memberRole in setOf(
                             GroupMemberRole.NOT_MEMBER,
                             GroupMemberRole.MEMBER_INVITED,
