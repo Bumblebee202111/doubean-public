@@ -177,18 +177,13 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.0\)
 
-- Sort topics by spinner
-  - Wrap it in Composable 
-  - Update labels
-    - "Last updated" -> "New"
-    - \+ "Hot (last created)"
-- Fix topic position not being remembered introduced in v0.6.3(603)
+- Fix tab topic position not being remembered, which was introduced in v0.6.3(603)
 - Top 250 movies (first page, no pagination)
-- Compose migration
 
 #### To-dos for next release \(0.7.1)
 
 - Reuse item logic of search result groups / groups of the day
+- Compose migration
 
 #### Future plans
 
