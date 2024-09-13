@@ -99,15 +99,15 @@ class GroupDefaultNotificationsPreferencesSettingsContentFragment : PreferenceFr
 
     private fun getSortRecommendedPostsBy(value: String) =
         when (value) {
-            getString(R.string.last_updated_value) -> TopicSortBy.LAST_UPDATED
-            getString(R.string.new_top_value) -> TopicSortBy.NEW_TOP
+            getString(R.string.last_updated_value) -> TopicSortBy.NEW
+            getString(R.string.new_top_value) -> TopicSortBy.TOP_LAST_CREATED
             else -> throw IndexOutOfBoundsException()
         }
 
     private fun getSortRecommendedPostsByValue(topicSortBy: TopicSortBy) =
         when (topicSortBy) {
-            TopicSortBy.LAST_UPDATED -> getString(R.string.last_updated_value)
-            TopicSortBy.NEW_TOP -> getString(R.string.new_top_value)
+            TopicSortBy.NEW -> getString(R.string.last_updated_value)
+            TopicSortBy.TOP_LAST_CREATED -> getString(R.string.new_top_value)
             else -> throw IndexOutOfBoundsException()
         }
 

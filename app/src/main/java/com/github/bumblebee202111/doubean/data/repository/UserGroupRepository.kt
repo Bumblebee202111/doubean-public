@@ -211,7 +211,7 @@ class UserGroupRepository @Inject constructor(
             val networkPosts = response.items.filterIsInstance<NetworkTopicItem>()
             val groupId = currentFeedTopic.groupId
             val posts = networkPosts.map { it.asPartialEntity(groupId) }.also {
-                if (currentFeedTopic.sortRecommendedTopicsBy == TopicSortBy.NEW_TOP)
+                if (currentFeedTopic.sortRecommendedTopicsBy == TopicSortBy.TOP_LAST_CREATED)
                     it.sortedByDescending(TopicItemPartialEntity::lastUpdated)
             }
 

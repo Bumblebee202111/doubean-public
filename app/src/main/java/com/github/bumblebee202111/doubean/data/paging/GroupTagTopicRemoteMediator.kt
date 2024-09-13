@@ -55,7 +55,7 @@ class GroupTagTopicRemoteMediator(
             )
 
             val topics = response.items.filterIsInstance<NetworkTopicItem>().run {
-                if (sortBy == TopicSortBy.NEW || sortBy == TopicSortBy.NEW_TOP)
+                if (sortBy == TopicSortBy.NEW_LAST_CREATED || sortBy == TopicSortBy.TOP_LAST_CREATED)
                     sortedByDescending(NetworkTopicItem::createTime)
                 else this
             }

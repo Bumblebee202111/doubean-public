@@ -236,19 +236,7 @@ fun GroupNotificationsPreferenceDialog(
         },
         title = { Text(text = stringResource(id = R.string.group_notifications_preference)) },
         text = {
-            AndroidViewBinding(factory = { inflater, root, attachToRoot ->
-                DialogContentGroupNotificationsPreferenceBinding.inflate(
-                    inflater,
-                    root,
-                    attachToRoot
-                ).apply {
-                    sortRecommendedTopicsBySpinner.setContent {
-                        SortTopicsBySpinner(initialSelectedItem = sortRecommendedTopicsBy) {
-                            sortRecommendedTopicsBy = it
-                        }
-                    }
-                }
-            }) {
+            AndroidViewBinding(factory = DialogContentGroupNotificationsPreferenceBinding::inflate) {
                 enableGroupNotificationsPref.apply {
                     isChecked = enableNotifications
                     setOnCheckedChangeListener { _, isChecked ->
@@ -263,8 +251,14 @@ fun GroupNotificationsPreferenceDialog(
                     }
                 }
                 sortRecommendedTopicsByTitle.isEnabled = enableNotifications
-                sortRecommendedTopicsBySpinner.isEnabled = enableNotifications
-                feedRequestTopicCountLimitTitle.isEnabled = enableNotifications
+                sortRecommendedTopicsBySpinner.setContent {
+                    SortTopicsBySpinner(
+                        initialSelectedItem = sortRecommendedTopicsBy,
+                        isEnabled = enableNotifications
+                    ) {
+                        sortRecommendedTopicsBy = it
+                    }
+                }
                 feedRequestTopicCountLimitTextField.setContent {
                     TopicCountLimitEachFetchTextField(
                         numberOfTopicsLimitEachFeedFetch = numberOfTopicsLimitEachFeedFetch,

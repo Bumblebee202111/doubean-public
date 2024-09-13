@@ -209,17 +209,19 @@ private fun LazyListScope.tabActionsItem(
                     parent,
                     attachToParent
                 ).apply {
-                    sortTopicsBySpinner.setContent {
-                        SortTopicsBySpinner(
-                            initialSelectedItem = sortBy,
-                            onItemSelected = onSortByClick
-                        )
-                    }
+
                 }
             },
             modifier = Modifier.fillMaxWidth(),
             onReset = {}
         ) {
+
+            sortTopicsBySpinner.setContent {
+                SortTopicsBySpinner(
+                    initialSelectedItem = sortBy,
+                    onItemSelected = onSortByClick
+                )
+            }
 
             fun setupFavoriteButtonAndMore() {
 
@@ -464,33 +466,7 @@ private fun GroupTabNotificationsPreferenceDialog(
         },
         title = { Text(text = stringResource(id = R.string.group_notifications_preference)) },
         text = {
-            AndroidViewBinding(factory = { inflater, root, attachToRoot ->
-                DialogContentGroupTabNotificationsPreferenceBinding.inflate(
-                    inflater,
-                    root,
-                    attachToRoot
-                ).apply {
-                    sortRecommendedTopicsBySpinner.setContent {
-                        SortTopicsBySpinner(initialSelectedItem = sortRecommendedTopicsBy) {
-                            sortRecommendedTopicsBy = it
-                        }
-                    }
-                }
-            }) {
-
-                fun getTopicSortByAt(spinnerItemPosition: Int) =
-                    when (spinnerItemPosition) {
-                        0 -> TopicSortBy.LAST_UPDATED
-                        1 -> TopicSortBy.NEW_TOP
-                        else -> throw java.lang.IndexOutOfBoundsException()
-                    }
-
-                fun getSpinnerItemPositionOf(topicSortBy: TopicSortBy) =
-                    when (topicSortBy) {
-                        TopicSortBy.LAST_UPDATED -> 0
-                        TopicSortBy.NEW_TOP -> 1
-                        else -> throw IndexOutOfBoundsException()
-                    }
+            AndroidViewBinding(factory = DialogContentGroupTabNotificationsPreferenceBinding::inflate) {
 
                 enableGroupNotificationsPref.apply {
                     isChecked = enableNotifications
@@ -506,7 +482,14 @@ private fun GroupTabNotificationsPreferenceDialog(
                     }
                 }
                 sortRecommendedTopicsByTitle.isEnabled = enableNotifications
-                sortRecommendedTopicsBySpinner.isEnabled = enableNotifications
+                sortRecommendedTopicsBySpinner.setContent {
+                    SortTopicsBySpinner(
+                        initialSelectedItem = sortRecommendedTopicsBy,
+                        isEnabled = enableNotifications
+                    ) {
+                        sortRecommendedTopicsBy = it
+                    }
+                }
                 feedRequestTopicCountLimitTitle.isEnabled = enableNotifications
                 feedRequestTopicCountLimitTextField.setContent {
                     TopicCountLimitEachFetchTextField(
