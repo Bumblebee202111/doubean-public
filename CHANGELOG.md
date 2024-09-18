@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+## Version 0.7.0(700)
+
+- Add **Top 250 Movies** of **Movies** of **Subjects (书影音)**
+  - No pagination yet, only first page is available
+- Update topics sortby
+  - Fix selected item of sort topics by spinner not being remembered
+  - Update terminology to match that of Douban
+  - Add "Hot (last created)" which sorts the fetched hot topics by created locally for each page
+- Code cleanups and optimizations
+
 ## Version 0.6.4(604)
 
 - Move Notifications from NavigationBar to Groups Home app bar

@@ -1,12 +1,16 @@
 doubean
 =======
 
-An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section.
-\([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
+An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section. Subjects development is just started.
+\([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。刚刚开始开发书影音。\)
 
 Note: I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be missing. This project implements some essential features as well as user requested ones which are practical. It is also going to be used as my playground for trending technologies such as Jetpack Compose. This brings tons of migration tasks ([remaining ones](#migrations)), and also means that old and new libraries are currently mixed.
 
 *The development of this app is slowed down again so that I can spend more time on the exploration of the backend and frontend areas.*
+
+**Noteworthy issues: **
+
+- The last tab topic position is lost when returned from topic detail, which was introduced during Navigation Compose migration v0.6.3(603)
 
 [douban]: https://www.douban.com/
 
@@ -68,10 +72,13 @@ Introduction
 
 ### Screenshots
 
+<p><img src="screenshots/phone_subjects.png" alt="phone_subjects" height="300" />
 <p><img src="screenshots/phone_groups_home.png" alt="phone_groups" height="300" />
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
 <img src="screenshots/phone_group_search.png" alt="phone_group_search" height="300" />
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
+
+
 ### Getting Started
 
 ### Using this app
@@ -175,11 +182,10 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.6.4\)
+#### To-dos for current release \(0.7.0\)
 
-#### To-dos for next release \(0.7.0)
+#### To-dos for next release \(0.7.1)
 
-- Top 250 movies (first page, no pagination)
 - Reuse item logic of search result groups / groups of the day
 - Compose migration
 
@@ -190,13 +196,13 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Gradual migrations: <span id="migrations"></span>
   * From MD2 / custom design to MD3
   * From View and Data Binding to Jetpack Compose
-    * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout
-* Books/Movies
-  * NavigationBarItem/TabRow
-  * T250
-  * Mine
+    * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout/Spinner
+* Subjects (书影音)
+  * Books
+  * T250 pagination
+  * User subjects
   * More features
-
+* Fix the noteworthy issue above after researching on the Books/Movies tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
 * Groups - Home
   * Support pagination?
   * Add favorite tabs for topic list area
@@ -210,9 +216,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Add corresponding item actions
 * Allow expanding group descriptions
 * Bring back basic support for dark mode & landscape experience
-* Topics sort by 
-  * "Last updated" -> "New (last updated)"
-  * Add "Hot (last created)"
 * Shared element
 * Group tab: Track read
 * Use the new nullable "edit_time" property of network topics
