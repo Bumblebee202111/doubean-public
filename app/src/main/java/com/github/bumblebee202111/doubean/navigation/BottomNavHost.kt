@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import com.github.bumblebee202111.doubean.feature.groups.home.navigation.groupsHomeScreen
 import com.github.bumblebee202111.doubean.feature.profile.navigation.profileScreen
 import com.github.bumblebee202111.doubean.feature.statuses.navigation.statusesScreen
+import com.github.bumblebee202111.doubean.feature.subjects.navigation.subjectsScreen
 
 @Composable
 fun BottomNavHost(
@@ -26,6 +27,7 @@ fun BottomNavHost(
         modifier = modifier
     ) {
         statusesScreen(onSettingsClick = navigateToSettings)
+        subjectsScreen(onSettingsClick = navigateToSettings)
         groupsHomeScreen(
             onSearchClick = navigateToSearch,
             onNotificationsClick = navigateToNotifications,

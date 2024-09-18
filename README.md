@@ -8,6 +8,10 @@ Note: I am an inexperienced Android beginner and the only developer of it. Occas
 
 *The development of this app is slowed down again so that I can spend more time on the exploration of the backend and frontend areas.*
 
+**Noteworthy issues: **
+
+- The last tab topic position is lost when returned from topic detail, which was introduced during Navigation Compose migration v0.6.3(603)
+
 [douban]: https://www.douban.com/
 
 [douban-groups]: https://www.douban.com/group/
@@ -177,7 +181,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.0\)
 
-- Fix tab topic position not being remembered, which was introduced in v0.6.3(603)
 - Top 250 movies (first page, no pagination)
 
 #### To-dos for next release \(0.7.1)
@@ -193,11 +196,12 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From MD2 / custom design to MD3
   * From View and Data Binding to Jetpack Compose
     * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout/Spinner
-* Books/Movies
-  * NavigationBarItem/TabRow
+* Subjects
+  * Books
   * T250
   * Mine
   * More features
+* Fix the noteworthy issue above after researching on the Books/Movies tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
 * Groups - Home
   * Support pagination?
   * Add favorite tabs for topic list area
