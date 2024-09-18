@@ -1,8 +1,8 @@
 doubean
 =======
 
-An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section.
-\([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。\)
+An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section. Subjects development is just started.
+\([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。刚刚开始开发书影音。\)
 
 Note: I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be missing. This project implements some essential features as well as user requested ones which are practical. It is also going to be used as my playground for trending technologies such as Jetpack Compose. This brings tons of migration tasks ([remaining ones](#migrations)), and also means that old and new libraries are currently mixed.
 
@@ -72,10 +72,13 @@ Introduction
 
 ### Screenshots
 
+<p><img src="screenshots/phone_subjects.png" alt="phone_subjects" height="300" />
 <p><img src="screenshots/phone_groups_home.png" alt="phone_groups" height="300" />
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
 <img src="screenshots/phone_group_search.png" alt="phone_group_search" height="300" />
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
+
+
 ### Getting Started
 
 ### Using this app
@@ -181,8 +184,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.0\)
 
-- Top 250 movies (first page, no pagination)
-
 #### To-dos for next release \(0.7.1)
 
 - Reuse item logic of search result groups / groups of the day
@@ -196,10 +197,10 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From MD2 / custom design to MD3
   * From View and Data Binding to Jetpack Compose
     * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout/Spinner
-* Subjects
+* Subjects (书影音)
   * Books
-  * T250
-  * Mine
+  * T250 pagination
+  * User subjects
   * More features
 * Fix the noteworthy issue above after researching on the Books/Movies tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
 * Groups - Home
