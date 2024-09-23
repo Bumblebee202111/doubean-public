@@ -191,7 +191,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.1\)
 
-- Top 250 Books
+- Subject collection
+  - Align number right
+  - Fix issue where rating bar does not fill correct fraction of stars
 - Tweak Settings display
 - Compose migration
   - Clear the remaining custom BindingAdapters

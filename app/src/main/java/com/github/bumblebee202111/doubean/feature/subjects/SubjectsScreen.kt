@@ -9,6 +9,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.feature.subjects.books.BooksScreen
 import com.github.bumblebee202111.doubean.feature.subjects.movies.MoviesScreen
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import kotlinx.coroutines.launch
@@ -111,11 +113,11 @@ private enum class SubjectsTab(
             MoviesScreen(modifier = it)
         }
     ),
-
-
-
-
-
-
-
+    BOOKS(
+        textResId = R.string.title_books,
+        iconVector = Icons.Filled.Book,
+        content = {
+            BooksScreen(modifier = Modifier.fillMaxSize())
+        }
+    ),
 }
