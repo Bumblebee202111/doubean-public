@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.7.1(701)
+
 ## Version 0.7.0(700)
 
 - Add **Top 250 Movies** of **Movies** of **Subjects (书影音)**
