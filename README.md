@@ -191,8 +191,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.1\)
 
-- Subject collection
-  - Align number right
 - Tweak Settings display
 - Compose migration
   - Clear the remaining custom BindingAdapters
