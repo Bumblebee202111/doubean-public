@@ -193,7 +193,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 - Subject collection
   - Align number right
-  - Fix issue where rating bar does not fill correct fraction of stars
 - Tweak Settings display
 - Compose migration
   - Clear the remaining custom BindingAdapters
@@ -244,7 +243,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * More card types
   * Pagination
 * Group Detail
-  * Compose collapsing toolbar when more convenient
+  * Compose collapsing toolbar when API is more convenient
   * Collapse on entrance for the subscribed/favorited group/tab
 * `Lazylist` problems
   * Restoration of scroll position is problematic
