@@ -2,15 +2,15 @@ doubean
 =======
 
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section. Subjects development is just started.
-\([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。刚刚开始开发书影音。\)
+\([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。书影音开发才刚刚开始。\)
 
 Note: I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be missing. This project implements some essential features as well as user requested ones which are practical. It is also going to be used as my playground for trending technologies such as Jetpack Compose. This brings tons of migration tasks ([remaining ones](#migrations)), and also means that old and new libraries are currently mixed.
 
 *The development of this app is slowed down again so that I can spend more time on the exploration of the backend and frontend areas.*
 
-**Noteworthy issues: **
+**Noteworthy issues:**
 
-- The last tab topic position is lost when returned from topic detail, which was introduced during Navigation Compose migration v0.6.3(603)
+- The last vertical scroll position of selected tab in Group Detail Screen is always lost (reset) when returned from Topic Detail Screen, which was introduced during Navigation Compose migration v0.6.3(603)
 
 [douban]: https://www.douban.com/
 
@@ -25,9 +25,11 @@ Introduction
 
 - Following statuses
 
-#### Image Screen
+#### Subjects Screens
 
-- Image view and save
+##### Home Screen
+
+- Top 250 Movies/Books (no pagination yet, only first page is available)
 
 #### Groups Screens
 
@@ -57,18 +59,22 @@ Introduction
 * Search groups
 * Groups of the day
 
+##### Notifications Screen 
+
+* Group topic notifications (this feature is broken now)
+
 #### Profile Screen
 
 - Login status
+
+#### Image Screen
+
+- Image view and save
 
 **Login Screen**
 
 - Login guide
 - Manual session login
-
-#### Notifications Screen 
-
-* Group topic notifications (the feature is broken now)
 
 ### Screenshots
 
@@ -111,6 +117,7 @@ It not only implements some features (mainly of Groups) of Douban app, but also 
 * Rooted users can reuse login session of Douban app
 * Partial support for viewing content in Douban WebView optimized for mobile reading in case of need (no longer updated)
 * Basic use of MD2/3 (UI may not look good during migration)
+* Provides simple Subjects (书影音) experience including support of user actions (   WIP 🚧)
 * ~~Recommended topic notifications (broken)~~
 
 Libraries Used
@@ -182,11 +189,11 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.7.0\)
+#### To-dos for current release \(0.7.1\)
 
-#### To-dos for next release \(0.7.1)
+#### To-dos for next release \(0.7.2)
 
-- Reuse item logic of search result groups / groups of the day
+- User subjects
 - Compose migration
 
 #### Future plans
@@ -198,10 +205,12 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From View and Data Binding to Jetpack Compose
     * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout/Spinner
 * Subjects (书影音)
-  * Books
   * T250 pagination
-  * User subjects
+  * Deeplinks
+  * Search
+  * Detail screens
   * More features
+* Reuse item logic of search result groups / groups of the day
 * Fix the noteworthy issue above after researching on the Books/Movies tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
 * Groups - Home
   * Support pagination?
@@ -230,7 +239,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * More card types
   * Pagination
 * Group Detail
-  * Compose collapsing toolbar when more convenient
+  * Compose collapsing toolbar when API is more convenient to use
   * Collapse on entrance for the subscribed/favorited group/tab
 * `Lazylist` problems
   * Restoration of scroll position is problematic
