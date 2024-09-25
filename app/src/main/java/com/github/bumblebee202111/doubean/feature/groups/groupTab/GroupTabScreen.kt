@@ -36,6 +36,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
+import androidx.core.view.isVisible
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
@@ -336,7 +337,7 @@ private fun LazyListScope.topicItems(
             onReset = {}
         ) {
             post = topic
-
+            root.isVisible = post != null
             postTitle.setContent {
                 val text = topic?.let { topic ->
                     topic.tag?.name?.let { tagName ->
@@ -345,17 +346,18 @@ private fun LazyListScope.topicItems(
                 } ?: ""
                 Text(text = text, style = MaterialTheme.typography.bodyLarge)
             }
-
-            cover.setContent {
-                AsyncImage(
-                    model = topic?.coverUrl, contentDescription = null,
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_normal))),
-                    contentScale = ContentScale.Crop
-                )
+            cover.apply {
+                isVisible = !topic?.coverUrl.isNullOrEmpty()
+                setContent {
+                    AsyncImage(
+                        model = topic?.coverUrl, contentDescription = null,
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_normal))),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
-
             clickListener =
                 View.OnClickListener { topic?.let { onTopicClick(it.id) } }
             showPopup = View.OnClickListener { v ->
@@ -385,20 +387,17 @@ private fun LazyListScope.topicItems(
                 }
                 popupMenu.show()
             }
-
             authorAvatar.setContent {
                 UserProfileImage(
                     url = topic?.author?.avatarUrl,
                     size = dimensionResource(id = R.dimen.icon_size_extra_small)
                 )
             }
-
             created.setContent {
                 topic?.created?.let {
                     DateTimeText(text = it.abbreviatedDateTimeString(LocalContext.current))
                 }
             }
-
             commentIcon.setContent {
                 Icon(
                     imageVector = Icons.AutoMirrored.Outlined.Comment,
@@ -406,13 +405,16 @@ private fun LazyListScope.topicItems(
                     modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size_extra_small))
                 )
             }
-
-            lastUpdated.setContent {
-                topic?.lastUpdated?.let {
-                    DateTimeText(text = it.abbreviatedDateTimeString(LocalContext.current))
+            lastCommentedMiddleDot.isVisible =
+                topic?.commentCount != 0 || topic.created != topic.lastUpdated
+            lastUpdated.apply {
+                isVisible = topic?.commentCount != 0 || topic.created != topic.lastUpdated
+                setContent {
+                    topic?.lastUpdated?.let {
+                        DateTimeText(text = it.abbreviatedDateTimeString(LocalContext.current))
+                    }
                 }
             }
-
         }
         if (index != topicPagingItems.itemCount - 1) {
             HorizontalDivider()

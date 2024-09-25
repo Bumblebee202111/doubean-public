@@ -191,9 +191,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.1\)
 
-- Tweak Settings display
 - Compose migration
-  - Clear the remaining custom BindingAdapters
 
 #### To-dos for next release \(0.7.2)
 
@@ -241,7 +239,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * More card types
   * Pagination
 * Group Detail
-  * Compose collapsing toolbar when API is more convenient
+  * Compose collapsing toolbar when API is more convenient to use
   * Collapse on entrance for the subscribed/favorited group/tab
 * `Lazylist` problems
   * Restoration of scroll position is problematic

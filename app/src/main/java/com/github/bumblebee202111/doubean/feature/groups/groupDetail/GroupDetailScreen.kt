@@ -37,6 +37,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
+import androidx.core.view.isVisible
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -302,6 +303,8 @@ fun GroupDetailCoordinator(
             modifier = modifier,
             onReset = {}) {
             val context = root.context
+
+            groupInfo.isVisible = group != null
 
             notificationsButton.setContent {
                 @Suppress("ConstantConditionIf") 

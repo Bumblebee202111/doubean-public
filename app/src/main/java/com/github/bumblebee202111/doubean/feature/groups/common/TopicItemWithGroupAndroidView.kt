@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
+import androidx.core.view.isVisible
 import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.ListItemPostNotificationBinding
@@ -34,19 +35,18 @@ fun TopicItemWithGroupAndroidView(
         onReset = {}) {
         post = topicItemWithGroup
         
+        card.isVisible = topicItemWithGroup != null
         groupAvatar.setContent {
             UserProfileImage(
                 url = topicItemWithGroup?.group?.avatarUrl,
                 size = dimensionResource(id = R.dimen.icon_size_extra_small)
             )
         }
-
         created.setContent {
             topicItemWithGroup?.created?.let {
                 DateTimeText(text = it.abbreviatedDateTimeString(LocalContext.current))
             }
         }
-
         postTitle.setContent {
             val text = topicItemWithGroup?.let { topic ->
                 topic.tag?.name?.let { tagName ->
@@ -55,24 +55,23 @@ fun TopicItemWithGroupAndroidView(
             } ?: ""
             Text(text = text, style = MaterialTheme.typography.bodyLarge)
         }
-
-        cover.setContent {
-            topicItemWithGroup?.coverUrl?.let {
-                AsyncImage(
-                    model = it, contentDescription = null,
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_normal))),
-                    contentScale = ContentScale.Crop
-                )
+        cover.apply {
+            isVisible = !topicItemWithGroup?.coverUrl.isNullOrEmpty()
+            setContent {
+                topicItemWithGroup?.coverUrl?.let {
+                    AsyncImage(
+                        model = it, contentDescription = null,
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_normal))),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
-
         }
-
         card.setOnClickListener {
             topicItemWithGroup?.let { onTopicClick(it.id) }
         }
-
         commentIcon.setContent {
             Icon(
                 imageVector = Icons.AutoMirrored.Outlined.Comment,
@@ -80,10 +79,15 @@ fun TopicItemWithGroupAndroidView(
                 modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size_extra_small))
             )
         }
-
-        lastUpdated.setContent {
-            topicItemWithGroup?.lastUpdated?.let {
-                DateTimeText(text = it.abbreviatedDateTimeString(LocalContext.current))
+        lastCommentedMiddleDot.isVisible =
+            topicItemWithGroup?.commentCount != 0 || topicItemWithGroup.created != topicItemWithGroup.lastUpdated
+        lastUpdated.apply {
+            isVisible =
+                topicItemWithGroup?.commentCount != 0 || topicItemWithGroup.created != topicItemWithGroup.lastUpdated
+            setContent {
+                topicItemWithGroup?.lastUpdated?.let {
+                    DateTimeText(text = it.abbreviatedDateTimeString(LocalContext.current))
+                }
             }
         }
     }
