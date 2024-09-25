@@ -191,9 +191,10 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.1\)
 
-- Compose migration
-
 #### To-dos for next release \(0.7.2)
+
+- User subjects
+- Compose migration
 
 #### Future plans
 
@@ -204,7 +205,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From View and Data Binding to Jetpack Compose
     * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout/Spinner
 * Subjects (书影音)
-  * User subjects
   * T250 pagination
   * Deeplinks
   * Search

@@ -7,15 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,14 +29,13 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.databinding.DialogContentGroupTabNotificationsPreferenceBinding
 import com.github.bumblebee202111.doubean.databinding.ViewGroupTabActionsBinding
 import com.github.bumblebee202111.doubean.feature.groups.common.NotificationsButton
-import com.github.bumblebee202111.doubean.feature.groups.common.TopicCountLimitEachFetchTextField
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.TopicItem
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.model.toItem
+import com.github.bumblebee202111.doubean.ui.GroupNotificationsPreferenceDialog
 import com.github.bumblebee202111.doubean.ui.SortTopicsBySpinner
 import com.github.bumblebee202111.doubean.ui.TopicItem
 import com.github.bumblebee202111.doubean.ui.common.rememberLazyListStatePagingWorkaround
@@ -151,8 +146,8 @@ fun GroupTabScreen(
             val sortRecommendedTopicsBy = tab.sortRecommendedTopicsBy
             val numberOfTopicsLimitEachFeedFetch = tab.feedRequestTopicCountLimit
             if (enableNotifications != null && allowNotificationUpdates != null && sortRecommendedTopicsBy != null && numberOfTopicsLimitEachFeedFetch != null) {
-
-                GroupTabNotificationsPreferenceDialog(
+                GroupNotificationsPreferenceDialog(
+                    titleTextResId = R.string.tab_notifications_preference,
                     initialEnableNotifications = enableNotifications,
                     initialAllowNotificationUpdates = allowNotificationUpdates,
                     initialSortRecommendedTopicsBy = sortRecommendedTopicsBy,
@@ -327,93 +322,6 @@ private fun LazyListScope.topicItems(
         }
     }
 }
-
-
-@Composable
-private fun GroupTabNotificationsPreferenceDialog(
-    initialEnableNotifications: Boolean,
-    initialAllowNotificationUpdates: Boolean,
-    initialSortRecommendedTopicsBy: TopicSortBy,
-    initialNumberOfTopicsLimitEachFeedFetch: Int,
-    onDismissRequest: () -> Unit,
-    onConfirmation: (enableNotifications: Boolean, allowNotificationUpdates: Boolean, sortRecommendedTopicsBy: TopicSortBy, numberOfTopicsLimitEachFeedFetch: Int) -> Unit,
-) {
-
-    var enableNotifications by remember {
-        mutableStateOf(initialEnableNotifications)
-    }
-
-    var allowNotificationUpdates by remember {
-        mutableStateOf(initialAllowNotificationUpdates)
-    }
-    var sortRecommendedTopicsBy by remember {
-        mutableStateOf(initialSortRecommendedTopicsBy)
-    }
-    var numberOfTopicsLimitEachFeedFetch by remember {
-        mutableIntStateOf(initialNumberOfTopicsLimitEachFeedFetch)
-    }
-
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        confirmButton = {
-            TextButton(onClick = {
-                onConfirmation(
-                    enableNotifications,
-                    allowNotificationUpdates,
-                    sortRecommendedTopicsBy,
-                    numberOfTopicsLimitEachFeedFetch
-                )
-            }) {
-                Text(stringResource(id = R.string.save))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismissRequest) {
-                Text(stringResource(id = R.string.cancel))
-            }
-        },
-        title = { Text(text = stringResource(id = R.string.group_notifications_preference)) },
-        text = {
-            AndroidViewBinding(factory = DialogContentGroupTabNotificationsPreferenceBinding::inflate) {
-
-                enableGroupNotificationsPref.apply {
-                    isChecked = enableNotifications
-                    setOnCheckedChangeListener { _, isChecked ->
-                        enableNotifications = isChecked
-                    }
-                }
-                allowDuplicateNotificationsPref.apply {
-                    isEnabled = enableNotifications
-                    isChecked = allowNotificationUpdates
-                    setOnCheckedChangeListener { _, isChecked ->
-                        allowNotificationUpdates = isChecked
-                    }
-                }
-                sortRecommendedTopicsByTitle.isEnabled = enableNotifications
-                sortRecommendedTopicsBySpinner.setContent {
-                    SortTopicsBySpinner(
-                        initialSelectedItem = sortRecommendedTopicsBy,
-                        isEnabled = enableNotifications
-                    ) {
-                        sortRecommendedTopicsBy = it
-                    }
-                }
-                feedRequestTopicCountLimitTitle.isEnabled = enableNotifications
-                feedRequestTopicCountLimitTextField.setContent {
-                    TopicCountLimitEachFetchTextField(
-                        numberOfTopicsLimitEachFeedFetch = numberOfTopicsLimitEachFeedFetch,
-                        onUpdateNumberOfTopicsLimitEachFeedFetch = {
-                            numberOfTopicsLimitEachFeedFetch = it
-                        },
-                        enabled = enableNotifications
-                    )
-                }
-
-            }
-        }
-    )
-}
-
 
 enum class TopicItemDisplayMode {
     SHOW_AUTHOR, SHOW_GROUP
