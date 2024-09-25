@@ -3,6 +3,10 @@ Change Log
 
 ## Version 0.7.1(701)
 
+- Add **Top 250 Movies** of **Movies** of **Subjects (书影音)** (also no pagination yet)
+- Fix issue where the star group of a rating bar is distorted when the rating is not multiple of 0.5 due to the built-in padding between by increasing step size to exactly this value (like Douban app)
+- Code cleanups and minor tweaks
+
 ## Version 0.7.0(700)
 
 - Add **Top 250 Movies** of **Movies** of **Subjects (书影音)**

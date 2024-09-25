@@ -8,7 +8,7 @@ Note: I am an inexperienced Android beginner and the only developer of it. Occas
 
 *The development of this app is slowed down again so that I can spend more time on the exploration of the backend and frontend areas.*
 
-**Noteworthy issues: **
+**Noteworthy issues:**
 
 - The last vertical scroll position of selected tab in Group Detail Screen is always lost (reset) when returned from Topic Detail Screen, which was introduced during Navigation Compose migration v0.6.3(603)
 
@@ -29,7 +29,7 @@ Introduction
 
 ##### Home Screen
 
-- Top 250 Movies (no pagination yet, only first page is available)
+- Top 250 Movies/Books (no pagination yet, only first page is available)
 
 #### Groups Screens
 
