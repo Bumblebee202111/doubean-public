@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LocalContentColor
@@ -20,11 +19,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,17 +33,15 @@ import androidx.core.view.isVisible
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.databinding.DialogContentGroupNotificationsPreferenceBinding
 import com.github.bumblebee202111.doubean.databinding.LayoutGroupDetailBinding
 import com.github.bumblebee202111.doubean.feature.groups.common.NotificationsButton
-import com.github.bumblebee202111.doubean.feature.groups.common.TopicCountLimitEachFetchTextField
 import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabScreen
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.GroupMemberRole
 import com.github.bumblebee202111.doubean.model.GroupTab
 import com.github.bumblebee202111.doubean.model.TopicSortBy
+import com.github.bumblebee202111.doubean.ui.GroupNotificationsPreferenceDialog
 import com.github.bumblebee202111.doubean.ui.LargeGroupAvatar
-import com.github.bumblebee202111.doubean.ui.SortTopicsBySpinner
 import com.github.bumblebee202111.doubean.util.OpenInUtil
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import kotlinx.coroutines.launch
@@ -169,10 +164,11 @@ fun GroupDetailScreen(
 
     if (openAlertDialog && enableNotifications != null && allowNotificationUpdates != null && sortRecommendedTopicsBy != null && numberOfTopicsLimitEachFeedFetch != null) {
         GroupNotificationsPreferenceDialog(
+            titleTextResId = R.string.group_notifications_preference,
             initialEnableNotifications = enableNotifications,
-            allowNotificationUpdates,
-            sortRecommendedTopicsBy,
-            numberOfTopicsLimitEachFeedFetch,
+            initialAllowNotificationUpdates = allowNotificationUpdates,
+            initialSortRecommendedTopicsBy = sortRecommendedTopicsBy,
+            initialNumberOfTopicsLimitEachFeedFetch = numberOfTopicsLimitEachFeedFetch,
             onDismissRequest = { openAlertDialog = false }
         ) { enableNotificationsToSave, allowNotificationUpdatesToSave, sortRecommendedTopicsByToSave, numberOfTopicsLimitEachFeedFetchToSave ->
             saveNotificationsPreference(
@@ -187,88 +183,6 @@ fun GroupDetailScreen(
 
 }
 
-@Composable
-fun GroupNotificationsPreferenceDialog(
-    initialEnableNotifications: Boolean,
-    initialAllowNotificationUpdates: Boolean,
-    initialSortRecommendedTopicsBy: TopicSortBy,
-    initialNumberOfTopicsLimitEachFeedFetch: Int,
-    onDismissRequest: () -> Unit,
-    onConfirmation: (enableNotifications: Boolean, allowNotificationUpdates: Boolean, sortRecommendedTopicsBy: TopicSortBy, numberOfTopicsLimitEachFeedFetch: Int) -> Unit,
-) {
-
-    var enableNotifications by remember {
-        mutableStateOf(initialEnableNotifications)
-    }
-
-    var allowNotificationUpdates by remember {
-        mutableStateOf(initialAllowNotificationUpdates)
-    }
-    var sortRecommendedTopicsBy by remember {
-        mutableStateOf(initialSortRecommendedTopicsBy)
-    }
-    var numberOfTopicsLimitEachFeedFetch by rememberSaveable {
-        mutableIntStateOf(initialNumberOfTopicsLimitEachFeedFetch)
-    }
-
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        confirmButton = {
-            TextButton(onClick = {
-                onConfirmation(
-                    enableNotifications,
-                    allowNotificationUpdates,
-                    sortRecommendedTopicsBy,
-                    numberOfTopicsLimitEachFeedFetch
-                )
-            }) {
-                Text(stringResource(id = R.string.save))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismissRequest) {
-                Text(stringResource(id = R.string.cancel))
-            }
-        },
-        title = { Text(text = stringResource(id = R.string.group_notifications_preference)) },
-        text = {
-            AndroidViewBinding(factory = DialogContentGroupNotificationsPreferenceBinding::inflate) {
-                enableGroupNotificationsPref.apply {
-                    isChecked = enableNotifications
-                    setOnCheckedChangeListener { _, isChecked ->
-                        enableNotifications = isChecked
-                    }
-                }
-                allowDuplicateNotificationsPref.apply {
-                    isEnabled = enableNotifications
-                    isChecked = allowNotificationUpdates
-                    setOnCheckedChangeListener { _, isChecked ->
-                        allowNotificationUpdates = isChecked
-                    }
-                }
-                sortRecommendedTopicsByTitle.isEnabled = enableNotifications
-                sortRecommendedTopicsBySpinner.setContent {
-                    SortTopicsBySpinner(
-                        initialSelectedItem = sortRecommendedTopicsBy,
-                        isEnabled = enableNotifications
-                    ) {
-                        sortRecommendedTopicsBy = it
-                    }
-                }
-                feedRequestTopicCountLimitTextField.setContent {
-                    TopicCountLimitEachFetchTextField(
-                        numberOfTopicsLimitEachFeedFetch = numberOfTopicsLimitEachFeedFetch,
-                        onUpdateNumberOfTopicsLimitEachFeedFetch = {
-                            numberOfTopicsLimitEachFeedFetch = it
-                        },
-                        enabled = enableNotifications
-                    )
-                }
-            }
-
-        }
-    )
-}
 
 @Composable
 fun GroupDetailCoordinator(
