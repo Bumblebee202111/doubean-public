@@ -5,17 +5,11 @@ import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -26,40 +20,31 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
-import androidx.core.view.isVisible
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
-import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.DialogContentGroupTabNotificationsPreferenceBinding
-import com.github.bumblebee202111.doubean.databinding.ListItemPostBinding
 import com.github.bumblebee202111.doubean.databinding.ViewGroupTabActionsBinding
 import com.github.bumblebee202111.doubean.feature.groups.common.NotificationsButton
 import com.github.bumblebee202111.doubean.feature.groups.common.TopicCountLimitEachFetchTextField
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.TopicItem
 import com.github.bumblebee202111.doubean.model.TopicSortBy
+import com.github.bumblebee202111.doubean.model.toItem
 import com.github.bumblebee202111.doubean.ui.SortTopicsBySpinner
-import com.github.bumblebee202111.doubean.ui.common.UserProfileImage
+import com.github.bumblebee202111.doubean.ui.TopicItem
 import com.github.bumblebee202111.doubean.ui.common.rememberLazyListStatePagingWorkaround
-import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.util.ShareUtil
-import com.github.bumblebee202111.doubean.util.abbreviatedDateTimeString
-import com.github.bumblebee202111.doubean.util.buildGroupTopicAndTagText
 import com.github.bumblebee202111.doubean.util.getColorFromTheme
 
 @Composable
@@ -331,97 +316,18 @@ private fun LazyListScope.topicItems(
         contentType = topicPagingItems.itemContentType { "topicItem" }
     ) { index ->
         val topic = topicPagingItems[index]
-        val context = LocalContext.current
-        AndroidViewBinding(factory = ListItemPostBinding::inflate,
-            modifier = Modifier.fillMaxWidth(),
-            onReset = {}
-        ) {
-            post = topic
-            root.isVisible = post != null
-            postTitle.setContent {
-                val text = topic?.let { topic ->
-                    topic.tag?.name?.let { tagName ->
-                        buildGroupTopicAndTagText(tagName, topic.title)
-                    } ?: topic.title
-                } ?: ""
-                Text(text = text, style = MaterialTheme.typography.bodyLarge)
-            }
-            cover.apply {
-                isVisible = !topic?.coverUrl.isNullOrEmpty()
-                setContent {
-                    AsyncImage(
-                        model = topic?.coverUrl, contentDescription = null,
-                        modifier = Modifier
-                            .size(80.dp)
-                            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_normal))),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            }
-            clickListener =
-                View.OnClickListener { topic?.let { onTopicClick(it.id) } }
-            showPopup = View.OnClickListener { v ->
-                val popupMenu = PopupMenu(v.context, more)
-                popupMenu.inflate(R.menu.menu_post_item)
-                popupMenu.setOnMenuItemClickListener { item ->
-                    topic?.let {
-                        when (item.itemId) {
-                            R.id.action_share -> {
-                                val shareText = StringBuilder()
-                                group?.let { group ->
-                                    shareText.append(group.name + "|")
-                                }
-
-                                it.tag?.let { tag ->
-                                    shareText.append(tag.name)
-                                }
-                                shareText.append("@${it.author.name}${context.getString(R.string.colon)} ${it.title} ${it.url}")
-                                ShareUtil.share(context, shareText)
-                                false
-                            }
-
-                            else -> false
-                        }
-                    }
-                    false
-                }
-                popupMenu.show()
-            }
-            authorAvatar.setContent {
-                UserProfileImage(
-                    url = topic?.author?.avatarUrl,
-                    size = dimensionResource(id = R.dimen.icon_size_extra_small)
-                )
-            }
-            created.setContent {
-                topic?.created?.let {
-                    DateTimeText(text = it.abbreviatedDateTimeString(LocalContext.current))
-                }
-            }
-            commentIcon.setContent {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.Comment,
-                    contentDescription = null,
-                    modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size_extra_small))
-                )
-            }
-            lastCommentedMiddleDot.isVisible =
-                topic?.commentCount != 0 || topic.created != topic.lastUpdated
-            lastUpdated.apply {
-                isVisible = topic?.commentCount != 0 || topic.created != topic.lastUpdated
-                setContent {
-                    topic?.lastUpdated?.let {
-                        DateTimeText(text = it.abbreviatedDateTimeString(LocalContext.current))
-                    }
-                }
-            }
-        }
+        TopicItem(
+            topic = topic,
+            group = group?.toItem(),
+            displayMode = TopicItemDisplayMode.SHOW_AUTHOR,
+            onTopicClick = onTopicClick
+        )
         if (index != topicPagingItems.itemCount - 1) {
             HorizontalDivider()
         }
-
     }
 }
+
 
 @Composable
 private fun GroupTabNotificationsPreferenceDialog(
@@ -509,3 +415,6 @@ private fun GroupTabNotificationsPreferenceDialog(
 }
 
 
+enum class TopicItemDisplayMode {
+    SHOW_AUTHOR, SHOW_GROUP
+}

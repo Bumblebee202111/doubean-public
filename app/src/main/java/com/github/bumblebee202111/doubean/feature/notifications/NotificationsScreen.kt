@@ -22,8 +22,9 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.groups.common.TopicItemWithGroupAndroidView
+import com.github.bumblebee202111.doubean.feature.groups.groupTab.TopicItemDisplayMode
 import com.github.bumblebee202111.doubean.model.TopicItemWithGroup
+import com.github.bumblebee202111.doubean.ui.TopicItem
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.util.DEEP_LINK_SCHEME_AND_HOST
 import com.github.bumblebee202111.doubean.util.GROUP_PATH
@@ -86,8 +87,10 @@ fun NotificationsScreen(
             items(notificationPagingItems.itemCount,
                 notificationPagingItems.itemKey { it.id },
                 notificationPagingItems.itemContentType { "notification" }) { index ->
-                TopicItemWithGroupAndroidView(
-                    notificationPagingItems[index], onTopicClick
+                TopicItem(
+                    topicItemWithGroup = notificationPagingItems[index],
+                    displayMode = TopicItemDisplayMode.SHOW_GROUP,
+                    onTopicClick = onTopicClick
                 )
             }
         }

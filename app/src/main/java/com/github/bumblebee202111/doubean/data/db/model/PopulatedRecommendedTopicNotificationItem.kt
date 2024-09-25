@@ -17,18 +17,6 @@ data class PopulatedRecommendedTopicNotificationItem(
 )
 
 fun PopulatedRecommendedTopicNotificationItem.asExternalModel(): TopicItemWithGroup {
-    val topicItemWithGroup = topicWithGroup.asExternalModel()
-    return TopicItemWithGroup(
-        topicItemWithGroup.id,
-        topicItemWithGroup.title,
-        topicItemWithGroup.author,
-        topicItemWithGroup.created,
-        topicItemWithGroup.lastUpdated,
-        topicItemWithGroup.commentCount,
-        topicItemWithGroup.tags,
-        topicItemWithGroup.coverUrl,
-        topicItemWithGroup.url,
-        topicItemWithGroup.uri,
-        topicItemWithGroup.group
-    )
+    return topicWithGroup.asExternalModel()
+
 }
