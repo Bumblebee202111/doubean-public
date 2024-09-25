@@ -33,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
+import androidx.core.view.isVisible
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
@@ -151,6 +152,7 @@ fun GroupList(
                         .wrapContentHeight(),
                     onReset = {}) {
                     this.group = group
+                    root.isVisible = group != null
                     setClickListener {
                         if (group != null) {
                             onGroupClick(group.id)

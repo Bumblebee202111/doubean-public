@@ -454,21 +454,22 @@ fun TopicDetailHeader(
             onReset = {},
             //onRelease = {}
         ) {
-
             postCreated.setContent {
                 topic.created?.let {
                     DateTimeText(text = it.fullDateTimeString())
                 }
             }
+            postTag.apply {
+                isVisible = topic.tags.isNotEmpty()
+                setOnClickListener {
+                    topic.group?.let { group ->
+                        onGroupClick(
+                            group.id,
+                            topic.id
+                        )
+                    }
 
-            postTag.setOnClickListener {
-                topic.group?.let { group ->
-                    onGroupClick(
-                        group.id,
-                        topic.id
-                    )
                 }
-
             }
 
             val groupOnClickListener = View.OnClickListener {

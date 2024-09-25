@@ -48,7 +48,7 @@ fun LazyListScope.groupsOfTheDay(
                 root,
                 attachToRoot
             )
-        }, update = fun ListItemRecommendedGroupBinding.() {
+        }) {
             val context = this.root.context
             val noColor = TopItemNoBackgroundUtil.getNoBackground(
                 context,
@@ -69,7 +69,7 @@ fun LazyListScope.groupsOfTheDay(
             this.recommendedGroup = group
             this.no.text = group.no.toString()
             this.clickListener = View.OnClickListener { onGroupItemClick(group.group.id) }
-        })
+        }
     }
 
 }
