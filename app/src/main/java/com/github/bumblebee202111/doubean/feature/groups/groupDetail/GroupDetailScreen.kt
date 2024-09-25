@@ -2,11 +2,9 @@ package com.github.bumblebee202111.doubean.feature.groups.groupDetail
 
 import android.view.MenuItem
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -29,18 +27,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.view.isVisible
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.DialogContentGroupNotificationsPreferenceBinding
 import com.github.bumblebee202111.doubean.databinding.LayoutGroupDetailBinding
@@ -51,6 +45,7 @@ import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.GroupMemberRole
 import com.github.bumblebee202111.doubean.model.GroupTab
 import com.github.bumblebee202111.doubean.model.TopicSortBy
+import com.github.bumblebee202111.doubean.ui.LargeGroupAvatar
 import com.github.bumblebee202111.doubean.ui.SortTopicsBySpinner
 import com.github.bumblebee202111.doubean.util.OpenInUtil
 import com.github.bumblebee202111.doubean.util.ShareUtil
@@ -456,13 +451,7 @@ fun GroupDetailCoordinator(
             toolbar.setNavigationOnClickListener { onBackClick() }
 
             groupAvatar.setContent {
-                AsyncImage(
-                    model = group?.avatarUrl, contentDescription = null,
-                    modifier = Modifier
-                        .size(dimensionResource(id = R.dimen.icon_size_extra_large))
-                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small))),
-                    contentScale = ContentScale.Crop
-                )
+                LargeGroupAvatar(avatarUrl = group?.avatarUrl)
             }
 
             tabRow.setContent {

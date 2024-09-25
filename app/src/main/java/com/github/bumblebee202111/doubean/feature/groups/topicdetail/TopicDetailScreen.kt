@@ -52,7 +52,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.pluralStringResource
@@ -72,7 +71,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
-import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.ListItemPostCommentBinding
 import com.github.bumblebee202111.doubean.databinding.ViewPostDetailHeaderBinding
@@ -81,9 +79,10 @@ import com.github.bumblebee202111.doubean.model.SizedPhoto
 import com.github.bumblebee202111.doubean.model.TopicComment
 import com.github.bumblebee202111.doubean.model.TopicCommentSortBy
 import com.github.bumblebee202111.doubean.model.TopicDetail
+import com.github.bumblebee202111.doubean.ui.SmallGroupAvatar
+import com.github.bumblebee202111.doubean.ui.UserProfileImage
 import com.github.bumblebee202111.doubean.ui.common.DoubeanWebView
 import com.github.bumblebee202111.doubean.ui.common.TopicWebViewClient
-import com.github.bumblebee202111.doubean.ui.common.UserProfileImage
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.ListItemImages
@@ -493,12 +492,7 @@ fun TopicDetailHeader(
             this.topic = topic
 
             groupAvatar.setContent {
-                AsyncImage(
-                    model = topic.group?.avatarUrl, null,
-                    modifier = Modifier
-                        .size(dimensionResource(id = R.dimen.icon_size_extra_small)),
-                    contentScale = ContentScale.Crop
-                )
+                SmallGroupAvatar(avatarUrl = topic.group?.avatarUrl)
             }
 
             this.content.setContent {

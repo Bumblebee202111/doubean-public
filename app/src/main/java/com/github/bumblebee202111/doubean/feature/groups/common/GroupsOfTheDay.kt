@@ -6,20 +6,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
-import coil.compose.AsyncImage
-import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.ListItemRecommendedGroupBinding
 import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
+import com.github.bumblebee202111.doubean.ui.SmallGroupAvatar
 import com.github.bumblebee202111.doubean.util.TopItemNoBackgroundUtil
 
 fun LazyListScope.groupsOfTheDay(
@@ -56,13 +50,8 @@ fun LazyListScope.groupsOfTheDay(
                 recommendedGroups.size
             )
             avatar.setContent {
-                AsyncImage(
-                    model = group.group.avatarUrl,
-                    contentDescription = stringResource(id = R.string.a11y_group_item_image),
-                    modifier = Modifier
-                        .size(dimensionResource(id = R.dimen.icon_size_extra_large))
-                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small))),
-                    contentScale = ContentScale.Crop
+                SmallGroupAvatar(
+                    avatarUrl = group.group.avatarUrl
                 )
             }
             this.noBackground = noColor

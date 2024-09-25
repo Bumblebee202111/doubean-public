@@ -7,14 +7,12 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
@@ -25,10 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -40,12 +35,12 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
-import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.databinding.ListItemGroupBinding
 import com.github.bumblebee202111.doubean.feature.groups.common.groupsOfTheDay
 import com.github.bumblebee202111.doubean.model.GroupSearchResultGroupItem
 import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
+import com.github.bumblebee202111.doubean.ui.LargeGroupAvatar
 
 @Composable
 fun GroupsSearchScreen(
@@ -159,14 +154,7 @@ fun GroupList(
                         }
                     }
                     avatar.setContent {
-                        AsyncImage(
-                            model = group?.avatarUrl,
-                            contentDescription = stringResource(id = R.string.a11y_group_item_image),
-                            modifier = Modifier
-                                .size(dimensionResource(id = R.dimen.icon_size_extra_large))
-                                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small))),
-                            contentScale = ContentScale.Crop
-                        )
+                        LargeGroupAvatar(avatarUrl = group?.avatarUrl)
                     }
                 }
 

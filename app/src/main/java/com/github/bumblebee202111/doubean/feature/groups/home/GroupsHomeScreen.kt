@@ -51,12 +51,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.groups.common.TopicItemWithGroupAndroidView
 import com.github.bumblebee202111.doubean.feature.groups.common.groupsOfTheDay
+import com.github.bumblebee202111.doubean.feature.groups.groupTab.TopicItemDisplayMode
 import com.github.bumblebee202111.doubean.model.GroupFavoriteItem
 import com.github.bumblebee202111.doubean.model.GroupItem
 import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
 import com.github.bumblebee202111.doubean.model.TopicItemWithGroup
+import com.github.bumblebee202111.doubean.ui.TopicItem
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import java.util.Calendar
 
@@ -315,11 +316,15 @@ private fun LazyListScope.myTopics(
     itemsIndexed(
         items = topics,
         key = { _, topic -> topic.id },
-        contentType = { _, _ -> "topicItemWithGroup" }) { index, item ->
+        contentType = { _, _ -> "topicItem" }) { index, item ->
         if (index != 0) {
             HorizontalDivider()
         }
-        TopicItemWithGroupAndroidView(topicItemWithGroup = item, onTopicClick)
+        TopicItem(
+            topicItemWithGroup = item,
+            displayMode = TopicItemDisplayMode.SHOW_GROUP,
+            onTopicClick = onTopicClick
+        )
     }
 }
 
