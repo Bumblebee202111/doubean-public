@@ -8,9 +8,9 @@ Note: I am an inexperienced Android beginner and the only developer of it. Occas
 
 *The development of this app is slowed down again so that I can spend more time on the exploration of the backend and frontend areas.*
 
-**Noteworthy issues:**
+**Known issues:**
 
-- The last vertical scroll position of selected tab in Group Detail Screen is always lost (reset) when returned from Topic Detail Screen, which was introduced during Navigation Compose migration v0.6.3(603)
+- The last vertical scroll position of selected tab in Group Detail Screen is always lost (reset) when returned from Topic Detail Screen, since Navigation Compose migration, v0.6.3(603).
 
 [douban]: https://www.douban.com/
 
@@ -79,10 +79,11 @@ Introduction
 ### Screenshots
 
 <p><img src="screenshots/phone_subjects.png" alt="phone_subjects" height="300" />
-<p><img src="screenshots/phone_groups_home.png" alt="phone_groups" height="300" />
+<img src="screenshots/phone_groups_home.png" alt="phone_groups" height="300" />
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
 <img src="screenshots/phone_group_search.png" alt="phone_group_search" height="300" />
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
+
 
 
 ### Getting Started
@@ -189,12 +190,12 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.7.1\)
-
-#### To-dos for next release \(0.7.2)
+#### To-dos for current release \(0.7.2\)
 
 - User subjects
 - Compose migration
+
+#### To-dos for next release \(0.7.3)
 
 #### Future plans
 
@@ -209,9 +210,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Deeplinks
   * Search
   * Detail screens
-  * More features
+  * More sub-features
 * Reuse item logic of search result groups / groups of the day
-* Fix the noteworthy issue above after researching on the Books/Movies tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
+* Fix the issue above after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
 * Groups - Home
   * Support pagination?
   * Add favorite tabs for topic list area
