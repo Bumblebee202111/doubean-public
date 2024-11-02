@@ -197,8 +197,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.2\)
 
-- Tweak LoginScreen
-
 #### To-dos for next release \(0.7.3)
 
 - User subjects: actions
