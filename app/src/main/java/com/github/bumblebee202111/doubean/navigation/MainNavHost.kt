@@ -27,6 +27,8 @@ import com.github.bumblebee202111.doubean.feature.settings.navigation.groupDefau
 import com.github.bumblebee202111.doubean.feature.settings.navigation.navigateToGroupDefaultNotificationsPreferencesSettings
 import com.github.bumblebee202111.doubean.feature.settings.navigation.navigateToSettings
 import com.github.bumblebee202111.doubean.feature.settings.navigation.settingsScreen
+import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.interestsScreen
+import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.navigateToInterests
 
 @Composable
 fun MainNavHost(
@@ -50,6 +52,7 @@ fun MainNavHost(
             navigateToGroup = navController::navigateToGroup,
             navigateToTopic = navController::navigateToTopic,
             navigateToLogin = navController::navigateToLogin,
+            navigateToSubjectInterests = navController::navigateToInterests,
             onShowSnackbar = onShowSnackbar
         )
         groupsSearchScreen(onGroupClick = navController::navigateToGroup)
@@ -98,5 +101,6 @@ fun MainNavHost(
             navigateUp = navController::navigateUp,
             onShowSnackbar = onShowSnackbar
         )
+        interestsScreen(onBackClick = navController::navigateUp)
     }
 }

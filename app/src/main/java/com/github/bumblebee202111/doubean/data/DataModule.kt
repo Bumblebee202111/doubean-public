@@ -5,7 +5,9 @@ import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.Companion.dataStore
 import com.github.bumblebee202111.doubean.network.model.NetworkCard
 import com.github.bumblebee202111.doubean.network.model.NetworkFeedContent
+import com.github.bumblebee202111.doubean.network.model.NetworkSubject
 import com.github.bumblebee202111.doubean.network.model.NetworkUnknownCard
+import com.github.bumblebee202111.doubean.network.model.NetworkUnknownSubject
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,6 +38,12 @@ internal object DataModule {
                     NetworkFeedContent::class
                 ) {
                     NetworkFeedContent.Unknown.serializer()
+                }
+
+                polymorphicDefaultDeserializer(
+                    NetworkSubject::class
+                ) {
+                    NetworkUnknownSubject.serializer()
                 }
             }
         }

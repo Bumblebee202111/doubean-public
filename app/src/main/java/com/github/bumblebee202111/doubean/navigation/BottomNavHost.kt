@@ -8,6 +8,7 @@ import com.github.bumblebee202111.doubean.feature.groups.home.navigation.groupsH
 import com.github.bumblebee202111.doubean.feature.profile.navigation.profileScreen
 import com.github.bumblebee202111.doubean.feature.statuses.navigation.statusesScreen
 import com.github.bumblebee202111.doubean.feature.subjects.navigation.subjectsScreen
+import com.github.bumblebee202111.doubean.model.SubjectType
 
 @Composable
 fun BottomNavHost(
@@ -19,6 +20,7 @@ fun BottomNavHost(
     navigateToGroupDetail: (groupId: String, defaultTabId: String?) -> Unit,
     navigateToTopic: (topicId: String) -> Unit,
     navigateToLogin: () -> Unit,
+    navigateToSubjectInterests: (userId: String, subjectType: SubjectType) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -27,7 +29,11 @@ fun BottomNavHost(
         modifier = modifier
     ) {
         statusesScreen(onSettingsClick = navigateToSettings)
-        subjectsScreen(onSettingsClick = navigateToSettings)
+        subjectsScreen(
+            onSettingsClick = navigateToSettings,
+            onSubjectStatusClick = navigateToSubjectInterests,
+            onLoginClick = navigateToLogin
+        )
         groupsHomeScreen(
             onSearchClick = navigateToSearch,
             onNotificationsClick = navigateToNotifications,
