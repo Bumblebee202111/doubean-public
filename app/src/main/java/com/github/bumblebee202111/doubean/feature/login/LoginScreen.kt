@@ -123,16 +123,53 @@ fun LoginScreen(
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
+
             Text(
-                text = "Manually sync login session from douban app preferences",
+                text = "Login with username and password",
                 style = MaterialTheme.typography.titleLarge
             )
             Text(
-                text = "Note accessing the required preference usually requires root permission.\n" +
-                        "Manual syncing is highly discouraged since\n" +
-                        "1. The feature is not carefully designed and you may meet weird bugs\n" +
-                        "2. It requires many steps and extra care\n" +
-                        "Sync is expected to be done automatically at app startup if root is granted",
+                text = "Too hard to implement... :(",
+                style = MaterialTheme.typography.titleMedium
+            )
+            OutlinedTextField(
+                enabled = false,
+                value = phoneNumber,
+                onValueChange = updatePhoneNumber,
+                label = { Text("Phone number") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+            )
+
+            TextField(
+                enabled = false,
+                value = password,
+                onValueChange = updatePassword,
+                label = { Text("Enter password") },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+            )
+            Button(
+                onClick = login,
+                Modifier.fillMaxWidth(),
+                //enabled = isFormValid, currently disabled
+                enabled = false
+            ) {
+                Text(text = "Login")
+            }
+
+            HorizontalDivider()
+
+            Text(
+                text = "\"Login\" with existing session of Douban app",
+                style = MaterialTheme.typography.titleLarge
+            )
+            Text(
+                text = "The login session is stored in preferences of Douban, access of which usually requires root permission.\n" +
+                        "Syncing it to doubean is expected to be automatically done at app startup if root is granted\n" +
+                        "Manual sync is set below for those in need, but it's highly discouraged since\n" +
+                        "1. The feature is not carefully designed and you may meet weird bugs.\n" +
+                        "2. It requires many steps and extra care.\n",
+
                 style = MaterialTheme.typography.bodyMedium
             )
             var pref by remember { mutableStateOf("") }
@@ -167,39 +204,8 @@ fun LoginScreen(
             ) {
                 Text(text = "Login")
             }
-            HorizontalDivider()
-            Text(
-                text = "Login with username and password",
-                style = MaterialTheme.typography.titleLarge
-            )
-            Text(
-                text = "Too hard to implement",
-                style = MaterialTheme.typography.titleMedium
-            )
-            OutlinedTextField(
-                enabled = false,
-                value = phoneNumber,
-                onValueChange = updatePhoneNumber,
-                label = { Text("Phone number") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
-            )
+            Text(text = "Don't panic. This app neither sends data to any third party endpoint nor accesses sensitive APIs, the fact of which can be easily verified if you already have some knowledge about how to do it. However, this login 'trick' could be pretty sensitive to Douban, hence no Chinese UI.\n")
 
-            TextField(
-                enabled = false,
-                value = password,
-                onValueChange = updatePassword,
-                label = { Text("Enter password") },
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-            )
-            Button(
-                onClick = login,
-                Modifier.fillMaxWidth(),
-                //enabled = isFormValid, currently disabled
-                enabled = false
-            ) {
-                Text(text = "Login")
-            }
         }
     }
 

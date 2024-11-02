@@ -3,6 +3,11 @@ Change Log
 
 ## Version 0.7.2(702)
 
+- Support browsing my subjects (我的书影~~音~~)! 
+  - Also no pagination yet
+  - User actions are not ready either, although they will soon be available
+- Tweak LoginScreen
+
 ## Version 0.7.1(701)
 
 - Add **Top 250 Books** of **Books** of **Subjects (书影音)** (also no pagination yet)
