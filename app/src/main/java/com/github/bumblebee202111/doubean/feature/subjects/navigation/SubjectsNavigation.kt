@@ -3,13 +3,22 @@ package com.github.bumblebee202111.doubean.feature.subjects.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.github.bumblebee202111.doubean.feature.subjects.SubjectsScreen
+import com.github.bumblebee202111.doubean.model.SubjectType
 import kotlinx.serialization.Serializable
 
 @Serializable
 data object SubjectsRoute
 
-fun NavGraphBuilder.subjectsScreen(onSettingsClick: () -> Unit) {
+fun NavGraphBuilder.subjectsScreen(
+    onSettingsClick: () -> Unit,
+    onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
+    onLoginClick: () -> Unit,
+) {
     composable<SubjectsRoute> {
-        SubjectsScreen(onSettingsClick)
+        SubjectsScreen(
+            onSettingsClick = onSettingsClick,
+            onSubjectStatusClick = onSubjectStatusClick,
+            onLoginClick = onLoginClick
+        )
     }
 }

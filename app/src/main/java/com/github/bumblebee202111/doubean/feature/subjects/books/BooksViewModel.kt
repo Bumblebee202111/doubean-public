@@ -2,27 +2,68 @@ package com.github.bumblebee202111.doubean.feature.subjects.books
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.BookRepository
+import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
+import com.github.bumblebee202111.doubean.feature.subjects.MySubjectUiState
 import com.github.bumblebee202111.doubean.model.Book
+import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.network.model.NetworkSubjectCollection
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class BooksViewModel @Inject constructor(
     private val bookRepository: BookRepository,
+    private val userSubjectRepository: UserSubjectRepository,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
-    init {
-        getTop250MoviesCollectionWithItems()
-    }
+
+
+    private val _myBooksUiState: MutableStateFlow<MySubjectUiState> =
+        MutableStateFlow(MySubjectUiState.Loading)
+    val myBooksUiState = _myBooksUiState.asStateFlow()
 
     private val _booksUiState: MutableStateFlow<BooksUiState> =
         MutableStateFlow(BooksUiState.Loading)
-    val moviesUiState = _booksUiState.asStateFlow()
+    val booksUiState = _booksUiState.asStateFlow()
+
+    init {
+        getMyBooks()
+        getTop250MoviesCollectionWithItems()
+    }
+
+    private fun getMyBooks() {
+        viewModelScope.launch {
+            authRepository.observeLoggedInUserId().onEach { userId ->
+                _myBooksUiState.value = when (userId) {
+                    null -> MySubjectUiState.NotLoggedIn
+                    else -> {
+                        val result = userSubjectRepository.getUserSubjects(
+                            userId =
+                            userId
+                        )
+                        when (result.isSuccess) {
+                            true ->
+                                MySubjectUiState.Success(
+                                    userId = userId,
+                                    mySubject = result.getOrThrow()
+                                        .first { it.type == SubjectType.BOOK }
+                                )
+
+                            false -> MySubjectUiState.Error
+                        }
+                    }
+                }
+            }.collect()
+        }
+    }
     private fun getTop250MoviesCollectionWithItems() {
         viewModelScope.launch {
             val collectionResult =
@@ -46,6 +87,8 @@ class BooksViewModel @Inject constructor(
             }
         }
     }
+
+
 }
 
 sealed interface BooksUiState {

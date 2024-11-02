@@ -28,11 +28,17 @@ import androidx.compose.ui.unit.LayoutDirection
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.books.BooksScreen
 import com.github.bumblebee202111.doubean.feature.subjects.movies.MoviesScreen
+import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import kotlinx.coroutines.launch
 
+
 @Composable
-fun SubjectsScreen(onSettingsClick: () -> Unit) {
+fun SubjectsScreen(
+    onSettingsClick: () -> Unit,
+    onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
+    onLoginClick: () -> Unit,
+) {
     Scaffold(
         topBar = {
             SubjectsAppBar(onSettingsClick)
@@ -49,7 +55,11 @@ fun SubjectsScreen(onSettingsClick: () -> Unit) {
             )
         ) {
             SubjectsTabRow(pagerState = pagerState)
-            SubjectsPager(state = pagerState)
+            SubjectsPager(
+                state = pagerState,
+                onSubjectStatusClick = onSubjectStatusClick,
+                onLoginClick = onLoginClick
+            )
         }
     }
 }
@@ -95,29 +105,43 @@ private fun SubjectsTabRow(pagerState: PagerState) {
 }
 
 @Composable
-private fun SubjectsPager(state: PagerState) {
+private fun SubjectsPager(
+    state: PagerState,
+    onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
+    onLoginClick: () -> Unit,
+) {
     HorizontalPager(state = state) { page ->
-        SubjectsTab.entries[page].content(Modifier.fillMaxSize())
+        val modifier = Modifier.fillMaxSize()
+        when (SubjectsTab.entries[page]) {
+            SubjectsTab.MOVIES -> {
+                MoviesScreen(
+                    modifier = modifier,
+                    onSubjectStatusClick = onSubjectStatusClick,
+                    onLoginClick = onLoginClick
+                )
+            }
+
+            SubjectsTab.BOOKS -> {
+                BooksScreen(
+                    modifier = modifier,
+                    onSubjectStatusClick = onSubjectStatusClick,
+                    onLoginClick = onLoginClick
+                )
+            }
+        }
     }
 }
 
 private enum class SubjectsTab(
     val textResId: Int,
     val iconVector: ImageVector,
-    val content: @Composable (modifier: Modifier) -> Unit,
 ) {
     MOVIES(
         textResId = R.string.title_movies,
-        iconVector = Icons.Filled.Movie,
-        content = {
-            MoviesScreen(modifier = it)
-        }
+        iconVector = Icons.Filled.Movie
     ),
     BOOKS(
         textResId = R.string.title_books,
-        iconVector = Icons.Filled.Book,
-        content = {
-            BooksScreen(modifier = Modifier.fillMaxSize())
-        }
+        iconVector = Icons.Filled.Book
     ),
 }

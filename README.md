@@ -2,7 +2,7 @@ doubean
 =======
 
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section. Subjects development is just started.
-\([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。书影音开发才刚刚开始。\)
+\([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。书影~~音~~开发才刚刚开始。\)
 
 Note: I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be missing. This project implements some essential features as well as user requested ones which are practical. It is also going to be used as my playground for trending technologies such as Jetpack Compose. This brings tons of migration tasks ([remaining ones](#migrations)), and also means that old and new libraries are currently mixed.
 
@@ -25,11 +25,16 @@ Introduction
 
 - Following statuses
 
-#### Subjects Screens
+#### Subjects Screens  (no lists are paginated yet)
 
 ##### Home Screen
 
-- Top 250 Movies/Books (no pagination yet, only first page is available)
+- Top 250 Movies/Books
+- My movie/tv/book statuses
+
+##### Interests Screen
+
+- My subject statuses with interests
 
 #### Groups Screens
 
@@ -192,10 +197,13 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.2\)
 
-- User subjects
-- Compose migration
+- Tweak LoginScreen
 
 #### To-dos for next release \(0.7.3)
+
+- User subjects: actions
+- Show a glimpse of T250 instead in MoviesScreen/BooksScreen from book/movie module data and add a separate T250Screen
+- Compose migration
 
 #### Future plans
 
@@ -210,9 +218,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Deeplinks
   * Search
   * Detail screens
-  * More sub-features
+  * More details & sub-features
 * Reuse item logic of search result groups / groups of the day
-* Fix the issue above after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
+* Fix the "known issue" above after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
 * Groups - Home
   * Support pagination?
   * Add favorite tabs for topic list area
