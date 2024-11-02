@@ -2,15 +2,15 @@ doubean
 =======
 
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section. Subjects development is just started.
-\([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。书影音开发才刚刚开始。\)
+\([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。书影~~音~~开发才刚刚开始。\)
 
 Note: I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be missing. This project implements some essential features as well as user requested ones which are practical. It is also going to be used as my playground for trending technologies such as Jetpack Compose. This brings tons of migration tasks ([remaining ones](#migrations)), and also means that old and new libraries are currently mixed.
 
 *The development of this app is slowed down again so that I can spend more time on the exploration of the backend and frontend areas.*
 
-**Noteworthy issues:**
+**Known issues:**
 
-- The last vertical scroll position of selected tab in Group Detail Screen is always lost (reset) when returned from Topic Detail Screen, which was introduced during Navigation Compose migration v0.6.3(603)
+- The last vertical scroll position of selected tab in Group Detail Screen is always lost (reset) when returned from Topic Detail Screen, since Navigation Compose migration, v0.6.3(603).
 
 [douban]: https://www.douban.com/
 
@@ -25,11 +25,16 @@ Introduction
 
 - Following statuses
 
-#### Subjects Screens
+#### Subjects Screens  (no lists are paginated yet)
 
 ##### Home Screen
 
-- Top 250 Movies/Books (no pagination yet, only first page is available)
+- Top 250 Movies/Books
+- My movie/tv/book statuses
+
+##### Interests Screen
+
+- My subject statuses with interests
 
 #### Groups Screens
 
@@ -79,10 +84,11 @@ Introduction
 ### Screenshots
 
 <p><img src="screenshots/phone_subjects.png" alt="phone_subjects" height="300" />
-<p><img src="screenshots/phone_groups_home.png" alt="phone_groups" height="300" />
+<img src="screenshots/phone_groups_home.png" alt="phone_groups" height="300" />
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
 <img src="screenshots/phone_group_search.png" alt="phone_group_search" height="300" />
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
+
 
 
 ### Getting Started
@@ -189,11 +195,12 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.7.1\)
+#### To-dos for current release \(0.7.2\)
 
-#### To-dos for next release \(0.7.2)
+#### To-dos for next release \(0.7.3)
 
-- User subjects
+- User subjects: actions
+- Show a glimpse of T250 instead in MoviesScreen/BooksScreen from book/movie module data and add a separate T250Screen
 - Compose migration
 
 #### Future plans
@@ -209,9 +216,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Deeplinks
   * Search
   * Detail screens
-  * More features
+  * More details & sub-features
 * Reuse item logic of search result groups / groups of the day
-* Fix the noteworthy issue above after researching on the Books/Movies tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
+* Fix the "known issue" above after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
 * Groups - Home
   * Support pagination?
   * Add favorite tabs for topic list area
