@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.7.3(703)
+
 ## Version 0.7.2(702)
 
 - Support browsing my subjects (我的书影~~音~~)! 
