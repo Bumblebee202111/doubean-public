@@ -195,13 +195,13 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.7.2\)
-
-#### To-dos for next release \(0.7.3)
+#### To-dos for current release \(0.7.3\)
 
 - User subjects: actions
 - Show a glimpse of T250 instead in MoviesScreen/BooksScreen from book/movie module data and add a separate T250Screen
 - Compose migration
+
+#### To-dos for next release \(0.7.4)
 
 #### Future plans
 
@@ -213,9 +213,10 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout/Spinner
 * Subjects (书影音)
   * T250 pagination
+  * Status interests screen
   * Deeplinks
   * Search
-  * Detail screens
+  * Subject detail screen
   * More details & sub-features
 * Reuse item logic of search result groups / groups of the day
 * Fix the "known issue" above after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
