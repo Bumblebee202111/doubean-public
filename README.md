@@ -199,7 +199,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.3\)
 
-- Adjust UI hints
 - Fix  topic_tags_normal nullability
 
 #### To-dos for next release \(0.7.4)
