@@ -3,11 +3,13 @@ package com.github.bumblebee202111.doubean.data
 import android.content.Context
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.Companion.dataStore
-import com.github.bumblebee202111.doubean.network.model.NetworkCard
 import com.github.bumblebee202111.doubean.network.model.NetworkFeedContent
+import com.github.bumblebee202111.doubean.network.model.NetworkStatusCard
 import com.github.bumblebee202111.doubean.network.model.NetworkSubject
-import com.github.bumblebee202111.doubean.network.model.NetworkUnknownCard
+import com.github.bumblebee202111.doubean.network.model.NetworkSubjectWithInterest
+import com.github.bumblebee202111.doubean.network.model.NetworkUnknownStatusCard
 import com.github.bumblebee202111.doubean.network.model.NetworkUnknownSubject
+import com.github.bumblebee202111.doubean.network.model.NetworkUnknownSubjectWithInterest
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,20 +32,24 @@ internal object DataModule {
             explicitNulls = false
             serializersModule += SerializersModule {
                 polymorphicDefaultDeserializer(
-                    NetworkCard::class
+                    NetworkStatusCard::class
                 ) {
-                    NetworkUnknownCard.serializer()
+                    NetworkUnknownStatusCard.serializer()
                 }
                 polymorphicDefaultDeserializer(
                     NetworkFeedContent::class
                 ) {
                     NetworkFeedContent.Unknown.serializer()
                 }
-
                 polymorphicDefaultDeserializer(
                     NetworkSubject::class
                 ) {
                     NetworkUnknownSubject.serializer()
+                }
+                polymorphicDefaultDeserializer(
+                    NetworkSubjectWithInterest::class
+                ) {
+                    NetworkUnknownSubjectWithInterest.serializer()
                 }
             }
         }

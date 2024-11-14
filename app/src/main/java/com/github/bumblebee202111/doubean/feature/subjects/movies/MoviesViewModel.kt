@@ -6,13 +6,17 @@ import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.MovieRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.MySubjectUiState
-import com.github.bumblebee202111.doubean.model.Movie
+import com.github.bumblebee202111.doubean.model.SubjectInterest
 import com.github.bumblebee202111.doubean.model.SubjectType
+import com.github.bumblebee202111.doubean.model.SubjectWithInterest
+import com.github.bumblebee202111.doubean.network.model.NetworkSubjectCollection
+import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,13 +32,46 @@ class MoviesViewModel @Inject constructor(
         MutableStateFlow(MySubjectUiState.Loading)
     val myMoviesUiState = _myMoviesUiState.asStateFlow()
 
-    private val _moviesUiState: MutableStateFlow<MoviesUiState> =
-        MutableStateFlow(MoviesUiState.Loading)
-    val moviesUiState = _moviesUiState.asStateFlow()
+    private val collectionItems: MutableStateFlow<List<SubjectWithInterest>> =
+        MutableStateFlow(
+            emptyList()
+        )
+
+    private val collectionResult = flow {
+        emit(movieRepository.getTop250MoviesCollection().map(NetworkSubjectCollection::title))
+    }
+
+    private val collectionItemsResult =
+        flow { emit(movieRepository.getTop250MoviesCollectionItems()) }.onEach {
+            if (it.isSuccess) {
+                collectionItems.value = it.getOrDefault(emptyList())
+            }
+        }
+
+    val isLoggedIn = authRepository.isLoggedIn()
+
+    val moviesUiState = combine(
+        collectionResult,
+        collectionItemsResult,
+        isLoggedIn,
+        collectionItems
+    ) { collectionResult, collectionItemsResult, isLoggedIn, collectionItems ->
+        when {
+            collectionResult.isSuccess && collectionItemsResult.isSuccess -> {
+                MoviesUiState.Success(
+                    title = collectionResult.getOrThrow(),
+                    items = collectionItems,
+                    isLoggedIn = isLoggedIn
+                )
+            }
+
+            else ->
+                MoviesUiState.Error
+        }
+    }.stateInUi(MoviesUiState.Loading)
 
     init {
         getMyMovies()
-        getTop250MoviesCollectionWithItems()
     }
 
     private fun getMyMovies() {
@@ -64,34 +101,27 @@ class MoviesViewModel @Inject constructor(
         }
     }
 
-    private fun getTop250MoviesCollectionWithItems() {
+    fun onMarkMovie(movie: SubjectWithInterest) {
         viewModelScope.launch {
-            val collectionResult =
-                async {
-                    movieRepository.getTop250MoviesCollection().map { it.title }
-                }.await()
-            val collectionItemsResult =
-                async {
-                    movieRepository.getTop250MoviesCollectionItems()
-                }.await()
-
-            _moviesUiState.value = when {
-                collectionResult.isSuccess && collectionItemsResult.isSuccess -> {
-                    MoviesUiState.Success(
-                        collectionResult.getOrThrow(),
-                        collectionItemsResult.getOrThrow()
-                    )
+            val result = userSubjectRepository.addSubjectToInterests(
+                subject = movie.subject,
+                newStatus = SubjectInterest.Status.MARK_STATUS_MARK
+            )
+            if (result.isSuccess) {
+                collectionItems.value = collectionItems.value.toMutableList().apply {
+                    set(indexOf(movie), result.getOrThrow())
                 }
-                else -> MoviesUiState.Error
             }
         }
     }
+
 }
 
 sealed interface MoviesUiState {
     data class Success(
         val title: String,
-        val items: List<Movie>,
+        val items: List<SubjectWithInterest>,
+        val isLoggedIn: Boolean,
     ) : MoviesUiState
 
     data object Error : MoviesUiState

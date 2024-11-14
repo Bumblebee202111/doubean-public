@@ -25,19 +25,29 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.ui.SubjectItemCompat
-import com.github.bumblebee202111.doubean.ui.SubjectItemCompatMore
+import com.github.bumblebee202111.doubean.model.SubjectInterest
+import com.github.bumblebee202111.doubean.model.SubjectWithInterest
+import com.github.bumblebee202111.doubean.ui.MySubjectItem
+import com.github.bumblebee202111.doubean.ui.MySubjectItemMore
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 
 @Composable
 fun InterestsScreen(onBackClick: () -> Unit, viewModel: InterestsViewModel = hiltViewModel()) {
     val uiState by viewModel.interestsUiState.collectAsStateWithLifecycle()
-    InterestsScreen(onBackClick = onBackClick, uiState = uiState)
+    InterestsScreen(
+        uiState = uiState,
+        onBackClick = onBackClick,
+        onUpdateInterestStatus = viewModel::onUpdateInterestStatus
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InterestsScreen(onBackClick: () -> Unit, uiState: InterestsUiState) {
+fun InterestsScreen(
+    uiState: InterestsUiState,
+    onBackClick: () -> Unit,
+    onUpdateInterestStatus: (subject: SubjectWithInterest, newStatus: SubjectInterest.Status) -> Unit,
+) {
 
     when (uiState) {
         is InterestsUiState.Success -> {
@@ -70,13 +80,17 @@ fun InterestsScreen(onBackClick: () -> Unit, uiState: InterestsUiState) {
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            items(interest.second, key = { it.subject.id }) {
-                                SubjectItemCompat(subject = it.subject)
+                            items(items = interest.second, key = { it.subject.id }) {
+                                MySubjectItem(
+                                    subject = it,
+                                    isLoggedIn = uiState.isLoggedIn,
+                                    onUpdateStatus = onUpdateInterestStatus
+                                )
                             }
                             val moreSubjectCount = interest.first.count - interest.second.size
                             if (moreSubjectCount > 0) {
                                 item {
-                                    SubjectItemCompatMore(moreSubjectCount)
+                                    MySubjectItemMore(moreSubjectCount)
                                 }
                             }
 

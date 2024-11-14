@@ -2,10 +2,10 @@ package com.github.bumblebee202111.doubean.data.repository
 
 import com.github.bumblebee202111.doubean.coroutines.suspendRunCatching
 import com.github.bumblebee202111.doubean.network.ApiService
-import com.github.bumblebee202111.doubean.network.model.NetworkBook
-import com.github.bumblebee202111.doubean.network.model.NetworkMovie
-import com.github.bumblebee202111.doubean.network.model.asBook
-import com.github.bumblebee202111.doubean.network.model.asMovie
+import com.github.bumblebee202111.doubean.network.model.NetworkBookWithInterest
+import com.github.bumblebee202111.doubean.network.model.NetworkMovieWithInterest
+import com.github.bumblebee202111.doubean.network.model.asBookWithInterest
+import com.github.bumblebee202111.doubean.network.model.asMovieWithInterest
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -21,7 +21,7 @@ class SubjectCollectionRepository @Inject constructor(private val apiService: Ap
             count = SUBJECT_COLLECTION_PAGE_SIZE
         )
     }.map {
-        it.items.map(NetworkMovie::asMovie)
+        it.items.map(NetworkMovieWithInterest::asMovieWithInterest)
     }
 
     suspend fun getTop250BooksCollection() = suspendRunCatching {
@@ -34,7 +34,7 @@ class SubjectCollectionRepository @Inject constructor(private val apiService: Ap
             count = SUBJECT_COLLECTION_PAGE_SIZE
         )
     }.map {
-        it.items.map(NetworkBook::asBook)
+        it.items.map(NetworkBookWithInterest::asBookWithInterest)
     }
 
     companion object {
