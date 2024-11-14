@@ -83,11 +83,13 @@ Introduction
 
 ### Screenshots
 
-<p><img src="screenshots/phone_subjects.png" alt="phone_subjects" height="300" />
+<p><img src="screenshots/tablet_subjects.png" alt="tablet_subjects" height="450" />
+<img src="screenshots/tablet_interests.png" alt="tablet_interests" height="450" />   
 <img src="screenshots/phone_groups_home.png" alt="phone_groups" height="300" />
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
 <img src="screenshots/phone_group_search.png" alt="phone_group_search" height="300" />
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
+
 
 
 
@@ -96,7 +98,7 @@ Introduction
 ### Using this app
 
 - Supported Android versions: 8.1 - 14
-- Sometimes you need to manually clear app data when I forget to handle ROOM database schema change
+- Sometimes you need to manually clear app data after installation when I forget to handle ROOM database schema change
 - Feel free to file issues 
 
 ### Open-source?
@@ -197,11 +199,13 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.3\)
 
-- User subjects: actions
-- Show a glimpse of T250 instead in MoviesScreen/BooksScreen from book/movie module data and add a separate T250Screen
-- Compose migration
+- Adjust UI hints
+- Fix  topic_tags_normal nullability
 
 #### To-dos for next release \(0.7.4)
+
+- Subjects deeplinks
+- Compose migration
 
 #### Future plans
 
@@ -212,11 +216,11 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From View and Data Binding to Jetpack Compose
     * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout/Spinner
 * Subjects (书影音)
-  * T250 pagination
-  * Status interests screen
-  * Deeplinks
   * Search
   * Subject detail screen
+  * Show a glimpse of T250 instead in MoviesScreen/BooksScreen from book/movie module data and add a separate T250Screen
+  * (Single-)status interests screen & its pagination
+  * T250 pagination
   * More details & sub-features
 * Reuse item logic of search result groups / groups of the day
 * Fix the "known issue" above after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose

@@ -11,6 +11,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.feature.subjects.MySubjectUiState
 import com.github.bumblebee202111.doubean.model.SubjectType
+import com.github.bumblebee202111.doubean.model.SubjectWithInterest
 import com.github.bumblebee202111.doubean.ui.mySubject
 import com.github.bumblebee202111.doubean.ui.subjectCollection
 
@@ -28,6 +29,7 @@ fun BooksScreen(
         booksUiState = booksUiState,
         onSubjectStatusClick = onSubjectStatusClick,
         onLoginClick = onLoginClick,
+        onMarkClick = viewModel::onMarkBook,
         modifier = modifier
     )
 }
@@ -38,6 +40,7 @@ fun BooksScreen(
     booksUiState: BooksUiState,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
+    onMarkClick: (book: SubjectWithInterest) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier = modifier) {
@@ -50,6 +53,15 @@ fun BooksScreen(
             Spacer(modifier = Modifier.size(16.dp))
         }
         when (booksUiState) {
+            is BooksUiState.Success -> {
+                subjectCollection(
+                    title = booksUiState.title,
+                    items = booksUiState.items,
+                    isLoggedIn = booksUiState.isLoggedIn,
+                    onMarkClick = onMarkClick
+                )
+            }
+
             BooksUiState.Loading -> {
                 //TODO
             }
@@ -58,9 +70,6 @@ fun BooksScreen(
                 //TODO
             }
 
-            is BooksUiState.Success -> {
-                subjectCollection(booksUiState.title, booksUiState.items)
-            }
         }
     }
 }

@@ -11,6 +11,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.feature.subjects.MySubjectUiState
 import com.github.bumblebee202111.doubean.model.SubjectType
+import com.github.bumblebee202111.doubean.model.SubjectWithInterest
 import com.github.bumblebee202111.doubean.ui.mySubject
 import com.github.bumblebee202111.doubean.ui.subjectCollection
 
@@ -28,6 +29,7 @@ fun MoviesScreen(
         moviesUiState = moviesUiState,
         onSubjectStatusClick = onSubjectStatusClick,
         onLoginClick = onLoginClick,
+        onMarkClick = viewModel::onMarkMovie,
         modifier = modifier
     )
 }
@@ -38,6 +40,7 @@ fun MoviesScreen(
     moviesUiState: MoviesUiState,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
+    onMarkClick: (movie: SubjectWithInterest) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier = modifier) {
@@ -53,7 +56,9 @@ fun MoviesScreen(
             is MoviesUiState.Success -> {
                 subjectCollection(
                     title = moviesUiState.title,
-                    items = moviesUiState.items
+                    items = moviesUiState.items,
+                    isLoggedIn = moviesUiState.isLoggedIn,
+                    onMarkClick = onMarkClick
                 )
             }
 
