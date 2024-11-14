@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.7.4(704)
+
 ## Version 0.7.3(703)
 
 - Support subject interest actions

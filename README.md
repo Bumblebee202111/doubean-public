@@ -199,12 +199,11 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.7.3\)
-
-#### To-dos for next release \(0.7.4)
+#### To-dos for current release \(0.7.4\)
 
 - Subjects deeplinks
-- Compose migration
+
+#### To-dos for next release \(0.7.4)
 
 #### Future plans
 
