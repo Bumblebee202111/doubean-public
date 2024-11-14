@@ -78,8 +78,10 @@ Introduction
 
 **Login Screen**
 
-- Login guide
-- Manual session login
+- Session login
+  - Guide
+  - Manual submission
+
 
 ### Screenshots
 
@@ -103,7 +105,7 @@ Introduction
 
 ### Open-source?
 
-To not get this project/myself into trouble, the update of the source code in the public repo has been suspended. However, the latest release is always available.
+To not get this project/myself into trouble, the update of the source code in the public repo has been suspended. However, the latest release is always available, and I'm willing to share the part of the code that you are interested in if it does not qinquan that much.
 
 ### Who is it for?
 
@@ -199,8 +201,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.3\)
 
-- Fix  topic_tags_normal nullability
-
 #### To-dos for next release \(0.7.4)
 
 - Subjects deeplinks
@@ -259,14 +259,14 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Sometimes topic content fails to be loaded on some low-end or large-screened devices, or of special layout (not sure which sets constraint)
   * LazyLayoutPinnableItem?
   * ...
-* Topics feed (notifications)
+* Topics feed notifications
   * Find why it is broken and fix it
   * Clarify:
     * Improper use may disturb you and drain phone battery (untested)
     * Better keep app in background
     * Mechanism: Actively query group topics (without tab_id parameter, to increase efficiency) by each group
   * “每次动态更新请求的帖子总数限制” -> ?
-  * Create reusable class for all notification settings
+  * Create reusable class for all topic notification settings
 * More subscribe/favorite/save
   * Save comments
   * Subscribe topics
