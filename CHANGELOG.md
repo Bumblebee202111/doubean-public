@@ -3,7 +3,7 @@ Change Log
 
 ## Version 0.7.3(703)
 
-- Support interest actions
+- Support subject interest actions
   - This include plenty of adjustments to subject-related data models
 - Optimize hints of LoginScreen
 
