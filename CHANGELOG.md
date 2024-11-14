@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+## Version 0.7.3(703)
+
+- Support interest actions
+  - This include plenty of adjustments to subject-related data models
+- Optimize hints of LoginScreen
+
 ## Version 0.7.2(702)
 
 - Support browsing my subjects (我的书影~~音~~)! 
