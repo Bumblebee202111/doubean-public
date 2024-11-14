@@ -164,11 +164,12 @@ fun LoginScreen(
                 style = MaterialTheme.typography.titleLarge
             )
             Text(
-                text = "The login session is stored in preferences of Douban, access of which usually requires root permission.\n" +
+                text = "Accessing the login session of Douban usually requires root permission.\n" +
                         "Syncing it to doubean is expected to be automatically done at app startup if root is granted\n" +
-                        "Manual sync is set below for those in need, but it's highly discouraged since\n" +
-                        "1. The feature is not carefully designed and you may meet weird bugs.\n" +
-                        "2. It requires many steps and extra care.\n",
+                        "Manual sync form is provided below for those in need, but it's highly discouraged since\n" +
+                        "1. It is not carefully designed and you may meet bugs.\n" +
+                        "2. It requires many steps and extra care.\n" +
+                        "3. You will probably have to import session again when the session pref is updated",
 
                 style = MaterialTheme.typography.bodyMedium
             )
@@ -179,7 +180,7 @@ fun LoginScreen(
                 value = pref,
                 onValueChange = { pref = it },
                 Modifier.fillMaxWidth(),
-                label = { Text("key_current_account_info pref line") },
+                label = { Text("key_current_account_info pref line (whitespaces are optional)") },
                 supportingText = {
                     Text(
                         "Path: /data/data/com.douban.frodo/shared_prefs/com.douban.frodo_preferences.xml\n" +
@@ -204,7 +205,7 @@ fun LoginScreen(
             ) {
                 Text(text = "Login")
             }
-            Text(text = "Don't panic. This app neither sends data to any third party endpoint nor accesses sensitive APIs, the fact of which can be easily verified if you already have some knowledge about how to do it. However, this login 'trick' could be pretty sensitive to Douban, hence no Chinese UI.\n")
+            Text(text = "No Chinese/neat UI of this screen is planned to be implemented both due to my laziness and for the sustainability of doubean.\n")
 
         }
     }
