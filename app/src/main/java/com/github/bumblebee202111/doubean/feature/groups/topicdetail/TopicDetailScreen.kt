@@ -86,7 +86,7 @@ import com.github.bumblebee202111.doubean.ui.common.TopicWebViewClient
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.ListItemImages
-import com.github.bumblebee202111.doubean.util.OpenInUtil
+import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.TOPIC_CSS_FILENAME
 import com.github.bumblebee202111.doubean.util.fullDateTimeString
@@ -272,7 +272,7 @@ fun TopicDetailScreen(
                             text = { Text(stringResource(R.string.view_in_douban)) },
                             onClick = {
                                 topic?.uri?.let {
-                                    OpenInUtil.openInDouban(context, it)
+                                    OpenInUtils.openInDouban(context, it)
                                 }
                             })
 
@@ -527,7 +527,7 @@ fun TopicDetailHeader(
                                         onOpenDeepLinkUrl(url)
                                     } catch (e: IllegalArgumentException) {
                                         Log.i("doubean", "shouldOverrideUrlLoading: $e")
-                                        OpenInUtil.viewInActivity(context, url)
+                                        OpenInUtils.viewInActivity(context, url)
                                     }
                                     return true
                                 }
