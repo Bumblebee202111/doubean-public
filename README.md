@@ -201,8 +201,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.4\)
 
-- Subjects deeplinks
-
 #### To-dos for next release \(0.7.4)
 
 #### Future plans
@@ -216,7 +214,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Subjects (书影音)
   * Search
   * Subject detail screen
-  * Show a glimpse of T250 instead in MoviesScreen/BooksScreen from book/movie module data and add a separate T250Screen
+  * Show a glimpse of T250 instead in MoviesScreen/BooksScreen with book/movie module data and add a separate T250Screen
   * (Single-)status interests screen & its pagination
   * T250 pagination
   * More details & sub-features

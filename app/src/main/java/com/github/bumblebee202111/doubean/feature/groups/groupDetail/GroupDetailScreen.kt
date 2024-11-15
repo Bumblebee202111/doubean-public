@@ -42,7 +42,7 @@ import com.github.bumblebee202111.doubean.model.GroupTab
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.GroupNotificationsPreferenceDialog
 import com.github.bumblebee202111.doubean.ui.LargeGroupAvatar
-import com.github.bumblebee202111.doubean.util.OpenInUtil
+import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import kotlinx.coroutines.launch
 
@@ -147,10 +147,10 @@ fun GroupDetailScreen(
                 ShareUtil.share(context, shareText)
             },
             viewInDouban = {
-                OpenInUtil.openInDouban(context, it)
+                OpenInUtils.openInDouban(context, it)
             },
             viewInBrowser = {
-                OpenInUtil.openInBrowser(context, it)
+                OpenInUtils.openInBrowser(context, it)
             },
             onTopicClick = onTopicClick,
             onShowSnackbar = onShowSnackbar
