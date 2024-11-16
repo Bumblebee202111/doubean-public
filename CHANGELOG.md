@@ -4,6 +4,8 @@ Change Log
 ## Version 0.7.4(704)
 
 - Support clicking to view subjects in Douban
+- Formally mark Statuses tab as maintained only
+  - Add/update text hints
 
 ## Version 0.7.3(703)
 

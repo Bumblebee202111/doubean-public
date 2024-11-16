@@ -201,7 +201,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.4\)
 
-#### To-dos for next release \(0.7.4)
+#### To-dos for next release \(0.7.5)
+
+- Subjects: search
 
 #### Future plans
 
@@ -212,7 +214,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From View and Data Binding to Jetpack Compose
     * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout/Spinner
 * Subjects (书影音)
-  * Search
   * Subject detail screen
   * Show a glimpse of T250 instead in MoviesScreen/BooksScreen with book/movie module data and add a separate T250Screen
   * (Single-)status interests screen & its pagination
@@ -243,9 +244,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Languages
   * Translations
   * Pick language
-* Home - Following
-  * More card types
-  * Pagination
 * Group Detail
   * Compose collapsing toolbar when API is more convenient to use
   * Collapse on entrance for the subscribed/favorited group/tab
@@ -280,6 +278,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Independent login (seems impossible)
 * Find API for all followed topics (seems impossible)
 * Group Detail: WebView for group
+* Statueses (in maintanence state now, only when requested)
+  * More card types
+  * Pagination
 * Test
 
 ### Non-Todos
