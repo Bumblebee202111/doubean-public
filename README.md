@@ -199,11 +199,13 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.7.4\)
+#### To-dos for current release \(0.7.5\)
 
-#### To-dos for next release \(0.7.5)
+-  Subjects: search
 
-- Subjects: search
+#### To-dos for next release \(0.7.6)
+
+- Subject detail screen
 
 #### Future plans
 
@@ -214,7 +216,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From View and Data Binding to Jetpack Compose
     * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout/Spinner
 * Subjects (书影音)
-  * Subject detail screen
   * Show a glimpse of T250 instead in MoviesScreen/BooksScreen with book/movie module data and add a separate T250Screen
   * (Single-)status interests screen & its pagination
   * T250 pagination

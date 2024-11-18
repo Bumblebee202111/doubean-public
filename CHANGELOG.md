@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.7.5(705)
+
 ## Version 0.7.4(704)
 
 - Support clicking to view subjects in Douban
