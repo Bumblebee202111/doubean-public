@@ -25,7 +25,9 @@ Introduction
 
 - Following statuses
 
-#### Subjects Screens  (no lists are paginated yet)
+#### Subjects Screens
+
+(no lists are paginated yet)
 
 ##### Home Screen
 
@@ -91,8 +93,6 @@ Introduction
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
 <img src="screenshots/phone_group_search.png" alt="phone_group_search" height="300" />
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
-
-
 
 
 ### Getting Started
@@ -200,8 +200,6 @@ Libraries Used
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
 #### To-dos for current release \(0.7.5\)
-
--  Fix statuses nullability
 
 #### To-dos for next release \(0.7.6)
 
