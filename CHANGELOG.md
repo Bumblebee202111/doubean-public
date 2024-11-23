@@ -3,6 +3,9 @@ Change Log
 
 ## Version 0.7.5(705)
 
+- Add support for searching subjects
+  - Pagination is not planned here
+
 ## Version 0.7.4(704)
 
 - Support clicking to view subjects in Douban

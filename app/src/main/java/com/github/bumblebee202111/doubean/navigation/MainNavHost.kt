@@ -29,6 +29,8 @@ import com.github.bumblebee202111.doubean.feature.settings.navigation.navigateTo
 import com.github.bumblebee202111.doubean.feature.settings.navigation.settingsScreen
 import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.interestsScreen
 import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.navigateToInterests
+import com.github.bumblebee202111.doubean.feature.subjects.search.navigation.navigateToSearchSubjects
+import com.github.bumblebee202111.doubean.feature.subjects.search.navigation.searchSubjectsScreen
 
 @Composable
 fun MainNavHost(
@@ -53,6 +55,7 @@ fun MainNavHost(
             navigateToTopic = navController::navigateToTopic,
             navigateToLogin = navController::navigateToLogin,
             navigateToSubjectInterests = navController::navigateToInterests,
+            navigateToSearchSubjects = navController::navigateToSearchSubjects,
             onShowSnackbar = onShowSnackbar
         )
         groupsSearchScreen(onGroupClick = navController::navigateToGroup)
@@ -95,12 +98,15 @@ fun MainNavHost(
             navController::navigateToGroupDefaultNotificationsPreferencesSettings
         )
         groupDefaultNotificationsPreferencesSettingsScreen(
-            onBackClick = navController::navigateUp,
+            onBackClick = navController::navigateUp
         )
         imageScreen(
             navigateUp = navController::navigateUp,
             onShowSnackbar = onShowSnackbar
         )
-        interestsScreen(onBackClick = navController::navigateUp)
+        interestsScreen(
+            onBackClick = navController::navigateUp
+        )
+        searchSubjectsScreen(onBackClick = navController::navigateUp)
     }
 }

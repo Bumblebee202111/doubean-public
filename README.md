@@ -127,7 +127,7 @@ It not only implements some features (mainly of Groups) of Douban app, but also 
 * Rooted users can reuse login session of Douban app
 * Partial support for viewing content in Douban WebView optimized for mobile reading in case of need (no longer updated)
 * Basic use of MD2/3 (UI may not look good during migration)
-* Provides simple Subjects (书影音) experience including support of user actions (   WIP 🚧)
+* Provides simple type-based Subjects (书影音) experience including support of user actions (WIP 🚧)
 * ~~Recommended topic notifications (broken)~~
 
 Libraries Used
@@ -201,7 +201,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.5\)
 
--  Subjects: search
+-  Fix statuses nullability
 
 #### To-dos for next release \(0.7.6)
 

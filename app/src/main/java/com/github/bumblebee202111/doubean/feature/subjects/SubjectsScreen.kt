@@ -29,6 +29,7 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.books.BooksScreen
 import com.github.bumblebee202111.doubean.feature.subjects.movies.MoviesScreen
 import com.github.bumblebee202111.doubean.model.SubjectType
+import com.github.bumblebee202111.doubean.model.SubjectsSearchType
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import kotlinx.coroutines.launch
 
@@ -38,6 +39,7 @@ fun SubjectsScreen(
     onSettingsClick: () -> Unit,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
+    onSearchClick: (type: SubjectsSearchType) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -58,7 +60,8 @@ fun SubjectsScreen(
             SubjectsPager(
                 state = pagerState,
                 onSubjectStatusClick = onSubjectStatusClick,
-                onLoginClick = onLoginClick
+                onLoginClick = onLoginClick,
+                onSearchClick = onSearchClick
             )
         }
     }
@@ -109,6 +112,7 @@ private fun SubjectsPager(
     state: PagerState,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
+    onSearchClick: (type: SubjectsSearchType) -> Unit,
 ) {
     HorizontalPager(state = state) { page ->
         val modifier = Modifier.fillMaxSize()
@@ -117,7 +121,8 @@ private fun SubjectsPager(
                 MoviesScreen(
                     modifier = modifier,
                     onSubjectStatusClick = onSubjectStatusClick,
-                    onLoginClick = onLoginClick
+                    onLoginClick = onLoginClick,
+                    onSearchClick = onSearchClick
                 )
             }
 
@@ -125,7 +130,8 @@ private fun SubjectsPager(
                 BooksScreen(
                     modifier = modifier,
                     onSubjectStatusClick = onSubjectStatusClick,
-                    onLoginClick = onLoginClick
+                    onLoginClick = onLoginClick,
+                    onSearchClick = onSearchClick
                 )
             }
         }

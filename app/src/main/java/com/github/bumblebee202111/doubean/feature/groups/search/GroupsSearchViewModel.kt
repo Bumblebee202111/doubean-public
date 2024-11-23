@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
@@ -26,7 +27,7 @@ class GroupsSearchViewModel @Inject constructor(private val groupRepository: Gro
     @OptIn(ExperimentalCoroutinesApi::class)
     val results =
         query.flatMapLatest { search ->
-            if (search.isNullOrBlank()) {
+            if (search == null) {
                 flowOf(PagingData.empty())
             } else {
                 groupRepository.search(search).cachedIn(viewModelScope)
@@ -34,15 +35,25 @@ class GroupsSearchViewModel @Inject constructor(private val groupRepository: Gro
 
         }.cachedIn(viewModelScope)
 
-    val shouldShowGroupsOfTheDay = query.map(String?::isNullOrBlank).stateInUi(true)
+    fun onQueryChange(query: String) {
+        if (query.isBlank()) {
+            this.query.value = null
+        }
+    }
 
-    fun setQuery(originalInput: String) {
-        val input = originalInput.lowercase(Locale.getDefault()).trim()
+    fun onSearchTriggered(originalInput: String) {
+        val input = originalInput.lowercase(Locale.getDefault()).trim().takeUnless(String::isEmpty)
         query.value = input
     }
 
-    val groupsOfTheDay =
-        groupRepository.getGroupRecommendation(GroupRecommendationType.DAILY).map { it.data }
-            .flowOn(Dispatchers.IO).stateInUi()
+    val groupsOfTheDay = query.flatMapLatest {
+        if (it == null) {
+            groupRepository.getGroupRecommendation(GroupRecommendationType.DAILY).map { it.data }
+                .flowOn(Dispatchers.IO)
+        } else {
+            emptyFlow()
+        }
+    }.stateInUi()
+
 
 }
