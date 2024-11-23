@@ -13,19 +13,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.view.isVisible
@@ -41,6 +31,7 @@ import com.github.bumblebee202111.doubean.feature.groups.common.groupsOfTheDay
 import com.github.bumblebee202111.doubean.model.GroupSearchResultGroupItem
 import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
 import com.github.bumblebee202111.doubean.ui.LargeGroupAvatar
+import com.github.bumblebee202111.doubean.ui.component.SearchTextField
 
 @Composable
 fun GroupsSearchScreen(
@@ -49,12 +40,11 @@ fun GroupsSearchScreen(
 ) {
     val groupPagingItems = viewModel.results.collectAsLazyPagingItems()
     val groupsOfTheDay by viewModel.groupsOfTheDay.collectAsStateWithLifecycle()
-    val shouldShowGroupsOfTheDay by viewModel.shouldShowGroupsOfTheDay.collectAsStateWithLifecycle()
     GroupsSearchScreen(
         groupPagingItems = groupPagingItems,
         groupsOfTheDay = groupsOfTheDay,
-        shouldShowGroupsOfTheDay = shouldShowGroupsOfTheDay,
-        setQuery = viewModel::setQuery,
+        onQueryChange = viewModel::onQueryChange,
+        onSearchTriggered = viewModel::onSearchTriggered,
         onGroupClick = onGroupClick
     )
 }
@@ -63,8 +53,8 @@ fun GroupsSearchScreen(
 fun GroupsSearchScreen(
     groupPagingItems: LazyPagingItems<GroupSearchResultGroupItem>,
     groupsOfTheDay: List<RecommendedGroupItem>?,
-    shouldShowGroupsOfTheDay: Boolean,
-    setQuery: (originalInput: String) -> Unit,
+    onQueryChange: (String) -> Unit,
+    onSearchTriggered: (originalInput: String) -> Unit,
     onGroupClick: (groupId: String) -> Unit,
 ) {
     Column {
@@ -74,18 +64,17 @@ fun GroupsSearchScreen(
             )
         )
         SearchTextField(
+            labelTextResId = R.string.search_groups_hint,
             modifier = Modifier
                 .padding(top = 8.dp, start = 8.dp, end = 8.dp)
-                .fillMaxWidth()
-        ) { query ->
-            setQuery(query)
-        }
+                .fillMaxWidth(),
+            onQueryChange = onQueryChange,
+            onSearchTriggered = onSearchTriggered
+        )
 
-        if (shouldShowGroupsOfTheDay) {
-            groupsOfTheDay?.let {
-                LazyColumn {
-                    groupsOfTheDay(it, onGroupClick)
-                }
+        if (groupsOfTheDay != null) {
+            LazyColumn {
+                groupsOfTheDay(groupsOfTheDay, onGroupClick)
             }
         } else {
             GroupList(
@@ -95,32 +84,6 @@ fun GroupsSearchScreen(
             )
         }
     }
-}
-
-@Composable
-fun SearchTextField(
-    modifier: Modifier,
-    onUpdateQuery: (String) -> Unit,
-) {
-    val keyboardController = LocalSoftwareKeyboardController.current
-    var query by rememberSaveable { mutableStateOf("") }
-    TextField(
-        value = query,
-        onValueChange = {
-            query = it
-            if (it.isBlank()) onUpdateQuery(it)
-        },
-        modifier = modifier,
-        label = { Text(stringResource(id = R.string.search_hint)) },
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        keyboardActions = KeyboardActions(
-            onSearch = {
-                keyboardController?.hide()
-                onUpdateQuery(query)
-            }
-        ),
-        singleLine = true
-    )
 }
 
 @Composable
