@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+## Version 0.7.5(705)
+
+- Add support for searching subjects
+  - Pagination is not planned here
+- Fix nullability issues in status type review which prevents data from being successfully parsed & then presented
+
 ## Version 0.7.4(704)
 
 - Support clicking to view subjects in Douban
