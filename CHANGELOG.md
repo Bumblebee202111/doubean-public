@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.7.6(706)
+
 ## Version 0.7.5(705)
 
 - Add support for searching subjects
