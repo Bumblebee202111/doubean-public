@@ -38,6 +38,10 @@ Introduction
 
 - My subject statuses with interests
 
+##### Search Subjects Screen
+
+- Search subjects
+
 #### Groups Screens
 
 ##### Home Screen
@@ -87,13 +91,14 @@ Introduction
 
 ### Screenshots
 
-<p><img src="screenshots/phone_subjects.png" alt="phone_subjects" height="450" />
-<img src="screenshots/phone_search_subjects.png" alt="phone_search_subjects" height="450" />
+<p><img src="screenshots/phone_subjects.png" alt="phone_subjects" height="300" />
+<img src="screenshots/phone_search_subjects.png" alt="phone_search_subjects" height="300" />
 <img src="screenshots/tablet_interests.png" alt="tablet_interests" height="450" />   
 <img src="screenshots/phone_groups_home.png" alt="phone_groups" height="300" />
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
 <img src="screenshots/phone_group_search.png" alt="phone_group_search" height="300" />
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
+
 
 
 
@@ -201,11 +206,11 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.7.5\)
-
-#### To-dos for next release \(0.7.6)
+#### To-dos for current release \(0.7.6\)
 
 - Subject detail screen
+
+#### To-dos for next release \(0.7.7)
 
 #### Future plans
 
@@ -221,6 +226,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * T250 pagination
   * More details & sub-features
 * Reuse item logic of search result groups / groups of the day
+* Properly show login prompts & normal text hints
 * Fix the "known issue" above after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
 * Groups - Home
   * Support pagination?
