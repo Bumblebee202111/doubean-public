@@ -208,9 +208,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.6\)
 
-- Subject detail screen
-  - Single-line title
-
 #### To-dos for next release \(0.7.7)
 
 #### Future plans
