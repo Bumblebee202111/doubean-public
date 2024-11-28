@@ -42,6 +42,12 @@ Introduction
 
 - Search subjects
 
+##### Movie Screen
+
+##### Tv Screen
+
+##### Book Screen
+
 #### Groups Screens
 
 ##### Home Screen
@@ -212,78 +218,77 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### Future plans
 
-* Gradually revert naming conventions to those of Douban
-* Gracefully remove Fragments: First reduce usages of Fragment methods
 * Gradual migrations: <span id="migrations"></span>
   * From MD2 / custom design to MD3
   * From View and Data Binding to Jetpack Compose
     * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout/Spinner
+  * Gracefully remove Fragments: First reduce usages of Fragment methods
 * Subjects (书影音)
   * Subject screen: more info, such as intro / hot interests / suggests / ...
   * Show a glimpse of T250 instead in MoviesScreen/BooksScreen with book/movie module data and add a separate T250Screen
   * (Single-)status interests screen & its pagination
   * T250 pagination
   * More details & sub-features
-* Reuse item logic of search result groups / groups of the day
+* Groups
+  * Reuse item logic of search result groups / groups of the day
+  * Fix the "known issue" above after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
+  * Home
+    * Support pagination?
+    * Add favorite tabs for topic list area
+  * Subscribe/favorite/save
+    * Save topics
+    * Pin my groups
+    * Add corresponding item actions
+  * Allow expanding group descriptions
+  * Group tab: Track read
+  * Search
+    * Search group/tab topics (in-group) 
+    * Search topics of all groups (global)
+  * Use the new nullable "edit_time" property of network topics
+  * Group Detail
+    * Compose collapsing toolbar when API is more convenient to use
+    * Collapse on entrance for the subscribed/favorited group/tab
+  * Topics feed notifications
+    * Find why it is broken and fix it
+    * Clarify:
+      * Improper use may disturb you and drain phone battery (untested)
+      * Better keep app in background
+      * Mechanism: Actively query group topics (without tab_id parameter, to increase efficiency) by each group
+    * “每次动态更新请求的帖子总数限制” -> ?
+    * Create reusable class for all topic notification settings
+  * More subscribe/favorite/save
+    * Save comments
+    * Subscribe topics
+    * Sync custom lists by maintaining a fake private note which holds the data
+    * Custom feeds like Reddit
+  * Groups: Group/tab/topic shortcuts
+  * Topic content WebView problems
+    * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
+    * Sometimes topic content fails to be loaded on some low-end or large-screened devices, or of special layout (not sure which sets constraint)
+    * LazyLayoutPinnableItem?
+    * ...
+  * Hide officially-marked unfriendly content by default
+  * Support blocking unfriendly content
+  * Group Detail: For topic items, optimize tag display, e.g., assign color to each tag mapped from ID
+  * Lists: Reddit-like item expand/collapse
+  * Find API for all followed topics (hopeless)
 * Properly show login prompts & normal text hints
-* Fix the "known issue" above after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
-* Groups - Home
-  * Support pagination?
-  * Add favorite tabs for topic list area
 * Status bar color
 * Show error messages
 * Bring back load state visualization which was removed for simplicity during various types of migrations
   * Paging 3 refresh, loading status ...
-* Subscribe/favorite/save
-  * Save topics
-  * Pin my groups
-  * Add corresponding item actions
-* Allow expanding group descriptions
 * Bring back basic support for dark mode & landscape experience
 * Shared element
-* Group tab: Track read
-* Use the new nullable "edit_time" property of network topics
-* Search
-  * Search group/tab topics (in-group) 
-  * Search topics of all groups (global)
 * Better model layering
 * Languages
   * Translations
   * Pick language
-* Group Detail
-  * Compose collapsing toolbar when API is more convenient to use
-  * Collapse on entrance for the subscribed/favorited group/tab
 * `Lazylist` problems
   * Restoration of scroll position is problematic
-* Topic content WebView problems
-  * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
-  * Sometimes topic content fails to be loaded on some low-end or large-screened devices, or of special layout (not sure which sets constraint)
-  * LazyLayoutPinnableItem?
-  * ...
-* Topics feed notifications
-  * Find why it is broken and fix it
-  * Clarify:
-    * Improper use may disturb you and drain phone battery (untested)
-    * Better keep app in background
-    * Mechanism: Actively query group topics (without tab_id parameter, to increase efficiency) by each group
-  * “每次动态更新请求的帖子总数限制” -> ?
-  * Create reusable class for all topic notification settings
-* More subscribe/favorite/save
-  * Save comments
-  * Subscribe topics
-  * Sync custom lists by maintaining a fake private note which holds the data
-  * Custom feeds like Reddit
-* Groups: Group/tab/topic shortcuts
-* Hide officially-marked unfriendly content by default
-* Support blocking unfriendly content
 * NetworkManager
 * Widgets
-* Lists: Reddit-like item expand/collapse
-* Group Detail: For topic items, optimize tag display, e.g., assign color to each tag mapped from ID
-* Reuse more existing Douban preferences
-* Independent login (seems impossible)
-* Find API for all followed topics (seems impossible)
-* Group Detail: WebView for group
+* Reuse more existing Douban preferences to make requests more consistent in the two apps
+* Independent login (hopeless)
 * Statueses (in maintanence state now, only when requested)
   * More card types
   * Pagination
