@@ -8,6 +8,7 @@ Change Log
   - Not very detailed yet, but these are *new* screens anyway
 - Show book subtitle in all book forms including list items
 - Tweak SubjectInterestButtons
+- Fix bottom navigation being initialized twice
 
 ## Version 0.7.5(705)
 
