@@ -5,8 +5,9 @@ Change Log
 
 - Add subject detail screens
   - Adjust list item click actions and place of view-in-Douban entrances for subjects
-  - Intro / hot interests / suggests / ... are planned to supported later
+  - Not very detailed yet, but these are *new* screens anyway
 - Show book subtitle in all book forms including list items
+- Tweak SubjectInterestButtons
 
 ## Version 0.7.5(705)
 
