@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             AppTheme {
                 val startAppWithGroups by mainActivityViewModel.startAppWithGroups.collectAsStateWithLifecycle()
-                DoubeanApp(startWithGroups = startAppWithGroups ?: true)
+                startAppWithGroups?.let { DoubeanApp(startWithGroups = it) }
             }
         }
 
