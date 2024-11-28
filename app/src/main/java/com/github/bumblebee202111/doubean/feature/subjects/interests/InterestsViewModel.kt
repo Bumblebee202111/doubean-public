@@ -36,7 +36,7 @@ class InterestsViewModel @Inject constructor(
         })
     }
 
-    private val interests = MutableStateFlow<List<SubjectWithInterest>>(emptyList())
+    private val interests = MutableStateFlow<List<SubjectWithInterest<*>>>(emptyList())
 
     private val interestsResult =
         flow {
@@ -74,7 +74,7 @@ class InterestsViewModel @Inject constructor(
         }.stateInUi(InterestsUiState.Loading)
 
     fun onUpdateInterestStatus(
-        subjectWithInterest: SubjectWithInterest,
+        subjectWithInterest: SubjectWithInterest<*>,
         status: SubjectInterest.Status,
     ) {
         when (status) {
@@ -111,7 +111,7 @@ class InterestsViewModel @Inject constructor(
 sealed interface InterestsUiState {
     data class Success(
         val title: String,
-        val interests: List<Pair<MySubjectStatus, List<SubjectWithInterest>>>,
+        val interests: List<Pair<MySubjectStatus, List<SubjectWithInterest<*>>>>,
         val isLoggedIn: Boolean,
     ) : InterestsUiState
 

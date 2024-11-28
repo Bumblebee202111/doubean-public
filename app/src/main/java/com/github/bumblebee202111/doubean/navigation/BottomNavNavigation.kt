@@ -20,6 +20,9 @@ fun NavGraphBuilder.bottomNavScreen(
     navigateToLogin: () -> Unit,
     navigateToSubjectInterests: (userId: String, subjectType: SubjectType) -> Unit,
     navigateToSearchSubjects: (type: SubjectsSearchType) -> Unit,
+    navigateToMovie: (movieId: String) -> Unit,
+    navigateToTv: (tvId: String) -> Unit,
+    navigateToBook: (bookId: String) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
 ): Unit = composable<BottomNavRoute> {
     BottomNavScreen(
@@ -32,6 +35,9 @@ fun NavGraphBuilder.bottomNavScreen(
         navigateToLogin = navigateToLogin,
         navigateToSubjectInterests = navigateToSubjectInterests,
         navigateToSearchSubjects = navigateToSearchSubjects,
+        navigateToMovie = navigateToMovie,
+        navigateToTv = navigateToTv,
+        navigateToBook = navigateToBook,
         onShowSnackbar = onShowSnackbar
     )
 }

@@ -27,10 +27,16 @@ import com.github.bumblebee202111.doubean.feature.settings.navigation.groupDefau
 import com.github.bumblebee202111.doubean.feature.settings.navigation.navigateToGroupDefaultNotificationsPreferencesSettings
 import com.github.bumblebee202111.doubean.feature.settings.navigation.navigateToSettings
 import com.github.bumblebee202111.doubean.feature.settings.navigation.settingsScreen
+import com.github.bumblebee202111.doubean.feature.subjects.book.navigation.bookScreen
+import com.github.bumblebee202111.doubean.feature.subjects.book.navigation.navigateToBook
 import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.interestsScreen
 import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.navigateToInterests
+import com.github.bumblebee202111.doubean.feature.subjects.movie.navigation.movieScreen
+import com.github.bumblebee202111.doubean.feature.subjects.movie.navigation.navigateToMovie
 import com.github.bumblebee202111.doubean.feature.subjects.search.navigation.navigateToSearchSubjects
 import com.github.bumblebee202111.doubean.feature.subjects.search.navigation.searchSubjectsScreen
+import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.navigateToTv
+import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.tvScreen
 
 @Composable
 fun MainNavHost(
@@ -56,6 +62,9 @@ fun MainNavHost(
             navigateToLogin = navController::navigateToLogin,
             navigateToSubjectInterests = navController::navigateToInterests,
             navigateToSearchSubjects = navController::navigateToSearchSubjects,
+            navigateToMovie = navController::navigateToMovie,
+            navigateToTv = navController::navigateToTv,
+            navigateToBook = navController::navigateToBook,
             onShowSnackbar = onShowSnackbar
         )
         groupsSearchScreen(onGroupClick = navController::navigateToGroup)
@@ -105,8 +114,19 @@ fun MainNavHost(
             onShowSnackbar = onShowSnackbar
         )
         interestsScreen(
-            onBackClick = navController::navigateUp
+            onBackClick = navController::navigateUp,
+            onMovieClick = navController::navigateToMovie,
+            onTvClick = navController::navigateToTv,
+            onBookClick = navController::navigateToBook
         )
-        searchSubjectsScreen(onBackClick = navController::navigateUp)
+        searchSubjectsScreen(
+            onBackClick = navController::navigateUp,
+            onMovieClick = navController::navigateToMovie,
+            onTvClick = navController::navigateToTv,
+            onBookClick = navController::navigateToBook
+        )
+        movieScreen(onBackClick = navController::navigateUp)
+        tvScreen(onBackClick = navController::navigateUp)
+        bookScreen(onBackClick = navController::navigateUp)
     }
 }

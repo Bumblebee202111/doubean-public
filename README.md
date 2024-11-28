@@ -221,6 +221,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From View and Data Binding to Jetpack Compose
     * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout/Spinner
 * Subjects (书影音)
+  * Subject screen: more info, such as intro / hot interests / suggests / ...
   * Show a glimpse of T250 instead in MoviesScreen/BooksScreen with book/movie module data and add a separate T250Screen
   * (Single-)status interests screen & its pagination
   * T250 pagination

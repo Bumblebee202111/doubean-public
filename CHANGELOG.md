@@ -3,6 +3,11 @@ Change Log
 
 ## Version 0.7.6(706)
 
+- Add subject detail screens
+  - Adjust list item click actions and place of view-in-Douban entrances for subjects
+  - Intro / hot interests / suggests / ... are planned to supported later
+- Show book subtitle in all book forms including list items
+
 ## Version 0.7.5(705)
 
 - Add support for searching subjects

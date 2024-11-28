@@ -17,28 +17,36 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.SearchResultSubjectItem
+import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.model.SubjectsSearchType
 import com.github.bumblebee202111.doubean.ui.SimpleSubjectItem
 import com.github.bumblebee202111.doubean.ui.component.SearchTextField
+import com.github.bumblebee202111.doubean.util.OpenInUtils
 
 @Composable
 fun SearchSubjectsScreen(
     onBackClick: () -> Unit,
+    onMovieClick: (movieId: String) -> Unit,
+    onTvClick: (tvId: String) -> Unit,
+    onBookClick: (bookId: String) -> Unit,
     viewModel: SearchSubjectsViewModel = hiltViewModel(),
 ) {
     val type = viewModel.type
     val searchResultUiState by viewModel.searchResultUiState.collectAsStateWithLifecycle()
-    val query by viewModel.query.collectAsStateWithLifecycle()
     SearchSubjectsScreen(
         type = type,
         searchResultUiState = searchResultUiState,
         onSearchTriggered = viewModel::onSearchTriggered,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onMovieClick = onMovieClick,
+        onTvClick = onTvClick,
+        onBookClick = onBookClick
     )
 }
 
@@ -49,6 +57,9 @@ fun SearchSubjectsScreen(
     searchResultUiState: SearchResultUiState,
     onSearchTriggered: (String) -> Unit,
     onBackClick: () -> Unit,
+    onMovieClick: (movieId: String) -> Unit,
+    onTvClick: (tvId: String) -> Unit,
+    onBookClick: (bookId: String) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -88,7 +99,10 @@ fun SearchSubjectsScreen(
             is SearchResultUiState.Success -> {
                 SearchResultBody(
                     searchResultSubjects = searchResultUiState.subjects,
-                    contentPadding = it
+                    contentPadding = it,
+                    onMovieClick = onMovieClick,
+                    onTvClick = onTvClick,
+                    onBookClick = onBookClick
                 )
             }
         }
@@ -99,14 +113,36 @@ fun SearchSubjectsScreen(
 private fun SearchResultBody(
     searchResultSubjects: List<SearchResultSubjectItem>,
     contentPadding: PaddingValues,
+    onMovieClick: (movieId: String) -> Unit,
+    onTvClick: (tvId: String) -> Unit,
+    onBookClick: (bookId: String) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
         contentPadding = contentPadding
     ) {
-        items(items = searchResultSubjects, key = { it.id }) {
-            SimpleSubjectItem(subject = it)
-            if (it != searchResultSubjects.last()) {
+        items(items = searchResultSubjects, key = { it.id }) { subject ->
+            val context = LocalContext.current
+            SimpleSubjectItem(subject = subject, onClick = {
+                when (subject.type) {
+                    SubjectType.MOVIE -> {
+                        onMovieClick(subject.id)
+                    }
+
+                    SubjectType.TV -> {
+                        onTvClick(subject.id)
+                    }
+
+                    SubjectType.BOOK -> {
+                        onBookClick(subject.id)
+                    }
+
+                    SubjectType.UNSUPPORTED -> {
+                        OpenInUtils.openInDouban(context, subject.uri)
+                    }
+                }
+            })
+            if (subject != searchResultSubjects.last()) {
                 Spacer(modifier = Modifier.size(8.dp))
             }
         }

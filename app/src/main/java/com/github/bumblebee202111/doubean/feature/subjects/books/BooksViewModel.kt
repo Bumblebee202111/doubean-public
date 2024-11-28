@@ -32,7 +32,7 @@ class BooksViewModel @Inject constructor(
         MutableStateFlow(MySubjectUiState.Loading)
     val myBooksUiState = _myBooksUiState.asStateFlow()
 
-    private val collectionItems: MutableStateFlow<List<SubjectWithInterest>> =
+    private val collectionItems: MutableStateFlow<List<SubjectWithInterest<*>>> =
         MutableStateFlow(emptyList())
 
     private val collectionResult = flow {
@@ -70,7 +70,7 @@ class BooksViewModel @Inject constructor(
         getMyBooks()
     }
 
-    fun onMarkBook(book: SubjectWithInterest) {
+    fun onMarkBook(book: SubjectWithInterest<*>) {
         viewModelScope.launch {
             val result = userSubjectRepository.addSubjectToInterests(
                 subject = book.subject,
@@ -115,7 +115,7 @@ class BooksViewModel @Inject constructor(
 sealed interface BooksUiState {
     data class Success(
         val title: String,
-        val items: List<SubjectWithInterest>,
+        val items: List<SubjectWithInterest<*>>,
         val isLoggedIn: Boolean,
     ) : BooksUiState
 

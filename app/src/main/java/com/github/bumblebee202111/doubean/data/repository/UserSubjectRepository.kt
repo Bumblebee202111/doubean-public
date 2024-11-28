@@ -34,14 +34,15 @@ class UserSubjectRepository @Inject constructor(private val apiService: ApiServi
     suspend fun <T : Subject> addSubjectToInterests(
         subject: T,
         newStatus: SubjectInterest.Status,
-    ): Result<SubjectWithInterest> {
+    ): Result<SubjectWithInterest<T>> {
         return suspendRunCatching {
+            @Suppress("UNCHECKED_CAST")
             apiService.addSubjectToInterests(
                 type = subject.type.toNetworkSubjectType().value,
                 id = subject.id,
                 newStatus = newStatus.toNetworkStatus().value
             )
-                .asExternalModel()
+                .asExternalModel() as SubjectWithInterest<T>
         }
     }
 
