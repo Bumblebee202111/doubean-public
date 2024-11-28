@@ -31,6 +31,9 @@ fun MoviesScreen(
     modifier: Modifier = Modifier,
     viewModel: MoviesViewModel = hiltViewModel(),
     onSearchClick: (type: SubjectsSearchType) -> Unit,
+    onMovieClick: (movieId: String) -> Unit,
+    onTvClick: (tvId: String) -> Unit,
+    onBookClick: (bookId: String) -> Unit,
 ) {
     val myMoviesUiState by viewModel.myMoviesUiState.collectAsStateWithLifecycle()
     val moviesUiState by viewModel.moviesUiState.collectAsStateWithLifecycle()
@@ -41,6 +44,9 @@ fun MoviesScreen(
         onLoginClick = onLoginClick,
         onMarkClick = viewModel::onMarkMovie,
         onSearchClick = onSearchClick,
+        onMovieClick = onMovieClick,
+        onTvClick = onTvClick,
+        onBookClick = onBookClick,
         modifier = modifier
     )
 }
@@ -51,8 +57,11 @@ fun MoviesScreen(
     moviesUiState: MoviesUiState,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
-    onMarkClick: (movie: SubjectWithInterest) -> Unit,
+    onMarkClick: (movie: SubjectWithInterest<*>) -> Unit,
     onSearchClick: (type: SubjectsSearchType) -> Unit,
+    onMovieClick: (movieId: String) -> Unit,
+    onTvClick: (tvId: String) -> Unit,
+    onBookClick: (tvId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier = modifier) {
@@ -79,6 +88,9 @@ fun MoviesScreen(
                     title = moviesUiState.title,
                     items = moviesUiState.items,
                     isLoggedIn = moviesUiState.isLoggedIn,
+                    onMovieClick = onMovieClick,
+                    onTvClick = onTvClick,
+                    onBookClick = onBookClick,
                     onMarkClick = onMarkClick
                 )
             }

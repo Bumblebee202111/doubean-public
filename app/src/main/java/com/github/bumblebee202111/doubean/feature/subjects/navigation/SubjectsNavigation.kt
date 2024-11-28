@@ -15,13 +15,19 @@ fun NavGraphBuilder.subjectsScreen(
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
     onSearchClick: (type: SubjectsSearchType) -> Unit,
+    onMovieClick: (movieId: String) -> Unit,
+    onTvClick: (tvId: String) -> Unit,
+    onBookClick: (bookId: String) -> Unit,
 ) {
     composable<SubjectsRoute> {
         SubjectsScreen(
             onSettingsClick = onSettingsClick,
             onSubjectStatusClick = onSubjectStatusClick,
             onLoginClick = onLoginClick,
-            onSearchClick = onSearchClick
+            onSearchClick = onSearchClick,
+            onMovieClick = onMovieClick,
+            onTvClick = onTvClick,
+            onBookClick = onBookClick
         )
     }
 }

@@ -16,8 +16,17 @@ fun NavController.navigateToSearchSubjects(type: SubjectsSearchType) {
     navigate(SearchSubjectsRoute(type))
 }
 
-fun NavGraphBuilder.searchSubjectsScreen(onBackClick: () -> Unit) {
+fun NavGraphBuilder.searchSubjectsScreen(
+    onBackClick: () -> Unit, onMovieClick: (movieId: String) -> Unit,
+    onTvClick: (tvId: String) -> Unit,
+    onBookClick: (bookId: String) -> Unit,
+) {
     composable<SearchSubjectsRoute> {
-        SearchSubjectsScreen(onBackClick = onBackClick)
+        SearchSubjectsScreen(
+            onBackClick = onBackClick,
+            onMovieClick = onMovieClick,
+            onTvClick = onTvClick,
+            onBookClick = onBookClick
+        )
     }
 }

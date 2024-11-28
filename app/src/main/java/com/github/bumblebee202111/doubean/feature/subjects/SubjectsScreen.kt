@@ -40,6 +40,9 @@ fun SubjectsScreen(
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
     onSearchClick: (type: SubjectsSearchType) -> Unit,
+    onMovieClick: (movieId: String) -> Unit,
+    onTvClick: (tvId: String) -> Unit,
+    onBookClick: (bookId: String) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -61,7 +64,10 @@ fun SubjectsScreen(
                 state = pagerState,
                 onSubjectStatusClick = onSubjectStatusClick,
                 onLoginClick = onLoginClick,
-                onSearchClick = onSearchClick
+                onSearchClick = onSearchClick,
+                onMovieClick = onMovieClick,
+                onTvClick = onTvClick,
+                onBookClick = onBookClick
             )
         }
     }
@@ -113,6 +119,9 @@ private fun SubjectsPager(
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
     onSearchClick: (type: SubjectsSearchType) -> Unit,
+    onMovieClick: (movieId: String) -> Unit,
+    onTvClick: (tvId: String) -> Unit,
+    onBookClick: (bookId: String) -> Unit,
 ) {
     HorizontalPager(state = state) { page ->
         val modifier = Modifier.fillMaxSize()
@@ -122,7 +131,10 @@ private fun SubjectsPager(
                     modifier = modifier,
                     onSubjectStatusClick = onSubjectStatusClick,
                     onLoginClick = onLoginClick,
-                    onSearchClick = onSearchClick
+                    onSearchClick = onSearchClick,
+                    onMovieClick = onMovieClick,
+                    onTvClick = onTvClick,
+                    onBookClick = onBookClick
                 )
             }
 
@@ -131,7 +143,10 @@ private fun SubjectsPager(
                     modifier = modifier,
                     onSubjectStatusClick = onSubjectStatusClick,
                     onLoginClick = onLoginClick,
-                    onSearchClick = onSearchClick
+                    onSearchClick = onSearchClick,
+                    onMovieClick = onMovieClick,
+                    onTvClick = onTvClick,
+                    onBookClick = onBookClick,
                 )
             }
         }

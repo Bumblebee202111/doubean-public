@@ -17,8 +17,18 @@ fun NavController.navigateToInterests(userId: String, subjectType: SubjectType) 
     navigate(InterestsRoute(userId, subjectType))
 }
 
-fun NavGraphBuilder.interestsScreen(onBackClick: () -> Unit) {
+fun NavGraphBuilder.interestsScreen(
+    onBackClick: () -> Unit,
+    onMovieClick: (movieId: String) -> Unit,
+    onTvClick: (tvId: String) -> Unit,
+    onBookClick: (bookId: String) -> Unit,
+) {
     composable<InterestsRoute> {
-        InterestsScreen(onBackClick = onBackClick)
+        InterestsScreen(
+            onBackClick = onBackClick,
+            onMovieClick = onMovieClick,
+            onTvClick = onTvClick,
+            onBookClick = onBookClick
+        )
     }
 }

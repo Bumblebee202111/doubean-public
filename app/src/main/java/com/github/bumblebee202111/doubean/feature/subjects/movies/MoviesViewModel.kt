@@ -32,7 +32,7 @@ class MoviesViewModel @Inject constructor(
         MutableStateFlow(MySubjectUiState.Loading)
     val myMoviesUiState = _myMoviesUiState.asStateFlow()
 
-    private val collectionItems: MutableStateFlow<List<SubjectWithInterest>> =
+    private val collectionItems: MutableStateFlow<List<SubjectWithInterest<*>>> =
         MutableStateFlow(
             emptyList()
         )
@@ -101,7 +101,7 @@ class MoviesViewModel @Inject constructor(
         }
     }
 
-    fun onMarkMovie(movie: SubjectWithInterest) {
+    fun onMarkMovie(movie: SubjectWithInterest<*>) {
         viewModelScope.launch {
             val result = userSubjectRepository.addSubjectToInterests(
                 subject = movie.subject,
@@ -120,7 +120,7 @@ class MoviesViewModel @Inject constructor(
 sealed interface MoviesUiState {
     data class Success(
         val title: String,
-        val items: List<SubjectWithInterest>,
+        val items: List<SubjectWithInterest<*>>,
         val isLoggedIn: Boolean,
     ) : MoviesUiState
 

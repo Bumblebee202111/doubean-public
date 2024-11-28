@@ -23,6 +23,9 @@ fun BottomNavHost(
     navigateToLogin: () -> Unit,
     navigateToSubjectInterests: (userId: String, subjectType: SubjectType) -> Unit,
     navigateToSearchSubjects: (type: SubjectsSearchType) -> Unit,
+    navigateToMovie: (movieId: String) -> Unit,
+    navigateToTv: (tvId: String) -> Unit,
+    navigateToBook: (bookId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -35,7 +38,10 @@ fun BottomNavHost(
             onSettingsClick = navigateToSettings,
             onSubjectStatusClick = navigateToSubjectInterests,
             onLoginClick = navigateToLogin,
-            onSearchClick = navigateToSearchSubjects
+            onSearchClick = navigateToSearchSubjects,
+            onMovieClick = navigateToMovie,
+            onTvClick = navigateToTv,
+            onBookClick = navigateToBook
         )
         groupsHomeScreen(
             onSearchClick = navigateToSearch,

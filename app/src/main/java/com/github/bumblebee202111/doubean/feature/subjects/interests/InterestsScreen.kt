@@ -25,18 +25,31 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.model.Book
+import com.github.bumblebee202111.doubean.model.Movie
+import com.github.bumblebee202111.doubean.model.Subject
 import com.github.bumblebee202111.doubean.model.SubjectInterest
 import com.github.bumblebee202111.doubean.model.SubjectWithInterest
+import com.github.bumblebee202111.doubean.model.Tv
 import com.github.bumblebee202111.doubean.ui.MySubjectItem
 import com.github.bumblebee202111.doubean.ui.MySubjectItemMore
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 
 @Composable
-fun InterestsScreen(onBackClick: () -> Unit, viewModel: InterestsViewModel = hiltViewModel()) {
+fun InterestsScreen(
+    onBackClick: () -> Unit,
+    onMovieClick: (movieId: String) -> Unit,
+    onTvClick: (tvId: String) -> Unit,
+    onBookClick: (bookId: String) -> Unit,
+    viewModel: InterestsViewModel = hiltViewModel(),
+) {
     val uiState by viewModel.interestsUiState.collectAsStateWithLifecycle()
     InterestsScreen(
         uiState = uiState,
         onBackClick = onBackClick,
+        onMovieClick = onMovieClick,
+        onTvClick = onTvClick,
+        onBookClick = onBookClick,
         onUpdateInterestStatus = viewModel::onUpdateInterestStatus
     )
 }
@@ -46,7 +59,10 @@ fun InterestsScreen(onBackClick: () -> Unit, viewModel: InterestsViewModel = hil
 fun InterestsScreen(
     uiState: InterestsUiState,
     onBackClick: () -> Unit,
-    onUpdateInterestStatus: (subject: SubjectWithInterest, newStatus: SubjectInterest.Status) -> Unit,
+    onMovieClick: (movieId: String) -> Unit,
+    onTvClick: (tvId: String) -> Unit,
+    onBookClick: (bookId: String) -> Unit,
+    onUpdateInterestStatus: (subject: SubjectWithInterest<*>, newStatus: SubjectInterest.Status) -> Unit,
 ) {
 
     when (uiState) {
@@ -84,6 +100,15 @@ fun InterestsScreen(
                                 MySubjectItem(
                                     subject = it,
                                     isLoggedIn = uiState.isLoggedIn,
+                                    onClick = {
+                                        when (it.subject) {
+                                            is Movie -> onMovieClick(it.subject.id)
+                                            is Tv -> onTvClick(it.subject.id)
+                                            is Book -> onBookClick(it.subject.id)
+                                            is Subject.Unsupported -> {
+                                            }
+                                        }
+                                    },
                                     onUpdateStatus = onUpdateInterestStatus
                                 )
                             }
