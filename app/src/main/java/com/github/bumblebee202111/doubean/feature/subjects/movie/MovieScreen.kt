@@ -14,11 +14,16 @@ import com.github.bumblebee202111.doubean.ui.SubjectDetailHeader
 import com.github.bumblebee202111.doubean.ui.SubjectTopBar
 
 @Composable
-fun MovieScreen(onBackClick: () -> Unit, viewModel: MovieViewModel = hiltViewModel()) {
+fun MovieScreen(
+    onBackClick: () -> Unit,
+    onLoginClick: () -> Unit,
+    viewModel: MovieViewModel = hiltViewModel(),
+) {
     val movieUiState by viewModel.movieUiState.collectAsStateWithLifecycle()
     MovieScreen(
         movieUiState = movieUiState,
         onBackClick = onBackClick,
+        onLoginClick = onLoginClick,
         onUpdateStatus = viewModel::onUpdateStatus
     )
 }
@@ -27,6 +32,7 @@ fun MovieScreen(onBackClick: () -> Unit, viewModel: MovieViewModel = hiltViewMod
 fun MovieScreen(
     movieUiState: MovieUiState,
     onBackClick: () -> Unit,
+    onLoginClick: () -> Unit,
     onUpdateStatus: (subject: SubjectWithInterest<Movie>, newStatus: SubjectInterest.Status) -> Unit,
 ) {
     Scaffold(
@@ -40,6 +46,8 @@ fun MovieScreen(
                     item {
                         SubjectDetailHeader(
                             subject = movieUiState.movie,
+                            isLoggedIn = movieUiState.isLoggedIn,
+                            onLoginClick = onLoginClick,
                             onUpdateStatus = onUpdateStatus
                         )
                     }

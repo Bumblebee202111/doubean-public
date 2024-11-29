@@ -3,6 +3,10 @@ Change Log
 
 ## Version 0.7.7(707)
 
+- Use AnnotatedString for login prompts in Subjects
+  - Show login prompt instead of interest buttons in subject detail for guests
+- Add back button to Login app bar
+
 ## Version 0.7.6(706)
 
 - Add subject detail screens

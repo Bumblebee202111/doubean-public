@@ -125,8 +125,17 @@ fun MainNavHost(
             onTvClick = navController::navigateToTv,
             onBookClick = navController::navigateToBook
         )
-        movieScreen(onBackClick = navController::navigateUp)
-        tvScreen(onBackClick = navController::navigateUp)
-        bookScreen(onBackClick = navController::navigateUp)
+        movieScreen(
+            onBackClick = navController::navigateUp,
+            onLoginClick = navController::navigateToLogin
+        )
+        tvScreen(
+            onBackClick = navController::navigateUp,
+            onLoginClick = navController::navigateToLogin
+        )
+        bookScreen(
+            onBackClick = navController::navigateUp,
+            onLoginClick = navController::navigateToLogin
+        )
     }
 }

@@ -212,7 +212,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.7\)
 
-- Fix interest buttons not being hidden in subject screens for guests
 - Subject screen: more info, such as intro, hot interests, suggests ...
 
 #### To-dos for next release \(0.7.8)
