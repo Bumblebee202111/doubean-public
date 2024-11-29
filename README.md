@@ -106,8 +106,6 @@ Introduction
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
 
 
-
-
 ### Getting Started
 
 ### Using this app
@@ -212,9 +210,12 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.7.6\)
+#### To-dos for current release \(0.7.7\)
 
-#### To-dos for next release \(0.7.7)
+- Fix interest buttons not being hidden in subject screens for guests
+- Subject screen: more info, such as intro, hot interests, suggests ...
+
+#### To-dos for next release \(0.7.8)
 
 #### Future plans
 
@@ -224,14 +225,13 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout/Spinner
   * Gracefully remove Fragments: First reduce usages of Fragment methods
 * Subjects (书影音)
-  * Subject screen: more info, such as intro / hot interests / suggests / ...
   * Show a glimpse of T250 instead in MoviesScreen/BooksScreen with book/movie module data and add a separate T250Screen
   * (Single-)status interests screen & its pagination
   * T250 pagination
   * More details & sub-features
 * Groups
   * Reuse item logic of search result groups / groups of the day
-  * Fix the "known issue" above after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
+  * Fix the issue of losing last positions after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
   * Home
     * Support pagination?
     * Add favorite tabs for topic list area
@@ -245,6 +245,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * Search group/tab topics (in-group) 
     * Search topics of all groups (global)
   * Use the new nullable "edit_time" property of network topics
+  * Gradually revert naming conventions to those of Douban
   * Group Detail
     * Compose collapsing toolbar when API is more convenient to use
     * Collapse on entrance for the subscribed/favorited group/tab
