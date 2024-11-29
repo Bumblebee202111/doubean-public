@@ -9,9 +9,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TvRoute(val tvId: String)
 
-fun NavGraphBuilder.tvScreen(onBackClick: () -> Unit) {
+fun NavGraphBuilder.tvScreen(onBackClick: () -> Unit, onLoginClick: () -> Unit) {
     composable<TvRoute> {
-        TvScreen(onBackClick = onBackClick)
+        TvScreen(onBackClick = onBackClick, onLoginClick = onLoginClick)
     }
 }
 

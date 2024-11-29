@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.BookRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.book.navigation.BookRoute
@@ -23,6 +24,7 @@ import javax.inject.Inject
 class BookViewModel @Inject constructor(
     private val bookRepository: BookRepository,
     private val userSubjectRepository: UserSubjectRepository,
+    authRepository: AuthRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val bookId = savedStateHandle.toRoute<BookRoute>().bookId
@@ -32,9 +34,10 @@ class BookViewModel @Inject constructor(
     }.onEach {
         book.value = it.getOrNull()
     }
-    val bookUiState = combine(book, bookResult) { book, bookResult ->
+    private val isLoggedIn = authRepository.isLoggedIn()
+    val bookUiState = combine(book, bookResult, isLoggedIn) { book, bookResult, isLoggedIn ->
         if (bookResult.isSuccess) {
-            BookUiState.Success(book!!)
+            BookUiState.Success(book!!, isLoggedIn)
         } else {
             BookUiState.Error
         }

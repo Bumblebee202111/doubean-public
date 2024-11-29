@@ -9,9 +9,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class BookRoute(val bookId: String)
 
-fun NavGraphBuilder.bookScreen(onBackClick: () -> Unit) {
+fun NavGraphBuilder.bookScreen(onBackClick: () -> Unit, onLoginClick: () -> Unit) {
     composable<BookRoute> {
-        BookScreen(onBackClick = onBackClick)
+        BookScreen(onBackClick = onBackClick, onLoginClick = onLoginClick)
     }
 }
 

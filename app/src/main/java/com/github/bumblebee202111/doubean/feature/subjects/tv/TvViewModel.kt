@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.TvRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.TvRoute
@@ -23,6 +24,7 @@ import javax.inject.Inject
 class TvViewModel @Inject constructor(
     private val tvRepository: TvRepository,
     private val userSubjectRepository: UserSubjectRepository,
+    authRepository: AuthRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val tvId = savedStateHandle.toRoute<TvRoute>().tvId
@@ -32,9 +34,10 @@ class TvViewModel @Inject constructor(
     }.onEach {
         tv.value = it.getOrNull()
     }
-    val tvUiState = combine(tv, tvResult) { tv, tvResult ->
+    private val isLoggedIn = authRepository.isLoggedIn()
+    val tvUiState = combine(tv, tvResult, isLoggedIn) { tv, tvResult, isLoggedIn ->
         if (tvResult.isSuccess) {
-            TvUiState.Success(tv!!)
+            TvUiState.Success(tv = tv!!, isLoggedIn = isLoggedIn)
         } else {
             TvUiState.Error
         }

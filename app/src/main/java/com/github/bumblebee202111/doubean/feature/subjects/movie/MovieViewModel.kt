@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.MovieRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.movie.navigation.MovieRoute
@@ -23,6 +24,7 @@ import javax.inject.Inject
 class MovieViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
     private val userSubjectRepository: UserSubjectRepository,
+    authRepository: AuthRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val movieId = savedStateHandle.toRoute<MovieRoute>().movieId
@@ -32,9 +34,10 @@ class MovieViewModel @Inject constructor(
     }.onEach {
         movie.value = it.getOrNull()
     }
-    val movieUiState = combine(movie, movieResult) { movie, movieResult ->
+    private val isLoggedIn = authRepository.isLoggedIn()
+    val movieUiState = combine(movie, movieResult, isLoggedIn) { movie, movieResult, isLoggedIn ->
         if (movieResult.isSuccess) {
-            MovieUiState.Success(movie!!)
+            MovieUiState.Success(movie!!, isLoggedIn)
         } else {
             MovieUiState.Error
         }

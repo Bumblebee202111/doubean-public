@@ -14,11 +14,16 @@ import com.github.bumblebee202111.doubean.ui.SubjectDetailHeader
 import com.github.bumblebee202111.doubean.ui.SubjectTopBar
 
 @Composable
-fun BookScreen(onBackClick: () -> Unit, viewModel: BookViewModel = hiltViewModel()) {
+fun BookScreen(
+    onBackClick: () -> Unit,
+    onLoginClick: () -> Unit,
+    viewModel: BookViewModel = hiltViewModel(),
+) {
     val bookUiState by viewModel.bookUiState.collectAsStateWithLifecycle()
     BookScreen(
         bookUiState = bookUiState,
         onBackClick = onBackClick,
+        onLoginClick = onLoginClick,
         onUpdateStatus = viewModel::onUpdateStatus
     )
 }
@@ -27,6 +32,7 @@ fun BookScreen(onBackClick: () -> Unit, viewModel: BookViewModel = hiltViewModel
 fun BookScreen(
     bookUiState: BookUiState,
     onBackClick: () -> Unit,
+    onLoginClick: () -> Unit,
     onUpdateStatus: (subject: SubjectWithInterest<Book>, newStatus: SubjectInterest.Status) -> Unit,
 ) {
     Scaffold(
@@ -40,6 +46,8 @@ fun BookScreen(
                     item {
                         SubjectDetailHeader(
                             subject = bookUiState.book,
+                            isLoggedIn = bookUiState.isLoggedIn,
+                            onLoginClick = onLoginClick,
                             onUpdateStatus = onUpdateStatus
                         )
                     }

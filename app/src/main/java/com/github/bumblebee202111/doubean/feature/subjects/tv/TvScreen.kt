@@ -14,15 +14,25 @@ import com.github.bumblebee202111.doubean.ui.SubjectDetailHeader
 import com.github.bumblebee202111.doubean.ui.SubjectTopBar
 
 @Composable
-fun TvScreen(onBackClick: () -> Unit, viewModel: TvViewModel = hiltViewModel()) {
+fun TvScreen(
+    onBackClick: () -> Unit,
+    onLoginClick: () -> Unit,
+    viewModel: TvViewModel = hiltViewModel(),
+) {
     val tvUiState by viewModel.tvUiState.collectAsStateWithLifecycle()
-    TvScreen(tvUiState = tvUiState, onBackClick, onUpdateStatus = viewModel::onUpdateStatus)
+    TvScreen(
+        tvUiState = tvUiState,
+        onBackClick = onBackClick,
+        onLoginClick = onLoginClick,
+        onUpdateStatus = viewModel::onUpdateStatus
+    )
 }
 
 @Composable
 fun TvScreen(
     tvUiState: TvUiState,
     onBackClick: () -> Unit,
+    onLoginClick: () -> Unit,
     onUpdateStatus: (subject: SubjectWithInterest<Tv>, newStatus: SubjectInterest.Status) -> Unit,
 ) {
     Scaffold(
@@ -36,6 +46,8 @@ fun TvScreen(
                     item {
                         SubjectDetailHeader(
                             subject = tvUiState.tv,
+                            isLoggedIn = tvUiState.isLoggedIn,
+                            onLoginClick = onLoginClick,
                             onUpdateStatus = onUpdateStatus
                         )
                     }

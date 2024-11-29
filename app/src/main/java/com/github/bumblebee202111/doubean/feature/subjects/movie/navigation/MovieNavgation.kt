@@ -9,9 +9,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MovieRoute(val movieId: String)
 
-fun NavGraphBuilder.movieScreen(onBackClick: () -> Unit) {
+fun NavGraphBuilder.movieScreen(onBackClick: () -> Unit, onLoginClick: () -> Unit) {
     composable<MovieRoute> {
-        MovieScreen(onBackClick = onBackClick)
+        MovieScreen(onBackClick = onBackClick, onLoginClick = onLoginClick)
     }
 }
 

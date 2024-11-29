@@ -6,9 +6,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -34,7 +38,7 @@ const val LOGIN_SUCCESSFUL: String = "LOGIN_SUCCESSFUL"
 @Composable
 fun LoginScreen(
     onSaveIsLoginSuccessSuccessfulChange: (Boolean) -> Unit,
-    onPopBackStack: () -> Unit,
+    onBackClick: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel(),
     onOpenDeepLinkUrl: (url: String) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
@@ -59,7 +63,7 @@ fun LoginScreen(
         login = viewModel::login,
         clearMessage = viewModel::clearMessage,
         onSaveIsLoginSuccessSuccessfulChange = onSaveIsLoginSuccessSuccessfulChange,
-        onPopBackStack = onPopBackStack,
+        onPopBackStack = onBackClick,
         onOpenDeepLinkUrl = onOpenDeepLinkUrl,
         onShowSnackbar = onShowSnackbar
     )
@@ -115,7 +119,15 @@ fun LoginScreen(
 
     Scaffold(
         topBar = {
-            DoubeanTopAppBar(titleText = "Login")
+            DoubeanTopAppBar(titleText = "Login",
+                navigationIcon = {
+                    IconButton(onClick = onPopBackStack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                            contentDescription = null
+                        )
+                    }
+                })
         },
     ) { innerPadding ->
         Column(
