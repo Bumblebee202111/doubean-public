@@ -4,9 +4,7 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section. Subjects development is just started.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。书影~~音~~开发才刚刚开始。\)
 
-Note: I am an inexperienced Android beginner and the only developer of it. Occasional crashes may happen, UI design may be incomplete and features you need may be missing. This project implements some essential features as well as user requested ones which are practical. It is also going to be used as my playground for trending technologies such as Jetpack Compose. This brings tons of migration tasks ([remaining ones](#migrations)), and also means that old and new libraries are currently mixed.
-
-*The development of this app is slowed down again so that I can spend more time on the exploration of the backend and frontend areas.*
+Note: This personal project implements some essential features as well as user requested ones which are practical. It is also going to be used as my playground for trending technologies such as Jetpack Compose. Occasional crashes may happen, UI design may be incomplete and features you need may be missing.
 
 **Known issues:**
 
@@ -27,8 +25,6 @@ Introduction
 
 #### Subjects Screens
 
-(no lists are paginated yet)
-
 ##### Home Screen
 
 - Top 250 Movies/Books
@@ -42,11 +38,12 @@ Introduction
 
 - Search subjects
 
-##### Movie Screen
+##### Movie/Tv/Book  Screen
 
-##### Tv Screen
-
-##### Book Screen
+- Header
+- Intro
+- Interests
+- More
 
 #### Groups Screens
 
@@ -97,7 +94,8 @@ Introduction
 
 ### Screenshots
 
-<p><img src="screenshots/phone_subjects.png" alt="phone_subjects" height="300" />
+<p> <img src="screenshots/tablet_movie.png" alt="tablet_movie" height="450" />   
+    <img src="screenshots/phone_subjects.png" alt="phone_subjects" height="300" />
 <img src="screenshots/phone_search_subjects.png" alt="phone_search_subjects" height="300" />
 <img src="screenshots/tablet_interests.png" alt="tablet_interests" height="450" />   
 <img src="screenshots/phone_groups_home.png" alt="phone_groups" height="300" />
@@ -106,22 +104,22 @@ Introduction
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
 
 
+
 ### Getting Started
 
 ### Using this app
 
 - Supported Android versions: 8.1 - 14
 - Sometimes you need to manually clear app data after installation when I forget to handle ROOM database schema change
-- Feel free to file issues 
+- Feel free to file issues
+  - Specifically, if some data doesn't show, a JSON parsing error probably occurs. The raw JSON response (if possible) or related share urls from Douban might help solve it  
+
 
 ### Open-source?
 
-To not get this project/myself into trouble, the update of the source code in the public repo has been suspended. However, the latest release is always available, and I'm willing to share the part of the code that you are interested in if it does not qinquan that much.
+To not get this project/myself into trouble, the update of the source code in the public repo has been suspended. However, the [latest release][latest-elease] is always available, and I'm willing to share the part of the code that you are interested in if it does not qinquan that much.
 
-### Who is it for?
-
-* Me and other developers who are learning Android, Kotlin and version control
-* Me and other users who desire easier access to Douban, especially the Groups module of it.
+[latest-elease]: https://github.com/Bumblebee202111/doubean-public/releases/latest
 
 ### Your do's and don'ts
 
@@ -130,18 +128,19 @@ To not get this project/myself into trouble, the update of the source code in th
 
 ### Features
 
-It not only implements some features (mainly of Groups) of Douban app, but also has its own features. 
-
-* Partial offline caching support
-* Ad-free, lite \(~4MB\)
-* Partially support URL deep links
-* Rooted users can reuse login session of Douban app
-* Partial support for viewing content in Douban WebView optimized for mobile reading in case of need (no longer updated)
-* Basic use of MD2/3 (UI may not look good during migration)
 * Provides simple type-based Subjects (书影~~音~~) experience including support of user actions (WIP 🚧)
   * Inspired by 豆瓣评分 mini program on which parts to omit
+* Groups
+  * Favorite tabs/groups locally
 
-* ~~Recommended topic notifications (broken)~~
+* Ad-free, lite \(~4MB\)
+* While phone login is blocked by complicated and tight authentication, rooted users can reuse login session of Douban app
+* Partially support URL deep links
+* Partial offline caching support in Groups
+* Very basic Statuses tab (no longer updated)
+* Partial support for viewing content in Douban WebView optimized for mobile reading in case of need (no longer updated)
+* Basic use of MD2/3 (UI may not look good during migration)
+* ~~Recommended topic notifications (broken & disabled)~~
 
 Libraries Used
 --------------
@@ -214,8 +213,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.7\)
 
-- 
-
 #### To-dos for next release \(0.7.8)
 
 - Subject Screen: reviews botttom sheet
@@ -230,13 +227,15 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Subjects (书影音)
   * Show type label in multi-type subject list
   * Interest buttons
-    * Maybe choose tonal style
+    * Maybe choose tonal style instead
     * https://m3.material.io/components/buttons/guidelines#cb583641-335d-4a48-8407-899bc795e0f2
   * Show null rating text
   * Cover corner radius
-  * Show a glimpse of T250 instead in MoviesScreen/BooksScreen with book/movie module data and add a separate T250Screen
+  * Rank list
+    * Show rank lists in MoviesScreen/BooksScreen instead of T250
+    * RankListScreen
+      * Pagination
   * (Single-)status interests screen & its pagination
-  * T250 pagination
   * More details & sub-features
 * Groups
   * Reuse item logic of search result groups / groups of the day
@@ -266,11 +265,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
       * Mechanism: Actively query group topics (without tab_id parameter, to increase efficiency) by each group
     * “每次动态更新请求的帖子总数限制” -> ?
     * Create reusable class for all topic notification settings
-  * More subscribe/favorite/save
-    * Save comments
-    * Subscribe topics
-    * Sync custom lists by maintaining a fake private note which holds the data
-    * Custom feeds like Reddit
   * Groups: Group/tab/topic shortcuts
   * Topic content WebView problems
     * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
@@ -279,7 +273,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * ...
   * Hide officially-marked unfriendly content by default
   * Support blocking unfriendly content
-  * Group Detail: For topic items, optimize tag display, e.g., assign color to each tag mapped from ID
   * Lists: Reddit-like item expand/collapse
   * Find API for all followed topics (hopeless)
 * Properly show login prompts & normal text hints

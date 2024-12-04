@@ -11,7 +11,7 @@ Change Log
 - Use AnnotatedString for login prompts in Subjects
   - Show login prompt instead of interest buttons in subject detail for guests
 - Add back button to Login app bar
-- Fix group searches (感谢反馈@wha4up)
+- Fix #5 group searches (感谢反馈@wha4up)
 - Fix subject searches
 
 ## Version 0.7.6(706)
