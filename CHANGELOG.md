@@ -1,6 +1,19 @@
 Change Log
 ==========
 
+## Version 0.7.7(707)
+
+- Subject screens: support more details
+  - Intro, interests, celebrities, trailers...
+  - Better meta info overview
+  - Tweak layout
+
+- Use AnnotatedString for login prompts in Subjects
+  - Show login prompt instead of interest buttons in subject detail for guests
+- Add back button to Login app bar
+- Fix #5 group searches (感谢反馈@wha4up)
+- Fix subject searches
+
 ## Version 0.7.6(706)
 
 - Add subject detail screens
@@ -9,6 +22,8 @@ Change Log
 - Show book subtitle in all book forms including list items
 - Tweak SubjectInterestButtons
 - Fix bottom navigation being initialized twice
+- Known issue:
+  - Interest buttons are not hidden in subject screens for guests
 
 ## Version 0.7.5(705)
 
