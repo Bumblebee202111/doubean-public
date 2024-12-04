@@ -6,12 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.bumblebee202111.doubean.model.SubjectInterest
+import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.SubjectType
-import com.github.bumblebee202111.doubean.model.SubjectWithInterest
-import com.github.bumblebee202111.doubean.model.Tv
 import com.github.bumblebee202111.doubean.ui.SubjectDetailHeader
 import com.github.bumblebee202111.doubean.ui.SubjectTopBar
+import com.github.bumblebee202111.doubean.ui.subjectInfoCelebritiesModuleItem
+import com.github.bumblebee202111.doubean.ui.subjectInfoInterestsModuleItem
+import com.github.bumblebee202111.doubean.ui.subjectInfoIntroModuleItem
+import com.github.bumblebee202111.doubean.ui.subjectInfoTrailersModuleItem
 
 @Composable
 fun TvScreen(
@@ -33,7 +35,7 @@ fun TvScreen(
     tvUiState: TvUiState,
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
-    onUpdateStatus: (subject: SubjectWithInterest<Tv>, newStatus: SubjectInterest.Status) -> Unit,
+    onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -43,13 +45,22 @@ fun TvScreen(
         when (tvUiState) {
             is TvUiState.Success -> {
                 LazyColumn(contentPadding = innerPadding) {
-                    item {
-                        SubjectDetailHeader(
-                            subject = tvUiState.tv,
-                            isLoggedIn = tvUiState.isLoggedIn,
-                            onLoginClick = onLoginClick,
-                            onUpdateStatus = onUpdateStatus
+                    with(tvUiState) {
+                        item {
+                            SubjectDetailHeader(
+                                subject = tv,
+                                isLoggedIn = tvUiState.isLoggedIn,
+                                onLoginClick = onLoginClick,
+                                onUpdateStatus = onUpdateStatus
+                            )
+                        }
+                        subjectInfoIntroModuleItem(intro = tv.intro)
+                        subjectInfoInterestsModuleItem(interestList = interests)
+                        subjectInfoCelebritiesModuleItem(
+                            directorNames = tv.directorNames,
+                            actorNames = tv.actorNames
                         )
+                        subjectInfoTrailersModuleItem(trailers = tv.trailers, photoList = photos)
                     }
                 }
             }

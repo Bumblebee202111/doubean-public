@@ -28,7 +28,7 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.Book
 import com.github.bumblebee202111.doubean.model.Movie
 import com.github.bumblebee202111.doubean.model.Subject
-import com.github.bumblebee202111.doubean.model.SubjectInterest
+import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.SubjectWithInterest
 import com.github.bumblebee202111.doubean.model.Tv
 import com.github.bumblebee202111.doubean.ui.MySubjectItem
@@ -62,7 +62,7 @@ fun InterestsScreen(
     onMovieClick: (movieId: String) -> Unit,
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
-    onUpdateInterestStatus: (subject: SubjectWithInterest<*>, newStatus: SubjectInterest.Status) -> Unit,
+    onUpdateInterestStatus: (subject: SubjectWithInterest<*>, newStatus: SubjectInterestStatus) -> Unit,
 ) {
 
     when (uiState) {

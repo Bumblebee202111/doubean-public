@@ -6,12 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.bumblebee202111.doubean.model.Movie
-import com.github.bumblebee202111.doubean.model.SubjectInterest
+import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.SubjectType
-import com.github.bumblebee202111.doubean.model.SubjectWithInterest
 import com.github.bumblebee202111.doubean.ui.SubjectDetailHeader
 import com.github.bumblebee202111.doubean.ui.SubjectTopBar
+import com.github.bumblebee202111.doubean.ui.subjectInfoCelebritiesModuleItem
+import com.github.bumblebee202111.doubean.ui.subjectInfoInterestsModuleItem
+import com.github.bumblebee202111.doubean.ui.subjectInfoIntroModuleItem
+import com.github.bumblebee202111.doubean.ui.subjectInfoTrailersModuleItem
 
 @Composable
 fun MovieScreen(
@@ -33,7 +35,7 @@ fun MovieScreen(
     movieUiState: MovieUiState,
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
-    onUpdateStatus: (subject: SubjectWithInterest<Movie>, newStatus: SubjectInterest.Status) -> Unit,
+    onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -43,14 +45,24 @@ fun MovieScreen(
         when (movieUiState) {
             is MovieUiState.Success -> {
                 LazyColumn(contentPadding = innerPadding) {
-                    item {
-                        SubjectDetailHeader(
-                            subject = movieUiState.movie,
-                            isLoggedIn = movieUiState.isLoggedIn,
-                            onLoginClick = onLoginClick,
-                            onUpdateStatus = onUpdateStatus
+                    with(movieUiState) {
+                        item {
+                            SubjectDetailHeader(
+                                subject = movie,
+                                isLoggedIn = isLoggedIn,
+                                onLoginClick = onLoginClick,
+                                onUpdateStatus = onUpdateStatus
+                            )
+                        }
+                        subjectInfoIntroModuleItem(intro = movie.intro)
+                        subjectInfoInterestsModuleItem(interestList = interests)
+                        subjectInfoCelebritiesModuleItem(
+                            directorNames = movie.directorNames,
+                            actorNames = movie.actorNames
                         )
+                        subjectInfoTrailersModuleItem(trailers = movie.trailers, photoList = photos)
                     }
+
                 }
             }
 

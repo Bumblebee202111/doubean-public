@@ -8,7 +8,8 @@ import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.InterestsRoute
 import com.github.bumblebee202111.doubean.model.MySubjectStatus
-import com.github.bumblebee202111.doubean.model.SubjectInterest
+import com.github.bumblebee202111.doubean.model.Subject
+import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.SubjectWithInterest
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -75,12 +76,15 @@ class InterestsViewModel @Inject constructor(
 
     fun onUpdateInterestStatus(
         subjectWithInterest: SubjectWithInterest<*>,
-        status: SubjectInterest.Status,
+        status: SubjectInterestStatus,
     ) {
         when (status) {
-            SubjectInterest.Status.MARK_STATUS_UNMARK -> {
+            SubjectInterestStatus.MARK_STATUS_UNMARK -> {
                 viewModelScope.launch {
-                    val result = userSubjectRepository.unmarkSubject(subjectWithInterest.subject)
+                    val result = userSubjectRepository.unmarkSubject(
+                        type = subjectWithInterest.type,
+                        id = subjectWithInterest.id
+                    )
                     if (result.isSuccess) {
                         interests.value = interests.value.toMutableList().apply {
                             remove(subjectWithInterest)
@@ -91,8 +95,8 @@ class InterestsViewModel @Inject constructor(
 
             else -> {
                 viewModelScope.launch {
-                    val result = userSubjectRepository.addSubjectToInterests(
-                        subject = subjectWithInterest.subject,
+                    val result = userSubjectRepository.addSubjectToInterests<Subject>(
+                        subjectWithInterest.type, subjectWithInterest.id,
                         newStatus = status
                     )
                     if (result.isSuccess) {

@@ -138,7 +138,9 @@ It not only implements some features (mainly of Groups) of Douban app, but also 
 * Rooted users can reuse login session of Douban app
 * Partial support for viewing content in Douban WebView optimized for mobile reading in case of need (no longer updated)
 * Basic use of MD2/3 (UI may not look good during migration)
-* Provides simple type-based Subjects (书影音) experience including support of user actions (WIP 🚧)
+* Provides simple type-based Subjects (书影~~音~~) experience including support of user actions (WIP 🚧)
+  * Inspired by 豆瓣评分 mini program on which parts to omit
+
 * ~~Recommended topic notifications (broken)~~
 
 Libraries Used
@@ -212,9 +214,13 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.7\)
 
-- Subject screen: more info, such as intro, hot interests, suggests ...
+- Subject search result type 'chart'
+- Fix group search
+- Make unmark button less important
 
 #### To-dos for next release \(0.7.8)
+
+- Subject Screen: reviews botttom sheet
 
 #### Future plans
 
@@ -224,6 +230,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout/Spinner
   * Gracefully remove Fragments: First reduce usages of Fragment methods
 * Subjects (书影音)
+  * Show type label in multi-type subject list
+  * Show null rating text
+  * Cover corner radius
   * Show a glimpse of T250 instead in MoviesScreen/BooksScreen with book/movie module data and add a separate T250Screen
   * (Single-)status interests screen & its pagination
   * T250 pagination
