@@ -6,12 +6,13 @@ Change Log
 - Subject screens: support more details
   - Intro, interests, celebrities, trailers...
   - Better meta info overview
-  - Tweak  layout
+  - Tweak layout
 
 - Use AnnotatedString for login prompts in Subjects
   - Show login prompt instead of interest buttons in subject detail for guests
 - Add back button to Login app bar
-- Fix group searches
+- Fix group searches (感谢反馈@wha4up)
+- Fix subject searches
 
 ## Version 0.7.6(706)
 
