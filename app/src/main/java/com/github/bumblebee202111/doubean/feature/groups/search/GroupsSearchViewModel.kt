@@ -11,7 +11,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
@@ -51,7 +50,7 @@ class GroupsSearchViewModel @Inject constructor(private val groupRepository: Gro
             groupRepository.getGroupRecommendation(GroupRecommendationType.DAILY).map { it.data }
                 .flowOn(Dispatchers.IO)
         } else {
-            emptyFlow()
+            flowOf(null)
         }
     }.stateInUi()
 
