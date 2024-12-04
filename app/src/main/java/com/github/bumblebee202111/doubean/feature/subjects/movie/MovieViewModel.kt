@@ -9,8 +9,10 @@ import com.github.bumblebee202111.doubean.data.repository.MovieRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.movie.navigation.MovieRoute
 import com.github.bumblebee202111.doubean.model.Movie
+import com.github.bumblebee202111.doubean.model.MovieDetail
 import com.github.bumblebee202111.doubean.model.SubjectInterest
-import com.github.bumblebee202111.doubean.model.SubjectWithInterest
+import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,45 +30,69 @@ class MovieViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val movieId = savedStateHandle.toRoute<MovieRoute>().movieId
-    private val movie = MutableStateFlow<SubjectWithInterest<Movie>?>(null)
+    private val movie = MutableStateFlow<MovieDetail?>(null)
     private val movieResult = flow {
         emit(movieRepository.getMovie(movieId))
     }.onEach {
         movie.value = it.getOrNull()
     }
+    private val interestList = flow {
+        emit(
+            userSubjectRepository.getSubjectDoneFollowingHotInterests(SubjectType.MOVIE, movieId)
+        )
+    }
+    private val photos = flow {
+        emit(
+            movieRepository.getPhotos(movieId)
+        )
+    }
     private val isLoggedIn = authRepository.isLoggedIn()
-    val movieUiState = combine(movie, movieResult, isLoggedIn) { movie, movieResult, isLoggedIn ->
-        if (movieResult.isSuccess) {
-            MovieUiState.Success(movie!!, isLoggedIn)
+    val movieUiState = combine(
+        movie,
+        movieResult,
+        interestList,
+        photos,
+        isLoggedIn
+    ) { movie, movieResult, interestList, photos, isLoggedIn ->
+        if (movieResult.isSuccess && interestList.isSuccess && photos.isSuccess) {
+            MovieUiState.Success(
+                movie = movie!!,
+                interests = interestList.getOrThrow(),
+                photos = photos.getOrThrow(),
+                isLoggedIn = isLoggedIn
+            )
         } else {
             MovieUiState.Error
         }
     }.stateInUi(MovieUiState.Loading)
 
     fun onUpdateStatus(
-        subjectWithInterest: SubjectWithInterest<Movie>,
-        status: SubjectInterest.Status,
+        status: SubjectInterestStatus,
     ) {
+        val oldMovie = movie.value ?: return
         when (status) {
-            SubjectInterest.Status.MARK_STATUS_UNMARK -> {
+            SubjectInterestStatus.MARK_STATUS_UNMARK -> {
                 viewModelScope.launch {
-                    val result = userSubjectRepository.unmarkSubject(subjectWithInterest.subject)
+                    val result = userSubjectRepository.unmarkSubject(oldMovie.type, oldMovie.id)
                     if (result.isSuccess) {
-                        movie.value = movie.value?.let {
-                            SubjectWithInterest(subject = it.subject)
-                        }
+                        movie.value = movie.value?.copy(
+                            interest = SubjectInterest(
+                                null,
+                                SubjectInterestStatus.MARK_STATUS_UNMARK
+                            )
+                        )
                     }
                 }
             }
 
             else -> {
                 viewModelScope.launch {
-                    val result = userSubjectRepository.addSubjectToInterests(
-                        subject = subjectWithInterest.subject,
+                    val result = userSubjectRepository.addSubjectToInterests<Movie>(
+                        type = oldMovie.type, id = oldMovie.id,
                         newStatus = status
                     )
                     if (result.isSuccess) {
-                        movie.value = result.getOrThrow()
+                        movie.value = movie.value?.copy(interest = result.getOrThrow().interest)
                     }
                 }
             }

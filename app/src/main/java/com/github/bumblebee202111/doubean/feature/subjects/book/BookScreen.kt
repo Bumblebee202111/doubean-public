@@ -6,12 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.bumblebee202111.doubean.model.Book
-import com.github.bumblebee202111.doubean.model.SubjectInterest
+import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.SubjectType
-import com.github.bumblebee202111.doubean.model.SubjectWithInterest
 import com.github.bumblebee202111.doubean.ui.SubjectDetailHeader
 import com.github.bumblebee202111.doubean.ui.SubjectTopBar
+import com.github.bumblebee202111.doubean.ui.subjectInfoInterestsModuleItem
+import com.github.bumblebee202111.doubean.ui.subjectInfoIntroModuleItem
 
 @Composable
 fun BookScreen(
@@ -33,7 +33,7 @@ fun BookScreen(
     bookUiState: BookUiState,
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
-    onUpdateStatus: (subject: SubjectWithInterest<Book>, newStatus: SubjectInterest.Status) -> Unit,
+    onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -43,13 +43,17 @@ fun BookScreen(
         when (bookUiState) {
             is BookUiState.Success -> {
                 LazyColumn(contentPadding = innerPadding) {
-                    item {
-                        SubjectDetailHeader(
-                            subject = bookUiState.book,
-                            isLoggedIn = bookUiState.isLoggedIn,
-                            onLoginClick = onLoginClick,
-                            onUpdateStatus = onUpdateStatus
-                        )
+                    with(bookUiState) {
+                        item {
+                            SubjectDetailHeader(
+                                subject = book,
+                                isLoggedIn = isLoggedIn,
+                                onLoginClick = onLoginClick,
+                                onUpdateStatus = onUpdateStatus
+                            )
+                        }
+                        subjectInfoIntroModuleItem(book.intro)
+                        subjectInfoInterestsModuleItem(interests)
                     }
                 }
             }

@@ -2,8 +2,8 @@ package com.github.bumblebee202111.doubean.data.repository
 
 import com.github.bumblebee202111.doubean.coroutines.suspendRunCatching
 import com.github.bumblebee202111.doubean.network.ApiService
-import com.github.bumblebee202111.doubean.network.model.NetworkBookWithInterest
-import com.github.bumblebee202111.doubean.network.model.asBookWithInterest
+import com.github.bumblebee202111.doubean.network.model.NetworkBookDetail
+import com.github.bumblebee202111.doubean.network.model.toBookDetail
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,7 +16,7 @@ class BookRepository @Inject constructor(
     suspend fun getBook(bookId: String) =
         suspendRunCatching {
             apiService.getBook(bookId)
-        }.map(NetworkBookWithInterest::asBookWithInterest)
+        }.map(NetworkBookDetail::toBookDetail)
 
     suspend fun getTop250BooksCollection() =
         subjectCollectionRepository.getTop250BooksCollection()

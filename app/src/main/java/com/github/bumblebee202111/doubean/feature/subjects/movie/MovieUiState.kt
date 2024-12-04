@@ -1,10 +1,16 @@
 package com.github.bumblebee202111.doubean.feature.subjects.movie
 
-import com.github.bumblebee202111.doubean.model.Movie
-import com.github.bumblebee202111.doubean.model.SubjectWithInterest
+import com.github.bumblebee202111.doubean.model.MovieDetail
+import com.github.bumblebee202111.doubean.model.PhotoList
+import com.github.bumblebee202111.doubean.model.SubjectInterestWithUserList
 
 sealed interface MovieUiState {
-    data class Success(val movie: SubjectWithInterest<Movie>, val isLoggedIn: Boolean) :
+    data class Success(
+        val movie: MovieDetail,
+        val interests: SubjectInterestWithUserList,
+        val photos: PhotoList,
+        val isLoggedIn: Boolean,
+    ) :
         MovieUiState
     data object Loading : MovieUiState
     data object Error : MovieUiState

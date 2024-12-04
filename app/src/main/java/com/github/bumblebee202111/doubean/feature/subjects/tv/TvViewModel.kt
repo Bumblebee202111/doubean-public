@@ -8,9 +8,10 @@ import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.TvRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.TvRoute
-import com.github.bumblebee202111.doubean.model.SubjectInterest
-import com.github.bumblebee202111.doubean.model.SubjectWithInterest
+import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.model.Tv
+import com.github.bumblebee202111.doubean.model.TvDetail
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,45 +29,64 @@ class TvViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val tvId = savedStateHandle.toRoute<TvRoute>().tvId
-    private val tv = MutableStateFlow<SubjectWithInterest<Tv>?>(null)
+    private val tv = MutableStateFlow<TvDetail?>(null)
     private val tvResult = flow {
         emit(tvRepository.getTv(tvId))
     }.onEach {
         tv.value = it.getOrNull()
     }
+    private val interestList = flow {
+        emit(
+            userSubjectRepository.getSubjectDoneFollowingHotInterests(SubjectType.TV, tvId)
+        )
+    }
+    private val photos = flow {
+        emit(
+            tvRepository.getPhotos(tvId)
+        )
+    }
     private val isLoggedIn = authRepository.isLoggedIn()
-    val tvUiState = combine(tv, tvResult, isLoggedIn) { tv, tvResult, isLoggedIn ->
+    val tvUiState = combine(
+        tv,
+        tvResult,
+        interestList,
+        photos,
+        isLoggedIn
+    ) { tv, tvResult, interestList, photos, isLoggedIn ->
         if (tvResult.isSuccess) {
-            TvUiState.Success(tv = tv!!, isLoggedIn = isLoggedIn)
+            TvUiState.Success(
+                tv = tv!!,
+                interests = interestList.getOrThrow(),
+                photos = photos.getOrThrow(),
+                isLoggedIn = isLoggedIn
+            )
         } else {
             TvUiState.Error
         }
     }.stateInUi(TvUiState.Loading)
 
     fun onUpdateStatus(
-        subjectWithInterest: SubjectWithInterest<Tv>,
-        status: SubjectInterest.Status,
+        status: SubjectInterestStatus,
     ) {
+        val oldTv = tv.value ?: return
         when (status) {
-            SubjectInterest.Status.MARK_STATUS_UNMARK -> {
+            SubjectInterestStatus.MARK_STATUS_UNMARK -> {
                 viewModelScope.launch {
-                    val result = userSubjectRepository.unmarkSubject(subjectWithInterest.subject)
+                    val result = userSubjectRepository.unmarkSubject(oldTv.type, oldTv.id)
                     if (result.isSuccess) {
-                        tv.value = tv.value?.let {
-                            SubjectWithInterest(subject = it.subject)
-                        }
+                        tv.value = tv.value?.copy(interest = result.getOrThrow())
                     }
                 }
             }
 
             else -> {
                 viewModelScope.launch {
-                    val result = userSubjectRepository.addSubjectToInterests(
-                        subject = subjectWithInterest.subject,
+                    val result = userSubjectRepository.addSubjectToInterests<Tv>(
+                        type = oldTv.type, id = oldTv.id,
                         newStatus = status
                     )
                     if (result.isSuccess) {
-                        tv.value = result.getOrThrow()
+                        tv.value = tv.value?.copy(interest = result.getOrThrow().interest)
                     }
                 }
             }

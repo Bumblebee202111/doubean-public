@@ -2,8 +2,9 @@ package com.github.bumblebee202111.doubean.data.repository
 
 import com.github.bumblebee202111.doubean.coroutines.suspendRunCatching
 import com.github.bumblebee202111.doubean.network.ApiService
-import com.github.bumblebee202111.doubean.network.model.NetworkMovieWithInterest
-import com.github.bumblebee202111.doubean.network.model.asMovieWithInterest
+import com.github.bumblebee202111.doubean.network.model.NetworkMovieDetail
+import com.github.bumblebee202111.doubean.network.model.toMovieDetail
+import com.github.bumblebee202111.doubean.network.model.toPhotoList
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,7 +17,11 @@ class MovieRepository @Inject constructor(
     suspend fun getMovie(movieId: String) =
         suspendRunCatching {
             apiService.getMovie(movieId)
-        }.map(NetworkMovieWithInterest::asMovieWithInterest)
+        }.map(NetworkMovieDetail::toMovieDetail)
+
+    suspend fun getPhotos(movieId: String) = suspendRunCatching {
+        apiService.getMoviePhotos(movieId).toPhotoList()
+    }
 
     suspend fun getTop250MoviesCollection() =
         subjectCollectionRepository.getTop250MoviesCollection()

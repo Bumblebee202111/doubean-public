@@ -6,7 +6,8 @@ import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.BookRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.MySubjectUiState
-import com.github.bumblebee202111.doubean.model.SubjectInterest
+import com.github.bumblebee202111.doubean.model.Book
+import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.model.SubjectWithInterest
 import com.github.bumblebee202111.doubean.network.model.NetworkSubjectCollection
@@ -72,9 +73,9 @@ class BooksViewModel @Inject constructor(
 
     fun onMarkBook(book: SubjectWithInterest<*>) {
         viewModelScope.launch {
-            val result = userSubjectRepository.addSubjectToInterests(
-                subject = book.subject,
-                newStatus = SubjectInterest.Status.MARK_STATUS_MARK
+            val result = userSubjectRepository.addSubjectToInterests<Book>(
+                type = book.type, id = book.id,
+                newStatus = SubjectInterestStatus.MARK_STATUS_MARK
             )
             if (result.isSuccess) {
                 collectionItems.value = collectionItems.value.toMutableList().apply {

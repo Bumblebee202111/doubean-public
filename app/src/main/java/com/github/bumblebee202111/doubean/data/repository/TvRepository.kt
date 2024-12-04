@@ -2,8 +2,9 @@ package com.github.bumblebee202111.doubean.data.repository
 
 import com.github.bumblebee202111.doubean.coroutines.suspendRunCatching
 import com.github.bumblebee202111.doubean.network.ApiService
-import com.github.bumblebee202111.doubean.network.model.NetworkTvWithInterest
-import com.github.bumblebee202111.doubean.network.model.asTvWithInterest
+import com.github.bumblebee202111.doubean.network.model.NetworkTvDetail
+import com.github.bumblebee202111.doubean.network.model.toPhotoList
+import com.github.bumblebee202111.doubean.network.model.toTvDetail
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,6 +15,9 @@ class TvRepository @Inject constructor(
     suspend fun getTv(tvId: String) =
         suspendRunCatching {
             apiService.getTv(tvId)
-        }.map(NetworkTvWithInterest::asTvWithInterest)
+        }.map(NetworkTvDetail::toTvDetail)
 
+    suspend fun getPhotos(tvId: String) = suspendRunCatching {
+        apiService.getTvPhotos(tvId).toPhotoList()
+    }
 }

@@ -9,8 +9,10 @@ import com.github.bumblebee202111.doubean.data.repository.BookRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.book.navigation.BookRoute
 import com.github.bumblebee202111.doubean.model.Book
+import com.github.bumblebee202111.doubean.model.BookDetail
 import com.github.bumblebee202111.doubean.model.SubjectInterest
-import com.github.bumblebee202111.doubean.model.SubjectWithInterest
+import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,45 +30,64 @@ class BookViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val bookId = savedStateHandle.toRoute<BookRoute>().bookId
-    private val book = MutableStateFlow<SubjectWithInterest<Book>?>(null)
+    private val book = MutableStateFlow<BookDetail?>(null)
     private val bookResult = flow {
         emit(bookRepository.getBook(bookId))
     }.onEach {
         book.value = it.getOrNull()
     }
+    private val interestList = flow {
+        emit(
+            userSubjectRepository.getSubjectDoneFollowingHotInterests(SubjectType.BOOK, bookId)
+        )
+    }
     private val isLoggedIn = authRepository.isLoggedIn()
-    val bookUiState = combine(book, bookResult, isLoggedIn) { book, bookResult, isLoggedIn ->
+    val bookUiState = combine(
+        book,
+        bookResult,
+        interestList,
+        isLoggedIn
+    ) { book, bookResult, interestList, isLoggedIn ->
         if (bookResult.isSuccess) {
-            BookUiState.Success(book!!, isLoggedIn)
+            BookUiState.Success(
+                book = book!!,
+                interests = interestList.getOrThrow(),
+                isLoggedIn = isLoggedIn
+            )
         } else {
             BookUiState.Error
         }
     }.stateInUi(BookUiState.Loading)
 
     fun onUpdateStatus(
-        subjectWithInterest: SubjectWithInterest<Book>,
-        status: SubjectInterest.Status,
+        newStatus: SubjectInterestStatus,
     ) {
-        when (status) {
-            SubjectInterest.Status.MARK_STATUS_UNMARK -> {
+        val oldBook = book.value ?: return
+        when (newStatus) {
+            SubjectInterestStatus.MARK_STATUS_UNMARK -> {
                 viewModelScope.launch {
-                    val result = userSubjectRepository.unmarkSubject(subjectWithInterest.subject)
+                    val result = userSubjectRepository.unmarkSubject(oldBook.type, oldBook.id)
                     if (result.isSuccess) {
-                        book.value = book.value?.let {
-                            SubjectWithInterest(subject = it.subject)
-                        }
+                        book.value =
+                            book.value?.copy(
+                                interest = SubjectInterest(
+                                    null,
+                                    SubjectInterestStatus.MARK_STATUS_UNMARK
+                                )
+                            )
                     }
                 }
             }
 
             else -> {
                 viewModelScope.launch {
-                    val result = userSubjectRepository.addSubjectToInterests(
-                        subject = subjectWithInterest.subject,
-                        newStatus = status
+                    val result = userSubjectRepository.addSubjectToInterests<Book>(
+                        type = oldBook.type,
+                        id = oldBook.id,
+                        newStatus = newStatus
                     )
                     if (result.isSuccess) {
-                        book.value = result.getOrThrow()
+                        book.value = book.value?.copy(interest = result.getOrThrow().interest)
                     }
                 }
             }
