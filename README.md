@@ -215,8 +215,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 #### To-dos for current release \(0.7.7\)
 
 - Subject search result type 'chart'
-- Fix group search
-- Make unmark button less important
 
 #### To-dos for next release \(0.7.8)
 
@@ -231,6 +229,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Gracefully remove Fragments: First reduce usages of Fragment methods
 * Subjects (书影音)
   * Show type label in multi-type subject list
+  * Interest buttons
+    * Maybe choose tonal style
+    * https://m3.material.io/components/buttons/guidelines#cb583641-335d-4a48-8407-899bc795e0f2
   * Show null rating text
   * Cover corner radius
   * Show a glimpse of T250 instead in MoviesScreen/BooksScreen with book/movie module data and add a separate T250Screen
