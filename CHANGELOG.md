@@ -1,13 +1,14 @@
 Change Log
 ==========
 
+## Version 0.7.8(708)
+
 ## Version 0.7.7(707)
 
 - Subject screens: support more details
   - Intro, interests, celebrities, trailers...
   - Better meta info overview
   - Tweak layout
-
 - Use AnnotatedString for login prompts in Subjects
   - Show login prompt instead of interest buttons in subject detail for guests
 - Add back button to Login app bar

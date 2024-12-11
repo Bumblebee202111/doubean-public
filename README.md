@@ -211,11 +211,16 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.7.7\)
+#### To-dos for current release \(0.7.8\)
 
-#### To-dos for next release \(0.7.8)
+- Subject screens
+  - Reviews botttom sheet
+  - Trailer item height
+- Interest buttons
+  - https://m3.material.io/components/buttons/guidelines#cb583641-335d-4a48-8407-899bc795e0f2
 
-- Subject Screen: reviews botttom sheet
+#### To-dos for next release \(0.7.9)
+
 
 #### Future plans
 
@@ -228,11 +233,11 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Show type label in multi-type subject list
   * Interest buttons
     * Maybe choose tonal style instead
-    * https://m3.material.io/components/buttons/guidelines#cb583641-335d-4a48-8407-899bc795e0f2
   * Show null rating text
   * Cover corner radius
-  * Rank list
-    * Show rank lists in MoviesScreen/BooksScreen instead of T250
+  * Rank lists
+    * Show rank list*s* in MoviesScreen/BooksScreen instead of T250
+      * Add TVs tab then
     * RankListScreen
       * Pagination
   * (Single-)status interests screen & its pagination
