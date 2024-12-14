@@ -5,6 +5,7 @@ Change Log
 
 - Add basic reviews bottom sheet for subject screens
 - Fix trailers not having same height
+- Fix improper (vertical) alignment of interest button content
 
 ## Version 0.7.7(707)
 
