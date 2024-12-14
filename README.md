@@ -213,9 +213,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.8\)
 
-- Interest buttons
-  - https://m3.material.io/components/buttons/guidelines#cb583641-335d-4a48-8407-899bc795e0f2
-
 #### To-dos for next release \(0.7.9)
 
 
@@ -228,8 +225,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Gracefully remove Fragments: First reduce usages of Fragment methods
 * Subjects (书影音)
   * Show type label in multi-type subject list
-  * Interest buttons
-    * Maybe choose tonal style instead
   * Show null rating text
   * Cover corner radius
   * Rank lists
@@ -238,6 +233,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * RankListScreen
       * Pagination
   * (Single-)status interests screen & its pagination
+  * Interest buttons
+    * Maybe choose tonal style instead
   * Tweak reviews sheet
   * More details & sub-features
 * Groups
