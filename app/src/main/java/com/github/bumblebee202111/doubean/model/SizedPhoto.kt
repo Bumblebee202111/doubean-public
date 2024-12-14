@@ -7,7 +7,7 @@ data class SizedPhoto(
     val id: String,
     val description: String,
     val image: SizedImage,
-    val origin: Boolean,
+    val origin: Boolean?,
     val tag: String,
 )
 

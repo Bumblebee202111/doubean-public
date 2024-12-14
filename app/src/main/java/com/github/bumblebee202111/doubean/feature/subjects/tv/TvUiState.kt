@@ -2,6 +2,7 @@ package com.github.bumblebee202111.doubean.feature.subjects.tv
 
 import com.github.bumblebee202111.doubean.model.PhotoList
 import com.github.bumblebee202111.doubean.model.SubjectInterestWithUserList
+import com.github.bumblebee202111.doubean.model.SubjectReviewList
 import com.github.bumblebee202111.doubean.model.TvDetail
 
 sealed interface TvUiState {
@@ -9,6 +10,7 @@ sealed interface TvUiState {
         val tv: TvDetail,
         val interests: SubjectInterestWithUserList,
         val photos: PhotoList,
+        val reviews: SubjectReviewList,
         val isLoggedIn: Boolean,
     ) : TvUiState
 

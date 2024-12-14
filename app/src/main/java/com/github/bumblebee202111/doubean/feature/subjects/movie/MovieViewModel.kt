@@ -4,8 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.github.bumblebee202111.doubean.coroutines.combine
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.MovieRepository
+import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.movie.navigation.MovieRoute
 import com.github.bumblebee202111.doubean.model.Movie
@@ -16,7 +18,6 @@ import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -26,6 +27,7 @@ import javax.inject.Inject
 class MovieViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
     private val userSubjectRepository: UserSubjectRepository,
+    private val subjectCommonRepository: SubjectCommonRepository,
     authRepository: AuthRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -46,19 +48,29 @@ class MovieViewModel @Inject constructor(
             movieRepository.getPhotos(movieId)
         )
     }
+    private val reviews = flow {
+        emit(
+            subjectCommonRepository.getSubjectReviews(
+                subjectType = SubjectType.MOVIE,
+                subjectId = movieId
+            )
+        )
+    }
     private val isLoggedIn = authRepository.isLoggedIn()
     val movieUiState = combine(
         movie,
         movieResult,
         interestList,
         photos,
+        reviews,
         isLoggedIn
-    ) { movie, movieResult, interestList, photos, isLoggedIn ->
-        if (movieResult.isSuccess && interestList.isSuccess && photos.isSuccess) {
+    ) { movie, movieResult, interestList, photos, reviews, isLoggedIn ->
+        if (movieResult.isSuccess && interestList.isSuccess && photos.isSuccess && reviews.isSuccess) {
             MovieUiState.Success(
                 movie = movie!!,
                 interests = interestList.getOrThrow(),
                 photos = photos.getOrThrow(),
+                reviews = reviews.getOrThrow(),
                 isLoggedIn = isLoggedIn
             )
         } else {

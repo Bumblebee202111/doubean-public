@@ -4,7 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.github.bumblebee202111.doubean.coroutines.combine
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
+import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.data.repository.TvRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.TvRoute
@@ -15,7 +17,6 @@ import com.github.bumblebee202111.doubean.model.TvDetail
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -25,6 +26,7 @@ import javax.inject.Inject
 class TvViewModel @Inject constructor(
     private val tvRepository: TvRepository,
     private val userSubjectRepository: UserSubjectRepository,
+    private val subjectCommonRepository: SubjectCommonRepository,
     authRepository: AuthRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -45,19 +47,29 @@ class TvViewModel @Inject constructor(
             tvRepository.getPhotos(tvId)
         )
     }
+    private val reviews = flow {
+        emit(
+            subjectCommonRepository.getSubjectReviews(
+                subjectType = SubjectType.TV,
+                subjectId = tvId
+            )
+        )
+    }
     private val isLoggedIn = authRepository.isLoggedIn()
     val tvUiState = combine(
         tv,
         tvResult,
         interestList,
         photos,
+        reviews,
         isLoggedIn
-    ) { tv, tvResult, interestList, photos, isLoggedIn ->
+    ) { tv, tvResult, interestList, photos, reviews, isLoggedIn ->
         if (tvResult.isSuccess) {
             TvUiState.Success(
                 tv = tv!!,
                 interests = interestList.getOrThrow(),
                 photos = photos.getOrThrow(),
+                reviews = reviews.getOrThrow(),
                 isLoggedIn = isLoggedIn
             )
         } else {

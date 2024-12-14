@@ -3,6 +3,8 @@ Change Log
 
 ## Version 0.7.8(708)
 
+- Add basic reviews bottom sheet for subject screens
+
 ## Version 0.7.7(707)
 
 - Subject screens: support more details

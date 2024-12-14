@@ -4,9 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -59,21 +58,21 @@ fun ListItemImages(
 
 
     } else {
-        FlowRow(
+        // If FlowRow is used here, somehow only the upper part of an image is shown
+        // This is a temporary non-scalable workaround and should be altered when possible
+        Row(
             modifier = modifier
                 .clip(RoundedCornerShape(12.dp)),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
-            maxItemsInEachRow = 3
         ) {
 
-            images.forEach { image ->
+            images.take(3).forEach { image ->
                 AsyncImage(
                     model = image.normal.url,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .clickable { onImageClick(image) }
-                        .fillMaxWidth()
                         .weight(1f)
                         .aspectRatio(1f)
                 )
