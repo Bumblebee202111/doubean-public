@@ -109,11 +109,14 @@ Introduction
 
 ### Using this app
 
-- Supported Android versions: 8.1 - 14
+- Supported Android versions: 8.1 - 14 (and 15, realistically)
 - Sometimes you need to manually clear app data after installation when I forget to handle ROOM database schema change
 - Feel free to file issues
   - Specifically, if some data doesn't show, a JSON parsing error probably occurs. The raw JSON response (if possible) or related share urls from Douban might help solve it  
-
+- It's recommended to make the Douban app coexist
+  - Please support the official product
+  - Lots of content is missing in doubean
+  - Especially for [rooted users](#reuse-login-session)
 
 ### Open-source?
 
@@ -134,7 +137,7 @@ To not get this project/myself into trouble, the update of the source code in th
   * Favorite tabs/groups locally
 
 * Ad-free, lite \(~4MB\)
-* While phone login is blocked by complicated and tight authentication, rooted users can reuse login session of Douban app
+* <span id="reuse-login-session"> While phone login is blocked by complicated and tight authentication, rooted users can reuse login session of Douban app </span>
 * Partially support URL deep links
 * Partial offline caching support in Groups
 * Very basic Statuses tab (no longer updated)
@@ -211,31 +214,31 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.7.7\)
+#### To-dos for current release \(0.7.8\)
 
-#### To-dos for next release \(0.7.8)
+#### To-dos for next release \(0.7.9)
 
-- Subject Screen: reviews botttom sheet
 
 #### Future plans
 
-* Gradual migrations: <span id="migrations"></span>
+* Gradual migrations:
   * From MD2 / custom design to MD3
   * From View and Data Binding to Jetpack Compose
     * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout/Spinner
   * Gracefully remove Fragments: First reduce usages of Fragment methods
 * Subjects (书影音)
   * Show type label in multi-type subject list
-  * Interest buttons
-    * Maybe choose tonal style instead
-    * https://m3.material.io/components/buttons/guidelines#cb583641-335d-4a48-8407-899bc795e0f2
   * Show null rating text
   * Cover corner radius
-  * Rank list
-    * Show rank lists in MoviesScreen/BooksScreen instead of T250
+  * Rank lists
+    * Show rank list*s* in MoviesScreen/BooksScreen instead of T250
+      * Add TVs tab then
     * RankListScreen
       * Pagination
   * (Single-)status interests screen & its pagination
+  * Interest buttons
+    * Maybe choose tonal style instead
+  * Tweak reviews sheet
   * More details & sub-features
 * Groups
   * Reuse item logic of search result groups / groups of the day
@@ -292,7 +295,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Widgets
 * Reuse more existing Douban preferences to make requests more consistent in the two apps
 * Independent login (hopeless)
-* Statueses (in maintanence state now, only when requested)
+* Statuses (in maintenance state now, only when requested)
   * More card types
   * Pagination
 * Test
@@ -338,7 +341,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Utilities
 
-* [HTTPCanary][http-canary] for douban access
+* [HTTPCanary][http-canary] for Douban access
 * [jadx][jadx]-gui for understanding models
 * [Google Chrome][google-chrome] for CSS debugging
 

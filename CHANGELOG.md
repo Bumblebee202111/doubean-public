@@ -1,13 +1,22 @@
 Change Log
 ==========
 
+## Version 0.7.8(708)
+
+- Add basic reviews bottom sheet for subject screens
+- Fix trailers not having same height
+- Fix improper (vertical) alignment of interest button content
+- Fix interest button in collection subject items not being shown for logged-in users
+- Fix non-existent photo id not being accepted for status type 'note'
+- Apply abbreviated style to status dates to prevent potential overflow of the row in most devices
+- While Statuses tab is in maintenance, these two bugs are annoying and their fixes are easy
+
 ## Version 0.7.7(707)
 
 - Subject screens: support more details
   - Intro, interests, celebrities, trailers...
   - Better meta info overview
   - Tweak layout
-
 - Use AnnotatedString for login prompts in Subjects
   - Show login prompt instead of interest buttons in subject detail for guests
 - Add back button to Login app bar
