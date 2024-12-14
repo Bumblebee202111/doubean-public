@@ -7,6 +7,7 @@ Change Log
 - Fix trailers not having same height
 - Fix improper (vertical) alignment of interest button content
 - Fix interest button in collection subject items not being shown for logged-in users
+- Fix null photo id for status type 'note' (日记)
 
 ## Version 0.7.7(707)
 
