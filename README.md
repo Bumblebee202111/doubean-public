@@ -214,7 +214,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 #### To-dos for current release \(0.7.8\)
 
 - Subject screens
-  - Reviews botttom sheet
   - Trailer item height
 - Interest buttons
   - https://m3.material.io/components/buttons/guidelines#cb583641-335d-4a48-8407-899bc795e0f2
@@ -241,6 +240,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * RankListScreen
       * Pagination
   * (Single-)status interests screen & its pagination
+  * Tweak reviews sheet
   * More details & sub-features
 * Groups
   * Reuse item logic of search result groups / groups of the day

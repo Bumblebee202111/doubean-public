@@ -2,11 +2,13 @@ package com.github.bumblebee202111.doubean.feature.subjects.book
 
 import com.github.bumblebee202111.doubean.model.BookDetail
 import com.github.bumblebee202111.doubean.model.SubjectInterestWithUserList
+import com.github.bumblebee202111.doubean.model.SubjectReviewList
 
 sealed interface BookUiState {
     data class Success(
         val book: BookDetail,
         val interests: SubjectInterestWithUserList,
+        val reviews: SubjectReviewList,
         val isLoggedIn: Boolean,
     ) : BookUiState
     data object Loading : BookUiState

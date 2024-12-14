@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.BookRepository
+import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.book.navigation.BookRoute
 import com.github.bumblebee202111.doubean.model.Book
@@ -26,6 +27,7 @@ import javax.inject.Inject
 class BookViewModel @Inject constructor(
     private val bookRepository: BookRepository,
     private val userSubjectRepository: UserSubjectRepository,
+    private val subjectCommonRepository: SubjectCommonRepository,
     authRepository: AuthRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -41,17 +43,27 @@ class BookViewModel @Inject constructor(
             userSubjectRepository.getSubjectDoneFollowingHotInterests(SubjectType.BOOK, bookId)
         )
     }
+    private val reviews = flow {
+        emit(
+            subjectCommonRepository.getSubjectReviews(
+                subjectType = SubjectType.BOOK,
+                subjectId = bookId
+            )
+        )
+    }
     private val isLoggedIn = authRepository.isLoggedIn()
     val bookUiState = combine(
         book,
         bookResult,
         interestList,
+        reviews,
         isLoggedIn
-    ) { book, bookResult, interestList, isLoggedIn ->
+    ) { book, bookResult, interestList, reviews, isLoggedIn ->
         if (bookResult.isSuccess) {
             BookUiState.Success(
                 book = book!!,
                 interests = interestList.getOrThrow(),
+                reviews = reviews.getOrThrow(),
                 isLoggedIn = isLoggedIn
             )
         } else {
