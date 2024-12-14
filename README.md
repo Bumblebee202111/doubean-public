@@ -213,8 +213,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.8\)
 
-- Subject screens
-  - Trailer item height
 - Interest buttons
   - https://m3.material.io/components/buttons/guidelines#cb583641-335d-4a48-8407-899bc795e0f2
 
