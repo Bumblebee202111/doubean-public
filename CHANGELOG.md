@@ -7,9 +7,9 @@ Change Log
 - Fix trailers not having same height
 - Fix improper (vertical) alignment of interest button content
 - Fix interest button in collection subject items not being shown for logged-in users
-- Fix null photo id not being accepted for status type 'note'
+- Fix non-existent photo id not being accepted for status type 'note'
 - Apply abbreviated style to status dates to prevent potential overflow of the row in most devices
-- While Statuses tab is in maintenance, these bugs are annoying and their fixes are easy
+- While Statuses tab is in maintenance, these two bugs are annoying and their fixes are easy
 
 ## Version 0.7.7(707)
 
