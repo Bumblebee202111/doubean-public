@@ -109,20 +109,21 @@ Introduction
 
 ### Using this app
 
-- Supported Android versions: 8.1 - 14 (and 15, realistically)
-- Sometimes you need to manually clear app data after installation when I forget to handle ROOM database schema change
+- [Latest release][latest-elease]
+- Supported Android versions: 8.1 - 14 (and also 15, virtually)
 - Feel free to file issues
-  - Specifically, if some data doesn't show, a JSON parsing error probably occurs. The raw JSON response (if possible) or related share urls from Douban might help solve it  
-- It's recommended to make the Douban app coexist
+  - Specifically, if some data doesn't show, a JSON parsing error probably occurs. Including the raw JSON response (if possible) or related urls of the resource gained from the Douban app might help solve it
+- It's recommended to let the Douban app coexist
   - Please support the official product
   - Lots of content is missing in doubean
   - Especially for [rooted users](#reuse-login-session)
-
-### Open-source?
-
-To not get this project/myself into trouble, the update of the source code in the public repo has been suspended. However, the [latest release][latest-elease] is always available, and I'm willing to share the part of the code that you are interested in if it does not qinquan that much.
+- Sometimes you need to manually clear app data after installation when I forget to handle ROOM database schema change 
 
 [latest-elease]: https://github.com/Bumblebee202111/doubean-public/releases/latest
+
+### Ain't it Open-source?
+
+To not get this project/myself into trouble, the push of the source code into the public repo has been suspended. However, if you are interested in some insensitive code, I may consider sharing it.
 
 ### Your do's and don'ts
 
@@ -214,9 +215,16 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.7.8\)
+#### To-dos for current release \(0.7.9\)
 
-#### To-dos for next release \(0.7.9)
+* Display type label in multi-type subject list
+* Show null rating text
+* Cover corner radius
+* Rank lists
+  * Show rank list*s* in MoviesScreen/BooksScreen instead of T250
+    * Add TVs tab then
+
+#### To-dos for next release \(0.7.10)
 
 
 #### Future plans
@@ -226,20 +234,17 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * From View and Data Binding to Jetpack Compose
     * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout/Spinner
   * Gracefully remove Fragments: First reduce usages of Fragment methods
-* Subjects (书影音)
-  * Show type label in multi-type subject list
-  * Show null rating text
-  * Cover corner radius
-  * Rank lists
-    * Show rank list*s* in MoviesScreen/BooksScreen instead of T250
-      * Add TVs tab then
-    * RankListScreen
-      * Pagination
+
+* Subjects
+
+  * RankListScreen & its pagination
+
   * (Single-)status interests screen & its pagination
   * Interest buttons
     * Maybe choose tonal style instead
   * Tweak reviews sheet
   * More details & sub-features
+
 * Groups
   * Reuse item logic of search result groups / groups of the day
   * Fix the issue of losing last positions after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
@@ -278,26 +283,41 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Support blocking unfriendly content
   * Lists: Reddit-like item expand/collapse
   * Find API for all followed topics (hopeless)
+
 * Properly show login prompts & normal text hints
+
 * Status bar color
+
 * Show error messages
+
 * Bring back load state visualization which was removed for simplicity during various types of migrations
   * Paging 3 refresh, loading status ...
+
 * Bring back basic support for dark mode & landscape experience
+
 * Shared element
+
 * Better model layering
+
 * Languages
   * Translations
   * Pick language
+
 * `Lazylist` problems
   * Restoration of scroll position is problematic
+
 * NetworkManager
+
 * Widgets
+
 * Reuse more existing Douban preferences to make requests more consistent in the two apps
+
 * Independent login (hopeless)
+
 * Statuses (in maintenance state now, only when requested)
   * More card types
   * Pagination
+
 * Test
 
 ### Non-Todos

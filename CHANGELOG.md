@@ -1,9 +1,11 @@
 Change Log
 ==========
 
+## Version 0.7.9(709)
+
 ## Version 0.7.8(708)
 
-- Add basic reviews bottom sheet for subject screens
+- Add basic reviews bottom sheet to subject screens
 - Fix trailers not having same height
 - Fix improper (vertical) alignment of interest button content
 - Fix interest button in collection subject items not being shown for logged-in users
