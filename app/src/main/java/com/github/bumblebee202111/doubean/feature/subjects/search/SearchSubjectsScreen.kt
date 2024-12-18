@@ -98,6 +98,7 @@ fun SearchSubjectsScreen(
 
             is SearchResultUiState.Success -> {
                 SearchResultBody(
+                    type = type,
                     searchResultSubjects = searchResultUiState.subjects,
                     contentPadding = it,
                     onMovieClick = onMovieClick,
@@ -111,6 +112,7 @@ fun SearchSubjectsScreen(
 
 @Composable
 private fun SearchResultBody(
+    type: SubjectsSearchType,
     searchResultSubjects: List<SearchResultSubjectItem>,
     contentPadding: PaddingValues,
     onMovieClick: (movieId: String) -> Unit,
@@ -123,25 +125,29 @@ private fun SearchResultBody(
     ) {
         items(items = searchResultSubjects, key = { it.id }) { subject ->
             val context = LocalContext.current
-            SimpleSubjectItem(subject = subject, onClick = {
-                when (subject.type) {
-                    SubjectType.MOVIE -> {
-                        onMovieClick(subject.id)
-                    }
+            SimpleSubjectItem(
+                subject = subject,
+                onClick = {
+                    when (subject.type) {
+                        SubjectType.MOVIE -> {
+                            onMovieClick(subject.id)
+                        }
 
-                    SubjectType.TV -> {
-                        onTvClick(subject.id)
-                    }
+                        SubjectType.TV -> {
+                            onTvClick(subject.id)
+                        }
 
-                    SubjectType.BOOK -> {
-                        onBookClick(subject.id)
-                    }
+                        SubjectType.BOOK -> {
+                            onBookClick(subject.id)
+                        }
 
-                    SubjectType.UNSUPPORTED -> {
-                        OpenInUtils.openInDouban(context, subject.uri)
+                        SubjectType.UNSUPPORTED -> {
+                            OpenInUtils.openInDouban(context, subject.uri)
+                        }
                     }
-                }
-            })
+                },
+                showType = type == SubjectsSearchType.MOVIES
+            )
             if (subject != searchResultSubjects.last()) {
                 Spacer(modifier = Modifier.size(8.dp))
             }
