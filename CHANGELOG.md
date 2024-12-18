@@ -5,6 +5,7 @@ Change Log
 
 - Type labels are also shown in movie search results
   - Updated label color
+- 'Null' ratings are correctly shown with reasons
 
 ## Version 0.7.8(708)
 

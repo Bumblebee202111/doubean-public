@@ -217,7 +217,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.9\)
 
-* Show null rating text
 * Cover corner radius
 * Show rank list*s* in MoviesScreen/BooksScreen instead of T250
   * Add TVs tab then
