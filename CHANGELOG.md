@@ -3,6 +3,9 @@ Change Log
 
 ## Version 0.7.9(709)
 
+- Type labels are also shown in movie search results
+  - Updated label color
+
 ## Version 0.7.8(708)
 
 - Add basic reviews bottom sheet to subject screens
