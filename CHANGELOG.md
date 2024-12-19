@@ -6,7 +6,8 @@ Change Log
 - Type labels are also shown in movie search results
   - Updated label color
 - 'Null' ratings are correctly shown with reasons
-- Padding between title and subtitle in subject items has been removed
+- Tweak subject layouts
+- Fix crash caused by duplicate keys in celebrity list
 
 ## Version 0.7.8(708)
 
