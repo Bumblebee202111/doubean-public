@@ -5,9 +5,10 @@ Change Log
 
 - Type labels are also shown in movie search results
   - Updated label color
-- 'Null' ratings are correctly shown with reasons
 - Tweak subject layouts
+- 'Null' ratings are correctly shown with reasons
 - Fix crash caused by duplicate keys in celebrity list
+- Fix nullability of rating of subject interests
 
 ## Version 0.7.8(708)
 
