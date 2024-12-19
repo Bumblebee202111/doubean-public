@@ -5,8 +5,10 @@ Change Log
 
 - Type labels are also shown in movie search results
   - Updated label color
-- Tweak subject layouts
-- 'Null' ratings are correctly shown with reasons
+- Update icon for 'doing' interest status
+- Tweak subject layout
+  - Also apply rounded corners to subject covers
+- 'Null' ratings are correctly shown with the reasons
 - Fix crash caused by duplicate keys in celebrity list
 - Fix nullability of rating of subject interests
 
