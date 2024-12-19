@@ -1,19 +1,15 @@
 package com.github.bumblebee202111.doubean.feature.subjects.tv
 
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.ui.SubjectDetailHeader
 import com.github.bumblebee202111.doubean.ui.SubjectInfoReviewsModuleItemContent
+import com.github.bumblebee202111.doubean.ui.SubjectScaffold
 import com.github.bumblebee202111.doubean.ui.SubjectTopBar
 import com.github.bumblebee202111.doubean.ui.subjectInfoCelebritiesModuleItem
 import com.github.bumblebee202111.doubean.ui.subjectInfoInterestsModuleItem
@@ -35,7 +31,6 @@ fun TvScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TvScreen(
     tvUiState: TvUiState,
@@ -43,18 +38,16 @@ fun TvScreen(
     onLoginClick: () -> Unit,
     onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
 ) {
-    BottomSheetScaffold(
-        sheetContent = {
+    SubjectScaffold(
+        reviewsSheetContent = {
             if (tvUiState is TvUiState.Success) {
                 SubjectInfoReviewsModuleItemContent(
                     subjectType = SubjectType.TV,
                     reviews = tvUiState.reviews,
-                    modifier = Modifier.fillMaxHeight(0.618f)
                 )
 
             }
         },
-        sheetPeekHeight = 128.dp,
         topBar = {
             TvTopBar(tvUiState = tvUiState, onBackClick = onBackClick)
         }
