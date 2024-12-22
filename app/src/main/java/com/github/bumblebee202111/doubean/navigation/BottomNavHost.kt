@@ -23,6 +23,7 @@ fun BottomNavHost(
     navigateToLogin: () -> Unit,
     navigateToSubjectInterests: (userId: String, subjectType: SubjectType) -> Unit,
     navigateToSearchSubjects: (type: SubjectsSearchType) -> Unit,
+    navigateToRankList: (collectionId: String) -> Unit,
     navigateToMovie: (movieId: String) -> Unit,
     navigateToTv: (tvId: String) -> Unit,
     navigateToBook: (bookId: String) -> Unit,
@@ -39,9 +40,10 @@ fun BottomNavHost(
             onSubjectStatusClick = navigateToSubjectInterests,
             onLoginClick = navigateToLogin,
             onSearchClick = navigateToSearchSubjects,
+            onRankListClick = navigateToRankList,
             onMovieClick = navigateToMovie,
             onTvClick = navigateToTv,
-            onBookClick = navigateToBook
+            onBookClick = navigateToBook,
         )
         groupsHomeScreen(
             onSearchClick = navigateToSearch,

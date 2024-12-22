@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.books.BooksScreen
 import com.github.bumblebee202111.doubean.feature.subjects.movies.MoviesScreen
+import com.github.bumblebee202111.doubean.feature.subjects.tvs.TvsScreen
 import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.model.SubjectsSearchType
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
@@ -40,6 +42,7 @@ fun SubjectsScreen(
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
     onSearchClick: (type: SubjectsSearchType) -> Unit,
+    onRankListClick: (collectionId: String) -> Unit,
     onMovieClick: (movieId: String) -> Unit,
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
@@ -65,6 +68,7 @@ fun SubjectsScreen(
                 onSubjectStatusClick = onSubjectStatusClick,
                 onLoginClick = onLoginClick,
                 onSearchClick = onSearchClick,
+                onRankListClick = onRankListClick,
                 onMovieClick = onMovieClick,
                 onTvClick = onTvClick,
                 onBookClick = onBookClick
@@ -91,10 +95,8 @@ private fun SubjectsAppBar(onSettingsClick: () -> Unit) {
 
 @Composable
 private fun SubjectsTabRow(pagerState: PagerState) {
-
     TabRow(selectedTabIndex = pagerState.currentPage) {
         SubjectsTab.entries.forEachIndexed { index, tab ->
-
             val coroutineScope = rememberCoroutineScope()
             val text = stringResource(id = tab.textResId)
             Tab(
@@ -119,6 +121,7 @@ private fun SubjectsPager(
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
     onSearchClick: (type: SubjectsSearchType) -> Unit,
+    onRankListClick: (collectionId: String) -> Unit,
     onMovieClick: (movieId: String) -> Unit,
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
@@ -128,24 +131,32 @@ private fun SubjectsPager(
         when (SubjectsTab.entries[page]) {
             SubjectsTab.MOVIES -> {
                 MoviesScreen(
-                    modifier = modifier,
-                    onSubjectStatusClick = onSubjectStatusClick,
                     onLoginClick = onLoginClick,
+                    onSubjectStatusClick = onSubjectStatusClick,
                     onSearchClick = onSearchClick,
+                    onRankListClick = onRankListClick,
                     onMovieClick = onMovieClick,
-                    onTvClick = onTvClick,
-                    onBookClick = onBookClick
+                    modifier = modifier,
                 )
             }
 
-            SubjectsTab.BOOKS -> {
-                BooksScreen(
-                    modifier = modifier,
+            SubjectsTab.TVS -> {
+                TvsScreen(
                     onSubjectStatusClick = onSubjectStatusClick,
                     onLoginClick = onLoginClick,
                     onSearchClick = onSearchClick,
-                    onMovieClick = onMovieClick,
+                    onRankListClick = onRankListClick,
                     onTvClick = onTvClick,
+                    modifier = modifier,
+                )
+            }
+            SubjectsTab.BOOKS -> {
+                BooksScreen(
+                    onSubjectStatusClick = onSubjectStatusClick,
+                    onLoginClick = onLoginClick,
+                    modifier = modifier,
+                    onSearchClick = onSearchClick,
+                    onRankListClick = onRankListClick,
                     onBookClick = onBookClick,
                 )
             }
@@ -160,6 +171,10 @@ private enum class SubjectsTab(
     MOVIES(
         textResId = R.string.title_movies,
         iconVector = Icons.Filled.Movie
+    ),
+    TVS(
+        textResId = R.string.title_tvs,
+        iconVector = Icons.Filled.Tv
     ),
     BOOKS(
         textResId = R.string.title_books,

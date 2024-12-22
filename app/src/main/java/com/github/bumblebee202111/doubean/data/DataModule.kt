@@ -6,10 +6,10 @@ import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.Companion
 import com.github.bumblebee202111.doubean.network.model.NetworkFeedContent
 import com.github.bumblebee202111.doubean.network.model.NetworkStatusCard
 import com.github.bumblebee202111.doubean.network.model.NetworkSubject
-import com.github.bumblebee202111.doubean.network.model.NetworkSubjectWithInterest
+import com.github.bumblebee202111.doubean.network.model.NetworkSubjectWithRankAndInterest
 import com.github.bumblebee202111.doubean.network.model.NetworkUnknownStatusCard
 import com.github.bumblebee202111.doubean.network.model.NetworkUnknownSubject
-import com.github.bumblebee202111.doubean.network.model.NetworkUnknownSubjectWithInterest
+import com.github.bumblebee202111.doubean.network.model.NetworkUnknownSubjectWithRankAndInterest
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,9 +47,9 @@ internal object DataModule {
                     NetworkUnknownSubject.serializer()
                 }
                 polymorphicDefaultDeserializer(
-                    NetworkSubjectWithInterest::class
+                    NetworkSubjectWithRankAndInterest::class
                 ) {
-                    NetworkUnknownSubjectWithInterest.serializer()
+                    NetworkUnknownSubjectWithRankAndInterest.serializer()
                 }
             }
         }

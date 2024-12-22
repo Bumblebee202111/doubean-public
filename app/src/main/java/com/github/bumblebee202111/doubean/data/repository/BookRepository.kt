@@ -12,16 +12,10 @@ class BookRepository @Inject constructor(
     private val apiService: ApiService,
     private val subjectCollectionRepository: SubjectCollectionRepository,
 ) {
-
     suspend fun getBook(bookId: String) =
         suspendRunCatching {
             apiService.getBook(bookId)
         }.map(NetworkBookDetail::toBookDetail)
 
-    suspend fun getTop250BooksCollection() =
-        subjectCollectionRepository.getTop250BooksCollection()
-
-    suspend fun getTop250BooksCollectionItems() =
-        subjectCollectionRepository.getTop250BooksCollectionItems()
 
 }

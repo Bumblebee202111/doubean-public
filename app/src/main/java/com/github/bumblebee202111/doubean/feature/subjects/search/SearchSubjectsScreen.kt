@@ -25,7 +25,8 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.SearchResultSubjectItem
 import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.model.SubjectsSearchType
-import com.github.bumblebee202111.doubean.ui.SimpleSubjectItem
+import com.github.bumblebee202111.doubean.ui.SubjectItem
+import com.github.bumblebee202111.doubean.ui.SubjectItemBasicContent
 import com.github.bumblebee202111.doubean.ui.component.SearchTextField
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 
@@ -125,8 +126,13 @@ private fun SearchResultBody(
     ) {
         items(items = searchResultSubjects, key = { it.id }) { subject ->
             val context = LocalContext.current
-            SimpleSubjectItem(
-                subject = subject,
+            SubjectItem(
+                basicContent = {
+                    SubjectItemBasicContent(
+                        subject = subject,
+                        showType = type == SubjectsSearchType.MOVIES_AND_TVS
+                    )
+                },
                 onClick = {
                     when (subject.type) {
                         SubjectType.MOVIE -> {
@@ -146,8 +152,8 @@ private fun SearchResultBody(
                         }
                     }
                 },
-                showType = type == SubjectsSearchType.MOVIES
-            )
+
+                )
             if (subject != searchResultSubjects.last()) {
                 Spacer(modifier = Modifier.size(8.dp))
             }
@@ -157,7 +163,7 @@ private fun SearchResultBody(
 
 private fun getSearchLabelTextResId(searchType: SubjectsSearchType): Int {
     return when (searchType) {
-        SubjectsSearchType.MOVIES -> R.string.search_movies_hint
+        SubjectsSearchType.MOVIES_AND_TVS -> R.string.search_movies_and_tvs_hint
         SubjectsSearchType.BOOKS -> R.string.search_books_hint
     }
 }

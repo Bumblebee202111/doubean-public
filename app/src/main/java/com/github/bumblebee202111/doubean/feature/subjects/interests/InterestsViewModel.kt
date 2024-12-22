@@ -8,7 +8,6 @@ import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.InterestsRoute
 import com.github.bumblebee202111.doubean.model.MySubjectStatus
-import com.github.bumblebee202111.doubean.model.Subject
 import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.SubjectWithInterest
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
@@ -95,7 +94,7 @@ class InterestsViewModel @Inject constructor(
 
             else -> {
                 viewModelScope.launch {
-                    val result = userSubjectRepository.addSubjectToInterests<Subject>(
+                    val result = userSubjectRepository.addSubjectToInterests(
                         subjectWithInterest.type, subjectWithInterest.id,
                         newStatus = status
                     )

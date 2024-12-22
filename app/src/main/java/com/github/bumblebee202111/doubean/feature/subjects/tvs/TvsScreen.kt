@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.subjects.books
+package com.github.bumblebee202111.doubean.feature.subjects.tvs
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
@@ -19,58 +19,58 @@ import com.github.bumblebee202111.doubean.ui.mySubject
 import com.github.bumblebee202111.doubean.ui.rankLists
 
 @Composable
-fun BooksScreen(
+fun TvsScreen(
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
-    onRankListClick: (collectionId: String) -> Unit,
     onSearchClick: (type: SubjectsSearchType) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
+    onRankListClick: (collectionId: String) -> Unit,
+    onTvClick: (tvId: String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: BooksViewModel = hiltViewModel(),
+    viewModel: TvsViewModel = hiltViewModel(),
 ) {
-    val myBooksUiState by viewModel.myBooksUiState.collectAsStateWithLifecycle()
-    val booksUiState by viewModel.booksUiState.collectAsStateWithLifecycle()
-    BooksScreen(
-        myBooksUiState = myBooksUiState,
-        booksUiState = booksUiState,
+    val myMoviesUiState by viewModel.myMoviesUiState.collectAsStateWithLifecycle()
+    val tvsUiState by viewModel.tvsUiState.collectAsStateWithLifecycle()
+    TvsScreen(
+        myMoviesUiState = myMoviesUiState,
+        tvsUiState = tvsUiState,
         onSubjectStatusClick = onSubjectStatusClick,
         onLoginClick = onLoginClick,
         onSearchClick = onSearchClick,
         onRankListClick = onRankListClick,
-        onBookClick = onBookClick,
+        onTvClick = onTvClick,
         modifier = modifier
     )
 }
 
 @Composable
-fun BooksScreen(
-    myBooksUiState: MySubjectUiState,
-    booksUiState: BooksUiState,
+fun TvsScreen(
+    myMoviesUiState: MySubjectUiState,
+    tvsUiState: TvsUiState,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
     onSearchClick: (type: SubjectsSearchType) -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
+    onTvClick: (tvId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier = modifier) {
         item {
             SearchSubjectButton(
-                onClick = { onSearchClick(SubjectsSearchType.BOOKS) },
-                hintRes = R.string.search_books_hint
+                onClick = { onSearchClick(SubjectsSearchType.MOVIES_AND_TVS) },
+                hintRes = R.string.search_movies_and_tvs_hint
             )
         }
         mySubject(
-            mySubjectUiState = myBooksUiState,
+            mySubjectUiState = myMoviesUiState,
             onStatusClick = onSubjectStatusClick,
             onLoginClick = onLoginClick
         )
         item {
             Spacer(modifier = Modifier.size(16.dp))
         }
-        when (booksUiState) {
-            is BooksUiState.Success -> {
-                booksUiState.modules.forEach { module ->
+        when (tvsUiState) {
+            is TvsUiState.Success -> {
+                tvsUiState.modules.forEach { module ->
                     when (module) {
                         is SubjectModule.SelectedCollections -> {
                             rankLists(
@@ -78,8 +78,8 @@ fun BooksScreen(
                                 onRankListClick = onRankListClick,
                                 onSubjectClick = { subject ->
                                     when (subject.type) {
-                                        SubjectType.MOVIE -> {
-                                            onBookClick(subject.id)
+                                        SubjectType.TV -> {
+                                            onTvClick(subject.id)
                                         }
 
                                         else -> Unit 
@@ -91,14 +91,14 @@ fun BooksScreen(
                 }
             }
 
-            BooksUiState.Loading -> {
+            TvsUiState.Loading -> {
                 
             }
 
-            BooksUiState.Error -> {
+            TvsUiState.Error -> {
                 
             }
-
         }
     }
 }
+

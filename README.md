@@ -123,7 +123,7 @@ Introduction
 
 ### Ain't it Open-source?
 
-To not get this project/myself into trouble, the push of the source code into the public repo has been suspended. However, if you are interested in some insensitive code, I may consider sharing it.
+To not get this project/myself into trouble, the push of the source code (NOT the release APKs) into the public repo has been suspended. However, if you are interested in some insensitive code, I may consider sharing it.
 
 ### Your do's and don'ts
 
@@ -217,8 +217,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.9\)
 
-* Show rank list*s* in MoviesScreen/BooksScreen instead of T250
-  * Add TVs tab then
+* Fix reviews max height
+* Groups: Fix comment like icon and image area disappearing when reached from bottom
 
 #### To-dos for next release \(0.7.10)
 
@@ -233,7 +233,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Subjects
 
-  * RankListScreen & its pagination
+  * Pagination of RankListScreen
 
   * (Single-)status interests screen & its pagination
   * Interest buttons
@@ -241,6 +241,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Tweak reviews sheet
   * More details & sub-features
 
+* Remember last bottom/Subjects tabs
 * Groups
   * Reuse item logic of search result groups / groups of the day
   * Fix the issue of losing last positions after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose

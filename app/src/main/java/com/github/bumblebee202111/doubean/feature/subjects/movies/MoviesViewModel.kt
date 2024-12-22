@@ -4,13 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.MovieRepository
+import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.MySubjectUiState
-import com.github.bumblebee202111.doubean.model.Subject
-import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.model.SubjectModule
 import com.github.bumblebee202111.doubean.model.SubjectType
-import com.github.bumblebee202111.doubean.model.SubjectWithInterest
-import com.github.bumblebee202111.doubean.network.model.NetworkSubjectCollection
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +24,7 @@ import javax.inject.Inject
 class MoviesViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
     private val userSubjectRepository: UserSubjectRepository,
+    private val subjectCommonRepository: SubjectCommonRepository,
     private val authRepository: AuthRepository,
 ) : ViewModel() {
 
@@ -33,35 +32,21 @@ class MoviesViewModel @Inject constructor(
         MutableStateFlow(MySubjectUiState.Loading)
     val myMoviesUiState = _myMoviesUiState.asStateFlow()
 
-    private val collectionItems: MutableStateFlow<List<SubjectWithInterest<*>>> =
-        MutableStateFlow(
-            emptyList()
-        )
 
-    private val collectionResult = flow {
-        emit(movieRepository.getTop250MoviesCollection().map(NetworkSubjectCollection::title))
+    private val modulesResult = flow {
+        emit(subjectCommonRepository.getSubjectModules(SubjectType.MOVIE))
     }
-
-    private val collectionItemsResult =
-        flow { emit(movieRepository.getTop250MoviesCollectionItems()) }.onEach {
-            if (it.isSuccess) {
-                collectionItems.value = it.getOrDefault(emptyList())
-            }
-        }
 
     val isLoggedIn = authRepository.isLoggedIn()
 
-    val moviesUiState = combine(
-        collectionResult,
-        collectionItemsResult,
+    val tvsUiState = combine(
         isLoggedIn,
-        collectionItems
-    ) { collectionResult, collectionItemsResult, isLoggedIn, collectionItems ->
+        modulesResult,
+    ) { isLoggedIn, modules ->
         when {
-            collectionResult.isSuccess && collectionItemsResult.isSuccess -> {
+            modules.isSuccess -> {
                 MoviesUiState.Success(
-                    title = collectionResult.getOrThrow(),
-                    items = collectionItems,
+                    modules = modules.getOrThrow(),
                     isLoggedIn = isLoggedIn
                 )
             }
@@ -102,26 +87,13 @@ class MoviesViewModel @Inject constructor(
         }
     }
 
-    fun onMarkMovie(movie: SubjectWithInterest<*>) {
-        viewModelScope.launch {
-            val result = userSubjectRepository.addSubjectToInterests<Subject>(
-                movie.type, movie.id,
-                newStatus = SubjectInterestStatus.MARK_STATUS_MARK
-            )
-            if (result.isSuccess) {
-                collectionItems.value = collectionItems.value.toMutableList().apply {
-                    set(indexOf(movie), result.getOrThrow())
-                }
-            }
-        }
-    }
+
 
 }
 
 sealed interface MoviesUiState {
     data class Success(
-        val title: String,
-        val items: List<SubjectWithInterest<*>>,
+        val modules: List<SubjectModule>,
         val isLoggedIn: Boolean,
     ) : MoviesUiState
 

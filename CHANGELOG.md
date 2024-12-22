@@ -3,6 +3,9 @@ Change Log
 
 ## Version 0.7.9(709)
 
+- Add rank lists module in replacement of single T250 in each subjects tab
+  - Add TVs tab for it
+  - Generalize T250 UI to rank lists and add a separate RankListScreen
 - Type labels are also shown in movie search results
   - Updated label color
 - Update icon for 'doing' interest status
