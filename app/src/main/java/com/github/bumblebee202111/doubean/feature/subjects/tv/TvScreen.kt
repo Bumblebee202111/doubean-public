@@ -8,7 +8,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.ui.SubjectDetailHeader
-import com.github.bumblebee202111.doubean.ui.SubjectInfoReviewsModuleItemContent
+import com.github.bumblebee202111.doubean.ui.SubjectReviewsSheetContent
 import com.github.bumblebee202111.doubean.ui.SubjectScaffold
 import com.github.bumblebee202111.doubean.ui.SubjectTopBar
 import com.github.bumblebee202111.doubean.ui.subjectInfoCelebritiesModuleItem
@@ -41,7 +41,7 @@ fun TvScreen(
     SubjectScaffold(
         reviewsSheetContent = {
             if (tvUiState is TvUiState.Success) {
-                SubjectInfoReviewsModuleItemContent(
+                SubjectReviewsSheetContent(
                     subjectType = SubjectType.TV,
                     reviews = tvUiState.reviews,
                 )

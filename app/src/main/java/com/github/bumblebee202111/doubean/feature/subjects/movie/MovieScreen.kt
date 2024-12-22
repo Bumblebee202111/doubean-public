@@ -1,7 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.subjects.movie
 
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -33,7 +32,6 @@ fun MovieScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieScreen(
     movieUiState: MovieUiState,
