@@ -23,10 +23,5 @@ class MovieRepository @Inject constructor(
         apiService.getMoviePhotos(movieId).toPhotoList()
     }
 
-    suspend fun getTop250MoviesCollection() =
-        subjectCollectionRepository.getTop250MoviesCollection()
-
-    suspend fun getTop250MoviesCollectionItems() =
-        subjectCollectionRepository.getTop250MoviesCollectionItems()
 
 }

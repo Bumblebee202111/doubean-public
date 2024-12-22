@@ -1,52 +1,43 @@
 package com.github.bumblebee202111.doubean.feature.subjects.movies
 
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.MySubjectUiState
+import com.github.bumblebee202111.doubean.model.SubjectModule
 import com.github.bumblebee202111.doubean.model.SubjectType
-import com.github.bumblebee202111.doubean.model.SubjectWithInterest
 import com.github.bumblebee202111.doubean.model.SubjectsSearchType
+import com.github.bumblebee202111.doubean.ui.SearchSubjectButton
 import com.github.bumblebee202111.doubean.ui.mySubject
-import com.github.bumblebee202111.doubean.ui.subjectCollection
+import com.github.bumblebee202111.doubean.ui.rankLists
 
 @Composable
 fun MoviesScreen(
-    onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
+    onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
+    onSearchClick: (type: SubjectsSearchType) -> Unit,
+    onRankListClick: (collectionId: String) -> Unit,
+    onMovieClick: (movieId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MoviesViewModel = hiltViewModel(),
-    onSearchClick: (type: SubjectsSearchType) -> Unit,
-    onMovieClick: (movieId: String) -> Unit,
-    onTvClick: (tvId: String) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
 ) {
     val myMoviesUiState by viewModel.myMoviesUiState.collectAsStateWithLifecycle()
-    val moviesUiState by viewModel.moviesUiState.collectAsStateWithLifecycle()
+    val moviesUiState by viewModel.tvsUiState.collectAsStateWithLifecycle()
     MoviesScreen(
         myMoviesUiState = myMoviesUiState,
         moviesUiState = moviesUiState,
         onSubjectStatusClick = onSubjectStatusClick,
         onLoginClick = onLoginClick,
-        onMarkClick = viewModel::onMarkMovie,
         onSearchClick = onSearchClick,
+        onRankListClick = onRankListClick,
         onMovieClick = onMovieClick,
-        onTvClick = onTvClick,
-        onBookClick = onBookClick,
         modifier = modifier
     )
 }
@@ -57,22 +48,17 @@ fun MoviesScreen(
     moviesUiState: MoviesUiState,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
-    onMarkClick: (movie: SubjectWithInterest<*>) -> Unit,
     onSearchClick: (type: SubjectsSearchType) -> Unit,
+    onRankListClick: (collectionId: String) -> Unit,
     onMovieClick: (movieId: String) -> Unit,
-    onTvClick: (tvId: String) -> Unit,
-    onBookClick: (tvId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier = modifier) {
         item {
-            OutlinedButton(
-                onClick = { onSearchClick(SubjectsSearchType.MOVIES) },
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-            ) {
-                Icon(imageVector = Icons.Default.Search, contentDescription = null)
-                Text(text = stringResource(id = R.string.search_movies_hint))
-            }
+            SearchSubjectButton(
+                onClick = { onSearchClick(SubjectsSearchType.MOVIES_AND_TVS) },
+                hintRes = R.string.search_movies_and_tvs_hint
+            )
         }
         mySubject(
             mySubjectUiState = myMoviesUiState,
@@ -84,15 +70,25 @@ fun MoviesScreen(
         }
         when (moviesUiState) {
             is MoviesUiState.Success -> {
-                subjectCollection(
-                    title = moviesUiState.title,
-                    items = moviesUiState.items,
-                    isLoggedIn = moviesUiState.isLoggedIn,
-                    onMovieClick = onMovieClick,
-                    onTvClick = onTvClick,
-                    onBookClick = onBookClick,
-                    onMarkClick = onMarkClick
-                )
+                moviesUiState.modules.forEach { module ->
+                    when (module) {
+                        is SubjectModule.SelectedCollections -> {
+                            rankLists(
+                                rankLists = module.selectedCollections,
+                                onRankListClick = onRankListClick,
+                                onSubjectClick = { subject ->
+                                    when (subject.type) {
+                                        SubjectType.MOVIE -> {
+                                            onMovieClick(subject.id)
+                                        }
+
+                                        else -> Unit //impossible
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
             }
 
             MoviesUiState.Loading -> {
@@ -105,3 +101,4 @@ fun MoviesScreen(
         }
     }
 }
+

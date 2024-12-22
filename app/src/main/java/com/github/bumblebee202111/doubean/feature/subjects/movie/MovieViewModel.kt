@@ -10,7 +10,6 @@ import com.github.bumblebee202111.doubean.data.repository.MovieRepository
 import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.movie.navigation.MovieRoute
-import com.github.bumblebee202111.doubean.model.Movie
 import com.github.bumblebee202111.doubean.model.MovieDetail
 import com.github.bumblebee202111.doubean.model.SubjectInterest
 import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
@@ -99,7 +98,7 @@ class MovieViewModel @Inject constructor(
 
             else -> {
                 viewModelScope.launch {
-                    val result = userSubjectRepository.addSubjectToInterests<Movie>(
+                    val result = userSubjectRepository.addSubjectToInterests(
                         type = oldMovie.type, id = oldMovie.id,
                         newStatus = status
                     )

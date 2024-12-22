@@ -33,6 +33,8 @@ import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.
 import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.navigateToInterests
 import com.github.bumblebee202111.doubean.feature.subjects.movie.navigation.movieScreen
 import com.github.bumblebee202111.doubean.feature.subjects.movie.navigation.navigateToMovie
+import com.github.bumblebee202111.doubean.feature.subjects.ranklist.navigation.navigateToRankList
+import com.github.bumblebee202111.doubean.feature.subjects.ranklist.navigation.rankListScreen
 import com.github.bumblebee202111.doubean.feature.subjects.search.navigation.navigateToSearchSubjects
 import com.github.bumblebee202111.doubean.feature.subjects.search.navigation.searchSubjectsScreen
 import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.navigateToTv
@@ -62,6 +64,7 @@ fun MainNavHost(
             navigateToLogin = navController::navigateToLogin,
             navigateToSubjectInterests = navController::navigateToInterests,
             navigateToSearchSubjects = navController::navigateToSearchSubjects,
+            navigateToRankList = navController::navigateToRankList,
             navigateToMovie = navController::navigateToMovie,
             navigateToTv = navController::navigateToTv,
             navigateToBook = navController::navigateToBook,
@@ -136,6 +139,12 @@ fun MainNavHost(
         bookScreen(
             onBackClick = navController::navigateUp,
             onLoginClick = navController::navigateToLogin
+        )
+        rankListScreen(
+            onBackClick = navController::navigateUp,
+            onMovieClick = navController::navigateToMovie,
+            onTvClick = navController::navigateToTv,
+            onBookClick = navController::navigateToBook
         )
     }
 }

@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.subjects.books
+package com.github.bumblebee202111.doubean.feature.subjects.tvs
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,48 +20,47 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BooksViewModel @Inject constructor(
+class TvsViewModel @Inject constructor(
     private val userSubjectRepository: UserSubjectRepository,
-    private val authRepository: AuthRepository,
     private val subjectCommonRepository: SubjectCommonRepository,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
 
-    private val _myBooksUiState: MutableStateFlow<MySubjectUiState> =
+    private val _myMoviesUiState: MutableStateFlow<MySubjectUiState> =
         MutableStateFlow(MySubjectUiState.Loading)
-    val myBooksUiState = _myBooksUiState.asStateFlow()
+    val myMoviesUiState = _myMoviesUiState.asStateFlow()
 
     private val modulesResult = flow {
-        emit(subjectCommonRepository.getSubjectModules(SubjectType.BOOK))
+        emit(subjectCommonRepository.getSubjectModules(SubjectType.TV))
     }
 
     val isLoggedIn = authRepository.isLoggedIn()
 
-    val booksUiState = combine(
+    val tvsUiState = combine(
         isLoggedIn,
-        modulesResult
-    ) { isLoggedIn, modulesResult ->
+        modulesResult,
+    ) { isLoggedIn, modules ->
         when {
-            modulesResult.isSuccess -> {
-                BooksUiState.Success(
-                    modules = modulesResult.getOrThrow(),
+            modules.isSuccess -> {
+                TvsUiState.Success(
+                    modules = modules.getOrThrow(),
                     isLoggedIn = isLoggedIn
                 )
             }
 
             else ->
-                BooksUiState.Error
+                TvsUiState.Error
         }
-    }.stateInUi(BooksUiState.Loading)
+    }.stateInUi(TvsUiState.Loading)
 
     init {
-        getMyBooks()
+        getMyMovies()
     }
 
-
-    private fun getMyBooks() {
+    private fun getMyMovies() {
         viewModelScope.launch {
             authRepository.observeLoggedInUserId().onEach { userId ->
-                _myBooksUiState.value = when (userId) {
+                _myMoviesUiState.value = when (userId) {
                     null -> MySubjectUiState.NotLoggedIn
                     else -> {
                         val result = userSubjectRepository.getUserSubjects(
@@ -72,8 +71,9 @@ class BooksViewModel @Inject constructor(
                             true ->
                                 MySubjectUiState.Success(
                                     userId = userId,
-                                    mySubject = result.getOrThrow()
-                                        .first { it.type == SubjectType.BOOK }
+                                    mySubject = result.getOrThrow().first {
+                                        it.type == SubjectType.MOVIE
+                                    }
                                 )
 
                             false -> MySubjectUiState.Error
@@ -83,15 +83,15 @@ class BooksViewModel @Inject constructor(
             }.collect()
         }
     }
-
 }
 
-sealed interface BooksUiState {
+sealed interface TvsUiState {
     data class Success(
         val modules: List<SubjectModule>,
         val isLoggedIn: Boolean,
-    ) : BooksUiState
+    ) : TvsUiState
 
-    data object Error : BooksUiState
-    data object Loading : BooksUiState
+    data object Error : TvsUiState
+    data object Loading : TvsUiState
 }
+

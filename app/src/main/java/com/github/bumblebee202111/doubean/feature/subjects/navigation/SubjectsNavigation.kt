@@ -15,6 +15,7 @@ fun NavGraphBuilder.subjectsScreen(
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
     onSearchClick: (type: SubjectsSearchType) -> Unit,
+    onRankListClick: (collectionId: String) -> Unit,
     onMovieClick: (movieId: String) -> Unit,
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
@@ -25,6 +26,7 @@ fun NavGraphBuilder.subjectsScreen(
             onSubjectStatusClick = onSubjectStatusClick,
             onLoginClick = onLoginClick,
             onSearchClick = onSearchClick,
+            onRankListClick = onRankListClick,
             onMovieClick = onMovieClick,
             onTvClick = onTvClick,
             onBookClick = onBookClick

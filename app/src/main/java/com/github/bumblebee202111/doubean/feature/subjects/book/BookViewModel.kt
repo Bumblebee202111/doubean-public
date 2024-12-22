@@ -9,7 +9,6 @@ import com.github.bumblebee202111.doubean.data.repository.BookRepository
 import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.book.navigation.BookRoute
-import com.github.bumblebee202111.doubean.model.Book
 import com.github.bumblebee202111.doubean.model.BookDetail
 import com.github.bumblebee202111.doubean.model.SubjectInterest
 import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
@@ -93,7 +92,7 @@ class BookViewModel @Inject constructor(
 
             else -> {
                 viewModelScope.launch {
-                    val result = userSubjectRepository.addSubjectToInterests<Book>(
+                    val result = userSubjectRepository.addSubjectToInterests(
                         type = oldBook.type,
                         id = oldBook.id,
                         newStatus = newStatus

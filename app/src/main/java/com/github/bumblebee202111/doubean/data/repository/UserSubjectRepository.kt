@@ -36,18 +36,16 @@ class UserSubjectRepository @Inject constructor(private val apiService: ApiServi
         ).toExternalModel()
     }
 
-    suspend fun <T : Subject> addSubjectToInterests(
+    suspend fun addSubjectToInterests(
         type: SubjectType, id: String,
         newStatus: SubjectInterestStatus,
-    ): Result<SubjectWithInterest<T>> {
+    ): Result<SubjectWithInterest<Subject>> {
         return suspendRunCatching {
-            @Suppress("UNCHECKED_CAST")
             apiService.addSubjectToInterests(
                 type = type.toNetworkSubjectType().value,
                 id = id,
                 newStatus = newStatus.toNetworkStatus().value
-            )
-                .asExternalModel() as SubjectWithInterest<T>
+            ).asExternalModel()
         }
     }
 

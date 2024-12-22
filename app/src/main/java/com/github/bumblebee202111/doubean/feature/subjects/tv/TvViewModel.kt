@@ -12,7 +12,6 @@ import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.TvRoute
 import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.SubjectType
-import com.github.bumblebee202111.doubean.model.Tv
 import com.github.bumblebee202111.doubean.model.TvDetail
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -93,7 +92,7 @@ class TvViewModel @Inject constructor(
 
             else -> {
                 viewModelScope.launch {
-                    val result = userSubjectRepository.addSubjectToInterests<Tv>(
+                    val result = userSubjectRepository.addSubjectToInterests(
                         type = oldTv.type, id = oldTv.id,
                         newStatus = status
                     )
