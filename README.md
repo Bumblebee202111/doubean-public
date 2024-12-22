@@ -217,8 +217,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.9\)
 
-* Groups: Fix comment like icon and image area disappearing when reached from bottom
-
 #### To-dos for next release \(0.7.10)
 
 
@@ -242,6 +240,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Remember last bottom/Subjects tabs
 * Groups
+  * Topic comments -> Compose
+    * Too heavily-nested Compose-View interp now, which used to cause weird display when onReset overload of AndroidViewBinding was taken
   * Reuse item logic of search result groups / groups of the day
   * Fix the issue of losing last positions after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
   * Home
