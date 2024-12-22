@@ -12,6 +12,9 @@ Change Log
 - Tweak subject layout
   - Also apply rounded corners to subject covers
 - 'Null' ratings are correctly shown with the reasons
+- Groups: Fix comment like icon and image area sometimes disappearing when entering from bottom
+  * This might make the list laggy
+  * Need full Compose migration
 - Fix crash caused by duplicate keys in celebrity list
 - Fix nullability of rating of subject interests
 

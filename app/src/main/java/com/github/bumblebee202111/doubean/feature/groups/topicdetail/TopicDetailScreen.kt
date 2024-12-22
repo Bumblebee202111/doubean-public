@@ -815,7 +815,7 @@ fun TopicCommentAndroidView(
                 text = comment?.voteCount?.toString()
             }
         },
-        onReset = {},
+        //onReset = {},
         //onRelease = {}
     )
 }
