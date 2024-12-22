@@ -78,10 +78,9 @@ fun BooksScreen(
                                 onRankListClick = onRankListClick,
                                 onSubjectClick = { subject ->
                                     when (subject.type) {
-                                        SubjectType.MOVIE -> {
+                                        SubjectType.BOOK -> {
                                             onBookClick(subject.id)
                                         }
-
                                         else -> Unit //impossible
                                     }
                                 }
