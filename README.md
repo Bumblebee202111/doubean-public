@@ -217,7 +217,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.9\)
 
-* Fix reviews max height
 * Groups: Fix comment like icon and image area disappearing when reached from bottom
 
 #### To-dos for next release \(0.7.10)
