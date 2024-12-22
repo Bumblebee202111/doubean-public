@@ -1,9 +1,26 @@
 Change Log
 ==========
 
+## Version 0.7.9(709)
+
+- Add rank lists module in replacement of single T250 in each subjects tab
+  - Add TVs tab for it
+  - Generalize T250 UI to rank lists and add a separate RankListScreen
+- Type labels are also shown in movie search results
+  - Updated label color
+- Update icon for 'doing' interest status
+- Tweak subject layout
+  - Also apply rounded corners to subject covers
+- 'Null' ratings are correctly shown with the reasons
+- Groups: Fix comment like icon and image area sometimes disappearing when entering from bottom
+  * This might make the list laggy
+  * Need full Compose migration
+- Fix crash caused by duplicate keys in celebrity list
+- Fix nullability of rating of subject interests
+
 ## Version 0.7.8(708)
 
-- Add basic reviews bottom sheet for subject screens
+- Add basic reviews bottom sheet to subject screens
 - Fix trailers not having same height
 - Fix improper (vertical) alignment of interest button content
 - Fix interest button in collection subject items not being shown for logged-in users
