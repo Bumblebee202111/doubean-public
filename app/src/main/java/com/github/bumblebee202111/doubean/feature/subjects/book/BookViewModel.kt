@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -98,7 +99,9 @@ class BookViewModel @Inject constructor(
                         newStatus = newStatus
                     )
                     if (result.isSuccess) {
-                        book.value = book.value?.copy(interest = result.getOrThrow().interest)
+                        book.update {
+                            it?.copy(interest = result.getOrThrow().interest)
+                        }
                     }
                 }
             }

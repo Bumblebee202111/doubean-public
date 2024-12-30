@@ -19,6 +19,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -103,7 +104,9 @@ class MovieViewModel @Inject constructor(
                         newStatus = status
                     )
                     if (result.isSuccess) {
-                        movie.value = movie.value?.copy(interest = result.getOrThrow().interest)
+                        movie.update {
+                            it?.copy(interest = result.getOrThrow().interest)
+                        }
                     }
                 }
             }

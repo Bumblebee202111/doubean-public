@@ -218,7 +218,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 #### To-dos for current release \(0.7.10\)
 
 - Single NavHost
-- Use MutableStateFlow#update()
 - Compose migration
 - Other internal or minor optimizations
 

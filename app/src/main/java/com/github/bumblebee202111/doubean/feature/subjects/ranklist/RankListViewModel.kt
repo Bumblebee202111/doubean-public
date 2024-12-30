@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -70,8 +71,10 @@ class RankListViewModel @Inject constructor(
                 newStatus = SubjectInterestStatus.MARK_STATUS_MARK
             )
             if (result.isSuccess) {
-                items.value = items.value.toMutableList().apply {
-                    set(indexOf(subject), subject.copy(interest = result.getOrThrow().interest))
+                items.update {
+                    it.toMutableList().apply {
+                        set(indexOf(subject), subject.copy(interest = result.getOrThrow().interest))
+                    }
                 }
             }
         }

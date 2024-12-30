@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -85,8 +86,10 @@ class InterestsViewModel @Inject constructor(
                         id = subjectWithInterest.id
                     )
                     if (result.isSuccess) {
-                        interests.value = interests.value.toMutableList().apply {
-                            remove(subjectWithInterest)
+                        interests.update {
+                            it.toMutableList().apply {
+                                remove(subjectWithInterest)
+                            }
                         }
                     }
                 }
