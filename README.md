@@ -215,9 +215,14 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.7.9\)
+#### To-dos for current release \(0.7.10\)
 
-#### To-dos for next release \(0.7.10)
+- Single NavHost
+- Use MutableStateFlow#update()
+- Compose migration
+- Other internal or minor optimizations
+
+#### To-dos for next release \(0.7.11)
 
 
 #### Future plans
