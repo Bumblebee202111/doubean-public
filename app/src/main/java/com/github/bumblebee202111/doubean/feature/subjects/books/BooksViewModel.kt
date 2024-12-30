@@ -57,7 +57,6 @@ class BooksViewModel @Inject constructor(
         getMyBooks()
     }
 
-
     private fun getMyBooks() {
         viewModelScope.launch {
             authRepository.observeLoggedInUserId().onEach { userId ->
@@ -75,7 +74,6 @@ class BooksViewModel @Inject constructor(
                                     mySubject = result.getOrThrow()
                                         .first { it.type == SubjectType.BOOK }
                                 )
-
                             false -> MySubjectUiState.Error
                         }
                     }
