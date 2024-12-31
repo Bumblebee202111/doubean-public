@@ -240,6 +240,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Interest buttons
     * Maybe choose tonal style instead
   * Tweak reviews sheet
+    * Review counts arrangement
   * More details & sub-features
 
 * Remember last bottom/Subjects tabs
