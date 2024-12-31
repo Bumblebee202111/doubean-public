@@ -9,16 +9,16 @@ import android.view.MotionEvent
 import android.view.View
 import android.webkit.URLUtil
 import android.webkit.WebView
-import android.widget.PopupMenu
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,7 +28,6 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
@@ -72,10 +71,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.databinding.ListItemPostCommentBinding
 import com.github.bumblebee202111.doubean.databinding.ViewPostDetailHeaderBinding
-import com.github.bumblebee202111.doubean.feature.groups.common.TopicDetailActivityItemUserProfileImage
-import com.github.bumblebee202111.doubean.model.SizedPhoto
 import com.github.bumblebee202111.doubean.model.TopicComment
 import com.github.bumblebee202111.doubean.model.TopicCommentSortBy
 import com.github.bumblebee202111.doubean.model.TopicDetail
@@ -85,12 +81,10 @@ import com.github.bumblebee202111.doubean.ui.common.DoubeanWebView
 import com.github.bumblebee202111.doubean.ui.common.TopicWebViewClient
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
-import com.github.bumblebee202111.doubean.ui.component.ListItemImages
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.TOPIC_CSS_FILENAME
 import com.github.bumblebee202111.doubean.util.fullDateTimeString
-import com.github.bumblebee202111.doubean.util.intermediateDateTimeString
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberSaveableWebViewState
 import com.google.accompanist.web.rememberWebViewNavigator
@@ -117,7 +111,7 @@ fun TopicDetailScreen(
 
     TopicDetailScreen(
         topic = topic,
-        popularComments = popularComments,
+        popularCommentsLazyPagingItems = popularComments,
         allCommentLazyPagingItems = allCommentLazyPagingItems,
         contentHtml = contentHtml,
         commentSortBy = commentSortBy,
@@ -145,7 +139,7 @@ fun TopicDetailScreen(
 @Composable
 fun TopicDetailScreen(
     topic: TopicDetail?,
-    popularComments: List<TopicComment>,
+    popularCommentsLazyPagingItems: List<TopicComment>,
     allCommentLazyPagingItems: LazyPagingItems<TopicComment>,
     contentHtml: String?,
     commentSortBy: TopicCommentSortBy,
@@ -173,9 +167,7 @@ fun TopicDetailScreen(
     }
     val listState = rememberLazyListState()
 
-    var itemCountBeforeComments = 0
-    if (topic != null) itemCountBeforeComments++
-    if (shouldShowSpinner) itemCountBeforeComments++
+    val itemCountBeforeComments = 2
 
     scrollToCommentItemIndex?.let { index ->
         LaunchedEffect(index) {
@@ -239,14 +231,16 @@ fun TopicDetailScreen(
                     DropdownMenu(
                         expanded = appBarMenuExpanded,
                         onDismissRequest = { appBarMenuExpanded = false }) {
-                        DropdownMenuItem(text = {
-                            Text(text = "Jump to comment")
-                        },
-                            onClick = {
-                                appBarMenuExpanded = false
-                                shouldShowDialog = true
-                            })
+                        if (topic != null) {
+                            DropdownMenuItem(text = {
+                                Text(text = "Jump to comment")
+                            },
+                                onClick = {
+                                    appBarMenuExpanded = false
+                                    shouldShowDialog = true
+                                })
 
+                        }
                         DropdownMenuItem(text = {
                             Text(text = stringResource(R.string.view_in))
                         },
@@ -313,46 +307,52 @@ fun TopicDetailScreen(
                         updateCommentSortBy = updateCommentSortBy
                     )
                 }
-            }
-
-            when (commentSortBy) {
-                TopicCommentSortBy.TOP -> {
-                    items(
-                        count = popularComments.size,
-                        key = { popularComments[it].id },
-                        contentType = { "TopicCommentAndroidView" }) { index ->
-                        TopicCommentAndroidView(
-                            modifier = Modifier.padding(top = 8.dp),
-                            comment = popularComments[index],
-                            groupColorInt = groupColorInt,
-                            topic = topic,
-                            onImageClick = onImageClick
-                        )
-                        if (index < popularComments.size - 1)
-                            HorizontalDivider(thickness = 1.dp)
-                    }
+            } else {
+                item {
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
 
-                TopicCommentSortBy.ALL -> {
-                    items(
-                        count = allCommentLazyPagingItems.itemCount,
-                        key = allCommentLazyPagingItems.itemKey { it.id },
-                        contentType = allCommentLazyPagingItems.itemContentType { "TopicCommentAndroidView" }) { index ->
-                        TopicCommentAndroidView(
-                            comment = allCommentLazyPagingItems[index],
-                            groupColorInt = groupColorInt,
-                            topic = topic,
-                            onImageClick = onImageClick
-                        )
-                        if (index < allCommentLazyPagingItems.itemCount - 1)
-                            HorizontalDivider(thickness = 1.dp)
+            }
+            if (topic != null && groupColorInt != null) {
+                when (commentSortBy) {
+                    TopicCommentSortBy.TOP -> {
+                        items(
+                            count = popularCommentsLazyPagingItems.size,
+                            key = { popularCommentsLazyPagingItems[it].id },
+                            contentType = { "TopicCommentAndroidView" }) { index ->
+                            TopicComment(
+                                comment = popularCommentsLazyPagingItems[index],
+                                groupColorInt = groupColorInt,
+                                topic = topic,
+                                onImageClick = onImageClick
+                            )
+                            if (index < popularCommentsLazyPagingItems.size - 1)
+                                HorizontalDivider(thickness = 1.dp)
+                        }
+                    }
+
+                    TopicCommentSortBy.ALL -> {
+                        items(
+                            count = allCommentLazyPagingItems.itemCount,
+                            key = allCommentLazyPagingItems.itemKey { it.id },
+                            contentType = allCommentLazyPagingItems.itemContentType { "TopicCommentAndroidView" }) { index ->
+                            TopicComment(
+                                comment = allCommentLazyPagingItems[index],
+                                groupColorInt = groupColorInt,
+                                topic = topic,
+                                onImageClick = onImageClick
+                            )
+                            if (index < allCommentLazyPagingItems.itemCount - 1)
+                                HorizontalDivider(thickness = 1.dp)
+                        }
                     }
                 }
             }
+
 
         }
     }
-    (if (commentSortBy == TopicCommentSortBy.TOP) popularComments.size else topic?.commentCount)?.let {
+    (if (commentSortBy == TopicCommentSortBy.TOP) popularCommentsLazyPagingItems.size else topic?.commentCount)?.let {
         if (shouldShowDialog) {
 
             JumpToCommentOfIndexDialog(
@@ -650,9 +650,8 @@ fun TopicCommentSortBy(
 
     Box(
         Modifier.padding(
-            start = dimensionResource(id = R.dimen.margin_normal),
-            end = dimensionResource(id = R.dimen.margin_normal),
-            top = dimensionResource(id = R.dimen.margin_small)
+            horizontal = dimensionResource(id = R.dimen.margin_normal),
+            vertical = dimensionResource(id = R.dimen.margin_small)
         ),
     ) {
         Button(onClick = { expanded = !expanded }) {
@@ -678,146 +677,6 @@ fun TopicCommentSortBy(
             }
         }
     }
-}
-
-@Composable
-fun TopicCommentAndroidView(
-    modifier: Modifier = Modifier,
-    comment: TopicComment?,
-    groupColorInt: Int?,
-    topic: TopicDetail?,
-    onImageClick: (url: String) -> Unit,
-) {
-
-    AndroidViewBinding(
-        factory = ListItemPostCommentBinding::inflate,
-        modifier = modifier,
-        update = {
-            authorAvatar.setContent {
-                TopicDetailActivityItemUserProfileImage(url = comment?.author?.avatarUrl)
-            }
-            authorName.text = comment?.author?.name
-            authorMiddleDot.isVisible = comment?.author != null
-            created.setContent {
-                comment?.created?.let {
-                    DateTimeText(text = it.intermediateDateTimeString())
-                }
-            }
-            ipLocation.text = comment?.ipLocation
-            more.setOnClickListener { v ->
-                val context = v.context
-                val popupMenu = PopupMenu(context, more)
-                popupMenu.inflate(R.menu.menu_post_item)
-                popupMenu.setOnMenuItemClickListener { item ->
-                    comment?.let { comment ->
-                        when (item.itemId) {
-                            R.id.action_share -> {
-                                val shareText = StringBuilder()
-                                topic?.let {
-                                    it.group?.let { group -> shareText.append(group.name) }
-                                    it.tag?.let { tag ->
-                                        shareText.append("|" + tag.name)
-                                    }
-                                }
-
-                                shareText.append(
-                                    "@${comment.author.name}${
-                                        context.getString(R.string.colon)
-                                    }${comment.text}"
-                                )
-
-                                comment.repliedTo?.let { repliedTo ->
-                                    shareText.append("${context.getString(R.string.repliedTo)}@${repliedTo.author.name}： ${repliedTo.text}")
-                                }
-                                topic?.let { topic ->
-                                    shareText.append(
-                                        """${context.getString(R.string.post)}@${topic.author.name}${
-                                            context.getString(R.string.colon)
-                                        }
-                                            ${topic.title} ${topic.url}
-                                            """
-                                    )
-                                }
-                                ShareUtil.share(context, shareText)
-                                true
-                            }
-
-                            else -> false
-                        }
-
-                    }
-                    false
-                }
-                popupMenu.show()
-            }
-
-            photos.setContent {
-                comment?.photos.takeUnless(List<SizedPhoto>?::isNullOrEmpty)?.let {
-                    ListItemImages(
-                        images = it.map(SizedPhoto::image),
-                        onImageClick = { image -> onImageClick(image.large.url) }
-                    )
-                }
-            }
-
-            commentText.apply {
-                text = comment?.text
-                isVisible = comment == null || !comment.text.isNullOrBlank()
-            }
-
-            authorOp.isVisible = comment?.author?.id?.let { it == topic?.author?.id } ?: false
-            repliedTo.isVisible = comment?.repliedTo != null
-
-            repliedToAvatar.setContent {
-                TopicDetailActivityItemUserProfileImage(comment?.repliedTo?.author?.avatarUrl)
-            }
-
-            repliedToAuthorOp.isVisible =
-                comment?.repliedTo?.author?.id?.let { it == topic?.author?.id } ?: false
-            repliedToAuthorName.text = comment?.repliedTo?.author?.name
-            repliedToCreated.setContent {
-                comment?.repliedTo?.created?.let {
-                    DateTimeText(text = it.intermediateDateTimeString())
-                }
-            }
-            repliedToMiddleDot.isVisible = comment?.repliedTo?.author != null
-            repliedToText.apply {
-                text = comment?.repliedTo?.text
-                isVisible = !comment?.repliedTo?.text.isNullOrBlank()
-            }
-            repliedToPhotos.setContent {
-                comment?.repliedTo?.photos.takeUnless(List<SizedPhoto>?::isNullOrEmpty)?.let {
-                    ListItemImages(
-                        images = it.map(SizedPhoto::image),
-                        onImageClick = { image -> onImageClick(image.large.url) }
-                    )
-                }
-            }
-
-            groupColorInt?.let {
-                authorOp.setTextColor(it)
-                repliedToAuthorOp.setTextColor(it)
-            }
-
-            likeIcon.setContent {
-                if (comment?.voteCount?.takeIf { it != 0 } != null) {
-                    Icon(
-                        imageVector = Icons.Outlined.ThumbUp,
-                        contentDescription = null,
-                        modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size_extra_small))
-                    )
-                }
-
-            }
-
-            likeCount.apply {
-                isVisible = comment?.voteCount?.takeIf { it != 0 } != null
-                text = comment?.voteCount?.toString()
-            }
-        },
-        
-        
-    )
 }
 
 private fun shareTopic(context: Context, topic: TopicDetail) {

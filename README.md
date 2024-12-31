@@ -244,8 +244,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Remember last bottom/Subjects tabs
 * Groups
-  * Topic comments -> Compose
-    * Too heavily-nested Compose-View interp now, which used to cause weird display when onReset overload of AndroidViewBinding was taken
   * Reuse item logic of search result groups / groups of the day
   * Fix the issue of losing last positions after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
   * Home
@@ -283,7 +281,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Support blocking unfriendly content
   * Lists: Reddit-like item expand/collapse
   * Find API for all followed topics (hopeless)
-
+  
 * Properly show login prompts & normal text hints
 
 * Status bar color
