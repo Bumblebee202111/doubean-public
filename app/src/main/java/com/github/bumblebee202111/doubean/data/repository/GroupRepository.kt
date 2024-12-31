@@ -57,11 +57,13 @@ class GroupRepository @Inject constructor(
             saveSuccess = {
                 val groupDetails = asPartialEntity()
                 val groupTabs = tabs.map { it.asEntity(groupId) }
-                val topicTags = topicTags.map { it.asEntity(groupId) }
+                val topicTags = topicTagsNormal?.map { it.asEntity(groupId) }
                 appDatabase.withTransaction {
                     groupDao.upsertGroupDetail(groupDetails)
                     groupDao.insertGroupTabs(groupTabs)
-                    groupDao.insertTopicTags(topicTags)
+                    if (topicTags != null) {
+                        groupDao.insertTopicTags(topicTags)
+                    }
                 }
             }
         )
