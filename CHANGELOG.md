@@ -3,6 +3,9 @@ Change Log
 
 ## Version 0.7.10(710)
 
+- Fix crash when parsing groups with uncommon format of topic tag list, such as 586674.
+  - Meanwhile, fix the leading tags of topic items being tightly bound to the previously cached group detail resource, if any
+
 ## Version 0.7.9(709)
 
 - Add rank lists module in replacement of single T250 in each subjects tab

@@ -246,6 +246,10 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Groups
   * Reuse item logic of search result groups / groups of the day
   * Fix the issue of losing last positions after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
+  * Dynamic topic sorts-by
+  
+  - Error body
+  
   * Home
     * Support pagination?
     * Add favorite tabs for topic list area

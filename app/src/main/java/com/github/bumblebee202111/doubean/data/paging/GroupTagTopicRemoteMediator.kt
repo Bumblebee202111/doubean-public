@@ -97,12 +97,17 @@ class GroupTagTopicRemoteMediator(
 
                 val topicEntities = topics.map { it.asPartialEntity(groupId) }
 
+                val topicTagEntities =
+                    topics.flatMap { topic -> topic.topicTags.map { tag -> tag.asEntity(groupId) } }
+                        .distinctBy { it.id }
+
                 val topicTagCrossRefs =
                     topics.flatMap(NetworkTopicItem::tagCrossRefs)
                 val authors = topics.map { it.author.asEntity() }.distinctBy(UserEntity::id)
 
                 groupDao.apply {
                     groupDao.insertGroupTopicItems(topicItems)
+                    groupDao.insertTopicTags(topicTagEntities)
                     topicDao.deleteTopicTagCrossRefsByTopicIds(topicIds)
                     topicDao.insertTopicTagCrossRefs(topicTagCrossRefs)
                     topicDao.upsertTopics(topicEntities)

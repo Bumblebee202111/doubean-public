@@ -256,11 +256,11 @@ class UserGroupRepository @Inject constructor(
                     )
                 }
 
-            val postTags = networkPosts.flatMap { it.postTags }.map { it.asEntity(groupId) }
+            val topicTags = networkPosts.flatMap { it.topicTags }.map { it.asEntity(groupId) }
             val authors = networkPosts.map { it.author.asEntity() }
             appDatabase.withTransaction {
                 topicDao.upsertTopics(posts)
-                groupDao.insertTopicTags(postTags)
+                groupDao.insertTopicTags(topicTags)
                 userDao.insertUsers(authors)
                 when (currentFeedTopic) {
                     is FavoriteGroupEntity -> userGroupDao.updateFavoritedGroupLastNotifiedTimeMillis(

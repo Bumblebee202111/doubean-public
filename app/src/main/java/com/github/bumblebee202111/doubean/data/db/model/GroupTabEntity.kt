@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class GroupTabEntity(
     @PrimaryKey
     val id: String,
-    val name: String?,
+    val name: String,
     val seq: Int,
     @ColumnInfo("group_id")
     val groupId: String,
