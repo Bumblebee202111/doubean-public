@@ -11,7 +11,7 @@ data object GroupsSearchRoute
 
 fun NavController.navigateToSearch() = navigate(route = GroupsSearchRoute)
 
-fun NavGraphBuilder.groupsSearchScreen(onGroupClick: (String) -> Unit) =
+fun NavGraphBuilder.groupsSearchScreen(onGroupClick: (String) -> Unit, onBackClick: () -> Unit) =
     composable<GroupsSearchRoute> {
-        GroupsSearchScreen(onGroupClick = onGroupClick)
+        GroupsSearchScreen(onGroupClick = onGroupClick, onBackClick = onBackClick)
     }

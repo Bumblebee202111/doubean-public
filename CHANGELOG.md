@@ -3,9 +3,9 @@ Change Log
 
 ## Version 0.7.10(710)
 
-- Fix crash when parsing groups with uncommon format of topic tag list, such as 586674.
+- Fix crash when parsing groups with uncommon topic tag list data, such as 586674.
   - Meanwhile, fix the leading tags of topic items being tightly bound to the previously cached group detail resource, if any
-- Fix nullability of honor rank even though its not yet used
+- Fix subject parsing error
 - Migrate group list item layouts to Compose
 
 ## Version 0.7.9(709)
