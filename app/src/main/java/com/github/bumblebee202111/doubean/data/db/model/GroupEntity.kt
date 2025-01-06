@@ -25,8 +25,8 @@ data class GroupEntity(
     val avatarUrl: String? = null,
     @ColumnInfo("member_name")
     val memberName: String? = null,
-    @ColumnInfo("short_description")
-    val shortDescription: String? = null,
+    @ColumnInfo("desc_abstract")
+    val descAbstract: String? = null,
     val description: String? = null,
     val color: Int? = null,
     @ColumnInfo("member_role")
