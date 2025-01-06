@@ -70,7 +70,10 @@ fun MainNavHost(
             navigateToBook = navController::navigateToBook,
             onShowSnackbar = onShowSnackbar
         )
-        groupsSearchScreen(onGroupClick = navController::navigateToGroup)
+        groupsSearchScreen(
+            onGroupClick = navController::navigateToGroup,
+            onBackClick = navController::navigateUp
+        )
         notificationsScreen(
             onBackClick = navController::navigateUp,
             onTopicClick = navController::navigateToTopic,

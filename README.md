@@ -112,8 +112,8 @@ Introduction
 - [Latest release][latest-elease]
 - Supported Android versions: 8.1 - 14 (and also 15, virtually)
 - Feel free to file issues
-  - Specifically, if some data doesn't show, a JSON parsing error probably occurs. Including the raw JSON response (if possible) or related urls of the resource gained from the Douban app might help solve it
-- It's recommended to let the Douban app coexist
+  - Specifically, if some data doesn't show, an error on JSON parsing probably occurs. Including the title, related urls of the resource (gained from the Douban app), or raw JSON response (if possible) in the issue might help solve it
+- It's suggested to let the Douban app coexist
   - Please support the official product
   - Lots of content is missing in doubean
   - Especially for [rooted users](#reuse-login-session)
@@ -219,8 +219,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 - Single NavHost
 - Compose migration
-- Add back button for GroupsSearchScreen
-- Optimize search text field
 - Other internal or minor optimizations
 
 #### To-dos for next release \(0.7.11)
@@ -246,12 +244,13 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * More details & sub-features
 
 * Remember last bottom/Subjects tabs
-* Allow non rooted users to browse personal content if user ID is provided
+
+* Allow non rooted users (guests) to browse personal content if user ID is provided
+
 * Groups
   * Fix the issue of losing last positions after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
   * Dynamic topic sorts-by
   
-  - Error body
   - Caching everything in ROOM was a mistake, adding much complexity
   
   * Home
@@ -269,7 +268,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Use the new nullable "edit_time" property of network topics
   * Gradually revert naming conventions to those of Douban
   * Group Detail
-    * Compose collapsing toolbar when API is more convenient to use
+    * Reimplement collapsing toolbar with Compose when API is more convenient to use
     * Collapse on entrance for the subscribed/favorited group/tab
   * Topics feed notifications
     * Find why it is broken and fix it
@@ -294,7 +293,10 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Status bar color
 
-* Show error messages
+* Error handling
+
+  * Process error body
+  * Show error messages
 
 * Bring back load state visualization which was removed for simplicity during various types of migrations
   * Paging 3 refresh, loading status ...
