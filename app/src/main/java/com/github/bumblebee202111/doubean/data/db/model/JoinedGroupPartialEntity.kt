@@ -25,8 +25,8 @@ data class JoinedGroupPartialEntity(
     @ColumnInfo("member_name")
     val memberName: String,
 
-    @ColumnInfo("short_description")
-    val shortDescription: String?,
+    @ColumnInfo("desc_abstract")
+    val descAbstract: String?,
 
     val color: Int,
 )

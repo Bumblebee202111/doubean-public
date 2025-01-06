@@ -25,8 +25,8 @@ data class GroupSearchResultGroupItemPartialEntity(
     @ColumnInfo("date_created")
     val dateCreated: LocalDateTime? = null,
 
-    @ColumnInfo("short_description")
-    val shortDescription: String? = null,
+    @ColumnInfo("desc_abstract")
+    val descAbstract: String? = null,
 
     @ColumnInfo("share_url")
     val shareUrl: String,
@@ -44,7 +44,7 @@ fun GroupSearchResultGroupItemPartialEntity.asExternalModel() = GroupSearchResul
     memberCount = memberCount,
     topicCount = topicCount,
     dateCreated = dateCreated,
-    shortDescription = shortDescription,
+    descAbstract = descAbstract,
     shareUrl = shareUrl,
     url = url,
     uri = uri

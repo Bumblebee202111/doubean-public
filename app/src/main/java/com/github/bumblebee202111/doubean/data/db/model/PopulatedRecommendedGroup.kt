@@ -53,6 +53,6 @@ fun PopulatedRecommendedGroupItemGroup.asExternalModel() = RecommendedGroupItemG
     uri = partialEntity.uri,
     avatarUrl = partialEntity.avatarUrl,
     color = partialEntity.color,
-    shortDescription = partialEntity.shortDescription,
+    descAbstract = partialEntity.descAbstract,
     isFavorite = favoriteGroup != null
 )

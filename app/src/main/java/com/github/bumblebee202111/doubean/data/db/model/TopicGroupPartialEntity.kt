@@ -27,8 +27,8 @@ data class TopicGroupPartialEntity(
     @ColumnInfo("member_name")
     val memberName: String? = null,
 
-    @ColumnInfo("short_description")
-    val shortDescription: String? = null,
+    @ColumnInfo("desc_abstract")
+    val descAbstract: String? = null,
 
     val color: Int?,
 )

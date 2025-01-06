@@ -219,6 +219,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 - Single NavHost
 - Compose migration
+- Add back button for GroupsSearchScreen
+- Optimize search text field
 - Other internal or minor optimizations
 
 #### To-dos for next release \(0.7.11)
@@ -240,16 +242,17 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Interest buttons
     * Maybe choose tonal style instead
   * Tweak reviews sheet
-    * Review counts arrangement
+    * Better arrangement of review counts
   * More details & sub-features
 
 * Remember last bottom/Subjects tabs
+* Allow non rooted users to browse personal content if user ID is provided
 * Groups
-  * Reuse item logic of search result groups / groups of the day
   * Fix the issue of losing last positions after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
   * Dynamic topic sorts-by
   
   - Error body
+  - Caching everything in ROOM was a mistake, adding much complexity
   
   * Home
     * Support pagination?

@@ -78,7 +78,7 @@ fun PopulatedTopicGroup.asExternalModel() = TopicGroup(
     url = partialEntity.url,
     avatarUrl = partialEntity.avatarUrl,
     memberName = partialEntity.memberName,
-    shortDescription = partialEntity.shortDescription,
+    descAbstract = partialEntity.descAbstract,
     color = partialEntity.color,
     isFavorite = favoriteGroup != null
 )
