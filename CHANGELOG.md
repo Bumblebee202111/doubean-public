@@ -1,20 +1,27 @@
 Change Log
 ==========
 
+## Version 0.7.10(710)
+
+- Correctly distinguish a topic tab and a topic tag in data received. This used to cause some problems.
+- Fix subject parsing error
+- Migrate layouts of group list items to Compose
+- Minor tweaks
+
 ## Version 0.7.9(709)
 
 - Add rank lists module in replacement of single T250 in each subjects tab
   - Add TVs tab for it
   - Generalize T250 UI to rank lists and add a separate RankListScreen
-- Type labels are also shown in movie search results
+- Type labels are also shown in movie/tv search results
   - Updated label color
 - Update icon for 'doing' interest status
-- Tweak subject layout
-  - Also apply rounded corners to subject covers
+- Tweak subject layouts
+  - Also apply rounded corners to all subject covers
 - 'Null' ratings are correctly shown with the reasons
-- Groups: Fix comment like icon and image area sometimes disappearing when entering from bottom
-  * This might make the list laggy
-  * Need full Compose migration
+- Groups: (Quickly) fix comment like icon and image area sometimes disappearing when entering from bottom
+  * This fix might make the list laggy
+  * The comment item layout needs full Compose migration
 - Fix crash caused by duplicate keys in celebrity list
 - Fix nullability of rating of subject interests
 

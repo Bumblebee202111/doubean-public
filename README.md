@@ -1,8 +1,8 @@
 doubean
 =======
 
-An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section. Subjects development is just started.
-\([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。书影~~音~~开发才刚刚开始。\)
+An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section. Subjects development is under construction.
+\([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。书影~~音~~开发中。\)
 
 Note: This personal project implements some essential features as well as user requested ones which are practical. It is also going to be used as my playground for trending technologies such as Jetpack Compose. Occasional crashes may happen, UI design may be incomplete and features you need may be missing.
 
@@ -44,6 +44,10 @@ Introduction
 - Intro
 - Interests
 - More
+
+##### Rank List Screen
+
+- First page of a rank list
 
 #### Groups Screens
 
@@ -112,8 +116,8 @@ Introduction
 - [Latest release][latest-elease]
 - Supported Android versions: 8.1 - 14 (and also 15, virtually)
 - Feel free to file issues
-  - Specifically, if some data doesn't show, a JSON parsing error probably occurs. Including the raw JSON response (if possible) or related urls of the resource gained from the Douban app might help solve it
-- It's recommended to let the Douban app coexist
+  - Specifically, if some data doesn't show, an error on JSON parsing probably occurs. Including the content title, related urls of the resource (gained from the Douban app), or raw JSON response (if possible) in the issue might help solve it
+- It's suggested to let the Douban app coexist
   - Please support the official product
   - Lots of content is missing in doubean
   - Especially for [rooted users](#reuse-login-session)
@@ -215,9 +219,9 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.7.9\)
+#### To-dos for current release \(0.7.10\)
 
-#### To-dos for next release \(0.7.10)
+#### To-dos for next release \(0.7.11)
 
 
 #### Future plans
@@ -236,17 +240,21 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Interest buttons
     * Maybe choose tonal style instead
   * Tweak reviews sheet
+    * Better arrangement of review counts
   * More details & sub-features
 
 * Remember last bottom/Subjects tabs
+
+* Allow non rooted users (guests) to browse personal content if user ID is provided
+
 * Groups
-  * Topic comments -> Compose
-    * Too heavily-nested Compose-View interp now, which used to cause weird display when onReset overload of AndroidViewBinding was taken
-  * Reuse item logic of search result groups / groups of the day
   * Fix the issue of losing last positions after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
+  * Dynamic topic sorts-by
+  
+  - Caching everything in ROOM was a mistake, adding much complexity
+  
   * Home
-    * Support pagination?
-    * Add favorite tabs for topic list area
+    * Maybe support pagination of recommended topics
   * Subscribe/favorite/save
     * Save topics
     * Pin my groups
@@ -259,7 +267,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Use the new nullable "edit_time" property of network topics
   * Gradually revert naming conventions to those of Douban
   * Group Detail
-    * Compose collapsing toolbar when API is more convenient to use
+    * Reimplement collapsing toolbar with Compose when API is more convenient to use
     * Collapse on entrance for the subscribed/favorited group/tab
   * Topics feed notifications
     * Find why it is broken and fix it
@@ -279,12 +287,15 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Support blocking unfriendly content
   * Lists: Reddit-like item expand/collapse
   * Find API for all followed topics (hopeless)
-
+  
 * Properly show login prompts & normal text hints
 
 * Status bar color
 
-* Show error messages
+* Error handling
+
+  * Process error body
+  * Show error messages
 
 * Bring back load state visualization which was removed for simplicity during various types of migrations
   * Paging 3 refresh, loading status ...
@@ -307,6 +318,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Widgets
 
 * Reuse more existing Douban preferences to make requests more consistent in the two apps
+
+* Maybe use single NavHost
 
 * Independent login (hopeless)
 
