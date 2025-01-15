@@ -3,10 +3,10 @@ Change Log
 
 ## Version 0.7.10(710)
 
-- Fix crash when parsing groups with uncommon topic tag list data, such as 586674.
-  - Meanwhile, fix the leading tags of topic items being tightly bound to the previously cached group detail resource, if any
+- Correctly distinguish a topic tab and a topic tag in data received. This used to cause some problems.
 - Fix subject parsing error
-- Migrate group list item layouts to Compose
+- Migrate layouts of group list items to Compose
+- Minor tweaks
 
 ## Version 0.7.9(709)
 
