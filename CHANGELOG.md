@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.7.11(711)
+
 ## Version 0.7.10(710)
 
 - Correctly distinguish a topic tab and a topic tag in data received. This used to cause some problems.
