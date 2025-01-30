@@ -12,13 +12,14 @@ data class TopicItemPartialEntity(
     @ColumnInfo("author_id")
     val authorId: String,
 
-    val created: LocalDateTime,
+    @ColumnInfo("create_time")
+    val createTime: LocalDateTime,
 
-    @ColumnInfo("last_updated")
-    val lastUpdated: LocalDateTime,
+    @ColumnInfo("update_time")
+    val updateTime: LocalDateTime,
 
-    @ColumnInfo("comment_count")
-    val commentCount: Int,
+    @ColumnInfo("comments_count")
+    val commentsCount: Int,
 
     @ColumnInfo("cover_url")
     val coverUrl: String? = null,

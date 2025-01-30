@@ -178,7 +178,7 @@ ON user_joined_group_ids.group_id = groups.id WHERE user_id=:userId ORDER BY `in
         """
 SELECT * FROM group_user_topic_feed_items LEFT JOIN topics 
 ON group_user_topic_feed_items.id == topics.id 
-ORDER BY created DESC 
+ORDER BY create_time DESC 
 """
     )
     fun getTopicsFeed(): Flow<List<PopulatedTopicItemWithGroup>>

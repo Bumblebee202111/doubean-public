@@ -54,7 +54,7 @@ class Notifier @Inject constructor(@ApplicationContext private val context: Cont
                 .setContentIntent(postPendingIntent(context, post))
                 .setGroup(GROUP_KEY_POST_NOTIFICATION)
                 .setAutoCancel(true)
-                .setWhen(post.lastUpdated.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                .setWhen(post.updateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
                 .build()
         }
 

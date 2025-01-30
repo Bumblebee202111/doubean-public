@@ -17,11 +17,11 @@ data class TopicEntity(
     @ColumnInfo("author_id")
     val authorId: String,
 
-    @ColumnInfo("created")
-    val created: LocalDateTime,
+    @ColumnInfo("create_time")
+    val createTime: LocalDateTime,
 
-    @ColumnInfo("last_updated")
-    val lastUpdated: LocalDateTime,
+    @ColumnInfo("update_time")
+    val updateTime: LocalDateTime,
 
     @ColumnInfo("like_count")
     val likeCount: Int? = null,
@@ -35,7 +35,7 @@ data class TopicEntity(
     @ColumnInfo("save_count")
     val saveCount: Int? = null,
 
-    @ColumnInfo("comment_count")
+    @ColumnInfo("comments_count")
     val commentCount: Int? = null,
 
     @ColumnInfo("short_content")
