@@ -219,9 +219,9 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.7.10\)
+#### To-dos for current release \(0.7.11\)
 
-#### To-dos for next release \(0.7.11)
+#### To-dos for next release \(0.7.12)
 
 
 #### Future plans
