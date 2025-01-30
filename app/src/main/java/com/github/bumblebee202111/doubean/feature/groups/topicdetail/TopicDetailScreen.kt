@@ -454,7 +454,7 @@ fun TopicDetailHeader(
             //onRelease = {}
         ) {
             postCreated.setContent {
-                topic.created?.let {
+                topic.createTime?.let {
                     DateTimeText(text = it.fullDateTimeString())
                 }
             }

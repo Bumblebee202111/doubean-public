@@ -212,7 +212,7 @@ class UserGroupRepository @Inject constructor(
             val groupId = currentFeedTopic.groupId
             val posts = networkPosts.map { it.asPartialEntity(groupId) }.also {
                 if (currentFeedTopic.sortRecommendedTopicsBy == TopicSortBy.TOP_LAST_CREATED)
-                    it.sortedByDescending(TopicItemPartialEntity::lastUpdated)
+                    it.sortedByDescending(TopicItemPartialEntity::updateTime)
             }
 
             val existingPostNotifications = userGroupDao.getRecommendedTopicNotifications()
@@ -220,7 +220,7 @@ class UserGroupRepository @Inject constructor(
             val networkUpdatedPosts = if (currentFeedTopic.allowDuplicateNotifications) {
                 networkPosts.filter { networkPost ->
                     existingPostNotifications.find { e ->
-                        e.topicId == networkPost.id && e.notifiedLastUpdated != networkPost.lastUpdated
+                        e.topicId == networkPost.id && e.notifiedLastUpdated != networkPost.updateTime
                     } != null
                 }
             } else emptyList()
@@ -245,14 +245,14 @@ class UserGroupRepository @Inject constructor(
                 .map {
                     RecommendedTopicNotificationEntity(
                         topicId = it.id,
-                        notifiedLastUpdated = it.lastUpdated,
+                        notifiedLastUpdated = it.updateTime,
                         isNotificationUpdated = true
                     )
                 } + truncatedNetworkNewPosts
                 .map {
                     RecommendedTopicNotificationEntity(
                         topicId = it.id,
-                        notifiedLastUpdated = it.lastUpdated
+                        notifiedLastUpdated = it.updateTime
                     )
                 }
 
