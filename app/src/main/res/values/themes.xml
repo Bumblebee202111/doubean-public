@@ -19,8 +19,6 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="appBarLayoutStyle">@style/Widget.Doubean.AppbarLayout</item>
-        <item name="toolbarStyle">@style/Widget.Douban.Toolbar</item>
     </style>
 
 
