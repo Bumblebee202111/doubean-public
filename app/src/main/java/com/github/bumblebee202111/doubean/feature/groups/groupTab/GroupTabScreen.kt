@@ -17,9 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -120,8 +118,7 @@ fun GroupTabScreen(
 
     LazyColumn(
         modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(rememberNestedScrollInteropConnection()),
+            .fillMaxSize(),
         state = topicPagingItems.rememberLazyListStatePagingWorkaround()
 
     ) {

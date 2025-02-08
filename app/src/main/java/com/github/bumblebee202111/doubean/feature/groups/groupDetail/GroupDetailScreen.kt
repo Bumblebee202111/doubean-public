@@ -1,13 +1,30 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupDetail
 
-import android.view.MenuItem
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
@@ -16,6 +33,9 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.TwoRowsTopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,15 +45,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidViewBinding
-import androidx.core.view.isVisible
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.databinding.LayoutGroupDetailBinding
 import com.github.bumblebee202111.doubean.feature.groups.common.NotificationsButton
 import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabScreen
 import com.github.bumblebee202111.doubean.model.GroupDetail
@@ -42,6 +60,7 @@ import com.github.bumblebee202111.doubean.model.GroupTab
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.GroupNotificationsPreferenceDialog
 import com.github.bumblebee202111.doubean.ui.LargeGroupAvatar
+import com.github.bumblebee202111.doubean.ui.component.ExpandCollapseText
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import kotlinx.coroutines.launch
@@ -82,6 +101,7 @@ fun GroupDetailScreen(
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupDetailScreen(
     group: GroupDetail?,
@@ -126,35 +146,58 @@ fun GroupDetailScreen(
             clearUnfavoritedGroupState()
         }
     }
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            GroupDetailTopBar(
+                group = group,
+                scrollBehavior = scrollBehavior,
+                showNotificationsPrefDialog = {
+                    openAlertDialog = true
+                },
+                addFavorite = addFavorite, removeFavorite = removeFavorite,
+                subscribeGroup = subscribeGroup,
+                unsubscribeGroup = unsubscribeGroup,
+                onShareGroup = {
+                    val shareText = it.name + ' ' + it.shareUrl + "\r\n"
+                    ShareUtil.share(context, shareText)
+                },
+                viewInDouban = {
+                    OpenInUtils.openInDouban(context, it)
+                },
+                viewInBrowser = {
+                    OpenInUtils.openInBrowser(context, it)
+                },
+                onBackClick = onBackClick
+            )
+        }
+    ) { innerPadding ->
 
-    Scaffold { paddingValues ->
-        GroupDetailCoordinator(
-            modifier = Modifier.padding(paddingValues),
-            groupId = groupId,
-            group = group,
-            initialTabId = initialTabId,
-            taggedTabs = taggedTabs,
-            subscribeGroup = subscribeGroup,
-            unsubscribeGroup = unsubscribeGroup,
-            addFavorite = addFavorite,
-            removeFavorite = removeFavorite,
-            showNotificationsPrefDialog = { 
-                openAlertDialog = true
-            },
-            onBackClick = onBackClick,
-            onShareGroup = {
-                val shareText = it.name + ' ' + it.shareUrl + "\r\n"
-                ShareUtil.share(context, shareText)
-            },
-            viewInDouban = {
-                OpenInUtils.openInDouban(context, it)
-            },
-            viewInBrowser = {
-                OpenInUtils.openInBrowser(context, it)
-            },
-            onTopicClick = onTopicClick,
-            onShowSnackbar = onShowSnackbar
-        )
+        if (taggedTabs != null) {
+            val pagerState = rememberPagerState(
+                initialPage = taggedTabs.indexOfFirst { it.id == initialTabId } + 1,
+                pageCount = { taggedTabs.size + 1 }
+            )
+            Column(
+                modifier = Modifier.padding(innerPadding)
+            ) {
+                GroupTabRow(
+                    pagerState = pagerState,
+                    groupColor = group?.color,
+                    taggedTabs = taggedTabs
+                )
+                GroupPager(
+                    pagerState = pagerState,
+                    taggedTabs = taggedTabs,
+                    groupId = groupId,
+                    group = group,
+                    onTopicClick = onTopicClick,
+                    onShowSnackbar = onShowSnackbar
+                )
+            }
+
+        }
     }
 
     val enableNotifications = group?.enableNotifications
@@ -183,237 +226,238 @@ fun GroupDetailScreen(
 
 }
 
-
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun GroupDetailCoordinator(
-    modifier: Modifier = Modifier,
-    groupId: String,
+fun GroupDetailTopBar(
     group: GroupDetail?,
-    initialTabId: String?,
-    taggedTabs: List<GroupTab>?,
-    subscribeGroup: () -> Unit,
-    unsubscribeGroup: () -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior,
+    showNotificationsPrefDialog: () -> Unit,
     addFavorite: () -> Unit,
     removeFavorite: () -> Unit,
-    showNotificationsPrefDialog: () -> Unit,
-    onBackClick: () -> Unit,
+    subscribeGroup: () -> Unit,
+    unsubscribeGroup: () -> Unit,
     onShareGroup: (group: GroupDetail) -> Unit,
     viewInDouban: (uriString: String) -> Unit,
     viewInBrowser: (urlString: String) -> Unit,
-    onTopicClick: (topicId: String) -> Unit,
-    onShowSnackbar: suspend (message: String) -> Unit,
+    onBackClick: () -> Unit,
 ) {
-    taggedTabs?.let {
-        val pagerState = rememberPagerState(
-            initialPage = taggedTabs.indexOfFirst { it.id == initialTabId } + 1,
-            pageCount = { taggedTabs.size + 1 }
-        )
-        AndroidViewBinding(factory = LayoutGroupDetailBinding::inflate,
-            modifier = modifier,
-            onReset = {}) {
-            val context = root.context
 
-            groupInfo.isVisible = group != null
-
-            notificationsButton.setContent {
-                @Suppress("ConstantConditionIf") 
-                if (false) {
-                    group?.apply {
-                        val memberRole = memberRole
-                        val isSubscribed = isSubscribed
-                        val isFavorited = group.isFavorited
-                        if (isFavorited || isSubscribed == true || memberRole in setOf(
-                                GroupMemberRole.MEMBER,
-                                GroupMemberRole.MEMBER_ADMIN,
+    val groupColor = group?.color?.let {
+        Color(it)
+    } ?: MaterialTheme.colorScheme.primary
+    TwoRowsTopAppBar(
+        title = { expanded ->
+            if (expanded) {
+                Column(modifier = Modifier.padding(end = 16.dp, bottom = 12.dp)) {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            LargeGroupAvatar(avatarUrl = group?.avatarUrl)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = group?.name ?: "",
+                                style = MaterialTheme.typography.headlineSmall
                             )
-                        ) { 
-                            NotificationsButton(
-                                groupColor = group.color?.let {
-                                    Color(it)
-                                } ?: LocalContentColor.current,
-                                enableNotifications = enableNotifications ?: false,
-                                showPrefDialog = showNotificationsPrefDialog)
-                        }
-                    }
-                }
-
-            }
-
-            joinButton.setContent {
-                group?.apply {
-                    val isSubscriptionEnabled = isSubscriptionEnabled ?: return@apply
-                    val memberRole = memberRole ?: return@apply
-                    val isSubscribed = isSubscribed
-                    when {
-                        isSubscriptionEnabled && isSubscribed == false && memberRole in setOf(
-                            GroupMemberRole.NOT_MEMBER,
-                            GroupMemberRole.MEMBER_INVITED,
-                            GroupMemberRole.MEMBER_INVITED_WAIT_FOR_ADMIN,
-                            GroupMemberRole.MEMBER_REQUESTED_WAIT_FOR_ADMIN
-                        ) -> {
-                            Button(
-                                onClick = subscribeGroup,
-                                colors = ButtonDefaults.buttonColors().run {
-                                    group.color?.let {
-                                        copy(containerColor = Color(it))
-                                    } ?: this
-                                }
-                            ) {
-                                Text(text = stringResource(id = R.string.subscribe))
-                            }
-                        }
-
-                        isSubscriptionEnabled && isSubscribed == true -> {
-                            OutlinedButton(
-                                onClick = unsubscribeGroup,
-                                colors = ButtonDefaults.outlinedButtonColors().run {
-                                    group.color?.let {
-                                        copy(contentColor = Color(it))
-                                    } ?: this
-                                }
-                            ) {
-                                Text(text = stringResource(id = R.string.subscribed))
-                            }
-                        }
-
-                        memberRole in setOf(
-                            GroupMemberRole.MEMBER,
-                            GroupMemberRole.MEMBER_ADMIN,
-                        ) -> {
-                            TextButton(
-                                onClick = {},
-                                enabled = false
-                            ) {
-                                Text(text = stringResource(id = R.string.joined))
-                            }
-                        }
-
-                        
-                    }
-                }
-            }
-
-            toolbarLayout.setCollapsedTitleTextColor(context.getColor(R.color.doubean_white))
-            appbar.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-                
-                val shouldShowToolbar = verticalOffset + appBarLayout.totalScrollRange == 0
-                appbar.isActivated = shouldShowToolbar
-            }
-
-            fun updateFavoriteMenuItem(favoriteMenuItem: MenuItem, isFavorited: Boolean) {
-                when (isFavorited) {
-                    true -> {
-                        favoriteMenuItem.apply {
-                            setTitle(R.string.unfavorite)
-                            setIcon(R.drawable.ic_star)
-                        }
-                    }
-
-                    false -> {
-                        favoriteMenuItem.apply {
-                            setTitle(R.string.favorite)
-                            setIcon(R.drawable.ic_star_border)
-                        }
-                    }
-                }
-            }
-
-            group?.let { group ->
-                val favoriteMenuItem = toolbar.menu.findItem(R.id.action_favorite)
-                updateFavoriteMenuItem(favoriteMenuItem, group.isFavorited)
-                toolbar.setOnMenuItemClickListener { item ->
-                    return@setOnMenuItemClickListener when (item.itemId) {
-                        R.id.action_favorite -> {
-                            when (group.isFavorited) {
-                                true -> {
-                                    removeFavorite()
-                                }
-
-                                false -> {
-                                    addFavorite()
-                                }
-                            }
-                            updateFavoriteMenuItem(
-                                favoriteMenuItem,
-                                isFavorited = !group.isFavorited
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = group?.let { it.memberCount.toString() + it.memberName }
+                                    ?: "",
+                                style = MaterialTheme.typography.bodyMedium
                             )
-                            true
-                        }
 
-                        R.id.action_share -> {
+                        }
+                        Row {
+                            @Suppress("ConstantConditionIf") 
+                            if (false) {
+                                group?.apply {
+                                    val memberRole = memberRole
+                                    val isSubscribed = isSubscribed
+                                    val isFavorited = group.isFavorited
+                                    if (isFavorited || isSubscribed == true || memberRole in setOf(
+                                            GroupMemberRole.MEMBER,
+                                            GroupMemberRole.MEMBER_ADMIN,
+                                        )
+                                    ) { 
+                                        NotificationsButton(
+                                            groupColor = group.color?.let {
+                                                Color(it)
+                                            } ?: LocalContentColor.current,
+                                            enableNotifications = enableNotifications ?: false,
+                                            showPrefDialog = showNotificationsPrefDialog)
+
+
+                                    }
+                                }
+                            }
+
+                            group?.apply {
+                                val isSubscriptionEnabled = isSubscriptionEnabled ?: return@apply
+                                val memberRole = memberRole ?: return@apply
+                                val isSubscribed = isSubscribed
+
+                                when {
+                                    isSubscriptionEnabled && isSubscribed == false && memberRole in setOf(
+                                        GroupMemberRole.NOT_MEMBER,
+                                        GroupMemberRole.MEMBER_INVITED,
+                                        GroupMemberRole.MEMBER_INVITED_WAIT_FOR_ADMIN,
+                                        GroupMemberRole.MEMBER_REQUESTED_WAIT_FOR_ADMIN
+                                    ) -> {
+                                        Button(
+                                            onClick = subscribeGroup,
+                                            colors = ButtonDefaults.buttonColors().copy(
+                                                contentColor = groupColor,
+                                                containerColor = Color.White
+                                            )
+                                        ) {
+                                            Text(text = stringResource(id = R.string.subscribe))
+                                        }
+                                    }
+
+                                    isSubscriptionEnabled && isSubscribed == true -> {
+                                        OutlinedButton(
+                                            onClick = unsubscribeGroup,
+                                            colors = ButtonDefaults.outlinedButtonColors().copy(
+                                                contentColor = Color.White,
+                                                containerColor = groupColor
+                                            )
+                                        ) {
+                                            Text(text = stringResource(id = R.string.subscribed))
+                                        }
+                                    }
+
+                                    memberRole in setOf(
+                                        GroupMemberRole.MEMBER,
+                                        GroupMemberRole.MEMBER_ADMIN,
+                                    ) -> {
+                                        TextButton(
+                                            onClick = {},
+                                            colors = ButtonDefaults.textButtonColors().copy(
+                                                disabledContentColor = Color.White,
+                                                disabledContainerColor = groupColor
+                                            ),
+                                            enabled = false
+                                        ) {
+                                            Text(text = stringResource(id = R.string.joined))
+                                        }
+                                    }
+
+                                    
+                                }
+                            }
+                        }
+                    }
+                    ExpandCollapseText(
+                        text = group?.description ?: "",
+                        maxLines = 2,
+                        style = MaterialTheme.typography.bodyMedium,
+                        usesPrimaryLinkSpanStyle = false
+                    )
+                }
+            } else {
+                Column {
+                    Text(text = group?.name ?: "")
+                }
+            }
+        },
+        navigationIcon = {
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                    contentDescription = null
+                )
+            }
+        },
+        actions = {
+            if (group != null) {
+                IconButton(
+                    onClick = if (group.isFavorited) removeFavorite else addFavorite
+                ) {
+                    Icon(
+                        imageVector = if (group.isFavorited) Icons.Default.Star else Icons.Default.StarBorder,
+                        contentDescription = null
+                    )
+                }
+            }
+            var moreExpanded by remember { mutableStateOf(false) }
+            var viewInExpanded by remember { mutableStateOf(false) }
+            IconButton(onClick = { moreExpanded = !moreExpanded }) {
+                Icon(
+                    imageVector = Icons.Filled.MoreVert,
+                    contentDescription = null
+                )
+            }
+            DropdownMenu(expanded = moreExpanded, onDismissRequest = { moreExpanded = false }) {
+                if (group != null) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(id = R.string.share)) },
+                        onClick = {
+                            moreExpanded = false
                             onShareGroup(group)
-                            true
                         }
+                    )
+                }
+                DropdownMenuItem(text = {
+                    Text(text = stringResource(R.string.view_in))
+                },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.ChevronRight,
+                            contentDescription = null
+                        )
+                    },
+                    onClick = {
+                        moreExpanded = false
+                        viewInExpanded = true
+                    })
+            }
+            if (group != null) {
+                DropdownMenu(
+                    expanded = viewInExpanded,
+                    onDismissRequest = { viewInExpanded = false }) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.view_in_douban)) },
+                        onClick = { viewInDouban(group.uri) })
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.view_in_browser)) },
+                        onClick = {
+                            viewInBrowser(group.url)
+                        })
 
-                        R.id.action_view_in_douban -> {
-                            viewInDouban(group.uri)
-                            true
-                        }
-
-                        R.id.action_view_in_browser -> {
-                            group.shareUrl?.let(viewInBrowser)
-                            true
-                        }
-
-                        else -> {
-                            false
-                        }
-
-                    }
                 }
             }
-            toolbar.setNavigationOnClickListener { onBackClick() }
 
-            groupAvatar.setContent {
-                LargeGroupAvatar(avatarUrl = group?.avatarUrl)
-            }
-
-            tabRow.setContent {
-                GroupTabRow(
-                    pagerState = pagerState,
-                    groupColor = group?.color,
-                    taggedTabs = taggedTabs
-                )
-            }
-
-            pager.setContent {
-                GroupPager(
-                    pagerState = pagerState,
-                    taggedTabs = taggedTabs,
-                    groupId = groupId,
-                    group = group,
-                    onTopicClick = onTopicClick,
-                    onShowSnackbar = onShowSnackbar
-                )
-            }
-
-            this@AndroidViewBinding.group = group
-            group?.let { group ->
-                group.color?.let { color ->
-                    mask.setBackgroundColor(color)
-                    toolbarLayout.setContentScrimColor(color)
-                    toolbarLayout.setStatusBarScrimColor(color)
-                }
-            }
-        }
-    }
+        },
+        scrollBehavior = scrollBehavior,
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = groupColor,
+            scrolledContainerColor = groupColor,
+            navigationIconContentColor = Color.White,
+            titleContentColor = Color.White,
+            actionIconContentColor = Color.White
+        )
+    )
 }
 
+
 @Composable
-fun GroupTabRow(pagerState: PagerState, taggedTabs: List<GroupTab>, groupColor: Int?) {
+fun GroupTabRow(
+    pagerState: PagerState,
+    taggedTabs: List<GroupTab>,
+    groupColor: Int?,
+    modifier: Modifier = Modifier,
+) {
     val selectedTabIndex = pagerState.currentPage
     ScrollableTabRow(selectedTabIndex = selectedTabIndex,
+        modifier = modifier,
         edgePadding = 0.dp,
         indicator = { tabPositions ->
-            val modifier =
+            val indicatorModifier =
                 Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex])
             groupColor?.let {
                 TabRowDefaults.SecondaryIndicator(
                     color = Color(it),
-                    modifier = modifier
+                    modifier = indicatorModifier
                 )
-            } ?: TabRowDefaults.SecondaryIndicator(modifier = modifier)
-
+            } ?: TabRowDefaults.SecondaryIndicator(modifier = indicatorModifier)
         },
         divider = {}
     ) {
@@ -459,9 +503,10 @@ fun GroupPager(
     group: GroupDetail?,
     onTopicClick: (topicId: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     HorizontalPager(state = pagerState,
-        modifier = Modifier,
+        modifier = modifier,
         key = { index ->
             when (index) {
                 0 -> ""
@@ -481,3 +526,4 @@ fun GroupPager(
         )
     }
 }
+
