@@ -8,8 +8,6 @@ Note: This personal project implements some essential features as well as user r
 
 **Known issues:**
 
-- The last vertical scroll position of selected tab in Group Detail Screen is always lost (reset) when returned from Topic Detail Screen, since Navigation Compose migration, v0.6.3(603).
-
 [douban]: https://www.douban.com/
 
 [douban-groups]: https://www.douban.com/group/
@@ -219,9 +217,9 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.7.10\)
+#### To-dos for current release \(0.7.11\)
 
-#### To-dos for next release \(0.7.11)
+#### To-dos for next release \(0.7.12)
 
 
 #### Future plans
@@ -229,7 +227,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Gradual migrations:
   * From MD2 / custom design to MD3
   * From View and Data Binding to Jetpack Compose
-    * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/CollapsingToolbarLayout/Spinner
+    * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/Spinner
   * Gracefully remove Fragments: First reduce usages of Fragment methods
 
 * Subjects
@@ -248,7 +246,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Allow non rooted users (guests) to browse personal content if user ID is provided
 
 * Groups
-  * Fix the issue of losing last positions after researching on the Subjects tab, a simpler case of TabRow + HorizontalPager + LazyList + Pagination + Navigation Compose
   * Dynamic topic sorts-by
   
   - Caching everything in ROOM was a mistake, adding much complexity
@@ -259,7 +256,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * Save topics
     * Pin my groups
     * Add corresponding item actions
-  * Allow expanding group descriptions
   * Group tab: Track read
   * Search
     * Search group/tab topics (in-group) 
@@ -267,8 +263,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Use the new nullable "edit_time" property of network topics
   * Gradually revert naming conventions to those of Douban
   * Group Detail
-    * Reimplement collapsing toolbar with Compose when API is more convenient to use
     * Collapse on entrance for the subscribed/favorited group/tab
+  * Expand/collapse component
+    * Do not show action for short text
   * Topics feed notifications
     * Find why it is broken and fix it
     * Clarify:
@@ -276,7 +273,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
       * Better keep app in background
       * Mechanism: Actively query group topics (without tab_id parameter, to increase efficiency) by each group
     * “每次动态更新请求的帖子总数限制” -> ?
-    * Create reusable class for all topic notification settings
+    * Extract reusable class for all topic notification settings
   * Groups: Group/tab/topic shortcuts
   * Topic content WebView problems
     * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
