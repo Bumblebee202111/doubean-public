@@ -5,7 +5,7 @@ androidGradlePlugin = "8.4.2"
 appCompat = "1.7.0"
 coil = "2.7.0"
 composeBom = "2024.10.01"
-compileSdk = "34"
+compileSdk = "35"
 constraintLayout = "2.1.4"
 coreTesting = "2.1.0"
 datastorePreferences = "1.1.1"
@@ -23,6 +23,7 @@ ktor = "2.3.12"
 ktx = "1.13.1"
 lifecycle = "2.8.7"
 material = "1.12.0"
+material3 = "1.4.0-alpha07"
 minSdk = "27"
 navigation = "2.8.4"
 okhttp = "4.12.0"
@@ -45,7 +46,7 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appCompat" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 androidx-compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended" }
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class" }
 androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }

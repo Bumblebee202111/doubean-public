@@ -18,7 +18,7 @@ fun DoubeanTopAppBar(
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     navigationIcon: @Composable () -> Unit = {},
-    actions: @Composable RowScope.() -> Unit = {},
+    actions: @Composable (RowScope.() -> Unit) = {},
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(),
 ) {
     TopAppBar(
@@ -37,7 +37,7 @@ fun DoubeanTopAppBar(
     titleText: String?,
     modifier: Modifier = Modifier,
     navigationIcon: @Composable () -> Unit = {},
-    actions: @Composable RowScope.() -> Unit = {},
+    actions: @Composable() (RowScope.() -> Unit) = {},
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(),
 ) {
     DoubeanTopAppBar(

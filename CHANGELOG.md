@@ -3,6 +3,12 @@ Change Log
 
 ## Version 0.7.11(711)
 
+- Migrate group topic item layouts to Compose **MD3**
+- Migrate core layout of group detail from AppBarLayout/CollapsingToolbarLayout to Compose Scaffold/TwoRowsTopAppBar
+  - Allow expanding group descriptions
+  - Fix the severe long-existing bug that the last vertical scroll position of selected tab in Group Detail Screen is always lost (reset) when returned from Topic Detail Screen
+- Now compiles against API 35
+
 ## Version 0.7.10(710)
 
 - Correctly distinguish a topic tab and a topic tag in data received. This used to cause some problems.
