@@ -1,8 +1,8 @@
 doubean
 =======
 
-An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section. Subjects development is under construction.
-\([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。书影~~音~~开发中。\)
+An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section. Subjects module is under construction.
+\([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。书影~~音~~模块开发中。\)
 
 Note: This personal project implements some essential features as well as user requested ones which are practical. It is also going to be used as my playground for trending technologies such as Jetpack Compose. Occasional crashes may happen, UI design may be incomplete and features you need may be missing.
 
@@ -135,7 +135,6 @@ To not get this project/myself into trouble, the push of the source code (NOT th
 ### Features
 
 * Provides simple type-based Subjects (书影~~音~~) experience including support of user actions (WIP 🚧)
-  * Inspired by 豆瓣评分 mini program on which parts to omit
 * Groups
   * Favorite tabs/groups locally
 
@@ -217,9 +216,11 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
 
-#### To-dos for current release \(0.7.11\)
+#### To-dos for current release \(0.7.12\)
 
-#### To-dos for next release \(0.7.12)
+- Remove menu_post_item.xml
+
+#### To-dos for next release \(0.7.13)
 
 
 #### Future plans
@@ -338,9 +339,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * [Github Browser Sample with Android Architecture Components][github-browser-sample]
 * [Android Architecture Blueprints v1 (todo-mvvm-live)][todo-mvvm-live]
 * [Material Design][material]
-* Interactive communities: [StackOverflow][stack-overflow], [Google][google], [GitHub][github]
-  , [cnblogs][cnblogs], [Medium][medium], [CSDN][CSDN], IssueTracker, etc.
-  * Especially went through articles/posts on how to gain Douban access
 * Various social apps as references for UI design
 
 [sunflower]: https://github.com/android/sunflower
@@ -352,18 +350,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 [todo-mvvm-live]: https://github.com/android/architecture-samples/tree/todo-mvvm-live
 
 [material]:https://material.io/
-
-[stack-overflow]: https://stackoverflow.com/
-
-[google]: https://www.google.com/
-
-[cnblogs]: https://www.cnblogs.com/
-
-[github]:https://github.com/
-
-[medium]:https://medium.com/
-
-[csdn]: https://blog.csdn.net/
 
 ### Utilities
 
