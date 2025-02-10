@@ -61,7 +61,7 @@ import kotlinx.serialization.json.Json
         RecommendedTopicNotificationEntity::class,
         UserEntity::class,
     ],
-    version = 9,
+    version = 10,
     exportSchema = false
 )
 @TypeConverters(

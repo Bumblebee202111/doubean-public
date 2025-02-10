@@ -6,14 +6,12 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.room)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.kapt)
 }
 
 android {
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     buildFeatures {
-        dataBinding = true
         viewBinding = true
         buildConfig = true
         compose = true

@@ -52,11 +52,11 @@ class TopicDetailViewModel @Inject constructor(
 
     val shouldShowSpinner = commentsData.first.map { it.isNotEmpty() }.stateInUi(false)
 
-    private val postResult = topicRepo.getTopic(topicId).flowOn(Dispatchers.IO).stateInUi()
+    private val topicResult = topicRepo.getTopic(topicId).flowOn(Dispatchers.IO).stateInUi()
 
-    val topic = postResult.map { it?.data }.stateInUi()
+    val topic = topicResult.map { it?.data }.stateInUi()
 
-    val contentHtml = postResult.map {
+    val contentHtml = topicResult.map {
         if (it == null || it is Result.Loading) return@map null
         val content = it.data?.content ?: return@map null
 
@@ -171,7 +171,7 @@ class TopicDetailViewModel @Inject constructor(
             }
 
         }
-        Log.d("Post detail", "content: $expandedContentElement")
+        Log.d("Topic detail", "content: $expandedContentElement")
         return@map """
 <!DOCTYPE html>
 <head>
