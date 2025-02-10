@@ -14,9 +14,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.viewinterop.AndroidViewBinding
-import com.github.bumblebee202111.doubean.databinding.ViewWebViewContentBinding
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.isVisible
 import com.github.bumblebee202111.doubean.ui.common.DoubanWebViewClient
+import com.github.bumblebee202111.doubean.ui.common.DoubeanWebView
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.util.DOUBAN_WEB_CSS_FILENAME
 
@@ -42,23 +43,27 @@ fun WebViewScreen(url: String, onBackClick: () -> Unit) {
                     }
                 })
         }
-    ) { paddingValues ->
-        AndroidViewBinding(
-            factory = ViewWebViewContentBinding::inflate,
-            modifier = Modifier.padding(top = paddingValues.calculateTopPadding())
-        ) {
-            val webViewClient =
-                object : DoubanWebViewClient(listOf(DOUBAN_WEB_CSS_FILENAME)) {
-                    override fun onPageFinished(view: WebView, url: String?) {
-                        super.onPageFinished(view, url)
-                        webpageTitle = view.title
-                    }
+    ) { innerPadding ->
+        AndroidView(
+            factory = {
+                DoubeanWebView(it).apply {
+                    isVisible = false
                 }
-            webView.webViewClient = webViewClient
-            val webSettings = webView.settings
-            webSettings.userAgentString =
-                "Mozilla/5.0 (Linux; Android 8.1; Nexus 7 Build/JSS15Q) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36"
-            webView.loadUrl(url)
+            },
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            it.run {
+                webViewClient =
+                    object : DoubanWebViewClient(listOf(DOUBAN_WEB_CSS_FILENAME)) {
+                        override fun onPageFinished(view: WebView, url: String?) {
+                            super.onPageFinished(view, url)
+                            webpageTitle = view.title
+                        }
+                    }
+                settings.userAgentString =
+                    "Mozilla/5.0 (Linux; Android 8.1; Nexus 7 Build/JSS15Q) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36"
+                loadUrl(url)
+            }
         }
     }
 }
