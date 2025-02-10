@@ -106,7 +106,7 @@ class PreferenceStorage(
 
     val perFollowDefaultSortRecommendedPostsBy = dataStore.data.map { p ->
         p[PREF_PER_FOLLOW_sort_recommended_topics_by]?.let { TopicSortBy.valueOf(it) }
-            ?: TopicSortBy.TOP_LAST_CREATED
+            ?: TopicSortBy.HOT_LAST_CREATED
     }
 
     suspend fun setPerFollowDefaultFeedRequestPostCountLimit(feedRequestPostCountLimit: Int) {
