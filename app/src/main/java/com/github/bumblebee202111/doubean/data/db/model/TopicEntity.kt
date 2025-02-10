@@ -31,8 +31,8 @@ data class TopicEntity(
     @ColumnInfo("reaction_count")
     val reactionCount: Int? = null,
 
-    @ColumnInfo("repost_count")
-    val repostCount: Int? = null,
+    @ColumnInfo("reshares_count")
+    val resharesCount: Int? = null,
 
     @ColumnInfo("save_count")
     val saveCount: Int? = null,

@@ -6,7 +6,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.view.MotionEvent
-import android.view.View
 import android.webkit.URLUtil
 import android.webkit.WebView
 import androidx.compose.foundation.clickable
@@ -19,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
@@ -36,6 +37,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -48,6 +50,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -60,9 +63,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.compose.ui.window.Dialog
-import androidx.core.view.isVisible
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.awaitNotLoading
@@ -71,7 +72,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.databinding.ViewPostDetailHeaderBinding
 import com.github.bumblebee202111.doubean.model.TopicComment
 import com.github.bumblebee202111.doubean.model.TopicCommentSortBy
 import com.github.bumblebee202111.doubean.model.TopicDetail
@@ -319,7 +319,7 @@ fun TopicDetailScreen(
                         items(
                             count = popularCommentsLazyPagingItems.size,
                             key = { popularCommentsLazyPagingItems[it].id },
-                            contentType = { "TopicCommentAndroidView" }) { index ->
+                            contentType = { "TopicComment" }) { index ->
                             TopicComment(
                                 comment = popularCommentsLazyPagingItems[index],
                                 groupColorInt = groupColorInt,
@@ -335,7 +335,7 @@ fun TopicDetailScreen(
                         items(
                             count = allCommentLazyPagingItems.itemCount,
                             key = allCommentLazyPagingItems.itemKey { it.id },
-                            contentType = allCommentLazyPagingItems.itemContentType { "TopicCommentAndroidView" }) { index ->
+                            contentType = allCommentLazyPagingItems.itemContentType { "TopicComment" }) { index ->
                             TopicComment(
                                 comment = allCommentLazyPagingItems[index],
                                 groupColorInt = groupColorInt,
@@ -439,191 +439,201 @@ fun TopicDetailHeader(
     displayInvalidImageUrl: () -> Unit,
 ) {
     val context = LocalContext.current
-    Column {
-        AndroidViewBinding(
-            factory = { inflater, root, attachToRoot ->
-                ViewPostDetailHeaderBinding.inflate(
-                    inflater,
-                    root,
-                    attachToRoot
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
+        Spacer(Modifier.height(12.dp))
+        topic.group?.let { group ->
+            Row(Modifier.clickable {
+                onGroupClick(
+                    group.id, null
                 )
-            },
-            modifier = Modifier,
-            //.fillMaxSize()
-            onReset = {},
-            //onRelease = {}
-        ) {
-            postCreated.setContent {
-                topic.createTime?.let {
-                    DateTimeText(text = it.fullDateTimeString())
+            }) {
+                Spacer(Modifier.width(24.dp))
+                SmallGroupAvatar(avatarUrl = group.avatarUrl)
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    text = group.name,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+            Spacer(Modifier.height(8.dp))
+        }
+        Row {
+            UserProfileImage(
+                url = topic.author.avatarUrl,
+                size = dimensionResource(id = R.dimen.icon_size_large)
+            )
+            Spacer(Modifier.width(8.dp))
+            Column {
+                Text(
+                    text = topic.author.name,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Spacer(Modifier.height(4.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    topic.createTime?.let {
+                        DateTimeText(text = it.fullDateTimeString())
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    topic.ipLocation?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
                 }
             }
-            postTag.apply {
-                isVisible = topic.tags.isNotEmpty()
-                setOnClickListener {
+        }
+        Spacer(Modifier.height(8.dp))
+        Text(text = topic.title, style = MaterialTheme.typography.titleLarge)
+        Spacer(Modifier.height(8.dp))
+        topic.tag?.let { tag ->
+            AssistChip(
+                onClick = {
                     topic.group?.let { group ->
                         onGroupClick(
                             group.id,
-                            topic.id
+                            tag.id
                         )
                     }
+                },
+                label = {
+                    Text(tag.name)
+                }
+            )
+        }
+        Spacer(Modifier.height(8.dp))
+        contentHtml?.let {
 
+            val webViewState = rememberSaveableWebViewState()
+            val navigator = rememberWebViewNavigator()
+
+            LaunchedEffect(navigator) {
+                val bundle = webViewState.viewState
+                if (bundle == null) {
+                    // This is the first time load, so load the home page.
+                    navigator.loadHtml(it)
                 }
             }
+            WebView(state = webViewState,
+                navigator = navigator,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .alpha(0.99F),
+                captureBackPresses = false,
+                client = remember {
+                    object : TopicWebViewClient(listOf(TOPIC_CSS_FILENAME)) {
+                        @Deprecated("Deprecated in Java")
+                        override fun shouldOverrideUrlLoading(
+                            view: WebView?,
+                            url: String?,
+                        ): Boolean {
+                            if (url == null) return false
 
-            val groupOnClickListener = View.OnClickListener {
-                topic.group?.let { group ->
-                    onGroupClick(
-                        group.id, null
-                    )
-                }
-            }
+                            try {
+                                onOpenDeepLinkUrl(url)
+                            } catch (e: IllegalArgumentException) {
+                                Log.i("doubean", "shouldOverrideUrlLoading: $e")
+                                OpenInUtils.viewInActivity(context, url)
+                            }
+                            return true
+                        }
 
-            groupName.setOnClickListener(groupOnClickListener)
-            groupAvatar.setOnClickListener(groupOnClickListener)
+                    }
+                },
+                factory = { context ->
+                    DoubeanWebView(context).apply {
+                        setPadding(0, 0, 0, 0)
+                        settings.apply {
+                            setNeedInitialFocus(false)
+                            //webSettings.userAgentString = DOUBAN_USER_AGENT_STRING
+                            useWideViewPort = true
+                        }
 
-            authorAvatar.setContent {
-                UserProfileImage(
-                    url = topic.author.avatarUrl,
-                    size = dimensionResource(id = R.dimen.icon_size_large)
-                )
-            }
-
-            this.topic = topic
-
-            groupAvatar.setContent {
-                SmallGroupAvatar(avatarUrl = topic.group?.avatarUrl)
-            }
-
-            this.content.setContent {
-                contentHtml?.let {
-
-                    val webViewState = rememberSaveableWebViewState()
-                    val navigator = rememberWebViewNavigator()
-
-                    LaunchedEffect(navigator) {
-                        val bundle = webViewState.viewState
-                        if (bundle == null) {
-                            // This is the first time load, so load the home page.
-                            navigator.loadHtml(it)
+                        setOnTouchListener { _, event ->
+                            if (event.action == MotionEvent.ACTION_UP
+                            ) {
+                                val webViewHitTestResult = getHitTestResult()
+                                if (webViewHitTestResult.type == WebView.HitTestResult.IMAGE_TYPE ||
+                                    webViewHitTestResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
+                                ) {
+                                    val imageUrl = webViewHitTestResult.extra
+                                    if (URLUtil.isValidUrl(imageUrl)) {
+                                        val largeImageUrl =
+                                            topic.images!!.first { it.normal.url == imageUrl }.large.url
+                                        onImageClick(largeImageUrl)
+                                    } else {
+                                        displayInvalidImageUrl()
+                                    }
+                                }
+                            }
+                            return@setOnTouchListener false
                         }
                     }
-                    WebView(state = webViewState,
-                        navigator = navigator,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .alpha(0.99F),
-                        captureBackPresses = false,
-                        client = remember {
-                            object : TopicWebViewClient(listOf(TOPIC_CSS_FILENAME)) {
-                                @Deprecated("Deprecated in Java")
-                                override fun shouldOverrideUrlLoading(
-                                    view: WebView?,
-                                    url: String?,
-                                ): Boolean {
-                                    if (url == null) return false
+                })
 
-                                    try {
-                                        onOpenDeepLinkUrl(url)
-                                    } catch (e: IllegalArgumentException) {
-                                        Log.i("doubean", "shouldOverrideUrlLoading: $e")
-                                        OpenInUtils.viewInActivity(context, url)
-                                    }
-                                    return true
-                                }
-
-                            }
-                        },
-                        factory = { context ->
-                            DoubeanWebView(context).apply {
-                                setPadding(0, 0, 0, 0)
-                                settings.apply {
-                                    setNeedInitialFocus(false)
-                                    //webSettings.userAgentString = DOUBAN_USER_AGENT_STRING
-                                    useWideViewPort = true
-                                }
-
-                                setOnTouchListener { _, event ->
-                                    if (event.action == MotionEvent.ACTION_UP
-                                    ) {
-                                        val webViewHitTestResult = getHitTestResult()
-                                        if (webViewHitTestResult.type == WebView.HitTestResult.IMAGE_TYPE ||
-                                            webViewHitTestResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
-                                        ) {
-                                            val imageUrl = webViewHitTestResult.extra
-                                            if (URLUtil.isValidUrl(imageUrl)) {
-                                                val largeImageUrl =
-                                                    topic.images!!.first { it.normal.url == imageUrl }.large.url
-                                                onImageClick(largeImageUrl)
-                                            } else {
-                                                displayInvalidImageUrl()
-                                            }
-                                        }
-                                    }
-                                    return@setOnTouchListener false
-                                }
-                            }
-                        })
-
-                }
+        }
+        Row(
+            modifier = Modifier
+                .padding(
+                    start = dimensionResource(id = R.dimen.margin_small),
+                    end = dimensionResource(id = R.dimen.margin_normal),
+                    top = dimensionResource(id = R.dimen.margin_normal)
+                )
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            topic.commentCount?.let {
+                Text(
+                    text = pluralStringResource(
+                        id = R.plurals.comments,
+                        count = it,
+                        it
+                    )
+                )
             }
-            this.counts.setContent {
-                Row(
-                    modifier = Modifier
-                        .padding(
-                            start = dimensionResource(id = R.dimen.margin_small),
-                            end = dimensionResource(id = R.dimen.margin_normal),
-                            top = dimensionResource(id = R.dimen.margin_normal)
-                        )
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    topic.commentCount?.let {
-                        Text(
-                            text = pluralStringResource(
-                                id = R.plurals.comments,
-                                count = it,
-                                it
-                            )
-                        )
-                    }
-                    topic.repostCount?.let {
-                        Text(
-                            text = pluralStringResource(
-                                id = R.plurals.reposts,
-                                count = it,
-                                it
-                            ),
-                            modifier = Modifier.run {
-                                if (it != 0) {
-                                    clickable {
-                                        onReshareStatusesClick(topic.id)
-                                    }
-                                } else {
-                                    this
-                                }
+            topic.resharesCount?.let {
+                Text(
+                    text = pluralStringResource(
+                        id = R.plurals.reshares,
+                        count = it,
+                        it
+                    ),
+                    modifier = Modifier.run {
+                        if (it != 0) {
+                            clickable {
+                                onReshareStatusesClick(topic.id)
                             }
-                        )
+                        } else {
+                            this
+                        }
                     }
-                    topic.likeCount?.let {
-                        Text(
-                            text = pluralStringResource(
-                                id = R.plurals.likes,
-                                count = it,
-                                it
-                            )
-                        )
-                    }
-                    topic.saveCount?.let {
-                        Text(
-                            text = pluralStringResource(
-                                id = R.plurals.saves,
-                                count = it,
-                                it
-                            )
-                        )
-                    }
-                }
+                )
+            }
+            topic.likeCount?.let {
+                Text(
+                    text = pluralStringResource(
+                        id = R.plurals.likes,
+                        count = it,
+                        it
+                    )
+                )
+            }
+            topic.saveCount?.let {
+                Text(
+                    text = pluralStringResource(
+                        id = R.plurals.saves,
+                        count = it,
+                        it
+                    )
+                )
             }
         }
     }

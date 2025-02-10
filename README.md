@@ -161,7 +161,6 @@ Libraries Used
   * DataStore
   * [ViewModel][viewmodel]
   * [WorkManager][workmanager]
-  * [Data Binding][data-binding]
 * [UI][ui]
   * [Animations & Transitions][animation]
   * Jetpack Compose
@@ -185,8 +184,6 @@ Libraries Used
 [test]: https://developer.android.com/training/testing/
 
 [arch]: https://developer.android.com/jetpack/arch/
-
-[data-binding]: https://developer.android.com/topic/libraries/data-binding/
 
 [lifecycle]: https://developer.android.com/topic/libraries/architecture/lifecycle
 
@@ -219,6 +216,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 #### To-dos for current release \(0.7.12\)
 
 - Remove menu_post_item.xml
+- Remove all layout XML files
+- Fix notifications
 
 #### To-dos for next release \(0.7.13)
 
