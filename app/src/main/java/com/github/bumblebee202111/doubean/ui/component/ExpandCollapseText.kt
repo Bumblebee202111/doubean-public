@@ -1,6 +1,7 @@
 package com.github.bumblebee202111.doubean.ui.component
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +35,7 @@ fun ExpandCollapseText(
         }
         Text(
             text = text,
+            modifier = Modifier.fillMaxWidth(),
             maxLines = if (expanded) Int.MAX_VALUE else maxLines,
             overflow = TextOverflow.Ellipsis,
             style = style
