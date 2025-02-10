@@ -1,25 +1,34 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupTab
 
-import android.content.res.ColorStateList
-import android.view.View
-import androidx.appcompat.widget.PopupMenu
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.viewinterop.AndroidViewBinding
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
@@ -27,7 +36,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.databinding.ViewGroupTabActionsBinding
 import com.github.bumblebee202111.doubean.feature.groups.common.NotificationsButton
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.TopicItem
@@ -38,7 +46,6 @@ import com.github.bumblebee202111.doubean.ui.SortTopicsBySpinner
 import com.github.bumblebee202111.doubean.ui.TopicItem
 import com.github.bumblebee202111.doubean.ui.common.rememberLazyListStatePagingWorkaround
 import com.github.bumblebee202111.doubean.util.ShareUtil
-import com.github.bumblebee202111.doubean.util.getColorFromTheme
 
 @Composable
 fun GroupTabScreen(
@@ -94,7 +101,6 @@ fun GroupTabScreen(
     onTopicClick: (topicId: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
 ) {
-    val context = LocalContext.current
 
     var openAlertDialog by remember { mutableStateOf(false) }
 
@@ -180,117 +186,75 @@ private fun LazyListScope.tabActionsItem(
     ) {
         val context = LocalContext.current
 
-        AndroidViewBinding(
-            factory = { inflater, parent, attachToParent ->
-                ViewGroupTabActionsBinding.inflate(
-                    inflater,
-                    parent,
-                    attachToParent
-                ).apply {
-
-                }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            onReset = {}
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-
-            sortTopicsBySpinner.setContent {
-                SortTopicsBySpinner(
-                    initialSelectedItem = sortBy,
-                    onItemSelected = onSortByClick
-                )
-            }
-
-            fun setupFavoriteButtonAndMore() {
-
-                if (tabId == null) { //All
-                    notificationsButton.visibility = View.GONE
-                    favoriteButton.visibility = View.GONE
-                    more.visibility = View.GONE
-                } else { //Non-all tab
-                    favoriteButton.setOnClickListener {
-                        group?.findTab(tabId)?.let { tab ->
-                            if (tab.isFavorite) {
-                                removeFavorite()
-                            } else {
-                                addFavorite()
+            SortTopicsBySpinner(
+                initialSelectedItem = sortBy ?: TopicSortBy.NEW_LAST_CREATED,
+                onItemSelected = onSortByClick
+            )
+            Spacer(Modifier.weight(1f))
+            group?.findTab(tabId)?.let { tab ->
+                //actions
+                Row {
+                    val areNotificationsEnabled = false
+                    if (areNotificationsEnabled) {
+                        tab.enableNotifications?.let { enableNotifications ->
+                            NotificationsButton(
+                                groupColor = group.color?.let { color ->
+                                    Color(color)
+                                } ?: LocalContentColor.current,
+                                enableNotifications = enableNotifications
+                            ) {
+                                onOpenAlertDialog()
                             }
                         }
                     }
 
-                    @Suppress("ConstantConditionIf") //Remove it when notifications are fixed
-                    if (false) {
-                        notificationsButton.setContent {
-                            group?.let { group ->
-                                group.findTab(tabId)?.let { tab ->
-                                    NotificationsButton(
-                                        groupColor = group.color?.let {
-                                            Color(it)
-                                        } ?: LocalContentColor.current,
-                                        enableNotifications = tab.enableNotifications ?: false
-                                    ) {
-                                        onOpenAlertDialog()
+                    if (tab.isFavorite) {
+                        IconButton(removeFavorite) {
+                            Icon(imageVector = Icons.Default.Star, contentDescription = null)
+                        }
+                    } else {
+                        IconButton(addFavorite) {
+                            Icon(imageVector = Icons.Default.StarBorder, contentDescription = null)
+                        }
+                    }
+
+                    var moreExpanded by remember { mutableStateOf(false) }
+                    IconButton(onClick = { moreExpanded = !moreExpanded }) {
+                        Icon(
+                            imageVector = Icons.Filled.MoreVert,
+                            contentDescription = null
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = moreExpanded, onDismissRequest = {
+                            moreExpanded = false
+                        }
+                    ) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    stringResource(
+                                        R.string.share
+                                    )
+                                )
+                            },
+                            onClick = {
+                                val shareText = buildString {
+                                    append(group.name + "|")
+                                    append(tab.name)
+                                    group.shareUrl?.let { shareUrl ->
+                                        append(" $shareUrl\r\n")
                                     }
                                 }
+                                ShareUtil.share(context, shareText)
+
                             }
-                        }
+                        )
                     }
-
-                    more.setOnClickListener { v ->
-                        val popup = PopupMenu(context, v)
-                        popup.setOnMenuItemClickListener { item ->
-                            when (item.itemId) {
-                                R.id.action_share -> {
-                                    val shareText = StringBuilder()
-                                    group?.let { group ->
-                                        shareText.append(group.name + "|")
-                                        group.tabs?.first { it.id == tabId }
-                                            ?.let { tab ->
-                                                shareText.append(tab.name)
-                                            }
-                                        group.shareUrl?.let { shareUrl ->
-                                            shareText.append(" $shareUrl\r\n")
-                                        }
-
-                                        ShareUtil.share(context, shareText)
-                                        true
-                                    }
-
-                                }
-                            }
-                            false
-                        }
-
-                        popup.inflate(R.menu.menu_group_tab)
-                        popup.show()
-                    }
-                }
-            }
-
-            setupFavoriteButtonAndMore()
-
-            group?.let { group ->
-                val colorSurface = context.getColorFromTheme(R.attr.colorSurface)
-                val groupColor =
-                    group.color ?: context.getColorFromTheme(R.attr.colorPrimary)
-
-                group.findTab(tabId)?.let { tab ->
-                    with(favoriteButton) {
-                        if (tab.isFavorite) {
-                            setIconResource(R.drawable.ic_star)
-                            setText(R.string.favorited)
-                            iconTint = ColorStateList.valueOf(groupColor)
-                            setTextColor(groupColor)
-                            setBackgroundColor(colorSurface)
-                        } else {
-                            setIconResource(R.drawable.ic_star)
-                            setText(R.string.favorite)
-                            iconTint = ColorStateList.valueOf(colorSurface)
-                            setTextColor(colorSurface)
-                            setBackgroundColor(groupColor)
-                        }
-                    }
-
                 }
             }
         }

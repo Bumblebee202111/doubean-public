@@ -18,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
@@ -33,19 +32,17 @@ class GroupTabViewModel @AssistedInject constructor(
     private val preferenceStorage: PreferenceStorage,
 ) : ViewModel() {
 
-    private val _sortBy = MutableStateFlow<TopicSortBy?>(null)
+    private val _sortBy = MutableStateFlow(TopicSortBy.NEW_LAST_CREATED)
 
     val sortBy = _sortBy.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val topicsPagingData =
         _sortBy.flatMapLatest { sortBy ->
-            sortBy?.let {
-                groupRepository.getTopicsPagingData(
-                    groupId, tabId,
-                    it
-                ).cachedIn(viewModelScope)
-            } ?: emptyFlow()
+            groupRepository.getTopicsPagingData(
+                groupId = groupId, tagId = tabId,
+                sortBy = sortBy
+            ).cachedIn(viewModelScope)
         }.cachedIn(viewModelScope)
 
     var shouldDisplayFavoritedTab by mutableStateOf(false)

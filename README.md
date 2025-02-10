@@ -215,7 +215,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.12\)
 
-- Remove menu_post_item.xml
 - Remove all layout XML files
 - Fix notifications
 
