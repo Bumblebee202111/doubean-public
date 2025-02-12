@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.isVisible
 import com.github.bumblebee202111.doubean.ui.common.DoubanWebViewClient
@@ -50,7 +51,12 @@ fun WebViewScreen(url: String, onBackClick: () -> Unit) {
                     isVisible = false
                 }
             },
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(
+                start = 16.dp,
+                top = innerPadding.calculateTopPadding(),
+                end = 16.dp,
+                bottom = innerPadding.calculateBottomPadding()
+            )
         ) {
             it.run {
                 webViewClient =
