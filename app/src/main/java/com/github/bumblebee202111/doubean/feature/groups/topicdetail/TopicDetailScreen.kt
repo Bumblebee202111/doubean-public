@@ -450,7 +450,7 @@ fun TopicDetailHeader(
                 onGroupClick(
                     group.id, null
                 )
-            }) {
+            }, verticalAlignment = Alignment.CenterVertically) {
                 Spacer(Modifier.width(24.dp))
                 SmallGroupAvatar(avatarUrl = group.avatarUrl)
                 Spacer(Modifier.width(8.dp))

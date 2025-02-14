@@ -216,8 +216,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.12\)
 
-- Fix topic header group info alignment
-
 #### To-dos for next release \(0.7.13)
 
 
