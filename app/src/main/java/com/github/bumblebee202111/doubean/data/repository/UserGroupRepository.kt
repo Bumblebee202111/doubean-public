@@ -7,21 +7,25 @@ import androidx.paging.map
 import androidx.room.withTransaction
 import com.github.bumblebee202111.doubean.coroutines.suspendRunCatching
 import com.github.bumblebee202111.doubean.data.db.AppDatabase
-import com.github.bumblebee202111.doubean.data.db.model.FavoriteEntity
 import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupEntity
 import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupTabEntity
+import com.github.bumblebee202111.doubean.data.db.model.GroupGroupNotificationTargetEntity
+import com.github.bumblebee202111.doubean.data.db.model.GroupTabNotificationTargetEntity
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedGroupFavoriteItem
-import com.github.bumblebee202111.doubean.data.db.model.PopulatedRecommendedTopicNotificationItem
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItemWithGroup
-import com.github.bumblebee202111.doubean.data.db.model.RecommendedTopicNotificationEntity
+import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicNotificationItem
 import com.github.bumblebee202111.doubean.data.db.model.SimpleGroupPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicItemPartialEntity
+import com.github.bumblebee202111.doubean.data.db.model.TopicNotificationEntity
 import com.github.bumblebee202111.doubean.data.db.model.UserJoinedGroupIdEntity
 import com.github.bumblebee202111.doubean.data.db.model.asExternalModel
 import com.github.bumblebee202111.doubean.model.GroupFavoriteItem
+import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.model.getRequestParamString
+import com.github.bumblebee202111.doubean.model.toGroupNotificationTargetPartialEntity
+import com.github.bumblebee202111.doubean.model.toGroupTabNotificationTargetPartialEntity
 import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkRecentTopicsFeedItem
 import com.github.bumblebee202111.doubean.network.model.NetworkTopicItem
@@ -39,7 +43,7 @@ import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val MAX_NUM_POST_NOTIFICATIONS = 5
+private const val MAX_NUM_TOPIC_NOTIFICATIONS = 5
 
 @Singleton
 class UserGroupRepository @Inject constructor(
@@ -130,21 +134,9 @@ class UserGroupRepository @Inject constructor(
         userGroupDao.deleteFavoriteGroup(groupId)
     }
 
-    suspend fun addFavoriteGroup(
-        groupId: String,
-        enablePostNotifications: Boolean,
-        allowsDuplicateNotifications: Boolean,
-        sortRecommendedPostsBy: TopicSortBy,
-        feedRequestPostCountLimit: Int,
-    ) {
+    suspend fun addFavoriteGroup(groupId: String) {
         userGroupDao.insertFavoriteGroup(
-            FavoriteGroupEntity(
-                groupId = groupId,
-                enableTopicNotifications = enablePostNotifications,
-                allowDuplicateNotifications = allowsDuplicateNotifications,
-                sortRecommendedTopicsBy = sortRecommendedPostsBy,
-                feedRequestTopicCountLimit = feedRequestPostCountLimit
-            )
+            FavoriteGroupEntity(groupId = groupId)
         )
     }
 
@@ -155,20 +147,10 @@ class UserGroupRepository @Inject constructor(
     suspend fun addFavoriteTab(
         groupId: String,
         tabId: String,
-        enablePostNotifications: Boolean,
-        allowsDuplicateNotifications: Boolean,
-        sortRecommendedPostsBy: TopicSortBy,
-        feedRequestPostCountLimit: Int,
-    ) {
+
+        ) {
         userGroupDao.insertFavoriteTab(
-            FavoriteGroupTabEntity(
-                groupId = groupId,
-                tabId = tabId,
-                enableTopicNotifications = enablePostNotifications,
-                allowDuplicateNotifications = allowsDuplicateNotifications,
-                sortRecommendedTopicsBy = sortRecommendedPostsBy,
-                feedRequestTopicCountLimit = feedRequestPostCountLimit
-            )
+            FavoriteGroupTabEntity(groupId = groupId, tabId = tabId)
         )
     }
 
@@ -177,158 +159,143 @@ class UserGroupRepository @Inject constructor(
             it.map(PopulatedGroupFavoriteItem::asExternalModel)
         }
 
-    suspend fun getRecommendedPosts(): Boolean {
-
-        val leastRecentlyNotifiedGroup = userGroupDao.getLeastRecentlyNotifiedGroup()
-        val leastRecentlyNotifiedTab = userGroupDao.getLeastRecentlyNotifiedTab()
-        if (leastRecentlyNotifiedGroup == null && leastRecentlyNotifiedTab == null)
-            return true
-        val allPossibleLeastRecentlyFeedTopics = mutableListOf<FavoriteEntity>()
-        leastRecentlyNotifiedGroup?.let {
-            allPossibleLeastRecentlyFeedTopics += it
-        }
-        leastRecentlyNotifiedTab?.let {
-            allPossibleLeastRecentlyFeedTopics += it
-        }
-        val currentFeedTopic =
-            allPossibleLeastRecentlyFeedTopics.minBy { it.lastNotifiedTimeMillis }
-
+    suspend fun getNextTargetTopicNotifications(): Boolean {
+        val currentNotificationTarget = setOf(
+            userGroupDao.getLeastRecentlyFetchedGroupNotificationTarget(),
+            userGroupDao.getLeastRecentlyFetchedTabNotificationTarget()
+        ).filterNotNull().minByOrNull { it.lastFetchedTimeMillis } ?: return true
         return try {
-            val response = when (currentFeedTopic) {
-                is FavoriteGroupEntity -> apiService.getGroupTopics(
-                    groupId = currentFeedTopic.groupId,
-                    sortBy = currentFeedTopic.sortRecommendedTopicsBy.getRequestParamString(),
-                    count = currentFeedTopic.feedRequestTopicCountLimit
-                )
+            val response = when (currentNotificationTarget) {
+                is GroupGroupNotificationTargetEntity -> {
+                    apiService.getGroupTopics(
+                        groupId = currentNotificationTarget.groupId,
+                        sortBy = currentNotificationTarget.sortBy.getRequestParamString(),
+                        count = currentNotificationTarget.maxTopicsPerFetch
+                    )
+                }
 
-                is FavoriteGroupTabEntity -> apiService.getGroupTopics(
-                    groupId = currentFeedTopic.groupId,
-                    topicTagId = currentFeedTopic.tabId,
-                    sortBy = currentFeedTopic.sortRecommendedTopicsBy.getRequestParamString(),
-                    count = currentFeedTopic.feedRequestTopicCountLimit
-                )
+                is GroupTabNotificationTargetEntity -> {
+                    apiService.getGroupTopics(
+                        groupId = currentNotificationTarget.groupId,
+                        topicTagId = currentNotificationTarget.tabId,
+                        sortBy = currentNotificationTarget.sortBy.getRequestParamString(),
+                        count = currentNotificationTarget.maxTopicsPerFetch
+                    )
+                }
             }
-            val networkPosts = response.items.filterIsInstance<NetworkTopicItem>()
-            val groupId = currentFeedTopic.groupId
-            val posts = networkPosts.map { it.asPartialEntity(groupId) }.also {
-                if (currentFeedTopic.sortRecommendedTopicsBy == TopicSortBy.HOT_LAST_CREATED)
+            val networkTopics = response.items.filterIsInstance<NetworkTopicItem>()
+            val groupId = currentNotificationTarget.groupId
+            val topics = networkTopics.map { it.asPartialEntity(groupId) }.also {
+                if (currentNotificationTarget.sortBy == TopicSortBy.HOT_LAST_CREATED ||
+                    currentNotificationTarget.sortBy == TopicSortBy.NEW_LAST_CREATED
+                )
                     it.sortedByDescending(TopicItemPartialEntity::updateTime)
             }
 
-            val existingPostNotifications = userGroupDao.getRecommendedTopicNotifications()
+            val existingTopicNotifications = userGroupDao.getTopicNotifications()
 
-            val networkUpdatedPosts = if (currentFeedTopic.allowDuplicateNotifications) {
-                networkPosts.filter { networkPost ->
-                    existingPostNotifications.find { e ->
-                        e.topicId == networkPost.id && e.notifiedLastUpdated != networkPost.updateTime
-                    } != null
-                }
-            } else emptyList()
-            val networkNewPosts = networkPosts.filter {
-                it.id !in existingPostNotifications.map(
-                    RecommendedTopicNotificationEntity::topicId
+            val networkUpdatedTopics =
+                if (currentNotificationTarget.notifyOnUpdates) {
+                    networkTopics.filter { networkTopic ->
+                        existingTopicNotifications.find { existingTopicNotifications ->
+                            existingTopicNotifications.topicId == networkTopic.id && existingTopicNotifications.updateTime != networkTopic.updateTime
+                        } != null
+                    }
+                } else emptyList()
+            val networkNewTopics = networkTopics.filter {
+                it.id !in existingTopicNotifications.map(
+                    TopicNotificationEntity::topicId
                 )
             }
 
-            val truncatedPostIds = networkPosts.filter {
-                it.id in (networkUpdatedPosts + networkNewPosts).map(
+            val truncatedTopicIds = networkTopics.filter {
+                it.id in (networkUpdatedTopics + networkNewTopics).map(
                     NetworkTopicItem::id
                 )
             }
-                .take(MAX_NUM_POST_NOTIFICATIONS).map(NetworkTopicItem::id)
+                .take(MAX_NUM_TOPIC_NOTIFICATIONS).map(NetworkTopicItem::id)
 
-            val truncatedNetworkUpdatedPosts =
-                networkUpdatedPosts.filter { it.id in truncatedPostIds }
-            val truncatedNetworkNewPosts = networkNewPosts.filter { it.id in truncatedPostIds }
+            val truncatedNetworkUpdatedTopics =
+                networkUpdatedTopics.filter { it.id in truncatedTopicIds }
+            val truncatedNetworkNewTopics = networkNewTopics.filter { it.id in truncatedTopicIds }
 
-            val postNotificationEntities = truncatedNetworkUpdatedPosts
+            val topicNotificationEntities = truncatedNetworkUpdatedTopics
                 .map {
-                    RecommendedTopicNotificationEntity(
+                    TopicNotificationEntity(
                         topicId = it.id,
-                        notifiedLastUpdated = it.updateTime,
+                        updateTime = it.updateTime,
                         isNotificationUpdated = true
                     )
-                } + truncatedNetworkNewPosts
+                } + truncatedNetworkNewTopics
                 .map {
-                    RecommendedTopicNotificationEntity(
+                    TopicNotificationEntity(
                         topicId = it.id,
-                        notifiedLastUpdated = it.updateTime
+                        updateTime = it.updateTime
                     )
                 }
 
-            val topicTags = networkPosts.flatMap { it.topicTags }.map { it.asEntity(groupId) }
-            val authors = networkPosts.map { it.author.asEntity() }
+            val topicTags = networkTopics.flatMap { it.topicTags }.map { it.asEntity(groupId) }
+            val authors = networkTopics.map { it.author.asEntity() }
             appDatabase.withTransaction {
-                topicDao.upsertTopics(posts)
+                topicDao.upsertTopics(topics)
                 groupDao.insertTopicTags(topicTags)
                 userDao.insertUsers(authors)
-                when (currentFeedTopic) {
-                    is FavoriteGroupEntity -> userGroupDao.updateFavoritedGroupLastNotifiedTimeMillis(
-                        currentFeedTopic.groupId,
-                        System.currentTimeMillis()
-                    )
+                when (currentNotificationTarget) {
+                    is GroupGroupNotificationTargetEntity -> {
+                        userGroupDao.updateGroupNotificationGroupTargetLastFetchedTimeMillis(
+                            groupId = currentNotificationTarget.groupId,
+                            lastFetchedTimeMillis = System.currentTimeMillis()
+                        )
+                    }
 
-                    is FavoriteGroupTabEntity -> userGroupDao.updateFavoritedGroupLastNotifiedTimeMillis(
-                        currentFeedTopic.tabId,
-                        System.currentTimeMillis()
-                    )
+                    is GroupTabNotificationTargetEntity -> {
+                        userGroupDao.updateGroupNotificationTabTargetLastFetchedTimeMillis(
+                            groupId = currentNotificationTarget.groupId,
+                            tabId = currentNotificationTarget.tabId,
+                            lastFetchedTimeMillis = System.currentTimeMillis()
+                        )
+                    }
                 }
-                userGroupDao.insertRecommendedTopicNotifications(postNotificationEntities)
+
+                userGroupDao.insertTopicNotifications(topicNotificationEntities)
             }
-            val truncatedPosts =
-                topicDao.loadOrderedTopicsWithGroups(truncatedPostIds).first()
+            val truncatedTopics =
+                topicDao.loadOrderedTopicsWithGroups(truncatedTopicIds).first()
                     .map(PopulatedTopicItemWithGroup::asExternalModel)
-            if (truncatedPosts.isNotEmpty()) {
-                notifier.postRecommendedPostNotifications(truncatedPosts)
+            if (truncatedTopics.isNotEmpty()) {
+                notifier.postTopicNotifications(truncatedTopics)
             }
             true
         } catch (e: IOException) {
             false
         }
-
-
     }
 
-    fun getRecommendedPostNotifications(): Flow<PagingData<TopicItemWithGroup>> {
+    fun getTopicNotifications(): Flow<PagingData<TopicItemWithGroup>> {
         val pagingConfig = PagingConfig(NOTIFICATION_PAGE_SIZE)
-
         return Pager(pagingConfig) {
-            userGroupDao.recommendedTopicNotificationsPagingSource()
+            userGroupDao.topicNotificationsPagingSource()
         }.flow.map { pagingData ->
-            pagingData.map(PopulatedRecommendedTopicNotificationItem::asExternalModel)
+            pagingData.map(PopulatedTopicNotificationItem::asExternalModel)
         }
     }
 
-
-    suspend fun updateGroupNotificationsPref(
+    suspend fun updateGroupNotificationPreferences(
         groupId: String,
-        enableGroupNotifications: Boolean,
-        allowDuplicateNotifications: Boolean,
-        sortRecommendedPostsBy: TopicSortBy,
-        numberOfPostsLimitEachFeedFetch: Int,
+        preference: GroupNotificationPreferences,
     ) {
-        userGroupDao.updateFavoritedGroupNotificationsPref(
-            groupId,
-            enableGroupNotifications,
-            allowDuplicateNotifications,
-            sortRecommendedPostsBy,
-            numberOfPostsLimitEachFeedFetch
+        userGroupDao.upsertGroupNotificationTargetPreferences(
+            preference.toGroupNotificationTargetPartialEntity(groupId = groupId)
         )
     }
 
-    suspend fun updateTabNotificationsPref(
+    suspend fun updateTabNotificationPreferences(
+        groupId: String,
         tabId: String,
-        enableGroupNotifications: Boolean,
-        allowDuplicateNotifications: Boolean,
-        sortRecommendedPostsBy: TopicSortBy,
-        numberOfPostsLimitEachFeedFetch: Int,
+        preference: GroupNotificationPreferences,
     ) {
-        userGroupDao.updateFollowedTabNotificationsPref(
-            tabId,
-            enableGroupNotifications,
-            allowDuplicateNotifications,
-            sortRecommendedPostsBy,
-            numberOfPostsLimitEachFeedFetch
+        userGroupDao.upsertTabNotificationTargetPreferences(
+            preference.toGroupTabNotificationTargetPartialEntity(groupId = groupId, tabId = tabId)
         )
     }
 

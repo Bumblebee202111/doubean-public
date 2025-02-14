@@ -24,14 +24,14 @@ import javax.inject.Singleton
 
 
 private const val TARGET_ACTIVITY_NAME = "com.github.bumblebee202111.doubean.MainActivity"
-private const val POST_NOTIFICATION_CHANNEL_ID = ""
-private const val POST_NOTIFICATION_SUMMARY_ID = 0
-private const val GROUP_KEY_POST_NOTIFICATION = "com.android.example.POST_NOTIFICATIONS"
-private const val POST_NOTIFICATION_REQUEST_CODE = 0
+private const val TOPIC_NOTIFICATION_CHANNEL_ID = ""
+private const val TOPIC_NOTIFICATION_SUMMARY_ID = 0
+private const val GROUP_KEY_TOPIC_NOTIFICATION = "com.android.example.TOPIC_NOTIFICATIONS"
+private const val TOPIC_NOTIFICATION_REQUEST_CODE = 0
 
 @Singleton
 class Notifier @Inject constructor(@ApplicationContext private val context: Context) {
-    fun postRecommendedPostNotifications(posts: List<TopicItemWithGroup>) {
+    fun postTopicNotifications(topics: List<TopicItemWithGroup>) {
         if (ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.POST_NOTIFICATIONS,
@@ -41,58 +41,57 @@ class Notifier @Inject constructor(@ApplicationContext private val context: Cont
         }
         context.ensureNotificationChannelExists()
 
-
-        val postNotifications = posts.map { post ->
+        val topicNotifications = topics.map { topic ->
             NotificationCompat.Builder(
                 context,
-                POST_NOTIFICATION_CHANNEL_ID,
+                TOPIC_NOTIFICATION_CHANNEL_ID,
             )
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setSmallIcon(R.drawable.ic_notifications)
-                .setContentTitle(post.title)
-                .setContentText(post.notificationContentText())
-                .setContentIntent(postPendingIntent(context, post))
-                .setGroup(GROUP_KEY_POST_NOTIFICATION)
+                .setContentTitle(topic.title)
+                .setContentText(topic.notificationContentText())
+                .setContentIntent(topicPendingIntent(context, topic))
+                .setGroup(GROUP_KEY_TOPIC_NOTIFICATION)
                 .setAutoCancel(true)
-                .setWhen(post.updateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                .setWhen(topic.updateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
                 .build()
         }
 
-        val summaryNotification = NotificationCompat.Builder(context, POST_NOTIFICATION_CHANNEL_ID)
+        val summaryNotification = NotificationCompat.Builder(context, TOPIC_NOTIFICATION_CHANNEL_ID)
             .setContentTitle(
                 context.getString(
-                    R.string.post_notification_group_summary,
-                    posts.size,
+                    R.string.topic_notification_group_summary,
+                    topics.size,
                 )
             )
             
-            .setContentText(posts.first().title)
+            .setContentText(topics.first().title)
             .setSmallIcon(R.drawable.ic_notifications)
             
-            .setGroup(GROUP_KEY_POST_NOTIFICATION)
+            .setGroup(GROUP_KEY_TOPIC_NOTIFICATION)
             
             .setGroupSummary(true)
             .build()
 
         
         NotificationManagerCompat.from(context).apply {
-            postNotifications.forEachIndexed { index, notification ->
+            topicNotifications.forEachIndexed { index, notification ->
                 notify(
-                    posts[index].id.hashCode(),
+                    topics[index].id.hashCode(),
                     notification,
                 )
             }
-            notify(POST_NOTIFICATION_SUMMARY_ID, summaryNotification)
+            notify(TOPIC_NOTIFICATION_SUMMARY_ID, summaryNotification)
         }
     }
 }
 
-fun postPendingIntent(context: Context, post: TopicItemWithGroup): PendingIntent =
+fun topicPendingIntent(context: Context, topic: TopicItemWithGroup): PendingIntent =
     PendingIntent.getActivity(
-        context, POST_NOTIFICATION_REQUEST_CODE,
+        context, TOPIC_NOTIFICATION_REQUEST_CODE,
         Intent().apply {
             action = Intent.ACTION_VIEW
-            data = post.postDeepLinkUri()
+            data = topic.postDeepLinkUri()
             component = ComponentName(
                 context.packageName,
                 TARGET_ACTIVITY_NAME,
@@ -106,11 +105,11 @@ fun postPendingIntent(context: Context, post: TopicItemWithGroup): PendingIntent
 private fun Context.ensureNotificationChannelExists() {
 
     val channel = NotificationChannel(
-        POST_NOTIFICATION_CHANNEL_ID,
-        getString(R.string.post_notification_channel_name),
+        TOPIC_NOTIFICATION_CHANNEL_ID,
+        getString(R.string.topic_notification_channel_name),
         NotificationManager.IMPORTANCE_DEFAULT,
     ).apply {
-        description = getString(R.string.post_notification_channel_description)
+        description = getString(R.string.topic_notification_channel_description)
     }
     
     NotificationManagerCompat.from(this).createNotificationChannel(channel)

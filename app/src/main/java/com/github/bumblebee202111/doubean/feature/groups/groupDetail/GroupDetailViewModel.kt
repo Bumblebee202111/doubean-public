@@ -14,14 +14,13 @@ import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupsRepo
 import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
 import com.github.bumblebee202111.doubean.feature.groups.groupDetail.navigation.GroupDetailRoute
+import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.Result
-import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -39,17 +38,14 @@ class GroupDetailViewModel @Inject constructor(
 ) : ViewModel() {
     val groupId = savedStateHandle.toRoute<GroupDetailRoute>().groupId
     val initialTabId = savedStateHandle.toRoute<GroupDetailRoute>().defaultTabId
-
     private val groupResult = groupRepository.getGroup(groupId).flowOn(ioDispatcher).stateInUi()
-
     val group = groupResult.map { it?.data }.stateInUi()
-
     val tabs =
         groupResult.filter { it is Result.Success || it is Result.Error }.map { it?.data?.tabs }
             .stateInUi()
-
+    val defaultNotificationPreferences =
+        preferenceStorage.defaultGroupNotificationPreferences.stateInUi()
     var shouldDisplayFavoritedGroup by mutableStateOf(false)
-
     var shouldDisplayUnfavoritedGroup by mutableStateOf(false)
 
     fun subscribe() {
@@ -69,13 +65,7 @@ class GroupDetailViewModel @Inject constructor(
 
     fun addFavorite() {
         viewModelScope.launch {
-            userGroupRepository.addFavoriteGroup(
-                groupId = groupId,
-                enablePostNotifications = preferenceStorage.perFollowDefaultEnablePostNotifications.first(),
-                allowsDuplicateNotifications = preferenceStorage.perFollowDefaultAllowDuplicateNotifications.first(),
-                sortRecommendedPostsBy = preferenceStorage.perFollowDefaultSortRecommendedPostsBy.first(),
-                feedRequestPostCountLimit = preferenceStorage.perFollowDefaultFeedRequestPostCountLimit.first()
-            )
+            userGroupRepository.addFavoriteGroup(groupId = groupId)
             shouldDisplayFavoritedGroup = true
         }
 
@@ -95,20 +85,14 @@ class GroupDetailViewModel @Inject constructor(
         shouldDisplayUnfavoritedGroup = false
     }
 
-    fun saveNotificationsPreference(
-        enableNotifications: Boolean,
-        allowNotificationUpdates: Boolean,
-        sortRecommendedTopicsBy: TopicSortBy,
-        numberOfPostsLimitEachFeedFetch: Int,
+    fun saveNotificationPreferences(
+        preference: GroupNotificationPreferences,
     ) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                userGroupRepository.updateGroupNotificationsPref(
-                    groupId,
-                    enableNotifications,
-                    allowNotificationUpdates,
-                    sortRecommendedTopicsBy,
-                    numberOfPostsLimitEachFeedFetch
+                userGroupRepository.updateGroupNotificationPreferences(
+                    groupId = groupId,
+                    preference = preference
                 )
             }
 

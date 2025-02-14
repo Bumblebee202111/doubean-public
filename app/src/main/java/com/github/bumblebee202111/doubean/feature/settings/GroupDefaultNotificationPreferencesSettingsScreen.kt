@@ -1,5 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.settings
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -21,7 +22,7 @@ fun GroupDefaultNotificationsPreferencesSettingsScreen(
     Scaffold(
         topBar = {
             DoubeanTopAppBar(
-                titleResId = R.string.per_follow_default_notifications_preferences_settings_title,
+                titleResId = R.string.group_default_notification_preferences_settings_title,
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
@@ -32,10 +33,12 @@ fun GroupDefaultNotificationsPreferencesSettingsScreen(
                 })
         }
     ) {
-        AndroidFragment<GroupDefaultNotificationsPreferencesSettingsContentFragment>(
-            modifier = Modifier.padding(
-                it
-            )
+        AndroidFragment<GroupDefaultNotificationPreferencesSettingsContentFragment>(
+            modifier = Modifier
+                .padding(
+                    it
+                )
+                .fillMaxSize()
         )
     }
 }

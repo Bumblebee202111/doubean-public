@@ -77,7 +77,7 @@ Introduction
 
 ##### Notifications Screen 
 
-* Group topic notifications (this feature is broken now)
+* Group topic notifications
 
 #### Profile Screen
 
@@ -137,15 +137,16 @@ To not get this project/myself into trouble, the push of the source code (NOT th
 * Provides simple type-based Subjects (书影~~音~~) experience including support of user actions (WIP 🚧)
 * Groups
   * Favorite tabs/groups locally
-
+  * Customizable topic notifications
 * Ad-free, lite \(~4MB\)
-* <span id="reuse-login-session"> While phone login is blocked by complicated and tight authentication, rooted users can reuse login session of Douban app </span>
+* Rooted users can reuse the **existing** login session of Douban app
+  * Note: Phone login is not available
+
 * Partially support URL deep links
 * Partial offline caching support in Groups
 * Very basic Statuses tab (no longer updated)
 * Partial support for viewing content in Douban WebView optimized for mobile reading in case of need (no longer updated)
 * Basic use of MD2/3 (UI may not look good during migration)
-* ~~Recommended topic notifications (broken & disabled)~~
 
 Libraries Used
 --------------
@@ -211,23 +212,29 @@ Libraries Used
 
 ### Plans
 
-Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\)
+Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Mainly for myself.
 
 #### To-dos for current release \(0.7.12\)
 
-- Remove all layout XML files
-- Fix notifications
+- Fix topic header group info alignment
 
 #### To-dos for next release \(0.7.13)
 
 
 #### Future plans
 
-* Gradual migrations:
-  * From MD2 / custom design to MD3
-  * From View and Data Binding to Jetpack Compose
-    * Exceptions: WebView/RatingBar/PreferenceFragmentCompat/Spinner
-  * Gracefully remove Fragments: First reduce usages of Fragment methods
+* Profile
+
+  * User info
+
+  * Settings button
+
+* Bottom navigation
+
+  * Top left avatar
+  * Remove Settings buttons
+
+* Allow non rooted users (guests) to browse personal content if user ID is provided
 
 * Subjects
 
@@ -242,13 +249,12 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Remember last bottom/Subjects tabs
 
-* Allow non rooted users (guests) to browse personal content if user ID is provided
-
 * Groups
   * Dynamic topic sorts-by
-  
+
   - Caching everything in ROOM was a mistake, adding much complexity
-  
+  - Optimize colors for group-themed screens
+
   * Home
     * Maybe support pagination of recommended topics
   * Subscribe/favorite/save
@@ -265,14 +271,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * Collapse on entrance for the subscribed/favorited group/tab
   * Expand/collapse component
     * Do not show action for short text
-  * Topics feed notifications
-    * Find why it is broken and fix it
-    * Clarify:
-      * Improper use may disturb you and drain phone battery (untested)
-      * Better keep app in background
-      * Mechanism: Actively query group topics (without tab_id parameter, to increase efficiency) by each group
-    * “每次动态更新请求的帖子总数限制” -> ?
-    * Extract reusable class for all topic notification settings
   * Groups: Group/tab/topic shortcuts
   * Topic content WebView problems
     * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
@@ -283,8 +281,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Support blocking unfriendly content
   * Lists: Reddit-like item expand/collapse
   * Find API for all followed topics (hopeless)
-  
-* Properly show login prompts & normal text hints
+
+* Properly show login prompts & normal tips/info
 
 * Status bar color
 
@@ -297,6 +295,10 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Paging 3 refresh, loading status ...
 
 * Bring back basic support for dark mode & landscape experience
+
+* Migrate WebView/RatingBar/PreferenceFragmentCompat into Compose + MD 3
+
+  * Not making much sense now
 
 * Shared element
 

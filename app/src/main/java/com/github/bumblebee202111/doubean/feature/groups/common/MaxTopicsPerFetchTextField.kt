@@ -3,7 +3,7 @@ package com.github.bumblebee202111.doubean.feature.groups.common
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.TextField
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,26 +16,26 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TopicCountLimitEachFetchTextField(
-    numberOfTopicsLimitEachFeedFetch: Int,
-    onUpdateNumberOfTopicsLimitEachFeedFetch: (intValue: Int) -> Unit,
+fun MaxTopicsPerFetchTextField(
+    maxTopicsPerFetch: Int,
+    onUpdateMaxTopicsPerFetch: (intValue: Int) -> Unit,
     enabled: Boolean,
 ) {
     
     val keyboardController = LocalSoftwareKeyboardController.current
-    var limitValue by rememberSaveable {
-        mutableStateOf(numberOfTopicsLimitEachFeedFetch.toString())
+    var maxTopicsPerFetchValue by rememberSaveable {
+        mutableStateOf(maxTopicsPerFetch.toString())
     }
-    TextField(
-        value = limitValue,
+    OutlinedTextField(
+        value = maxTopicsPerFetchValue,
         onValueChange = { value ->
             if (value.isBlank()) {
-                limitValue = ""
+                maxTopicsPerFetchValue = ""
             } else {
                 value.toIntOrNull()?.takeIf { it in 1..50 }
                     ?.let {
-                        limitValue = value
-                        onUpdateNumberOfTopicsLimitEachFeedFetch(it)
+                        maxTopicsPerFetchValue = value
+                        onUpdateMaxTopicsPerFetch(it)
                     }
             }
         },

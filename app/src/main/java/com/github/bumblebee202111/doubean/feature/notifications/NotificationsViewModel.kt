@@ -11,6 +11,6 @@ import javax.inject.Inject
 class NotificationsViewModel @Inject constructor(private val userGroupRepository: UserGroupRepository) :
     ViewModel() {
     val notifications =
-        userGroupRepository.getRecommendedPostNotifications().cachedIn(viewModelScope)
+        userGroupRepository.getTopicNotifications().cachedIn(viewModelScope)
 
 }

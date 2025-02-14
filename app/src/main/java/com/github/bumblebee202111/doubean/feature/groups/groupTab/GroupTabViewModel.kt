@@ -9,7 +9,9 @@ import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
+import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.TopicSortBy
+import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -18,7 +20,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -33,8 +34,9 @@ class GroupTabViewModel @AssistedInject constructor(
 ) : ViewModel() {
 
     private val _sortBy = MutableStateFlow(TopicSortBy.NEW_LAST_CREATED)
-
     val sortBy = _sortBy.asStateFlow()
+    val defaultNotificationPreferences =
+        preferenceStorage.defaultGroupNotificationPreferences.stateInUi()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val topicsPagingData =
@@ -54,22 +56,20 @@ class GroupTabViewModel @AssistedInject constructor(
     }
 
     fun addFavorite() {
+        val tabId = tabId ?: return
         viewModelScope.launch {
             userGroupRepository.addFavoriteTab(
                 groupId = groupId,
-                tabId = tabId!!,
-                enablePostNotifications = preferenceStorage.perFollowDefaultEnablePostNotifications.first(),
-                allowsDuplicateNotifications = preferenceStorage.perFollowDefaultAllowDuplicateNotifications.first(),
-                sortRecommendedPostsBy = preferenceStorage.perFollowDefaultSortRecommendedPostsBy.first(),
-                feedRequestPostCountLimit = preferenceStorage.perFollowDefaultFeedRequestPostCountLimit.first()
+                tabId = tabId,
             )
             shouldDisplayFavoritedTab = true
         }
     }
 
     fun removeFavorite() {
+        val tabId = tabId ?: return
         viewModelScope.launch {
-            userGroupRepository.removeFavoriteTab(tabId!!)
+            userGroupRepository.removeFavoriteTab(tabId)
             shouldDisplayUnfavoritedTab = false
         }
     }
@@ -82,21 +82,16 @@ class GroupTabViewModel @AssistedInject constructor(
         shouldDisplayUnfavoritedTab = false
     }
 
-    fun saveNotificationsPreference(
-        enableNotifications: Boolean,
-        allowNotificationUpdates: Boolean,
-        sortRecommendedTopicsBy: TopicSortBy,
-        numberOfTopicsLimitEachFeedFetch: Int,
+    fun saveNotificationPreferences(
+        preferences: GroupNotificationPreferences,
     ) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 if (tabId != null) {
-                    userGroupRepository.updateTabNotificationsPref(
-                        tabId,
-                        enableNotifications,
-                        allowNotificationUpdates,
-                        sortRecommendedTopicsBy,
-                        numberOfTopicsLimitEachFeedFetch
+                    userGroupRepository.updateTabNotificationPreferences(
+                        groupId = groupId,
+                        tabId = tabId,
+                        preference = preferences
                     )
                 }
             }

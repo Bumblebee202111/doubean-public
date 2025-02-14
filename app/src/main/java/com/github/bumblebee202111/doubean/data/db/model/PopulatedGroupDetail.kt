@@ -19,6 +19,11 @@ data class PopulatedGroupDetail(
         entityColumn = "group_id"
     )
     val favoriteGroup: FavoriteGroupEntity?,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "group_id",
+    )
+    val notificationTarget: GroupGroupNotificationTargetEntity?,
 )
 
 data class PopulatedGroupTab(
@@ -29,6 +34,11 @@ data class PopulatedGroupTab(
         entityColumn = "tab_id"
     )
     val favoriteTab: FavoriteGroupTabEntity?,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "tab_id",
+    )
+    val notificationTarget: GroupTabNotificationTargetEntity?,
 )
 
 fun PopulatedGroupDetail.asExternalModel() = GroupDetail(
@@ -49,10 +59,7 @@ fun PopulatedGroupDetail.asExternalModel() = GroupDetail(
     isSubscriptionEnabled = partialEntity.isSubscriptionEnabled,
     isSubscribed = partialEntity.isSubscribed,
     isFavorited = favoriteGroup != null,
-    enableNotifications = favoriteGroup?.enableTopicNotifications,
-    allowDuplicateNotifications = favoriteGroup?.allowDuplicateNotifications,
-    sortRecommendedTopicsBy = favoriteGroup?.sortRecommendedTopicsBy,
-    feedRequestTopicCountLimit = favoriteGroup?.feedRequestTopicCountLimit,
+    notificationPreferences = notificationTarget?.toGroupNotificationPreferences()
 )
 
 fun PopulatedGroupTab.asExternalModel() = GroupTab(
@@ -60,8 +67,5 @@ fun PopulatedGroupTab.asExternalModel() = GroupTab(
     name = entity.name,
     seq = entity.seq,
     isFavorite = favoriteTab != null,
-    enableNotifications = favoriteTab?.enableTopicNotifications,
-    allowDuplicateNotifications = favoriteTab?.allowDuplicateNotifications,
-    sortRecommendedTopicsBy = favoriteTab?.sortRecommendedTopicsBy,
-    feedRequestTopicCountLimit = favoriteTab?.feedRequestTopicCountLimit,
+    notificationPreferences = notificationTarget?.toGroupNotificationPreferences()
 )

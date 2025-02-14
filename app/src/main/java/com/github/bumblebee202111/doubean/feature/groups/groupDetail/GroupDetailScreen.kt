@@ -13,6 +13,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.NotificationAdd
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Button
@@ -23,9 +25,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
@@ -52,13 +55,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.groups.common.NotificationsButton
 import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabScreen
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.GroupMemberRole
+import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.GroupTab
-import com.github.bumblebee202111.doubean.model.TopicSortBy
-import com.github.bumblebee202111.doubean.ui.GroupNotificationsPreferenceDialog
+import com.github.bumblebee202111.doubean.ui.GroupNotificationPreferencesDialog
 import com.github.bumblebee202111.doubean.ui.LargeGroupAvatar
 import com.github.bumblebee202111.doubean.ui.component.ExpandCollapseText
 import com.github.bumblebee202111.doubean.util.OpenInUtils
@@ -77,6 +79,7 @@ fun GroupDetailScreen(
     val group: GroupDetail? by viewModel.group.collectAsStateWithLifecycle()
     val initialTabId: String? = viewModel.initialTabId
     val groupId: String = viewModel.groupId
+    val defaultNotificationsPreference by viewModel.defaultNotificationPreferences.collectAsStateWithLifecycle()
     val shouldDisplayFavoritedGroup: Boolean = viewModel.shouldDisplayFavoritedGroup
     val shouldDisplayUnfavoritedGroup = viewModel.shouldDisplayUnfavoritedGroup
 
@@ -85,6 +88,7 @@ fun GroupDetailScreen(
         taggedTabs = taggedTabs,
         initialTabId = initialTabId,
         groupId = groupId,
+        defaultNotificationsPreference = defaultNotificationsPreference,
         subscribeGroup = viewModel::subscribe,
         unsubscribeGroup = viewModel::unsubscribe,
         addFavorite = viewModel::addFavorite,
@@ -93,7 +97,7 @@ fun GroupDetailScreen(
         shouldDisplayUnfavoritedGroup = shouldDisplayUnfavoritedGroup,
         clearFavoritedGroupState = viewModel::clearFavoritedGroupState,
         clearUnfavoritedGroupState = viewModel::clearUnfavoritedGroupState,
-        saveNotificationsPreference = viewModel::saveNotificationsPreference,
+        saveNotificationsPreference = viewModel::saveNotificationPreferences,
         onBackClick = onBackClick,
         onTopicClick = onTopicClick,
         onShowSnackbar = onShowSnackbar
@@ -108,6 +112,7 @@ fun GroupDetailScreen(
     taggedTabs: List<GroupTab>?,
     initialTabId: String?,
     groupId: String,
+    defaultNotificationsPreference: GroupNotificationPreferences?,
     shouldDisplayFavoritedGroup: Boolean,
     shouldDisplayUnfavoritedGroup: Boolean,
     subscribeGroup: () -> Unit,
@@ -116,17 +121,12 @@ fun GroupDetailScreen(
     removeFavorite: () -> Unit,
     clearFavoritedGroupState: () -> Unit,
     clearUnfavoritedGroupState: () -> Unit,
-    saveNotificationsPreference: (
-        enableNotifications: Boolean,
-        allowNotificationUpdates: Boolean,
-        sortRecommendedTopicsBy: TopicSortBy,
-        numberOfPostsLimitEachFeedFetch: Int,
-    ) -> Unit,
+    saveNotificationsPreference: (preference: GroupNotificationPreferences) -> Unit,
     onBackClick: () -> Unit,
     onTopicClick: (topicId: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
 ) {
-    var openAlertDialog by remember { mutableStateOf(false) }
+    var openNotificationsPreferenceDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     val favoritedGroupMessage = stringResource(id = R.string.favorited_group)
@@ -154,7 +154,7 @@ fun GroupDetailScreen(
                 group = group,
                 scrollBehavior = scrollBehavior,
                 showNotificationsPrefDialog = {
-                    openAlertDialog = true
+                    openNotificationsPreferenceDialog = true
                 },
                 addFavorite = addFavorite, removeFavorite = removeFavorite,
                 subscribeGroup = subscribeGroup,
@@ -199,30 +199,20 @@ fun GroupDetailScreen(
 
         }
     }
+    if (group != null && defaultNotificationsPreference != null) {
 
-    val enableNotifications = group?.enableNotifications
-    val allowNotificationUpdates = group?.allowDuplicateNotifications
-    val sortRecommendedTopicsBy = group?.sortRecommendedTopicsBy
-    val numberOfTopicsLimitEachFeedFetch = group?.feedRequestTopicCountLimit
-
-    if (openAlertDialog && enableNotifications != null && allowNotificationUpdates != null && sortRecommendedTopicsBy != null && numberOfTopicsLimitEachFeedFetch != null) {
-        GroupNotificationsPreferenceDialog(
-            titleTextResId = R.string.group_notifications_preference,
-            initialEnableNotifications = enableNotifications,
-            initialAllowNotificationUpdates = allowNotificationUpdates,
-            initialSortRecommendedTopicsBy = sortRecommendedTopicsBy,
-            initialNumberOfTopicsLimitEachFeedFetch = numberOfTopicsLimitEachFeedFetch,
-            onDismissRequest = { openAlertDialog = false }
-        ) { enableNotificationsToSave, allowNotificationUpdatesToSave, sortRecommendedTopicsByToSave, numberOfTopicsLimitEachFeedFetchToSave ->
-            saveNotificationsPreference(
-                enableNotificationsToSave,
-                allowNotificationUpdatesToSave,
-                sortRecommendedTopicsByToSave,
-                numberOfTopicsLimitEachFeedFetchToSave
-            )
-            openAlertDialog = false
+        if (openNotificationsPreferenceDialog) {
+            GroupNotificationPreferencesDialog(
+                titleTextResId = R.string.group_notification_preferences,
+                initialPreference = group.notificationPreferences ?: defaultNotificationsPreference,
+                onDismissRequest = { openNotificationsPreferenceDialog = false }
+            ) { preferenceToSave ->
+                saveNotificationsPreference(preferenceToSave)
+                openNotificationsPreferenceDialog = false
+            }
         }
     }
+
 
 }
 
@@ -266,26 +256,24 @@ fun GroupDetailTopBar(
 
                         }
                         Row {
-                            @Suppress("ConstantConditionIf") 
-                            if (false) {
-                                group?.apply {
-                                    val memberRole = memberRole
-                                    val isSubscribed = isSubscribed
-                                    val isFavorited = group.isFavorited
-                                    if (isFavorited || isSubscribed == true || memberRole in setOf(
-                                            GroupMemberRole.MEMBER,
-                                            GroupMemberRole.MEMBER_ADMIN,
-                                        )
-                                    ) { 
-                                        NotificationsButton(
-                                            groupColor = group.color?.let {
-                                                Color(it)
-                                            } ?: LocalContentColor.current,
-                                            enableNotifications = enableNotifications ?: false,
-                                            showPrefDialog = showNotificationsPrefDialog)
+                            group?.apply {
+                                val memberRole = memberRole
+                                val isSubscribed = isSubscribed
+
+                                if (notificationPreferences != null || isFavorited || isSubscribed == true || memberRole in setOf(
+                                        GroupMemberRole.MEMBER,
+                                        GroupMemberRole.MEMBER_ADMIN,
+                                    )
+                                ) { 
+                                    GroupNotificationsButton(
+                                        groupColor = group.color?.let {
+                                            Color(it)
+                                        } ?: MaterialTheme.colorScheme.primary,
+                                        notificationsEnabled = notificationPreferences?.notificationsEnabled
+                                            ?: false,
+                                        onOpenPreferencesDialog = showNotificationsPrefDialog)
 
 
-                                    }
                                 }
                             }
 
@@ -527,3 +515,26 @@ fun GroupPager(
     }
 }
 
+@Composable
+private fun GroupNotificationsButton(
+    groupColor: Color,
+    notificationsEnabled: Boolean,
+    onOpenPreferencesDialog: () -> Unit,
+) {
+    OutlinedIconButton(
+        onClick = onOpenPreferencesDialog,
+        colors = IconButtonDefaults.outlinedIconButtonColors(
+            contentColor = Color.White,
+            containerColor = groupColor
+        )
+    ) {
+        Icon(
+            imageVector = if (notificationsEnabled) {
+                Icons.Filled.Notifications
+            } else {
+                Icons.Filled.NotificationAdd
+            },
+            contentDescription = null
+        )
+    }
+}

@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.NotificationAdd
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.DropdownMenu
@@ -15,7 +17,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -36,14 +36,15 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.groups.common.NotificationsButton
 import com.github.bumblebee202111.doubean.model.GroupDetail
+import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.TopicItem
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.model.toItem
-import com.github.bumblebee202111.doubean.ui.GroupNotificationsPreferenceDialog
+import com.github.bumblebee202111.doubean.ui.GroupNotificationPreferencesDialog
 import com.github.bumblebee202111.doubean.ui.SortTopicsBySpinner
 import com.github.bumblebee202111.doubean.ui.TopicItem
+import com.github.bumblebee202111.doubean.ui.TopicItemDisplayMode
 import com.github.bumblebee202111.doubean.ui.common.rememberLazyListStatePagingWorkaround
 import com.github.bumblebee202111.doubean.util.ShareUtil
 
@@ -65,7 +66,7 @@ fun GroupTabScreen(
     val shouldDisplayFavoritedTab = viewModel.shouldDisplayFavoritedTab
     val shouldDisplayUnfavoritedTab = viewModel.shouldDisplayUnfavoritedTab
     val sortBy by viewModel.sortBy.collectAsStateWithLifecycle()
-
+    val defaultNotificationsPreference by viewModel.defaultNotificationPreferences.collectAsStateWithLifecycle()
     GroupTabScreen(
         tabId = tabId,
         topicPagingItems = topicPagingItems,
@@ -73,12 +74,13 @@ fun GroupTabScreen(
         shouldDisplayUnfavoritedTab = shouldDisplayUnfavoritedTab,
         sortBy = sortBy,
         group = group,
+        defaultNotificationsPreference = defaultNotificationsPreference,
         clearFavoritedTabState = viewModel::clearFavoritedTabState,
         clearUnfavoritedTabState = viewModel::clearUnfavoritedTabState,
         updateSortBy = viewModel::updateSortBy,
         removeFavorite = viewModel::removeFavorite,
         addFavorite = viewModel::addFavorite,
-        saveNotificationsPreference = viewModel::saveNotificationsPreference,
+        saveNotificationsPreference = viewModel::saveNotificationPreferences,
         onTopicClick = onTopicClick,
         onShowSnackbar = onShowSnackbar
     )
@@ -92,12 +94,13 @@ fun GroupTabScreen(
     shouldDisplayUnfavoritedTab: Boolean,
     sortBy: TopicSortBy?,
     group: GroupDetail?,
+    defaultNotificationsPreference: GroupNotificationPreferences?,
     clearFavoritedTabState: () -> Unit,
     clearUnfavoritedTabState: () -> Unit,
     updateSortBy: (topicSortBy: TopicSortBy) -> Unit,
     removeFavorite: () -> Unit,
     addFavorite: () -> Unit,
-    saveNotificationsPreference: (enableNotifications: Boolean, allowNotificationUpdates: Boolean, sortRecommendedTopicsBy: TopicSortBy, numberOfTopicsLimitEachFeedFetch: Int) -> Unit,
+    saveNotificationsPreference: (preferences: GroupNotificationPreferences) -> Unit,
     onTopicClick: (topicId: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
 ) {
@@ -144,25 +147,16 @@ fun GroupTabScreen(
 
     if (openAlertDialog) {
         group?.tabs?.find { it.id == tabId }?.let { tab ->
-            val enableNotifications = tab.enableNotifications
-            val allowNotificationUpdates = tab.allowDuplicateNotifications
-            val sortRecommendedTopicsBy = tab.sortRecommendedTopicsBy
-            val numberOfTopicsLimitEachFeedFetch = tab.feedRequestTopicCountLimit
-            if (enableNotifications != null && allowNotificationUpdates != null && sortRecommendedTopicsBy != null && numberOfTopicsLimitEachFeedFetch != null) {
-                GroupNotificationsPreferenceDialog(
-                    titleTextResId = R.string.tab_notifications_preference,
-                    initialEnableNotifications = enableNotifications,
-                    initialAllowNotificationUpdates = allowNotificationUpdates,
-                    initialSortRecommendedTopicsBy = sortRecommendedTopicsBy,
-                    initialNumberOfTopicsLimitEachFeedFetch = numberOfTopicsLimitEachFeedFetch,
+            if (defaultNotificationsPreference != null) {
+                GroupNotificationPreferencesDialog(
+                    titleTextResId = R.string.tab_notification_preferences,
+                    initialPreference = tab.notificationPreferences
+                        ?: defaultNotificationsPreference,
                     onDismissRequest = {
                         openAlertDialog = false
-                    }) { enableNotificationsToSave, allowNotificationUpdatesToSave, sortRecommendedTopicsByToSave, numberOfTopicsLimitEachFeedFetchToSave ->
+                    }) { preferencesToSave ->
                     saveNotificationsPreference(
-                        enableNotificationsToSave,
-                        allowNotificationUpdatesToSave,
-                        sortRecommendedTopicsByToSave,
-                        numberOfTopicsLimitEachFeedFetchToSave
+                        preferencesToSave
                     )
                     openAlertDialog = false
                 }
@@ -198,21 +192,14 @@ private fun LazyListScope.tabActionsItem(
             group?.findTab(tabId)?.let { tab ->
                 
                 Row {
-                    val areNotificationsEnabled = false
-                    if (areNotificationsEnabled) {
-                        tab.enableNotifications?.let { enableNotifications ->
-                            NotificationsButton(
-                                groupColor = group.color?.let { color ->
-                                    Color(color)
-                                } ?: LocalContentColor.current,
-                                enableNotifications = enableNotifications
-                            ) {
-                                onOpenAlertDialog()
-                            }
+                    if (tab.isFavorite || tab.notificationPreferences != null) {
+                        TabNotificationsButton(
+                            notificationsEnabled = tab.notificationPreferences?.notificationsEnabled
+                                ?: false
+                        ) {
+                            onOpenAlertDialog()
                         }
-                    }
 
-                    if (tab.isFavorite) {
                         IconButton(removeFavorite) {
                             Icon(imageVector = Icons.Default.Star, contentDescription = null)
                         }
@@ -256,6 +243,8 @@ private fun LazyListScope.tabActionsItem(
                         )
                     }
                 }
+
+
             }
         }
     }
@@ -284,6 +273,21 @@ private fun LazyListScope.topicItems(
     }
 }
 
-enum class TopicItemDisplayMode {
-    SHOW_AUTHOR, SHOW_GROUP
+@Composable
+private fun TabNotificationsButton(
+    notificationsEnabled: Boolean,
+    onOpenPreferencesDialog: () -> Unit,
+) {
+    IconButton(
+        onClick = onOpenPreferencesDialog,
+    ) {
+        Icon(
+            imageVector = if (notificationsEnabled) {
+                Icons.Filled.Notifications
+            } else {
+                Icons.Filled.NotificationAdd
+            },
+            contentDescription = null
+        )
+    }
 }

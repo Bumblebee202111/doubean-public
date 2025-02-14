@@ -4,9 +4,9 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.github.bumblebee202111.doubean.model.TopicItemWithGroup
 
-data class PopulatedRecommendedTopicNotificationItem(
+data class PopulatedTopicNotificationItem(
     @Embedded
-    val entity: RecommendedTopicNotificationEntity,
+    val entity: TopicNotificationEntity,
 
     @Relation(
         parentColumn = "topic_id",
@@ -16,7 +16,7 @@ data class PopulatedRecommendedTopicNotificationItem(
     val topicWithGroup: PopulatedTopicItemWithGroup,
 )
 
-fun PopulatedRecommendedTopicNotificationItem.asExternalModel(): TopicItemWithGroup {
+fun PopulatedTopicNotificationItem.asExternalModel(): TopicItemWithGroup {
     return topicWithGroup.asExternalModel()
 
 }
