@@ -16,8 +16,8 @@ import androidx.work.WorkManager
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.ui.DoubeanApp
 import com.github.bumblebee202111.doubean.ui.theme.AppTheme
-import com.github.bumblebee202111.doubean.workers.RecommendPostsWorker
-import com.github.bumblebee202111.doubean.workers.RecommendPostsWorker.Companion.WORK_NAME
+import com.github.bumblebee202111.doubean.workers.TopicNotificationsWorker
+import com.github.bumblebee202111.doubean.workers.TopicNotificationsWorker.Companion.WORK_NAME
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
@@ -59,8 +59,8 @@ class MainActivity : AppCompatActivity() {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .setRequiresBatteryNotLow(true)
             .build()
-        val notifyPostRecommendationsRequest =
-            PeriodicWorkRequestBuilder<RecommendPostsWorker>(
+        val notifyTopicsRequest =
+            PeriodicWorkRequestBuilder<TopicNotificationsWorker>(
                 15,
                 TimeUnit.MINUTES
             ).setConstraints(constraints).build()
@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
                     true -> {
                         workManager.enqueueUniquePeriodicWork(
                             WORK_NAME,
-                            ExistingPeriodicWorkPolicy.KEEP, notifyPostRecommendationsRequest
+                            ExistingPeriodicWorkPolicy.KEEP, notifyTopicsRequest
                         )
                     }
                     false -> {

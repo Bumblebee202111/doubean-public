@@ -13,11 +13,8 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-// There might be a post module in the future
-// Currently, "recommend posts", "feed", "notify" are interchangeable in many places
-
 @HiltWorker
-class RecommendPostsWorker @AssistedInject constructor(
+class TopicNotificationsWorker @AssistedInject constructor(
     @Assisted appContext: Context, @Assisted params: WorkerParameters,
     private val userGroupRepository: UserGroupRepository,
     @Dispatcher(
@@ -31,7 +28,7 @@ class RecommendPostsWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         return withContext(ioDispatcher) {
-            val loadedSuccessfully = userGroupRepository.getRecommendedPosts()
+            val loadedSuccessfully = userGroupRepository.getNextTargetTopicNotifications()
             if (loadedSuccessfully)
                 Result.success()
             else
@@ -40,6 +37,6 @@ class RecommendPostsWorker @AssistedInject constructor(
     }
 
     companion object {
-        const val WORK_NAME = "com.github.bumblebee202111.doubean.work.RecommendPostsWorker"
+        const val WORK_NAME = "com.github.bumblebee202111.doubean.work.RecommendTopicsWorker"
     }
 }

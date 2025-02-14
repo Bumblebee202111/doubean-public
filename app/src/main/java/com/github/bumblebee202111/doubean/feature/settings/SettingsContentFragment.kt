@@ -20,7 +20,7 @@ class SettingsContentFragment : PreferenceFragmentCompat() {
 
     private val settingsViewModel: SettingsViewModel by viewModels()
 
-    private var perFollowDefaultNotificationsPreferencesPreference: Preference? = null
+    private var groupDefaultNotificationsPreferencesPreference: Preference? = null
     private var startAppWithGroupsPreference: SwitchPreferenceCompat? = null
     private var notificationsSwitchPreference: SwitchPreferenceCompat? = null
     private var appVersionPreference: Preference? = null
@@ -29,7 +29,7 @@ class SettingsContentFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
-        perFollowDefaultNotificationsPreferencesPreference =
+        groupDefaultNotificationsPreferencesPreference =
             preferenceManager.findPreference("per_follow_default_notifications_preferences")
         startAppWithGroupsPreference =
             preferenceManager.findPreference("start_app_with_groups")
@@ -48,6 +48,11 @@ class SettingsContentFragment : PreferenceFragmentCompat() {
                 settingsViewModel.toggleEnableNotifications()
                 true
             }
+
+        groupDefaultNotificationsPreferencesPreference?.setOnPreferenceClickListener {
+            onGroupDefaultNotificationsPreferencesSettingsClick()
+            true
+        }
 
         startAppWithGroupsPreference?.onPreferenceChangeListener =
             Preference.OnPreferenceChangeListener { _, _ ->

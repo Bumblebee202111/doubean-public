@@ -6,16 +6,20 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Upsert
 import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupEntity
 import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupTabEntity
+import com.github.bumblebee202111.doubean.data.db.model.GroupGroupNotificationTargetEntity
+import com.github.bumblebee202111.doubean.data.db.model.GroupGroupNotificationTargetPartialEntity
+import com.github.bumblebee202111.doubean.data.db.model.GroupTabNotificationTargetEntity
+import com.github.bumblebee202111.doubean.data.db.model.GroupTabNotificationTargetPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupUserTopicFeedItemEntity
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedGroupFavoriteItem
-import com.github.bumblebee202111.doubean.data.db.model.PopulatedRecommendedTopicNotificationItem
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItemWithGroup
-import com.github.bumblebee202111.doubean.data.db.model.RecommendedTopicNotificationEntity
+import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicNotificationItem
 import com.github.bumblebee202111.doubean.data.db.model.SimpleGroupPartialEntity
+import com.github.bumblebee202111.doubean.data.db.model.TopicNotificationEntity
 import com.github.bumblebee202111.doubean.data.db.model.UserJoinedGroupIdEntity
-import com.github.bumblebee202111.doubean.model.TopicSortBy
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -84,97 +88,57 @@ ON user_joined_group_ids.group_id = groups.id WHERE user_id=:userId ORDER BY `in
     )
     fun loadAllFavorites(): Flow<List<PopulatedGroupFavoriteItem>>
 
-    @Query("SELECT * FROM recommended_topic_notifications")
-    suspend fun getRecommendedTopicNotifications(): List<RecommendedTopicNotificationEntity>
+    @Query("SELECT * FROM topic_notifications")
+    suspend fun getTopicNotifications(): List<TopicNotificationEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRecommendedTopicNotifications(recommendedTopicNotifications: List<RecommendedTopicNotificationEntity>)
+    suspend fun insertTopicNotifications(topicNotifications: List<TopicNotificationEntity>)
 
     @Transaction
-    @Query("SELECT * FROM recommended_topic_notifications ORDER BY notified_last_updated DESC")
-    fun recommendedTopicNotificationsPagingSource(): PagingSource<Int, PopulatedRecommendedTopicNotificationItem>
+    @Query("SELECT * FROM topic_notifications ORDER BY update_time DESC")
+    fun topicNotificationsPagingSource(): PagingSource<Int, PopulatedTopicNotificationItem>
 
-    @Query("UPDATE favorite_groups SET enable_notifications = 0 WHERE group_id = :groupId")
-    suspend fun disableFavoritedGroupNotifications(groupId: String)
 
-    @Query("UPDATE favorite_groups SET enable_notifications = 1 WHERE group_id = :groupId")
-    suspend fun enableGroupNotifications(groupId: String)
+    @Upsert(entity = GroupGroupNotificationTargetEntity::class)
+    suspend fun upsertGroupNotificationTargetPreferences(
+        preferences: GroupGroupNotificationTargetPartialEntity,
+    )
 
-    @Query("UPDATE favorite_group_tabs SET enable_notifications = 0 WHERE tab_id = :tabId")
-    suspend fun disableFollowedTabNotifications(tabId: String)
-
-    @Query("UPDATE favorite_group_tabs SET enable_notifications = 1 WHERE tab_id = :tabId")
-    suspend fun enableFollowedTabNotifications(tabId: String)
+    @Upsert(entity = GroupTabNotificationTargetEntity::class)
+    suspend fun upsertTabNotificationTargetPreferences(
+        preferences: GroupTabNotificationTargetPartialEntity,
+    )
 
     @Query(
         """
-        UPDATE favorite_groups SET 
-        enable_notifications = :enableTopicNotifications, 
-        allow_duplicate_notifications = :allowDuplicateNotifications, 
-        sort_recommended_topics_by = :sortRecommendedTopicsBy, 
-        feed_request_topic_count_limit = :feedRequestTopicCountLimit 
-        WHERE group_id = :groupId
+        UPDATE group_notification_group_targets SET 
+        last_fetched_time_millis = :lastFetchedTimeMillis 
+        WHERE group_id=:groupId
     """
     )
-    suspend fun updateFavoritedGroupNotificationsPref(
+    suspend fun updateGroupNotificationGroupTargetLastFetchedTimeMillis(
         groupId: String,
-        enableTopicNotifications: Boolean,
-        allowDuplicateNotifications: Boolean,
-        sortRecommendedTopicsBy: TopicSortBy,
-        feedRequestTopicCountLimit: Int,
+        lastFetchedTimeMillis: Long,
     )
 
     @Query(
         """
-        UPDATE favorite_group_tabs SET 
-        enable_notifications = :enableTopicNotifications, 
-        allow_duplicate_notifications = :allowDuplicateNotifications, 
-        sort_recommended_topics_by = :sortRecommendedTopicsBy, 
-        feed_request_topic_count_limit = :apiTopicCountLimitEachFeed 
-        WHERE tab_id = :tabId
+        UPDATE group_notification_tab_targets SET 
+        last_fetched_time_millis = :lastFetchedTimeMillis 
+        WHERE group_id=:groupId AND tab_id = :tabId
     """
     )
-    suspend fun updateFollowedTabNotificationsPref(
-        tabId: String,
-        enableTopicNotifications: Boolean,
-        allowDuplicateNotifications: Boolean,
-        sortRecommendedTopicsBy: TopicSortBy,
-        apiTopicCountLimitEachFeed: Int,
-    )
-
-    @Query(
-        """
-        UPDATE favorite_groups SET 
-        last_notified_time_millis = :lastNotifiedTimeMillis 
-        WHERE group_id = :groupId
-    """
-    )
-    suspend fun updateFavoritedGroupLastNotifiedTimeMillis(
+    suspend fun updateGroupNotificationTabTargetLastFetchedTimeMillis(
         groupId: String,
-        lastNotifiedTimeMillis: Long,
+        tabId: String?,
+        lastFetchedTimeMillis: Long,
     )
 
-    @Query(
-        """
-        UPDATE favorite_group_tabs SET 
-        last_notified_time_millis = :lastNotifiedTimeMillis 
-        WHERE tab_id = :tabId
-    """
-    )
-    suspend fun updateFollowedTabLastNotifiedTimeMillis(tabId: String, lastNotifiedTimeMillis: Long)
+    @Query("SELECT * FROM group_notification_group_targets WHERE notifications_enabled = 1 ORDER BY last_fetched_time_millis ASC LIMIT 1")
+    suspend fun getLeastRecentlyFetchedGroupNotificationTarget(): GroupGroupNotificationTargetEntity?
 
-    @Query("SELECT * FROM favorite_groups WHERE enable_notifications = 1 ORDER BY last_notified_time_millis ASC LIMIT 1")
-    suspend fun getLeastRecentlyNotifiedGroup(): FavoriteGroupEntity?
-
-    @Transaction
-    @Query(
-        """SELECT * FROM favorite_group_tabs
-        WHERE enable_notifications = 1 
-        ORDER BY last_notified_time_millis ASC LIMIT 1
-    """
-    )
-    suspend fun getLeastRecentlyNotifiedTab(): FavoriteGroupTabEntity?
-
+    @Query("SELECT * FROM group_notification_tab_targets WHERE notifications_enabled = 1 ORDER BY last_fetched_time_millis ASC LIMIT 1")
+    suspend fun getLeastRecentlyFetchedTabNotificationTarget(): GroupTabNotificationTargetEntity?
     @Transaction
     @Query(
         """

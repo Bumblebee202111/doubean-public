@@ -1,9 +1,12 @@
 package com.github.bumblebee202111.doubean.feature.notifications
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -22,9 +25,9 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.groups.groupTab.TopicItemDisplayMode
 import com.github.bumblebee202111.doubean.model.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.ui.TopicItem
+import com.github.bumblebee202111.doubean.ui.TopicItemDisplayMode
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.util.DEEP_LINK_SCHEME_AND_HOST
 import com.github.bumblebee202111.doubean.util.GROUP_PATH
@@ -83,6 +86,22 @@ fun NotificationsScreen(
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(horizontal = 16.dp),
                 )
+            }
+            item {
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 4.dp)
+                ) {
+                    Icon(imageVector = Icons.Default.Info, contentDescription = null)
+                    Text(
+                        text = stringResource(R.string.notifications_info),
+
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+
             }
             items(notificationPagingItems.itemCount,
                 notificationPagingItems.itemKey { it.id },

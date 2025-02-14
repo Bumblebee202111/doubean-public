@@ -5,14 +5,14 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 
-@Entity("recommended_topic_notifications")
-data class RecommendedTopicNotificationEntity(
+@Entity("topic_notifications")
+data class TopicNotificationEntity(
     @PrimaryKey
     @ColumnInfo("topic_id")
     val topicId: String,
 
-    @ColumnInfo("notified_last_updated")
-    val notifiedLastUpdated: LocalDateTime,
+    @ColumnInfo("update_time")
+    val updateTime: LocalDateTime,
 
     val isNotificationUpdated: Boolean = false,
 )
