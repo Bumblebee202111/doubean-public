@@ -4,7 +4,7 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section. Subjects module is under construction.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。书影~~音~~模块开发中。\)
 
-Note: This personal project implements some essential features as well as user requested ones which are practical. It is also going to be used as my playground for trending technologies such as Jetpack Compose. Occasional crashes may happen, UI design may be incomplete and features you need may be missing.
+Note: This personal project implements essential and user requested-features. It also serves as a playground for experimenting with trending technologies like Jetpack Compose. Occasional crashes, incomplete UI designs, or missing features may occur.
 
 **Known issues:**
 
@@ -26,7 +26,7 @@ Introduction
 ##### Home Screen
 
 - Top 250 Movies/Books
-- My movie/tv/book statuses
+- My movie/TV/book statuses
 
 ##### Interests Screen
 
@@ -53,7 +53,7 @@ Introduction
 
 * My groups
 * Favorite groups and tabs
-* My topics (or groups of the day, for guests)
+* My topics (or groups of the day for guests)
 
 
 ##### Group Detail Screen
@@ -112,41 +112,41 @@ Introduction
 ### Using this app
 
 - [Latest release][latest-elease]
-- Supported Android versions: 8.1 - 14 (and also 15, virtually)
+- Supported Android versions: 8.1 - 14 (and virtually 15)
 - Feel free to file issues
-  - Specifically, if some data doesn't show, an error on JSON parsing probably occurs. Including the content title, related urls of the resource (gained from the Douban app), or raw JSON response (if possible) in the issue might help solve it
-- It's suggested to let the Douban app coexist
-  - Please support the official product
-  - Lots of content is missing in doubean
+  - If certain data doesn’t display, it’s likely due to a JSON parsing error. Including details like the content title, related URLs (obtained from the Douban app), or raw JSON responses (if possible) in your issue can help resolve the issue faster.
+- It's recommended to keep the Douban app coexist
+  - Support the official product
+  - Some content is missing in doubean
   - Especially for [rooted users](#reuse-login-session)
-- Sometimes you need to manually clear app data after installation when I forget to handle ROOM database schema change 
+- Occasionally, you may need to manually clear app data after installation if I forget to handle ROOM database schema changes properly.
 
 [latest-elease]: https://github.com/Bumblebee202111/doubean-public/releases/latest
 
-### Ain't it Open-source?
+### Why isn’t it open-source?
 
-To not get this project/myself into trouble, the push of the source code (NOT the release APKs) into the public repo has been suspended. However, if you are interested in some insensitive code, I may consider sharing it.
+To avoid potential issues, pushing the source code (not the release APKs) to the public repository has been suspended. However, if you’re interested in non-sensitive parts of the code, I may consider sharing them upon request.
 
 ### Your do's and don'ts
 
-- Please use it only for personal learning purposes. 
-- Please don't share it on other websites/apps without permission.
+- **Do:** Use this app only for personal learning purposes.
+- **Don’t:** Share it on other websites or apps without permission.
 
 ### Features
 
-* Provides simple type-based Subjects (书影~~音~~) experience including support of user actions (WIP 🚧)
+* Provides a simple type-based Subjects (书影~~音~~) experience with support for user actions (WIP 🚧)
 * Groups
   * Favorite tabs/groups locally
   * Customizable topic notifications
-* Ad-free, lite \(~4MB\)
-* Rooted users can reuse the **existing** login session of Douban app
-  * Note: Phone login is not available
+* Ad-free and lightweight: ~4MB
+* Rooted users can reuse the **existing** login session from Douban app
+  * Note: Phone login is not supported
 
-* Partially support URL deep links
-* Partial offline caching support in Groups
+* Partial support for URL deep links
+* Partial offline caching support for Groups
 * Very basic Statuses tab (no longer updated)
-* Partial support for viewing content in Douban WebView optimized for mobile reading in case of need (no longer updated)
-* Basic use of MD2/3 (UI may not look good during migration)
+* Partial support for viewing content in a mobile-optimized Douban WebView (no longer updated).
+* Basic use of MD 2/3 (UI may look inconsistent during migration)
 
 Libraries Used
 --------------
@@ -212,7 +212,7 @@ Libraries Used
 
 ### Plans
 
-Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Mainly for myself.
+Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for myself.
 
 #### To-dos for current release \(0.7.12\)
 
@@ -229,10 +229,10 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Bottom navigation
 
-  * Top left avatar
+  * Top-left avatar
   * Remove Settings buttons
 
-* Allow non rooted users (guests) to browse personal content if user ID is provided
+* Allow non rooted users (guests) to browse personal content if a user ID is provided
 
 * Subjects
 
@@ -240,9 +240,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
   * (Single-)status interests screen & its pagination
   * Interest buttons
-    * Maybe choose tonal style instead
-  * Tweak reviews sheet
-    * Better arrangement of review counts
+    * Consider tonal style
+  * Tweak reviews sheet for better arrangement of review counts
   * More details & sub-features
 
 * Remember last bottom/Subjects tabs
@@ -250,7 +249,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Groups
   * Dynamic topic sorts-by
 
-  - Caching everything in ROOM was a mistake, adding much complexity
+  - Re-evaluate ROOM caching, as it added unnecessary complexity
   - Optimize colors for group-themed screens
 
   * Home
@@ -259,16 +258,14 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * Save topics
     * Pin my groups
     * Add corresponding item actions
-  * Group tab: Track read
+  * Group tab: Track read status
   * Search
-    * Search group/tab topics (in-group) 
-    * Search topics of all groups (global)
+    * Search topics within a group/tab
+    * Search topics across all groups (global)
   * Use the new nullable "edit_time" property of network topics
-  * Gradually revert naming conventions to those of Douban
-  * Group Detail
-    * Collapse on entrance for the subscribed/favorited group/tab
-  * Expand/collapse component
-    * Do not show action for short text
+  * Revert naming conventions to match Douban's standards
+  * Group Detail: Collapse on entrance for the subscribed/favorited group/tab
+  * Expand/collapse component: Hide action for short text
   * Groups: Group/tab/topic shortcuts
   * Topic content WebView problems
     * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
@@ -278,7 +275,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Hide officially-marked unfriendly content by default
   * Support blocking unfriendly content
   * Lists: Reddit-like item expand/collapse
-  * Find API for all followed topics (hopeless)
+  * Find API for all followed topics (currently unlikely)
 
 * Properly show login prompts & normal tips/info
 
@@ -289,37 +286,32 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Process error body
   * Show error messages
 
-* Bring back load state visualization which was removed for simplicity during various types of migrations
+* Load state visualization (removed for during migrations simplicity)
   * Paging 3 refresh, loading status ...
 
-* Bring back basic support for dark mode & landscape experience
+* Restore basic support for dark mode & landscape experience
 
-* Migrate WebView/RatingBar/PreferenceFragmentCompat into Compose + MD 3
-
-  * Not making much sense now
+* Migrate `WebView`, `RatingBar`, and `PreferenceFragmentCompat` to Jetpack Compose and MD3.
 
 * Shared element
 
-* Better model layering
+* Improve model layering
 
 * Languages
   * Translations
   * Pick language
 
-* `Lazylist` problems
-  * Restoration of scroll position is problematic
-
 * NetworkManager
 
 * Widgets
 
-* Reuse more existing Douban preferences to make requests more consistent in the two apps
+* Reuse more existing Douban preferences to make requests more consistent between the two apps
 
-* Maybe use single NavHost
+* Consider use single NavHost
 
-* Independent login (hopeless)
+* Independent login (currently unlikely)
 
-* Statuses (in maintenance state now, only when requested)
+* Statuses (maintenance state)
   * More card types
   * Pagination
 
@@ -337,7 +329,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * [Github Browser Sample with Android Architecture Components][github-browser-sample]
 * [Android Architecture Blueprints v1 (todo-mvvm-live)][todo-mvvm-live]
 * [Material Design][material]
-* Various social apps as references for UI design
+* Various social apps: used as references for UI design and functionality
 
 [sunflower]: https://github.com/android/sunflower
 
@@ -351,9 +343,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Utilities
 
-* [HTTPCanary][http-canary] for Douban access
+* [HTTPCanary][http-canary] for analyzing Douban API requests
 * [jadx][jadx]-gui for understanding models
-* [Google Chrome][google-chrome] for CSS debugging
+* [Google Chrome][google-chrome] for debugging CSS
 
 [http-canary]:https://github.com/MegatronKing/HttpCanary/
 
@@ -363,7 +355,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Stars :star: & Donation :coffee:
 
-I'm totally aware that this app is mediocre. However, the increasing number of stars keep me motivated! Thank you!
+I know this app isn’t perfect, but the growing number of stars keeps me motivated to keep working on it. Thank you for your support!
 
-If you find it really useful and would like to buy me a coffee, which I am not ready for, please contact me by creating an issue.
+If you find the app really useful and would like to buy me a coffee (though I’m not actively looking for donations), you can contact me by creating an issue.
 

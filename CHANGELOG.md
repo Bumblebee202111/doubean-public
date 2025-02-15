@@ -3,6 +3,18 @@ Change Log
 
 ## Version 0.7.12(712)
 
+- Fix: The feature of group topic notifications is finally restored after extensive code refactoring
+- Fix: `ExpandCollapseText` now fills max width
+- Fix: Restore padding in DoubeanWebView in WebViewScreen
+- Fix: Fixed header group info alignment in Topic Detail
+- Migration to Compose
+  - Topic detail header & Notifications dialog are migrated to Compose
+  - Removed/deprecated components:
+    - View Data Binding
+    - Android Spinner
+    - Layout/menu XML files
+    - Content of `styles.xml`
+
 ## Version 0.7.11(711)
 
 - Migrate group topic item layouts to Compose MD3
