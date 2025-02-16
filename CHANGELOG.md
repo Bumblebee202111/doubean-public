@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.7.13(713)
+
 ## Version 0.7.12(712)
 
 - Fix: The feature of group topic notifications is finally restored after extensive code refactoring

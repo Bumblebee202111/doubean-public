@@ -4,7 +4,7 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section. Subjects module is under construction.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。书影~~音~~模块开发中。\)
 
-Note: This personal project implements essential and user requested-features. It also serves as a playground for experimenting with trending technologies like Jetpack Compose. Occasional crashes, incomplete UI designs, or missing features may occur.
+Note: This personal project implements essential and user-requested features. It also serves as a playground for experimenting with trending technologies like Jetpack Compose. Occasional crashes, incomplete UI designs, or missing features may occur.
 
 **Known issues:**
 
@@ -214,23 +214,22 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for myself.
 
-#### To-dos for current release \(0.7.12\)
-
-#### To-dos for next release \(0.7.13)
-
-
-#### Future plans
+#### To-dos for current release \(0.7.13\)
 
 * Profile
 
   * User info
 
   * Settings button
-
 * Bottom navigation
 
   * Top-left avatar
   * Remove Settings buttons
+
+#### To-dos for next release \(0.7.14)
+
+
+#### Future plans
 
 * Allow non rooted users (guests) to browse personal content if a user ID is provided
 
@@ -286,7 +285,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Process error body
   * Show error messages
 
-* Load state visualization (removed for during migrations simplicity)
+* Load state visualization (removed during migrations for simplicity)
   * Paging 3 refresh, loading status ...
 
 * Restore basic support for dark mode & landscape experience
