@@ -52,6 +52,6 @@ fun BottomNavHost(
             onGroupClick = navigateToGroupDetail,
             onTopicClick = navigateToTopic
         )
-        profileScreen(onLoginClick = navigateToLogin)
+        profileScreen(onSettingsClick = navigateToSettings, onLoginClick = navigateToLogin)
     }
 }
