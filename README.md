@@ -216,11 +216,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.13\)
 
-* Profile
-
-  * User info
-
-  * Settings button
 * Bottom navigation
 
   * Top-left avatar

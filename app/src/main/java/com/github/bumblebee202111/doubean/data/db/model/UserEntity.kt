@@ -9,11 +9,12 @@ import com.github.bumblebee202111.doubean.model.User
 data class UserEntity(
     @PrimaryKey
     val id: String,
+    val uid: String,
     val name: String,
     @ColumnInfo("avatar_url")
     val avatarUrl: String,
 )
 
 fun UserEntity.asExternalModel() = User(
-    id = id, name = name, avatarUrl = avatarUrl
+    id = id, uid = uid, name = name, avatarUrl = avatarUrl
 )
