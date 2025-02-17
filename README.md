@@ -216,12 +216,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### To-dos for current release \(0.7.13\)
 
-* Bottom navigation
-
-  * Top-left avatar
-    * Cache user info
-  * Remove Settings buttons
-
 #### To-dos for next release \(0.7.14)
 
 
