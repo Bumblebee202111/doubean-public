@@ -7,11 +7,13 @@ import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupsRepo
 import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
+import com.github.bumblebee202111.doubean.data.repository.UserRepository
 import com.github.bumblebee202111.doubean.model.GroupRecommendationType
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
@@ -25,7 +27,15 @@ class GroupsHomeViewModel @Inject constructor(
     userGroupRepository: UserGroupRepository,
     groupsRepo: GroupsRepo,
     authRepository: AuthRepository,
+    userRepository: UserRepository,
 ) : ViewModel() {
+
+    private val loggedInUserId = authRepository.observeLoggedInUserId()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val currentUser = loggedInUserId.flatMapLatest { userId ->
+        userId?.let { userRepository.getCachedUser(it) } ?: emptyFlow()
+    }.stateInUi()
 
     val joinedGroups = authRepository.observeLoggedInUserId().flatMapLatest { userId ->
         when (userId) {

@@ -219,6 +219,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Bottom navigation
 
   * Top-left avatar
+    * Cache user info
   * Remove Settings buttons
 
 #### To-dos for next release \(0.7.14)
@@ -239,6 +240,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * More details & sub-features
 
 * Remember last bottom/Subjects tabs
+
+* Do not use ugly Thumb Up icon of Material Icons
 
 * Groups
   * Dynamic topic sorts-by

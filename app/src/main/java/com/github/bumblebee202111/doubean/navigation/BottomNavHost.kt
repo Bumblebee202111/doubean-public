@@ -10,6 +10,7 @@ import com.github.bumblebee202111.doubean.feature.statuses.navigation.statusesSc
 import com.github.bumblebee202111.doubean.feature.subjects.navigation.subjectsScreen
 import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.model.SubjectsSearchType
+import com.github.bumblebee202111.doubean.ui.BottomNavDestination
 
 @Composable
 fun BottomNavHost(
@@ -34,9 +35,12 @@ fun BottomNavHost(
         startDestination = startDestination,
         modifier = modifier
     ) {
-        statusesScreen(onSettingsClick = navigateToSettings)
+        val navigateToProfile =
+            { navController.navigateToBottomNavDestination(BottomNavDestination.Profile) }
+
+        statusesScreen(onAvatarClick = navigateToProfile)
         subjectsScreen(
-            onSettingsClick = navigateToSettings,
+            onAvatarClick = navigateToProfile,
             onSubjectStatusClick = navigateToSubjectInterests,
             onLoginClick = navigateToLogin,
             onSearchClick = navigateToSearchSubjects,
@@ -46,9 +50,9 @@ fun BottomNavHost(
             onBookClick = navigateToBook,
         )
         groupsHomeScreen(
+            onAvatarClick = navigateToProfile,
             onSearchClick = navigateToSearch,
             onNotificationsClick = navigateToNotifications,
-            onSettingsClick = navigateToSettings,
             onGroupClick = navigateToGroupDetail,
             onTopicClick = navigateToTopic
         )

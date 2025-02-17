@@ -3,7 +3,9 @@ package com.github.bumblebee202111.doubean.data.db.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.github.bumblebee202111.doubean.data.db.model.UserEntity
+import kotlinx.coroutines.flow.Flow
 
 /**
  * The Data Access Object for the [UserEntity] class
@@ -11,8 +13,11 @@ import com.github.bumblebee202111.doubean.data.db.model.UserEntity
 @Dao
 interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUser(user: UserEntity)
+    suspend fun insertUser(user: UserEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUsers(users: List<UserEntity>)
+    suspend fun insertUsers(users: List<UserEntity>)
+
+    @Query("SELECT * FROM users WHERE id=:userId")
+    fun observeUser(userId: String): Flow<UserEntity?>
 }
