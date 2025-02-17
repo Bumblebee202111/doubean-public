@@ -189,7 +189,7 @@ class UserGroupRepository @Inject constructor(
                 if (currentNotificationTarget.sortBy == TopicSortBy.HOT_LAST_CREATED ||
                     currentNotificationTarget.sortBy == TopicSortBy.NEW_LAST_CREATED
                 )
-                    it.sortedByDescending(TopicItemPartialEntity::updateTime)
+                    it.sortedByDescending(TopicItemPartialEntity::createTime)
             }
 
             val existingTopicNotifications = userGroupDao.getTopicNotifications()
