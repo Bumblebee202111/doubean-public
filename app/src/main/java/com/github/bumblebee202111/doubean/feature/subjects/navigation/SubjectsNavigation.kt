@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 data object SubjectsRoute
 
 fun NavGraphBuilder.subjectsScreen(
-    onSettingsClick: () -> Unit,
+    onAvatarClick: () -> Unit,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
     onSearchClick: (type: SubjectsSearchType) -> Unit,
@@ -22,7 +22,7 @@ fun NavGraphBuilder.subjectsScreen(
 ) {
     composable<SubjectsRoute> {
         SubjectsScreen(
-            onSettingsClick = onSettingsClick,
+            onAvatarClick = onAvatarClick,
             onSubjectStatusClick = onSubjectStatusClick,
             onLoginClick = onLoginClick,
             onSearchClick = onSearchClick,

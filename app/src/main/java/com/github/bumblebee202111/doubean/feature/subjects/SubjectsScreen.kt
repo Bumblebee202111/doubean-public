@@ -11,7 +11,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Movie
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -21,24 +21,55 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.books.BooksScreen
 import com.github.bumblebee202111.doubean.feature.subjects.movies.MoviesScreen
 import com.github.bumblebee202111.doubean.feature.subjects.tvs.TvsScreen
 import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.model.SubjectsSearchType
+import com.github.bumblebee202111.doubean.model.User
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import kotlinx.coroutines.launch
 
+@Composable
+fun SubjectsScreen(
+    onAvatarClick: () -> Unit,
+    onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
+    onLoginClick: () -> Unit,
+    onSearchClick: (type: SubjectsSearchType) -> Unit,
+    onRankListClick: (collectionId: String) -> Unit,
+    onMovieClick: (movieId: String) -> Unit,
+    onTvClick: (tvId: String) -> Unit,
+    onBookClick: (bookId: String) -> Unit,
+    viewModel: SubjectsViewModel = hiltViewModel(),
+) {
+    val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
+    SubjectsScreen(
+        currentUser = currentUser,
+        onAvatarClick = onAvatarClick,
+        onSubjectStatusClick = onSubjectStatusClick,
+        onLoginClick = onLoginClick,
+        onSearchClick = onSearchClick,
+        onRankListClick = onRankListClick,
+        onMovieClick = onMovieClick,
+        onTvClick = onTvClick,
+        onBookClick = onBookClick
+    )
+}
 
 @Composable
 fun SubjectsScreen(
-    onSettingsClick: () -> Unit,
+    currentUser: User?,
+    onAvatarClick: () -> Unit,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
     onSearchClick: (type: SubjectsSearchType) -> Unit,
@@ -49,7 +80,7 @@ fun SubjectsScreen(
 ) {
     Scaffold(
         topBar = {
-            SubjectsAppBar(onSettingsClick)
+            SubjectsAppBar(currentUser = currentUser, onAvatarClick = onAvatarClick)
         }
     ) {
         val pagerState = rememberPagerState {
@@ -79,17 +110,21 @@ fun SubjectsScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SubjectsAppBar(onSettingsClick: () -> Unit) {
+private fun SubjectsAppBar(currentUser: User?, onAvatarClick: () -> Unit) {
     DoubeanTopAppBar(
-        title = {},
-        actions = {
-            IconButton(onClick = onSettingsClick) {
-                Icon(
-                    imageVector = Icons.Filled.Settings,
-                    contentDescription = null
-                )
+        navigationIcon = {
+            IconButton(onClick = onAvatarClick) {
+                if (currentUser == null) {
+                    Icon(imageVector = Icons.Default.Person, contentDescription = null)
+                } else {
+                    AsyncImage(
+                        model = currentUser.avatarUrl,
+                        contentDescription = null
+                    )
+                }
             }
-        }
+        },
+        title = {},
     )
 }
 

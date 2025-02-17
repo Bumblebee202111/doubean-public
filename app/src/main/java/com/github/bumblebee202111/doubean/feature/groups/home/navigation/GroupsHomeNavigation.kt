@@ -10,9 +10,9 @@ import kotlinx.serialization.Serializable
 data object GroupsHomeRoute
 
 fun NavGraphBuilder.groupsHomeScreen(
+    onAvatarClick: () -> Unit,
     onSearchClick: () -> Unit,
     onNotificationsClick: () -> Unit,
-    onSettingsClick: () -> Unit,
     onGroupClick: (groupId: String, tabId: String?) -> Unit,
     onTopicClick: (topicId: String) -> Unit,
 ) = composable<GroupsHomeRoute>(
@@ -26,9 +26,9 @@ fun NavGraphBuilder.groupsHomeScreen(
     )
 ) {
     GroupsHomeScreen(
+        onAvatarClick = onAvatarClick,
         onSearchClick = onSearchClick,
         onNotificationsClick = onNotificationsClick,
-        onSettingsClick = onSettingsClick,
         onGroupClick = onGroupClick,
         onTopicClick = onTopicClick
     )

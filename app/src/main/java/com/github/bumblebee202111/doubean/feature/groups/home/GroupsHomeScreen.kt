@@ -17,14 +17,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Group
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Tab
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -34,9 +32,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,6 +51,7 @@ import com.github.bumblebee202111.doubean.model.GroupFavoriteItem
 import com.github.bumblebee202111.doubean.model.GroupItem
 import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
 import com.github.bumblebee202111.doubean.model.TopicItemWithGroup
+import com.github.bumblebee202111.doubean.model.User
 import com.github.bumblebee202111.doubean.ui.TopicItem
 import com.github.bumblebee202111.doubean.ui.TopicItemDisplayMode
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
@@ -64,24 +60,26 @@ import java.util.Calendar
 @Composable
 fun GroupsHomeScreen(
     viewModel: GroupsHomeViewModel = hiltViewModel(),
+    onAvatarClick: () -> Unit,
     onSearchClick: () -> Unit,
     onNotificationsClick: () -> Unit,
-    onSettingsClick: () -> Unit,
     onGroupClick: (groupId: String, tabId: String?) -> Unit,
     onTopicClick: (topicId: String) -> Unit,
 ) {
+    val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
     val joinedGroups by viewModel.joinedGroups.collectAsStateWithLifecycle()
     val favorites by viewModel.favorites.collectAsStateWithLifecycle()
     val groupsOfTheDay by viewModel.groupsOfTheDay.collectAsStateWithLifecycle()
     val recentTopicsFeed by viewModel.recentTopicsFeed.collectAsStateWithLifecycle()
     GroupsHomeScreen(
+        currentUser = currentUser,
         joinedGroups = joinedGroups,
         favorites = favorites,
         groupsOfTheDay = groupsOfTheDay,
         recentTopicsFeed = recentTopicsFeed,
+        onAvatarClick = onAvatarClick,
         onSearchClick = onSearchClick,
         onNotificationsClick = onNotificationsClick,
-        onSettingsClick = onSettingsClick,
         onGroupClick = onGroupClick,
         onTopicClick = onTopicClick,
     )
@@ -90,19 +88,32 @@ fun GroupsHomeScreen(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun GroupsHomeScreen(
+    currentUser: User?,
     joinedGroups: List<GroupItem>?,
     favorites: List<GroupFavoriteItem>?,
     groupsOfTheDay: List<RecommendedGroupItem>?,
     recentTopicsFeed: List<TopicItemWithGroup>?,
+    onAvatarClick: () -> Unit,
     onSearchClick: () -> Unit,
     onNotificationsClick: () -> Unit,
-    onSettingsClick: () -> Unit,
     onGroupClick: (groupId: String, tabId: String?) -> Unit,
     onTopicClick: (topicId: String) -> Unit,
 ) {
     Scaffold(
         topBar = {
             DoubeanTopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = onAvatarClick) {
+                        if (currentUser == null) {
+                            Icon(imageVector = Icons.Default.Person, contentDescription = null)
+                        } else {
+                            AsyncImage(
+                                model = currentUser.avatarUrl,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                },
                 title = {},
                 actions = {
                     IconButton(onClick = onSearchClick) {
@@ -115,22 +126,6 @@ fun GroupsHomeScreen(
                         Icon(
                             imageVector = Icons.Filled.Notifications,
                             contentDescription = null
-                        )
-                    }
-                    var expanded by remember { mutableStateOf(false) }
-                    IconButton(onClick = { expanded = !expanded }) {
-                        Icon(
-                            imageVector = Icons.Filled.MoreVert,
-                            contentDescription = null
-                        )
-                    }
-                    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                        DropdownMenuItem(
-                            text = { Text(stringResource(id = R.string.settings)) },
-                            onClick = {
-                                expanded = false
-                                onSettingsClick()
-                            }
                         )
                     }
                 }
