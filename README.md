@@ -235,7 +235,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Remember last bottom/Subjects tabs
 
-* Do not use ugly Thumb Up icon of Material Icons
+* Do not use the ugly Thumb Up icon from Material Icons
 
 * Groups
   * Dynamic topic sorts-by
@@ -255,18 +255,25 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * Search topics across all groups (global)
   * Use the new nullable "edit_time" property of network topics
   * Revert naming conventions to match Douban's standards
-  * Group Detail: Collapse on entrance for the subscribed/favorited group/tab
-  * Expand/collapse component: Hide action for short text
-  * Groups: Group/tab/topic shortcuts
+  * Group Detail
+
+    * Collapse on entrance for the subscribed/favorited group/tab
+    * Fix group description action overflows
   * Topic content WebView problems
+
     * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
     * Sometimes topic content fails to be loaded on some low-end or large-screened devices, or of special layout (not sure which sets constraint)
     * LazyLayoutPinnableItem?
     * ...
-  * Hide officially-marked unfriendly content by default
-  * Support blocking unfriendly content
-  * Lists: Reddit-like item expand/collapse
-  * Find API for all followed topics (currently unlikely)
+
+    * Hide officially-marked unfriendly content by default
+    * Support blocking unfriendly content
+    * Lists: Reddit-like item expand/collapse
+    * Find API for all followed topics (currently unlikely)
+
+* Expand/collapse component: Hide action for short text
+
+* Shortcuts
 
 * Properly show login prompts & normal tips/info
 
