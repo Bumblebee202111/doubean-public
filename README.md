@@ -221,7 +221,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### Future plans
 
-* Allow non rooted users (guests) to browse personal content if a user ID is provided
+* Allow non rooted users (guests) to browse their subjects/groups if a user ID is provided
 
 * Subjects
 
@@ -241,7 +241,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Dynamic topic sorts-by
 
   - Re-evaluate ROOM caching, as it added unnecessary complexity
-  - Optimize colors for group-themed screens
+  - Optimize component colors for group-themed screens
 
   * Home
     * Maybe support pagination of recommended topics
@@ -303,7 +303,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Widgets
 
-* Reuse more existing Douban preferences to make requests more consistent between the two apps
+* Allow rooted users to optionally submit more existing preferences from the Douban app to make requests more consistent between the two apps
 
 * Consider use single NavHost
 

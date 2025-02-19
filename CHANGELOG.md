@@ -3,6 +3,14 @@ Change Log
 
 ## Version 0.7.13(713)
 
+- Update ProfileScreen
+  - Display current user info
+  - Add Settings button
+  - Optimize component styles
+- Add top-left avatars & remove Settings buttons for bottom tabs other than Profile
+- Fix topic order mistake when calculating topics to notify
+- Minor tweaks and optimizations
+
 ## Version 0.7.12(712)
 
 - Fix: The feature of group topic notifications is finally restored after extensive code refactoring
