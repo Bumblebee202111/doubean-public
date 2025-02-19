@@ -4,7 +4,7 @@ doubean
 An unofficial [Douban][douban] app mainly used for browsing the [Groups][douban-groups] section. Subjects module is under construction.
 \([豆瓣][douban]非官方app，主要用于[小组][douban-groups]浏览。书影~~音~~模块开发中。\)
 
-Note: This personal project implements essential and user requested-features. It also serves as a playground for experimenting with trending technologies like Jetpack Compose. Occasional crashes, incomplete UI designs, or missing features may occur.
+Note: This personal project implements essential and user-requested features. It also serves as a playground for experimenting with trending technologies like Jetpack Compose. Occasional crashes, incomplete UI designs, or missing features may occur.
 
 **Known issues:**
 
@@ -214,25 +214,14 @@ Libraries Used
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for myself.
 
-#### To-dos for current release \(0.7.12\)
+#### To-dos for current release \(0.7.13\)
 
-#### To-dos for next release \(0.7.13)
+#### To-dos for next release \(0.7.14)
 
 
 #### Future plans
 
-* Profile
-
-  * User info
-
-  * Settings button
-
-* Bottom navigation
-
-  * Top-left avatar
-  * Remove Settings buttons
-
-* Allow non rooted users (guests) to browse personal content if a user ID is provided
+* Allow non rooted users (guests) to browse their subjects/groups if a user ID is provided
 
 * Subjects
 
@@ -246,11 +235,13 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Remember last bottom/Subjects tabs
 
+* Do not use the ugly Thumb Up icon from Material Icons
+
 * Groups
   * Dynamic topic sorts-by
 
   - Re-evaluate ROOM caching, as it added unnecessary complexity
-  - Optimize colors for group-themed screens
+  - Optimize component colors for group-themed screens
 
   * Home
     * Maybe support pagination of recommended topics
@@ -264,18 +255,25 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * Search topics across all groups (global)
   * Use the new nullable "edit_time" property of network topics
   * Revert naming conventions to match Douban's standards
-  * Group Detail: Collapse on entrance for the subscribed/favorited group/tab
-  * Expand/collapse component: Hide action for short text
-  * Groups: Group/tab/topic shortcuts
+  * Group Detail
+
+    * Collapse on entrance for the subscribed/favorited group/tab
+    * Fix group description action overflows
   * Topic content WebView problems
+
     * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
     * Sometimes topic content fails to be loaded on some low-end or large-screened devices, or of special layout (not sure which sets constraint)
     * LazyLayoutPinnableItem?
     * ...
-  * Hide officially-marked unfriendly content by default
-  * Support blocking unfriendly content
-  * Lists: Reddit-like item expand/collapse
-  * Find API for all followed topics (currently unlikely)
+
+    * Hide officially-marked unfriendly content by default
+    * Support blocking unfriendly content
+    * Lists: Reddit-like item expand/collapse
+    * Find API for all followed topics (currently unlikely)
+
+* Expand/collapse component: Hide action for short text
+
+* Shortcuts
 
 * Properly show login prompts & normal tips/info
 
@@ -286,7 +284,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Process error body
   * Show error messages
 
-* Load state visualization (removed for during migrations simplicity)
+* Load state visualization (removed during migrations for simplicity)
   * Paging 3 refresh, loading status ...
 
 * Restore basic support for dark mode & landscape experience
@@ -305,7 +303,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Widgets
 
-* Reuse more existing Douban preferences to make requests more consistent between the two apps
+* Allow rooted users to optionally submit more existing preferences from the Douban app to make requests more consistent between the two apps
 
 * Consider use single NavHost
 
