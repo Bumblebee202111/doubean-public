@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.7.14(714)
+
 ## Version 0.7.13(713)
 
 - Update ProfileScreen
