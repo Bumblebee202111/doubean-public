@@ -135,10 +135,10 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
 ### Features
 
 * Provides a simple type-based Subjects (书影~~音~~) experience with support for user actions (WIP 🚧)
-* Groups
+* Groups. Custom features:
   * Favorite tabs/groups locally
+  * Custom topic sorts-by of create time by sorting each page of original data
   * Customizable topic notifications
-  * Partial offline caching
 * Ad-free and lightweight: ~4MB
 * Rooted users can reuse login sessions from Douban app (phone login not supported)
 * Partial support for URL deep links
