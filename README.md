@@ -197,9 +197,11 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for myself.
 
-#### Current release \(0.7.13\)
+#### Current release \(0.7.14\)
 
-#### Next release \(0.7.14)
+- Pagination of RankListScreen
+
+#### Next release \(0.7.15)
 
 
 #### Future plans
@@ -208,14 +210,12 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Subjects
 
-  * Pagination of RankListScreen
-
   * (Single-)status interests screen & its pagination
   * Interest buttons
     * Consider tonal style
   * Tweak reviews sheet for better arrangement of review counts
   * More details & sub-features
-
+  
 * Remember last active bottom navigation/Subjects tabs
 
 * Replace Material Icons’ "Thumb Up" icon
