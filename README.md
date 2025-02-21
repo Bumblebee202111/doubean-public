@@ -43,7 +43,7 @@ Introduction
 
 ##### Rank List Screen
 
-- First page of a rank list
+- Rank list
 
 #### Groups Screens
 
@@ -198,8 +198,6 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for myself.
 
 #### Current release \(0.7.14\)
-
-- Pagination of RankListScreen
 
 #### Next release \(0.7.15)
 

@@ -13,7 +13,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.model.Subject
 import com.github.bumblebee202111.doubean.model.SubjectWithRankAndInterest
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.rankList
@@ -27,8 +30,10 @@ fun RankListScreen(
     viewModel: RankListViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.rankListUiState.collectAsStateWithLifecycle()
+    val items = viewModel.itemsPagingData.collectAsLazyPagingItems()
     RankListScreen(
         uiState = uiState,
+        items = items,
         onMarkSubject = viewModel::onMarkSubject,
         onBackClick = onBackClick,
         onMovieClick = onMovieClick,
@@ -40,6 +45,7 @@ fun RankListScreen(
 @Composable
 fun RankListScreen(
     uiState: RankListUiState,
+    items: LazyPagingItems<SubjectWithRankAndInterest<out Subject>>,
     onMarkSubject: (subject: SubjectWithRankAndInterest<*>) -> Unit,
     onBackClick: () -> Unit,
     onMovieClick: (movieId: String) -> Unit,
@@ -63,7 +69,7 @@ fun RankListScreen(
                     with(uiState) {
                         rankList(
                             subjectCollection = rankList,
-                            items = items,
+                            subjectCollectionItems = items,
                             isLoggedIn = isLoggedIn,
                             onMovieClick = onMovieClick,
                             onTvClick = onTvClick,

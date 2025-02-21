@@ -78,9 +78,9 @@ fun ReshareStatusesScreen(
             contentPadding = paddingValues,
         ) {
             items(
-                reshareStatusLazyPagingItems.itemCount,
-                reshareStatusLazyPagingItems.itemKey { it.id },
-                reshareStatusLazyPagingItems.itemContentType { "reshareStatus" }) { index ->
+                count = reshareStatusLazyPagingItems.itemCount,
+                key = reshareStatusLazyPagingItems.itemKey { it.id },
+                contentType = reshareStatusLazyPagingItems.itemContentType { "reshareStatus" }) { index ->
                 val reshareStatus = reshareStatusLazyPagingItems[index]
 
                 Row(
