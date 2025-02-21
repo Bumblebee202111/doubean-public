@@ -134,7 +134,7 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
 
 ### Features
 
-* Provides a simple type-based Subjects (书影~~音~~) experience with support for user actions (WIP 🚧)
+* Provides a simple type-based Subjects experience with support for user actions (WIP 🚧)
 * Groups. Custom features:
   * Favorite tabs/groups locally
   * Custom topic sorts-by of create time by sorting each page of original data
@@ -257,8 +257,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Shortcuts
 
 * Properly show login prompts & normal tips/info
-
-* Status bar color
 
 * Error handling
 
