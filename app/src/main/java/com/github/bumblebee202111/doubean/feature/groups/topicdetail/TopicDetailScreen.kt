@@ -76,6 +76,7 @@ import com.github.bumblebee202111.doubean.model.TopicComment
 import com.github.bumblebee202111.doubean.model.TopicCommentSortBy
 import com.github.bumblebee202111.doubean.model.TopicDetail
 import com.github.bumblebee202111.doubean.ui.SmallGroupAvatar
+import com.github.bumblebee202111.doubean.ui.StatusBarIconStyle
 import com.github.bumblebee202111.doubean.ui.UserProfileImage
 import com.github.bumblebee202111.doubean.ui.common.DoubeanWebView
 import com.github.bumblebee202111.doubean.ui.common.TopicWebViewClient
@@ -157,6 +158,8 @@ fun TopicDetailScreen(
     onOpenDeepLinkUrl: (url: String) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
 ) {
+
+    StatusBarIconStyle(darkIcons = false)
 
     val context = LocalContext.current
     var shouldShowDialog by remember {
