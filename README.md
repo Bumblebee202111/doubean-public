@@ -240,7 +240,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
     * Collapse on entrance for the subscribed/favorited group/tab
     * Fix group description action overflows
-  * Topic: Transparent background for content WebView
   * Hide officially-flagged unfriendly content by default
   * Support blocking unwanted content
   * Lists: Reddit-style item expand/collapse

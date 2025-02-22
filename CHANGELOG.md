@@ -3,6 +3,13 @@ Change Log
 
 ## Version 0.7.14(714)
 
+- Add pagination for RankList
+- Set status bar to transparent and enforce light icons for group-themed screens
+- Fix issues for TopicDetail header
+  - Add basic support for special photo lists outside the content WebView 
+  - Fix scrolling into content WebView from off-screen is unsmooth
+  - Set background of content WebView to transparent
+
 ## Version 0.7.13(713)
 
 - Update ProfileScreen
