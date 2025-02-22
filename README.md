@@ -240,18 +240,12 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
     * Collapse on entrance for the subscribed/favorited group/tab
     * Fix group description action overflows
-  * Topic content WebView issues
-
-    * Flinging up to topic content is not smooth https://issuetracker.google.com/issues/172029355
-    * Sometimes topic content fails to be loaded
-    * LazyLayoutPinnableItem?
-    * ...
-
+  * Topic: Transparent background for content WebView
   * Hide officially-flagged unfriendly content by default
   * Support blocking unwanted content
   * Lists: Reddit-style item expand/collapse
   * Find API for all followed topics (currently unlikely)
-
+  
 * Expand/collapse component: Hide action for short text
 
 * Shortcuts
