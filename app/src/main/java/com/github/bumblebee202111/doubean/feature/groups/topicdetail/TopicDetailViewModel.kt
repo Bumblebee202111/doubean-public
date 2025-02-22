@@ -183,6 +183,9 @@ class TopicDetailViewModel @Inject constructor(
                     """.trimIndent()
     }.stateInUi()
 
+    val shouldShowPhotoList =
+        topicResult.map { it?.data?.content?.contains("image-container") == false }.stateInUi()
+
     var shouldDisplayInvalidImageUrl by mutableStateOf(false)
 
     fun updateCommentsSortBy(commentSortBy: TopicCommentSortBy) {

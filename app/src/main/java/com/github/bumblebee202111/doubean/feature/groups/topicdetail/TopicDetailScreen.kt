@@ -12,6 +12,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -40,6 +43,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -53,7 +57,10 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.LocalPinnableContainer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.pluralStringResource
@@ -71,6 +78,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
+import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.TopicComment
 import com.github.bumblebee202111.doubean.model.TopicCommentSortBy
@@ -104,6 +112,7 @@ fun TopicDetailScreen(
     val topic by viewModel.topic.collectAsStateWithLifecycle()
     val popularComments: List<TopicComment> by viewModel.popularComments.collectAsStateWithLifecycle()
     val allCommentLazyPagingItems = viewModel.allComments.collectAsLazyPagingItems()
+    val shouldShowPhotoList by viewModel.shouldShowPhotoList.collectAsStateWithLifecycle()
     val contentHtml by viewModel.contentHtml.collectAsStateWithLifecycle()
     val commentSortBy by viewModel.commentsSortBy.collectAsStateWithLifecycle()
     val groupColorInt = topic?.group?.color
@@ -114,6 +123,7 @@ fun TopicDetailScreen(
         topic = topic,
         popularCommentsLazyPagingItems = popularComments,
         allCommentLazyPagingItems = allCommentLazyPagingItems,
+        shouldShowPhotoList = shouldShowPhotoList,
         contentHtml = contentHtml,
         commentSortBy = commentSortBy,
         groupColorInt = groupColorInt,
@@ -142,6 +152,7 @@ fun TopicDetailScreen(
     topic: TopicDetail?,
     popularCommentsLazyPagingItems: List<TopicComment>,
     allCommentLazyPagingItems: LazyPagingItems<TopicComment>,
+    shouldShowPhotoList: Boolean?,
     contentHtml: String?,
     commentSortBy: TopicCommentSortBy,
     groupColorInt: Int?,
@@ -291,8 +302,10 @@ fun TopicDetailScreen(
 
             topic?.let { topic ->
                 item(key = "TopicDetailHeader", contentType = "TopicDetailHeader") {
+                    LocalPinnableContainer.current?.pin()
                     TopicDetailHeader(
                         topic = topic,
+                        shouldShowPhotoList = shouldShowPhotoList,
                         contentHtml = contentHtml,
                         displayInvalidImageUrl = displayInvalidImageUrl,
                         onImageClick = onImageClick,
@@ -434,6 +447,7 @@ fun JumpToCommentSliderPreview() {
 @Composable
 fun TopicDetailHeader(
     topic: TopicDetail,
+    shouldShowPhotoList: Boolean?,
     contentHtml: String?,
     onImageClick: (url: String) -> Unit,
     onGroupClick: (groupId: String, tabId: String?) -> Unit,
@@ -441,202 +455,225 @@ fun TopicDetailHeader(
     onOpenDeepLinkUrl: (url: String) -> Unit,
     displayInvalidImageUrl: () -> Unit,
 ) {
-    val context = LocalContext.current
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-    ) {
-        Spacer(Modifier.height(12.dp))
-        topic.group?.let { group ->
-            Row(Modifier.clickable {
-                onGroupClick(
-                    group.id, null
+    Surface(modifier = Modifier.fillMaxWidth()) {
+        val context = LocalContext.current
+        Column(
+            Modifier
+                .fillMaxWidth()
+
+        ) {
+            Spacer(Modifier.height(12.dp))
+            topic.group?.let { group ->
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = 40.dp)
+                        .clickable { onGroupClick(group.id, null) },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    SmallGroupAvatar(avatarUrl = group.avatarUrl)
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = group.name,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+                Spacer(Modifier.height(8.dp))
+            }
+            Row(Modifier.padding(horizontal = 16.dp)) {
+                UserProfileImage(
+                    url = topic.author.avatarUrl,
+                    size = dimensionResource(id = R.dimen.icon_size_large)
                 )
-            }, verticalAlignment = Alignment.CenterVertically) {
-                Spacer(Modifier.width(24.dp))
-                SmallGroupAvatar(avatarUrl = group.avatarUrl)
                 Spacer(Modifier.width(8.dp))
-                Text(
-                    text = group.name,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                    style = MaterialTheme.typography.bodyMedium
+                Column {
+                    Text(
+                        text = topic.author.name,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        topic.createTime?.let {
+                            DateTimeText(text = it.fullDateTimeString())
+                        }
+                        Spacer(Modifier.width(8.dp))
+                        topic.ipLocation?.let {
+                            Text(
+                                text = it,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            if (shouldShowPhotoList == true) {
+                topic.images?.let { images ->
+                    LazyRow(
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(items = images, key = { it.normal.url }) { image ->
+                            AsyncImage(
+                                model = image.normal.url,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .height(320.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .clickable {
+                                        onImageClick(image.large.url)
+                                    },
+                                contentScale = ContentScale.FillHeight
+                            )
+                        }
+                    }
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = topic.title,
+                modifier = Modifier.padding(horizontal = 16.dp),
+                style = MaterialTheme.typography.titleLarge
+            )
+            Spacer(Modifier.height(8.dp))
+            topic.tag?.let { tag ->
+                AssistChip(
+                    onClick = { topic.group?.let { group -> onGroupClick(group.id, tag.id) } },
+                    label = { Text(tag.name) },
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
             Spacer(Modifier.height(8.dp))
-        }
-        Row {
-            UserProfileImage(
-                url = topic.author.avatarUrl,
-                size = dimensionResource(id = R.dimen.icon_size_large)
-            )
-            Spacer(Modifier.width(8.dp))
-            Column {
-                Text(
-                    text = topic.author.name,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Spacer(Modifier.height(4.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    topic.createTime?.let {
-                        DateTimeText(text = it.fullDateTimeString())
-                    }
-                    Spacer(Modifier.width(8.dp))
-                    topic.ipLocation?.let {
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+            contentHtml?.let {
+
+                val webViewState = rememberSaveableWebViewState()
+                val navigator = rememberWebViewNavigator()
+
+                LaunchedEffect(navigator) {
+                    val bundle = webViewState.viewState
+                    if (bundle == null) {
+                        // This is the first time load, so load the home page.
+                        navigator.loadHtml(it)
                     }
                 }
-            }
-        }
-        Spacer(Modifier.height(8.dp))
-        Text(text = topic.title, style = MaterialTheme.typography.titleLarge)
-        Spacer(Modifier.height(8.dp))
-        topic.tag?.let { tag ->
-            AssistChip(
-                onClick = {
-                    topic.group?.let { group ->
-                        onGroupClick(
-                            group.id,
-                            tag.id
-                        )
-                    }
-                },
-                label = {
-                    Text(tag.name)
-                }
-            )
-        }
-        Spacer(Modifier.height(8.dp))
-        contentHtml?.let {
+                WebView(state = webViewState,
+                    navigator = navigator,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .fillMaxSize()
+                        .alpha(0.99F),
+                    captureBackPresses = false,
+                    client = remember {
+                        object : TopicWebViewClient(listOf(TOPIC_CSS_FILENAME)) {
+                            @Deprecated("Deprecated in Java")
+                            override fun shouldOverrideUrlLoading(
+                                view: WebView?,
+                                url: String?,
+                            ): Boolean {
+                                if (url == null) return false
 
-            val webViewState = rememberSaveableWebViewState()
-            val navigator = rememberWebViewNavigator()
-
-            LaunchedEffect(navigator) {
-                val bundle = webViewState.viewState
-                if (bundle == null) {
-                    // This is the first time load, so load the home page.
-                    navigator.loadHtml(it)
-                }
-            }
-            WebView(state = webViewState,
-                navigator = navigator,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .alpha(0.99F),
-                captureBackPresses = false,
-                client = remember {
-                    object : TopicWebViewClient(listOf(TOPIC_CSS_FILENAME)) {
-                        @Deprecated("Deprecated in Java")
-                        override fun shouldOverrideUrlLoading(
-                            view: WebView?,
-                            url: String?,
-                        ): Boolean {
-                            if (url == null) return false
-
-                            try {
-                                onOpenDeepLinkUrl(url)
-                            } catch (e: IllegalArgumentException) {
-                                Log.i("doubean", "shouldOverrideUrlLoading: $e")
-                                OpenInUtils.viewInActivity(context, url)
+                                try {
+                                    onOpenDeepLinkUrl(url)
+                                } catch (e: IllegalArgumentException) {
+                                    Log.i("doubean", "shouldOverrideUrlLoading: $e")
+                                    OpenInUtils.viewInActivity(context, url)
+                                }
+                                return true
                             }
-                            return true
-                        }
 
-                    }
-                },
-                factory = { context ->
-                    DoubeanWebView(context).apply {
-                        setPadding(0, 0, 0, 0)
-                        settings.apply {
-                            setNeedInitialFocus(false)
-                            //webSettings.userAgentString = DOUBAN_USER_AGENT_STRING
-                            useWideViewPort = true
                         }
+                    },
+                    factory = { context ->
+                        DoubeanWebView(context).apply {
+                            setPadding(0, 0, 0, 0)
+                            setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                            settings.apply {
+                                setNeedInitialFocus(false)
+                                //webSettings.userAgentString = DOUBAN_USER_AGENT_STRING
+                                useWideViewPort = true
+                            }
 
-                        setOnTouchListener { _, event ->
-                            if (event.action == MotionEvent.ACTION_UP
-                            ) {
-                                val webViewHitTestResult = getHitTestResult()
-                                if (webViewHitTestResult.type == WebView.HitTestResult.IMAGE_TYPE ||
-                                    webViewHitTestResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
+                            setOnTouchListener { _, event ->
+                                if (event.action == MotionEvent.ACTION_UP
                                 ) {
-                                    val imageUrl = webViewHitTestResult.extra
-                                    if (URLUtil.isValidUrl(imageUrl)) {
-                                        val largeImageUrl =
-                                            topic.images!!.first { it.normal.url == imageUrl }.large.url
-                                        onImageClick(largeImageUrl)
-                                    } else {
-                                        displayInvalidImageUrl()
+                                    val webViewHitTestResult = getHitTestResult()
+                                    if (webViewHitTestResult.type == WebView.HitTestResult.IMAGE_TYPE ||
+                                        webViewHitTestResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
+                                    ) {
+                                        val imageUrl = webViewHitTestResult.extra
+                                        if (URLUtil.isValidUrl(imageUrl)) {
+                                            val largeImageUrl =
+                                                topic.images!!.first { it.normal.url == imageUrl }.large.url
+                                            onImageClick(largeImageUrl)
+                                        } else {
+                                            displayInvalidImageUrl()
+                                        }
                                     }
                                 }
+                                return@setOnTouchListener false
                             }
-                            return@setOnTouchListener false
                         }
-                    }
-                })
+                    })
 
-        }
-        Row(
-            modifier = Modifier
-                .padding(
-                    start = dimensionResource(id = R.dimen.margin_small),
-                    end = dimensionResource(id = R.dimen.margin_normal),
-                    top = dimensionResource(id = R.dimen.margin_normal)
-                )
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            topic.commentCount?.let {
-                Text(
-                    text = pluralStringResource(
-                        id = R.plurals.comments,
-                        count = it,
-                        it
-                    )
-                )
             }
-            topic.resharesCount?.let {
-                Text(
-                    text = pluralStringResource(
-                        id = R.plurals.reshares,
-                        count = it,
-                        it
-                    ),
-                    modifier = Modifier.run {
-                        if (it != 0) {
-                            clickable {
-                                onReshareStatusesClick(topic.id)
+            Row(
+                modifier = Modifier
+                    .padding(
+                        start = dimensionResource(id = R.dimen.margin_small),
+                        end = dimensionResource(id = R.dimen.margin_normal),
+                        top = dimensionResource(id = R.dimen.margin_normal)
+                    )
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                topic.commentCount?.let {
+                    Text(
+                        text = pluralStringResource(
+                            id = R.plurals.comments,
+                            count = it,
+                            it
+                        )
+                    )
+                }
+                topic.resharesCount?.let {
+                    Text(
+                        text = pluralStringResource(
+                            id = R.plurals.reshares,
+                            count = it,
+                            it
+                        ),
+                        modifier = Modifier.run {
+                            if (it != 0) {
+                                clickable {
+                                    onReshareStatusesClick(topic.id)
+                                }
+                            } else {
+                                this
                             }
-                        } else {
-                            this
                         }
-                    }
-                )
-            }
-            topic.likeCount?.let {
-                Text(
-                    text = pluralStringResource(
-                        id = R.plurals.likes,
-                        count = it,
-                        it
                     )
-                )
-            }
-            topic.saveCount?.let {
-                Text(
-                    text = pluralStringResource(
-                        id = R.plurals.saves,
-                        count = it,
-                        it
+                }
+                topic.likeCount?.let {
+                    Text(
+                        text = pluralStringResource(
+                            id = R.plurals.likes,
+                            count = it,
+                            it
+                        )
                     )
-                )
+                }
+                topic.saveCount?.let {
+                    Text(
+                        text = pluralStringResource(
+                            id = R.plurals.saves,
+                            count = it,
+                            it
+                        )
+                    )
+                }
             }
         }
     }
