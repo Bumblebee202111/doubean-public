@@ -546,9 +546,7 @@ fun TopicDetailHeader(
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
-            Spacer(Modifier.height(8.dp))
             contentHtml?.let {
-
                 val webViewState = rememberSaveableWebViewState()
                 val navigator = rememberWebViewNavigator()
 
@@ -559,6 +557,8 @@ fun TopicDetailHeader(
                         navigator.loadHtml(it)
                     }
                 }
+
+                
                 WebView(state = webViewState,
                     navigator = navigator,
                     modifier = Modifier
@@ -622,9 +622,8 @@ fun TopicDetailHeader(
             Row(
                 modifier = Modifier
                     .padding(
-                        start = dimensionResource(id = R.dimen.margin_small),
+                        start = dimensionResource(id = R.dimen.margin_normal),
                         end = dimensionResource(id = R.dimen.margin_normal),
-                        top = dimensionResource(id = R.dimen.margin_normal)
                     )
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround
