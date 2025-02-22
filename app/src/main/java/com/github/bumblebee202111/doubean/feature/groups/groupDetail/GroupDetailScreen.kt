@@ -62,7 +62,6 @@ import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.GroupTab
 import com.github.bumblebee202111.doubean.ui.GroupNotificationPreferencesDialog
 import com.github.bumblebee202111.doubean.ui.LargeGroupAvatar
-import com.github.bumblebee202111.doubean.ui.StatusBarIconStyle
 import com.github.bumblebee202111.doubean.ui.component.ExpandCollapseText
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.ShareUtil
@@ -129,8 +128,6 @@ fun GroupDetailScreen(
     onTopicClick: (topicId: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
 ) {
-
-    StatusBarIconStyle(darkIcons = false)
 
     var openNotificationsPreferenceDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
