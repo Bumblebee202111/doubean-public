@@ -30,7 +30,6 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.common.TopicDetailActivityItemUserProfileImage
 import com.github.bumblebee202111.doubean.feature.statuses.UserNameText
 import com.github.bumblebee202111.doubean.model.GroupTopicCommentReshareItem
-import com.github.bumblebee202111.doubean.ui.StatusBarIconStyle
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.util.intermediateDateTimeString
@@ -54,9 +53,6 @@ fun ReshareStatusesScreen(
     reshareStatusLazyPagingItems: LazyPagingItems<GroupTopicCommentReshareItem>,
     onBackClick: () -> Unit,
 ) {
-
-    StatusBarIconStyle(darkIcons = false)
-
     Scaffold(
         topBar = {
             DoubeanTopAppBar(

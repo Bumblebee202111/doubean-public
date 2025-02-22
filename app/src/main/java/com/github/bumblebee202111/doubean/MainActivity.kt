@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.compose.rememberNavController
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
@@ -40,7 +41,12 @@ class MainActivity : AppCompatActivity() {
         setContent {
             AppTheme {
                 val startAppWithGroups by mainActivityViewModel.startAppWithGroups.collectAsStateWithLifecycle()
-                startAppWithGroups?.let { DoubeanApp(startWithGroups = it) }
+                startAppWithGroups?.let {
+                    DoubeanApp(
+                        navController = rememberNavController(),
+                        startWithGroups = it
+                    )
+                }
             }
         }
 
@@ -74,9 +80,11 @@ class MainActivity : AppCompatActivity() {
                             ExistingPeriodicWorkPolicy.KEEP, notifyTopicsRequest
                         )
                     }
+
                     false -> {
                         workManager.cancelUniqueWork(WORK_NAME)
                     }
+
                     null -> Unit
                 }
             }
