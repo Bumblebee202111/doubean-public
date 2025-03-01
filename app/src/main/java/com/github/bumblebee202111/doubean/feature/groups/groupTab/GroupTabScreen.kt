@@ -192,14 +192,18 @@ private fun LazyListScope.tabActionsItem(
             group?.findTab(tabId)?.let { tab ->
                 
                 Row {
-                    if (tab.isFavorite || tab.notificationPreferences != null) {
+                    
+                    
+                    
+                    if (tab.isFavorite || tab.notificationPreferences?.notificationsEnabled == true) {
                         TabNotificationsButton(
                             notificationsEnabled = tab.notificationPreferences?.notificationsEnabled
                                 ?: false
                         ) {
                             onOpenAlertDialog()
                         }
-
+                    }
+                    if (tab.isFavorite) {
                         IconButton(removeFavorite) {
                             Icon(imageVector = Icons.Default.Star, contentDescription = null)
                         }

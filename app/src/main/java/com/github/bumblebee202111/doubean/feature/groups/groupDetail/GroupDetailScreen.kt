@@ -262,7 +262,7 @@ fun GroupDetailTopBar(
                                 val memberRole = memberRole
                                 val isSubscribed = isSubscribed
 
-                                if (notificationPreferences != null || isFavorited || isSubscribed == true || memberRole in setOf(
+                                if (notificationPreferences?.notificationsEnabled == true || isFavorited || isSubscribed == true || memberRole in setOf(
                                         GroupMemberRole.MEMBER,
                                         GroupMemberRole.MEMBER_ADMIN,
                                     )
@@ -274,8 +274,6 @@ fun GroupDetailTopBar(
                                         notificationsEnabled = notificationPreferences?.notificationsEnabled
                                             ?: false,
                                         onOpenPreferencesDialog = showNotificationsPrefDialog)
-
-
                                 }
                             }
 
