@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.7.15(715)
+
 ## Version 0.7.14(714)
 
 - Add pagination for RankList
