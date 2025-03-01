@@ -130,7 +130,7 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
 ### Guidelines
 
 - **Do:** Use for personal learning.
-- **Don’t:** Redistribute without permission.
+- **Don’t:** Promote elsewhere without permission.
 
 ### Features
 
@@ -197,9 +197,12 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for myself.
 
-#### Current release \(0.7.14\)
+#### Current release \(0.7.15\)
 
-#### Next release \(0.7.15)
+- Fix favoriting tabs
+- ExposedDropDownMenu
+
+#### Next release \(0.7.16)
 
 
 #### Future plans
@@ -264,6 +267,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Migrate `WebView`, `RatingBar`, and `PreferenceFragmentCompat` to Jetpack Compose/MD3.
 
 * Shared element
+
+* Display menu dialog sheets instead for list items
 
 * Improve model layering
 
