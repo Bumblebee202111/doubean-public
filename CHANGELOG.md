@@ -3,7 +3,9 @@ Change Log
 
 ## Version 0.7.15(715)
 
+- Update spinner implementation to use `ExposedDropDownMenuBox`
 - Fix subtle issues of group/tab notifications button & tab favorite button
+- Fix: Popular comments are cleared when loading non-first pages
 
 ## Version 0.7.14(714)
 
