@@ -8,9 +8,9 @@ import android.util.Log
 import android.view.MotionEvent
 import android.webkit.URLUtil
 import android.webkit.WebView
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -27,12 +27,10 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -64,7 +62,6 @@ import androidx.compose.ui.layout.LocalPinnableContainer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -89,6 +86,7 @@ import com.github.bumblebee202111.doubean.ui.common.DoubeanWebView
 import com.github.bumblebee202111.doubean.ui.common.TopicWebViewClient
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
+import com.github.bumblebee202111.doubean.ui.component.SortByDropDownMenu
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.TOPIC_CSS_FILENAME
@@ -314,9 +312,13 @@ fun TopicDetailScreen(
 
             if (shouldShowSpinner) {
                 item(key = "TopicCommentSortBy", contentType = "TopicCommentSortBy") {
-                    TopicCommentSortBy(
+                    TopicCommentSortByDropDownMenu(
                         commentSortBy = commentSortBy,
-                        updateCommentSortBy = updateCommentSortBy
+                        updateCommentSortBy = updateCommentSortBy,
+                        modifier = Modifier.padding(
+                            horizontal = dimensionResource(id = R.dimen.margin_normal),
+                            vertical = dimensionResource(id = R.dimen.margin_small)
+                        )
                     )
                 }
             } else {
@@ -675,52 +677,38 @@ fun TopicDetailHeader(
 }
 
 @Composable
-fun TopicCommentSortBy(
+fun TopicCommentSortByDropDownMenu(
     commentSortBy: TopicCommentSortBy,
     updateCommentSortBy: (TopicCommentSortBy) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    val sortCommentsByLabels =
-        stringArrayResource(id = R.array.sort_comments_by_array)
-
-    val indexToSortBy = mapOf(
-        0 to TopicCommentSortBy.TOP,
-        1 to TopicCommentSortBy.ALL
+    SortByDropDownMenu(
+        options = TopicCommentSortOption.displayOrder,
+        initialSelectedValue = commentSortBy,
+        onOptionSelected = updateCommentSortBy,
+        optionText = { stringResource(it.textResId) },
+        optionToValue = { it.sortBy },
+        modifier = modifier
     )
+}
 
-    val sortByToIndex = mapOf(
-        TopicCommentSortBy.TOP to 0,
-        TopicCommentSortBy.ALL to 1
-    )
 
-    Box(
-        Modifier.padding(
-            horizontal = dimensionResource(id = R.dimen.margin_normal),
-            vertical = dimensionResource(id = R.dimen.margin_small)
-        ),
-    ) {
-        Button(onClick = { expanded = !expanded }) {
-            Text(sortCommentsByLabels[sortByToIndex[commentSortBy]!!])
-            Icon(
-                imageVector = Icons.Filled.ArrowDropDown,
-                contentDescription = null,
-            )
-        }
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-        ) {
-            sortCommentsByLabels.forEachIndexed { index, label ->
-                DropdownMenuItem(
-                    text = { Text(text = label) },
-                    onClick = {
-                        expanded = false
-                        updateCommentSortBy(
-                            indexToSortBy[index]!!
-                        )
-                    })
-            }
-        }
+private enum class TopicCommentSortOption(
+    @StringRes val textResId: Int,
+    val sortBy: TopicCommentSortBy,
+) {
+    TOP(
+        textResId = R.string.top_comments,
+        sortBy = TopicCommentSortBy.TOP
+    ),
+    ALL(
+        textResId = R.string.all_comments,
+        sortBy = TopicCommentSortBy.ALL
+    );
+
+    
+    companion object {
+        val displayOrder = listOf(TOP, ALL)
     }
 }
 

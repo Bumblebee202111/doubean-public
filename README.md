@@ -199,8 +199,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### Current release \(0.7.15\)
 
-- ExposedDropDownMenu
-
 #### Next release \(0.7.16)
 
 

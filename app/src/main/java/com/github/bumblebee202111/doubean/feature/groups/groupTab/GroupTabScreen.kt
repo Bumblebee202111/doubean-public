@@ -42,7 +42,7 @@ import com.github.bumblebee202111.doubean.model.TopicItem
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.model.toItem
 import com.github.bumblebee202111.doubean.ui.GroupNotificationPreferencesDialog
-import com.github.bumblebee202111.doubean.ui.SortTopicsBySpinner
+import com.github.bumblebee202111.doubean.ui.SortTopicsByDropDownMenu
 import com.github.bumblebee202111.doubean.ui.TopicItem
 import com.github.bumblebee202111.doubean.ui.TopicItemDisplayMode
 import com.github.bumblebee202111.doubean.ui.common.rememberLazyListStatePagingWorkaround
@@ -184,9 +184,9 @@ private fun LazyListScope.tabActionsItem(
             modifier = Modifier.padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SortTopicsBySpinner(
-                initialSelectedItem = sortBy ?: TopicSortBy.NEW_LAST_CREATED,
-                onItemSelected = onSortByClick
+            SortTopicsByDropDownMenu(
+                initialSortBy = sortBy ?: TopicSortBy.NEW_LAST_CREATED,
+                onSortBySelected = onSortByClick
             )
             Spacer(Modifier.weight(1f))
             group?.findTab(tabId)?.let { tab ->

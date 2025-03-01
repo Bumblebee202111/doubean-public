@@ -30,7 +30,8 @@ class GroupTopicCommentPagingSource(
 
             val prevKey = if (start == 0) null else (start - params.loadSize).coerceAtLeast(0)
             val nextKey = (start + params.loadSize).takeIf { it < response.total }
-            onTopCommentsFetched(response.topComments.filterIsInstance<NetworkGroupTopicComment>())
+            response.topComments.filterIsInstance<NetworkGroupTopicComment>()
+                .takeIf { it.isNotEmpty() }?.let(onTopCommentsFetched)
             val realComments = response.comments.filterIsInstance<NetworkGroupTopicComment>()
             return LoadResult.Page(
                 data = realComments,
