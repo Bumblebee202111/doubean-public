@@ -264,11 +264,11 @@ fun GroupDetailTopBar(
                                 val memberRole = memberRole
                                 val isSubscribed = isSubscribed
 
-                                if (notificationPreferences != null || isFavorited || isSubscribed == true || memberRole in setOf(
+                                if (notificationPreferences?.notificationsEnabled == true || isFavorited || isSubscribed == true || memberRole in setOf(
                                         GroupMemberRole.MEMBER,
                                         GroupMemberRole.MEMBER_ADMIN,
                                     )
-                                ) { // only shown when its your group or db record exists
+                                ) { // only shown when its your group or db record exists with notificationsEnabled being true
                                     GroupNotificationsButton(
                                         groupColor = group.color?.let {
                                             Color(it)
@@ -276,8 +276,6 @@ fun GroupDetailTopBar(
                                         notificationsEnabled = notificationPreferences?.notificationsEnabled
                                             ?: false,
                                         onOpenPreferencesDialog = showNotificationsPrefDialog)
-
-
                                 }
                             }
 

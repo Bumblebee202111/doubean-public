@@ -70,7 +70,7 @@ class GroupTabViewModel @AssistedInject constructor(
         val tabId = tabId ?: return
         viewModelScope.launch {
             userGroupRepository.removeFavoriteTab(tabId)
-            shouldDisplayUnfavoritedTab = false
+            shouldDisplayUnfavoritedTab = true
         }
     }
 
