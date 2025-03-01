@@ -3,6 +3,7 @@ Change Log
 
 ## Version 0.7.15(715)
 
+- Updated simple interest button to use a subtler `FilledTonalButton` for softer appearance
 - Update spinner implementation to use `ExposedDropDownMenuBox`
 - Fix subtle issues of group/tab notifications button & tab favorite button
 - Fix: Popular comments are cleared when loading non-first pages

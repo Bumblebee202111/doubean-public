@@ -209,8 +209,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Subjects
 
   * (Single-)status interests screen & its pagination
-  * Interest buttons
-    * Consider tonal style
   * Tweak reviews sheet for better arrangement of review counts
   * More details & sub-features
   
