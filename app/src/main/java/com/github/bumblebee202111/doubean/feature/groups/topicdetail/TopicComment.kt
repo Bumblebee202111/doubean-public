@@ -101,7 +101,7 @@ fun TopicComment(
                 }
                 comment?.voteCount.takeIf { it != 0 }?.let {
                     Spacer(modifier = Modifier.height(8.dp))
-                    ListItemCount(iconVector = Icons.Outlined.ThumbUp, value = it)
+                    ListItemCount(iconVector = Icons.Outlined.ThumbUp, count = it)
                 }
             }
         }
@@ -208,7 +208,7 @@ private fun TopicRefCommentCard(
             }
             refComment.voteCount.takeIf { it != 0 }?.let {
                 Spacer(modifier = Modifier.height(8.dp))
-                ListItemCount(iconVector = Icons.Outlined.ThumbUp, value = it)
+                ListItemCount(iconVector = Icons.Outlined.ThumbUp, count = it)
             }
         }
     }

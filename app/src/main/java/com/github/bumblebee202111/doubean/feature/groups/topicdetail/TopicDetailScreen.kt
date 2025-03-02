@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.webkit.URLUtil
 import android.webkit.WebView
+import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -620,61 +622,74 @@ fun TopicDetailHeader(
             Row(
                 modifier = Modifier
                     .padding(
-                        start = dimensionResource(id = R.dimen.margin_normal),
-                        end = dimensionResource(id = R.dimen.margin_normal),
+                        horizontal = dimensionResource(id = R.dimen.margin_normal),
                     )
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                topic.commentCount?.let {
-                    Text(
-                        text = pluralStringResource(
-                            id = R.plurals.comments,
-                            count = it,
-                            it
-                        )
+                topic.commentCount?.let { count ->
+                    CountItem(
+                        count = count,
+                        labelRes = R.plurals.comments
                     )
                 }
-                topic.resharesCount?.let {
-                    Text(
-                        text = pluralStringResource(
-                            id = R.plurals.reshares,
-                            count = it,
-                            it
-                        ),
-                        modifier = Modifier.run {
-                            if (it != 0) {
-                                clickable {
-                                    onReshareStatusesClick(topic.id)
-                                }
-                            } else {
-                                this
-                            }
-                        }
+                topic.resharesCount?.let { count ->
+                    CountItem(
+                        count = count,
+                        labelRes = R.plurals.reshares,
+                        onClick = if (count != 0) {
+                            { onReshareStatusesClick(topic.id) }
+                        } else null
                     )
                 }
-                topic.likeCount?.let {
-                    Text(
-                        text = pluralStringResource(
-                            id = R.plurals.likes,
-                            count = it,
-                            it
-                        )
+                topic.likeCount?.let { count ->
+                    CountItem(
+                        count = count,
+                        labelRes = R.plurals.likes
                     )
                 }
-                topic.saveCount?.let {
-                    Text(
-                        text = pluralStringResource(
-                            id = R.plurals.saves,
-                            count = it,
-                            it
-                        )
+                topic.saveCount?.let { count ->
+                    CountItem(
+                        count = count,
+                        labelRes = R.plurals.saves
                     )
                 }
             }
         }
     }
 }
+
+@Composable
+private fun CountItem(
+    count: Int,
+    @PluralsRes labelRes: Int,
+    onClick: (() -> Unit)? = null,
+) {
+    val text = pluralStringResource(labelRes, count, count)
+
+    val modifier = Modifier
+        .padding(8.dp)
+        .wrapContentWidth()
+        .then(
+            if (onClick != null) {
+                Modifier.clickable(onClick = onClick)
+            } else {
+                Modifier
+            }
+        )
+
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        color = if (onClick != null) {
+            MaterialTheme.colorScheme.secondary.copy(alpha = 0.9f)
+        } else {
+            MaterialTheme.colorScheme.onSurfaceVariant
+        },
+        modifier = modifier
+    )
+}
+
 
 @Composable
 fun TopicCommentSortByDropDownMenu(

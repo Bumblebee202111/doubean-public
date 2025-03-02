@@ -214,8 +214,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   
 * Remember last active bottom navigation/Subjects tabs
 
-* Replace Material Icons’ "Thumb Up" icon
-
 * Groups
   * Dynamic topic sorts-by
 
@@ -247,7 +245,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Shortcuts
 
-* Properly show login prompts & normal tips/info
+* Properly show login prompts & normal tooltips/info
 
 * Error handling
 
