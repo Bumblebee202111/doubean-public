@@ -158,6 +158,7 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
   * Ktor
   * Coil
   * libsu
+  * Accompanist Permissions/WebView
 
 [foundation]: https://developer.android.com/jetpack/components
 
@@ -208,8 +209,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Subjects
 
-  * (Single-)status interests screen & its pagination
-  * Tweak reviews sheet for better arrangement of review counts
+  * Pagination of interests: (Single-)status interests screen or mixed below interest sections
   * More details & sub-features
   
 * Remember last active bottom navigation/Subjects tabs
@@ -259,7 +259,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Restore dark mode & landscape support
 
-* Migrate `WebView`, `RatingBar`, and `PreferenceFragmentCompat` to Jetpack Compose/MD3.
+* Migrate `RatingBar` and `PreferenceFragmentCompat` to Jetpack Compose/MD3.
 
 * Shared element
 
