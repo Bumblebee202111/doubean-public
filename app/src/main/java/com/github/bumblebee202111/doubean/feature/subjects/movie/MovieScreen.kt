@@ -21,6 +21,7 @@ import com.github.bumblebee202111.doubean.ui.subjectInfoTrailersModuleItem
 fun MovieScreen(
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
+    onImageClick: (url: String) -> Unit,
     viewModel: MovieViewModel = hiltViewModel(),
 ) {
     val movieUiState by viewModel.movieUiState.collectAsStateWithLifecycle()
@@ -28,7 +29,8 @@ fun MovieScreen(
         movieUiState = movieUiState,
         onBackClick = onBackClick,
         onLoginClick = onLoginClick,
-        onUpdateStatus = viewModel::onUpdateStatus
+        onUpdateStatus = viewModel::onUpdateStatus,
+        onImageClick = onImageClick
     )
 }
 
@@ -38,6 +40,7 @@ fun MovieScreen(
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
+    onImageClick: (url: String) -> Unit,
 ) {
     SubjectScaffold(
         reviewsSheetContent = {
@@ -64,7 +67,8 @@ fun MovieScreen(
                                 subject = movie,
                                 isLoggedIn = isLoggedIn,
                                 onLoginClick = onLoginClick,
-                                onUpdateStatus = onUpdateStatus
+                                onUpdateStatus = onUpdateStatus,
+                                onImageClick = onImageClick
                             )
                         }
                         subjectInfoIntroModuleItem(intro = movie.intro)
@@ -75,7 +79,8 @@ fun MovieScreen(
                         )
                         subjectInfoTrailersModuleItem(
                             trailers = movie.trailers,
-                            photoList = photos
+                            photoList = photos,
+                            onImageClick = onImageClick
                         )
                     }
 
