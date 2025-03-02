@@ -3,6 +3,7 @@ Change Log
 
 ## Version 0.7.15(715)
 
+- Improve organization of review counts
 - Updated simple interest button to use a subtler `FilledTonalButton` for softer appearance
 - Update spinner implementation to use `ExposedDropDownMenuBox`
 - Fix subtle issues of group/tab notifications button & tab favorite button
