@@ -1,9 +1,11 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupTab
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
@@ -12,11 +14,13 @@ import androidx.compose.material.icons.filled.NotificationAdd
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -198,39 +202,47 @@ private fun LazyListScope.tabActionsItem(
                     if (tab.isFavorite || tab.notificationPreferences?.notificationsEnabled == true) {
                         TabNotificationsButton(
                             notificationsEnabled = tab.notificationPreferences?.notificationsEnabled
-                                ?: false
-                        ) {
-                            onOpenAlertDialog()
-                        }
+                                ?: false,
+                            onOpenPreferencesDialog = onOpenAlertDialog
+                        )
                     }
-                    if (tab.isFavorite) {
-                        IconButton(removeFavorite) {
-                            Icon(imageVector = Icons.Default.Star, contentDescription = null)
-                        }
-                    } else {
-                        IconButton(addFavorite) {
-                            Icon(imageVector = Icons.Default.StarBorder, contentDescription = null)
-                        }
+                    IconButton(
+                        onClick = if (tab.isFavorite) removeFavorite else addFavorite,
+                        modifier = Modifier.size(32.dp)
+                    ) {
+                        Icon(
+                            imageVector = if (tab.isFavorite) Icons.Filled.Star else Icons.Default.StarBorder,
+                            contentDescription = null,
+                            tint = if (tab.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
 
                     var moreExpanded by remember { mutableStateOf(false) }
-                    IconButton(onClick = { moreExpanded = !moreExpanded }) {
+                    IconButton(
+                        onClick = { moreExpanded = true },
+                        modifier = Modifier.size(32.dp)
+                    ) {
                         Icon(
-                            imageVector = Icons.Filled.MoreVert,
+                            imageVector = Icons.Default.MoreVert,
                             contentDescription = null
                         )
                     }
                     DropdownMenu(
                         expanded = moreExpanded, onDismissRequest = {
                             moreExpanded = false
-                        }
+                        },
+                        modifier = Modifier.background(
+                            MaterialTheme.colorScheme.surface
+                        )
                     ) {
                         DropdownMenuItem(
                             text = {
                                 Text(
                                     stringResource(
                                         R.string.share
-                                    )
+                                    ),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                             },
                             onClick = {
@@ -243,6 +255,13 @@ private fun LazyListScope.tabActionsItem(
                                 }
                                 ShareUtil.share(context, shareText)
 
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Outlined.Share,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
                             }
                         )
                     }
@@ -284,14 +303,16 @@ private fun TabNotificationsButton(
 ) {
     IconButton(
         onClick = onOpenPreferencesDialog,
+        modifier = Modifier.size(32.dp)
     ) {
         Icon(
             imageVector = if (notificationsEnabled) {
-                Icons.Filled.Notifications
+                Icons.Default.Notifications
             } else {
-                Icons.Filled.NotificationAdd
+                Icons.Default.NotificationAdd
             },
-            contentDescription = null
+            contentDescription = null,
+            tint = if (notificationsEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

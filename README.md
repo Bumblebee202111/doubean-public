@@ -209,7 +209,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Subjects
 
-  * Pagination of interests: (Single-)status interests screen or mixed below interest sections
+  * Pagination of interests: (Single-)status interests screens or mixed below status sections
   * More details & sub-features
   
 * Remember last active bottom navigation/Subjects tabs
@@ -259,7 +259,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Migrate `RatingBar` and `PreferenceFragmentCompat` to Jetpack Compose/MD3.
 
-* Shared element
+* ImageScreen -> Shared element
 
 * Display menu dialog sheets instead for list items
 

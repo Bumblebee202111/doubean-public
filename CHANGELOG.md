@@ -3,12 +3,13 @@ Change Log
 
 ## Version 0.7.15(715)
 
-- Improved organization of review counts
+- Improved organization of subject review counts
 - Updated simple interest button to use a subtler `FilledTonalButton` for softer appearance
 - Updated spinner implementation to use `ExposedDropDownMenuBox`
 - Added tap-to-view for cover/trailer images in SubjectDetail (fix #3)
 - Reviews sheet can now be expanded to max height
 - Optimized styles for various counts
+- Optimized group tab action icons
 - Fixed subtle issues of group/tab notifications button & tab favorite button
 - Fix: Popular comments are cleared when loading non-first pages
 
