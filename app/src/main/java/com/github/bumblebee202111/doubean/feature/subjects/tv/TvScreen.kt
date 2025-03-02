@@ -20,6 +20,7 @@ import com.github.bumblebee202111.doubean.ui.subjectInfoTrailersModuleItem
 fun TvScreen(
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
+    onImageClick: (url: String) -> Unit,
     viewModel: TvViewModel = hiltViewModel(),
 ) {
     val tvUiState by viewModel.tvUiState.collectAsStateWithLifecycle()
@@ -27,7 +28,8 @@ fun TvScreen(
         tvUiState = tvUiState,
         onBackClick = onBackClick,
         onLoginClick = onLoginClick,
-        onUpdateStatus = viewModel::onUpdateStatus
+        onUpdateStatus = viewModel::onUpdateStatus,
+        onImageClick = onImageClick
     )
 }
 
@@ -37,6 +39,7 @@ fun TvScreen(
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
+    onImageClick: (url: String) -> Unit,
 ) {
     SubjectScaffold(
         reviewsSheetContent = {
@@ -59,9 +62,10 @@ fun TvScreen(
                         item {
                             SubjectDetailHeader(
                                 subject = tv,
-                                isLoggedIn = tvUiState.isLoggedIn,
+                                isLoggedIn = isLoggedIn,
                                 onLoginClick = onLoginClick,
-                                onUpdateStatus = onUpdateStatus
+                                onUpdateStatus = onUpdateStatus,
+                                onImageClick = onImageClick
                             )
                         }
                         subjectInfoIntroModuleItem(intro = tv.intro)
@@ -70,7 +74,11 @@ fun TvScreen(
                             directorNames = tv.directorNames,
                             actorNames = tv.actorNames
                         )
-                        subjectInfoTrailersModuleItem(trailers = tv.trailers, photoList = photos)
+                        subjectInfoTrailersModuleItem(
+                            trailers = tv.trailers,
+                            photoList = photos,
+                            onImageClick = onImageClick
+                        )
                     }
                 }
             }

@@ -3,10 +3,11 @@ Change Log
 
 ## Version 0.7.15(715)
 
-- Improve organization of review counts
+- Improved organization of review counts
 - Updated simple interest button to use a subtler `FilledTonalButton` for softer appearance
-- Update spinner implementation to use `ExposedDropDownMenuBox`
-- Fix subtle issues of group/tab notifications button & tab favorite button
+- Updated spinner implementation to use `ExposedDropDownMenuBox`
+- Added tap-to-view for cover/trailer images in SubjectDetail (fix #3)
+- Fixed subtle issues of group/tab notifications button & tab favorite button
 - Fix: Popular comments are cleared when loading non-first pages
 
 ## Version 0.7.14(714)

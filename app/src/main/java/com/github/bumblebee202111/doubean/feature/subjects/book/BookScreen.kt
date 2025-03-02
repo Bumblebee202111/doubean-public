@@ -18,6 +18,7 @@ import com.github.bumblebee202111.doubean.ui.subjectInfoIntroModuleItem
 fun BookScreen(
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
+    onImageClick: (url: String) -> Unit,
     viewModel: BookViewModel = hiltViewModel(),
 ) {
     val bookUiState by viewModel.bookUiState.collectAsStateWithLifecycle()
@@ -25,7 +26,8 @@ fun BookScreen(
         bookUiState = bookUiState,
         onBackClick = onBackClick,
         onLoginClick = onLoginClick,
-        onUpdateStatus = viewModel::onUpdateStatus
+        onUpdateStatus = viewModel::onUpdateStatus,
+        onImageClick = onImageClick
     )
 }
 
@@ -35,6 +37,7 @@ fun BookScreen(
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
+    onImageClick: (url: String) -> Unit,
 ) {
     SubjectScaffold(
         reviewsSheetContent = {
@@ -59,7 +62,8 @@ fun BookScreen(
                                 subject = book,
                                 isLoggedIn = isLoggedIn,
                                 onLoginClick = onLoginClick,
-                                onUpdateStatus = onUpdateStatus
+                                onUpdateStatus = onUpdateStatus,
+                                onImageClick = onImageClick
                             )
                         }
                         subjectInfoIntroModuleItem(book.intro)
