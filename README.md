@@ -17,7 +17,7 @@ Introduction
 
 #### Statuses Screen
 
-- Following statuses
+- Statuse feed
 
 #### Subjects Screens
 
@@ -110,16 +110,16 @@ Introduction
 ### Using this app
 
 - [Latest release][latest-release]
-- Android: 8.1 - 14 (and virtually 15)
+- Android: 8.1–14 (and virtually 15)
 - Feel free to file issues
-  - If data fails to display (likely due to a JSON parsing error), including:
-    - Titles, related URLs (from Douban app)
+  - Include details if data fails to display (common causes: JSON parsing errors):
+    - Titles and related URLs (from Douban app)
     - Raw JSON (if accessible).
-- It's recommended to keep the official Douban app installed
+- Keep the official Douban app installed:
   - Support the official product
-  - Access content missing in doubean
-  - Especially for [rooted users](#reuse-login-session)
-- Occasionally, you may need to manually clear app data after updates if I forget to handle ROOM database migrations properly.
+  - Access content unavailable in doubean
+  - Essential for [rooted users](#reuse-login-session)
+- Clear app data manually after updates if the app crashes (possibly due to failed Room database migrations)
 
 [latest-release]: https://github.com/Bumblebee202111/doubean-public/releases/latest
 
@@ -130,21 +130,21 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
 ### Guidelines
 
 - **Do:** Use for personal learning.
-- **Don’t:** Redistribute without permission.
+- **Don’t:** Promote elsewhere without permission.
 
 ### Features
 
-* Provides a simple type-based Subjects experience with support for user actions (WIP 🚧)
-* Groups. Custom features:
-  * Favorite tabs/groups locally
-  * Custom topic sorts-by of create time by sorting each page of original data
+* Simple type-based Subjects experience with user actions (WIP 🚧)
+* Group enhancements:
+  * Locally favorite tabs/groups 
+  * Keep original list orders or sort by create time within any page
   * Customizable topic notifications
-* Ad-free and lightweight: ~4MB
-* Rooted users can reuse login sessions from Douban app (phone login not supported)
-* Partial support for URL deep links
-* Very basic Statuses tab (no longer updated)
-* Partial support for viewing content in a mobile-optimized Douban WebView (no longer updated).
-* Basic use of MD 2/3 (migration on going)
+* Ad-free and lightweight (~4MB)
+* Rooted users can reuse login sessions from Douban app (phone login unsupported)
+* Partial URL deep linking support
+* Basic Statuses tab (no longer updated)
+* Partial mobile-optimized Douban WebView support (no longer maintained).
+* Basic MD2/MD3 implementation (migration ongoing)
 
 ## Tech Stack
 
@@ -158,6 +158,7 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
   * Ktor
   * Coil
   * libsu
+  * Accompanist Permissions/WebView
 
 [foundation]: https://developer.android.com/jetpack/components
 
@@ -197,9 +198,9 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for myself.
 
-#### Current release \(0.7.14\)
+#### Current release \(0.7.15\)
 
-#### Next release \(0.7.15)
+#### Next release \(0.7.16)
 
 
 #### Future plans
@@ -208,15 +209,10 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Subjects
 
-  * (Single-)status interests screen & its pagination
-  * Interest buttons
-    * Consider tonal style
-  * Tweak reviews sheet for better arrangement of review counts
+  * Pagination of interests: (Single-)status interests screens or mixed below status sections
   * More details & sub-features
   
 * Remember last active bottom navigation/Subjects tabs
-
-* Replace Material Icons’ "Thumb Up" icon
 
 * Groups
   * Dynamic topic sorts-by
@@ -249,7 +245,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Shortcuts
 
-* Properly show login prompts & normal tips/info
+* Properly show login prompts & normal tooltips/info
 
 * Error handling
 
@@ -261,9 +257,11 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Restore dark mode & landscape support
 
-* Migrate `WebView`, `RatingBar`, and `PreferenceFragmentCompat` to Jetpack Compose/MD3.
+* Migrate `RatingBar` and `PreferenceFragmentCompat` to Jetpack Compose/MD3.
 
-* Shared element
+* ImageScreen -> Shared element
+
+* Display menu dialog sheets instead for list items
 
 * Improve model layering
 
@@ -286,10 +284,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Pagination
 
 * Test
-
-### Non-Todos
-
-* Heavy use of Material Design
 
 ### References
 
@@ -325,7 +319,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Stars :star: & Donation :coffee:
 
-I know this app isn’t perfect, but the growing number of stars keeps me motivated. Thank you for your support!
+I know this app isn’t perfect, but your stars keeps me motivated. Thank you!
 
-If you find the app useful and want to buy me a coffee (though I’m not actively seeking donations), contact me by via issues.
+To support development (though not actively seeking donations), contact me via issues.
 
