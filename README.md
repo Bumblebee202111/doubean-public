@@ -17,7 +17,7 @@ Introduction
 
 #### Statuses Screen
 
-- Following statuses
+- Statuse feed
 
 #### Subjects Screens
 
@@ -110,16 +110,16 @@ Introduction
 ### Using this app
 
 - [Latest release][latest-release]
-- Android: 8.1 - 14 (and virtually 15)
+- Android: 8.1–14 (and virtually 15)
 - Feel free to file issues
-  - If data fails to display (likely due to a JSON parsing error), including:
-    - Titles, related URLs (from Douban app)
+  - Include details if data fails to display (common causes: JSON parsing errors):
+    - Titles and related URLs (from Douban app)
     - Raw JSON (if accessible).
-- It's recommended to keep the official Douban app installed
+- Keep the official Douban app installed:
   - Support the official product
-  - Access content missing in doubean
-  - Especially for [rooted users](#reuse-login-session)
-- Occasionally, you may need to manually clear app data after updates if I forget to handle ROOM database migrations properly.
+  - Access content unavailable in doubean
+  - Essential for [rooted users](#reuse-login-session)
+- Clear app data manually after updates if the app crashes (possibly due to failed Room database migrations)
 
 [latest-release]: https://github.com/Bumblebee202111/doubean-public/releases/latest
 
@@ -134,17 +134,17 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
 
 ### Features
 
-* Provides a simple type-based Subjects experience with support for user actions (WIP 🚧)
-* Groups. Custom features:
-  * Favorite tabs/groups locally
-  * Custom topic sorts-by of create time by sorting each page of original data
+* Simple type-based Subjects experience with user actions (WIP 🚧)
+* Group enhancements:
+  * Locally favorite tabs/groups 
+  * Keep original list orders or sort by create time within any page
   * Customizable topic notifications
-* Ad-free and lightweight: ~4MB
-* Rooted users can reuse login sessions from Douban app (phone login not supported)
-* Partial support for URL deep links
-* Very basic Statuses tab (no longer updated)
-* Partial support for viewing content in a mobile-optimized Douban WebView (no longer updated).
-* Basic use of MD 2/3 (migration on going)
+* Ad-free and lightweight (~4MB)
+* Rooted users can reuse login sessions from Douban app (phone login unsupported)
+* Partial URL deep linking support
+* Basic Statuses tab (no longer updated)
+* Partial mobile-optimized Douban WebView support (no longer maintained).
+* Basic MD2/MD3 implementation (migration ongoing)
 
 ## Tech Stack
 
@@ -285,10 +285,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Test
 
-### Non-Todos
-
-* Heavy use of Material Design
-
 ### References
 
 * Jetpack Compose samples
@@ -323,7 +319,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Stars :star: & Donation :coffee:
 
-I know this app isn’t perfect, but the growing number of stars keeps me motivated. Thank you for your support!
+I know this app isn’t perfect, but your stars keeps me motivated. Thank you!
 
-If you find the app useful and want to buy me a coffee (though I’m not actively seeking donations), contact me by via issues.
+To support development (though not actively seeking donations), contact me via issues.
 
