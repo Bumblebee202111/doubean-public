@@ -198,9 +198,12 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for myself.
 
-#### Current release \(0.7.15\)
+#### Current release \(0.7.16\)
 
-#### Next release \(0.7.16)
+- Eleminate `appcompat` and `preference-ktx`
+- Pagination of interests: mixed below status sections
+
+#### Next release \(0.7.17)
 
 
 #### Future plans
@@ -209,7 +212,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Subjects
 
-  * Pagination of interests: (Single-)status interests screens or mixed below status sections
   * More details & sub-features
   
 * Remember last active bottom navigation/Subjects tabs
@@ -242,6 +244,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Find API for all followed topics (currently unlikely)
   
 * Expand/collapse component: Hide action for short text
+
+* Search suggestions
 
 * Shortcuts
 

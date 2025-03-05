@@ -1,12 +1,12 @@
 Change Log
 ==========
 
-## Version 0.7.15(715)
+## Version 0.7.16(716)
 
 - Improved organization of subject review counts
 - Updated simple interest button to use a subtler `FilledTonalButton` for softer appearance
 - Updated spinner implementation to use `ExposedDropDownMenuBox`
-- Added tap-to-view for cover/trailer images in SubjectDetail (fix #3)
+- Added tap-to-view for cover/trailer images in subject screens (fix #6)
 - Reviews sheet can now be expanded to max height
 - Optimized styles for various counts
 - Optimized group tab action icons
