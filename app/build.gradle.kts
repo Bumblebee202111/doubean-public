@@ -94,7 +94,6 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.paging)
     implementation(libs.androidx.paging.compose)
-    implementation(libs.androidx.preference.ktx)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)
     implementation(libs.androidx.lifecycle.runtime.compose)
