@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+## Version 0.7.17(717)
+
+- Eliminated AndroidX Preferences along with AppCompat/Fragment
+  - APK size reduced by around 1MB
+- Convert RatingBar to Compose with precise star values
+
 ## Version 0.7.16(716)
 
 - Improved organization of subject review counts

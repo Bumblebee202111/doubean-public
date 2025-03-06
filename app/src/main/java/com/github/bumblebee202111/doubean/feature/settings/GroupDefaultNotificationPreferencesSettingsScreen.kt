@@ -1,24 +1,75 @@
 package com.github.bumblebee202111.doubean.feature.settings
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.fragment.compose.AndroidFragment
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.feature.groups.common.MaxTopicsPerFetchTextField
+import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
+import com.github.bumblebee202111.doubean.model.TopicSortBy
+import com.github.bumblebee202111.doubean.ui.SortTopicsByOption
+import com.github.bumblebee202111.doubean.ui.component.ClickablePreferenceItem
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
+import com.github.bumblebee202111.doubean.ui.component.RadioButtonItem
+import com.github.bumblebee202111.doubean.ui.component.SwitchPreferenceItem
+
+@Composable
+fun GroupDefaultNotificationsPreferencesSettingsScreen(
+    onBackClick: () -> Unit,
+    viewModel: GroupDefaultNotificationPreferencesSettingsViewModel = hiltViewModel(),
+
+    ) {
+    val defaultGroupNotificationPreferences by viewModel.defaultGroupNotificationPreferences.collectAsStateWithLifecycle()
+    GroupDefaultNotificationsPreferencesSettingsScreen(
+        preferences = defaultGroupNotificationPreferences,
+        toggleEnableNotifications = viewModel::toggleEnableNotifications,
+        toggleNotifyOnUpdates = viewModel::toggleNotifyOnUpdates,
+        setSortBy = viewModel::setSortBy,
+        setMaxTopicsPerFetch = viewModel::setMaxTopicsPerFetch,
+        onBackClick = onBackClick
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupDefaultNotificationsPreferencesSettingsScreen(
+    preferences: GroupNotificationPreferences?,
+    toggleEnableNotifications: () -> Unit,
+    toggleNotifyOnUpdates: () -> Unit,
+    setSortBy: (TopicSortBy) -> Unit,
+    setMaxTopicsPerFetch: (Int) -> Unit,
     onBackClick: () -> Unit,
 ) {
+    var showSortByDialog by remember { mutableStateOf(false) }
+    var showMaxTopicsPerFetchDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             DoubeanTopAppBar(
@@ -32,13 +83,148 @@ fun GroupDefaultNotificationsPreferencesSettingsScreen(
                     }
                 })
         }
-    ) {
-        AndroidFragment<GroupDefaultNotificationPreferencesSettingsContentFragment>(
-            modifier = Modifier
-                .padding(
-                    it
+    ) { innerPadding ->
+        if (preferences != null) {
+            LazyColumn(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+            ) {
+
+                item {
+                    SwitchPreferenceItem(
+                        title = stringResource(R.string.enable_topic_notifications_title),
+                        checked = preferences.notificationsEnabled,
+                        onCheckedChange = { toggleEnableNotifications() }
+                    )
+                }
+
+                item {
+                    SwitchPreferenceItem(
+                        title = stringResource(R.string.notify_on_updates_title),
+                        checked = preferences.notifyOnUpdates,
+                        onCheckedChange = { toggleNotifyOnUpdates() }
+                    )
+                }
+
+                item {
+                    ClickablePreferenceItem(
+                        title = stringResource(R.string.sort_by_title),
+                        onClick = { showSortByDialog = true },
+                        summary = stringResource(SortTopicsByOption.entries.first { option -> option.sortBy == preferences.sortBy }.textRes)
+                    )
+                }
+
+                item {
+                    ClickablePreferenceItem(
+                        title = stringResource(R.string.max_topics_per_fetch_title),
+                        summary = preferences.maxTopicsPerFetch.toString(),
+                        onClick = { showMaxTopicsPerFetchDialog = true }
+                    )
+
+                }
+            }
+            if (showSortByDialog) {
+                SortByDialog(
+                    selected = preferences.sortBy,
+                    onDismiss = { showSortByDialog = false },
+                    onSelect = { setSortBy(it) }
                 )
-                .fillMaxSize()
-        )
+            }
+
+            if (showMaxTopicsPerFetchDialog) {
+                MaxTopicsPerFetchDialog(
+                    currentValue = preferences.maxTopicsPerFetch,
+                    onDismiss = { showMaxTopicsPerFetchDialog = false },
+                    onConfirm = setMaxTopicsPerFetch
+                )
+            }
+        }
+
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SortByDialog(
+    selected: TopicSortBy?,
+    onDismiss: () -> Unit,
+    onSelect: (TopicSortBy) -> Unit,
+) {
+    val options = SortTopicsByOption.entries
+
+    BasicAlertDialog(
+        onDismissRequest = onDismiss,
+        content = {
+            Surface(
+                shape = RoundedCornerShape(28.0.dp),
+                color = MaterialTheme.colorScheme.surfaceContainerHigh
+            ) {
+                Column(Modifier.padding(24.dp)) {
+                    Text(
+                        text = stringResource(R.string.sort_by_title),
+                        modifier = Modifier.padding(bottom = 16.dp),
+                        style = MaterialTheme.typography.headlineSmall,
+                    )
+                    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant) {
+                        options.forEach { option ->
+                            RadioButtonItem(
+                                label = stringResource(option.textRes),
+                                selected = selected == option.sortBy,
+                                onSelect = {
+                                    onSelect(option.sortBy)
+                                    onDismiss()
+                                }
+                            )
+                        }
+                    }
+
+                }
+            }
+
+        }
+    )
+}
+
+@Composable
+private fun MaxTopicsPerFetchDialog(
+    currentValue: Int,
+    onDismiss: () -> Unit,
+    onConfirm: (Int) -> Unit,
+) {
+    var value by remember {
+        mutableIntStateOf(currentValue)
+    }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.max_topics_per_fetch_title)) },
+        text = {
+            MaxTopicsPerFetchTextField(
+                maxTopicsPerFetch = value,
+                onUpdateMaxTopicsPerFetch = {
+                    value = it
+                },
+                requestFocus = true,
+                fillMaxWidth = true
+            )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm(value)
+                    onDismiss()
+                }
+            ) {
+                Text(stringResource(R.string.save))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
+}
+
+
+
