@@ -33,7 +33,7 @@ fun LazyListScope.groupsOfTheDay(
         contentType = { _, _ -> "dayRankingGroupItem" }) { index, group ->
         DayRankingGroupItem(
             group = group,
-            rank = index + 1,
+            position = index + 1,
             total = recommendedGroups.size,
             onClick = {
                 onGroupItemClick(group.group.id)

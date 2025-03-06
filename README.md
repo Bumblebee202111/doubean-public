@@ -150,7 +150,7 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
 
 * [Foundation][foundation]: [Android KTX][android-ktx]
 * [Architecture][arch]: [Lifecycles][lifecycle], [Navigation][navigation], [Paging][paging], [Room][room], DataStore, [ViewModel][viewmodel], [WorkManager][workmanager]
-* [UI][ui]: [Animations & Transitions][animation], Jetpack Compose, [Layout][layout]
+* [UI][ui]: Jetpack Compose
 * Behavior: [Notifications][notifications]
 * Third party libraries
   * [Kotlin Coroutines][kotlin-coroutines]
@@ -183,12 +183,6 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
 [workmanager]:https://developer.android.com/topic/libraries/architecture/workmanager
 
 [ui]: https://developer.android.com/guide/topics/ui
-
-[animation]: https://developer.android.com/training/animation/
-
-[fragment]: https://developer.android.com/guide/components/fragments
-
-[layout]: https://developer.android.com/guide/topics/ui/declaring-layout
 
 [notifications]: https://developer.android.com/develop/ui/views/notifications
 
