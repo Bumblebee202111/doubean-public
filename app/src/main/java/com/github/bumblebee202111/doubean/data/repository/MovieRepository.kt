@@ -11,7 +11,6 @@ import javax.inject.Singleton
 @Singleton
 class MovieRepository @Inject constructor(
     private val apiService: ApiService,
-    private val subjectCollectionRepository: SubjectCollectionRepository,
 ) {
 
     suspend fun getMovie(movieId: String) =

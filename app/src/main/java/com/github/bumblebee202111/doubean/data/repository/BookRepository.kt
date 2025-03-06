@@ -10,7 +10,6 @@ import javax.inject.Singleton
 @Singleton
 class BookRepository @Inject constructor(
     private val apiService: ApiService,
-    private val subjectCollectionRepository: SubjectCollectionRepository,
 ) {
     suspend fun getBook(bookId: String) =
         suspendRunCatching {
