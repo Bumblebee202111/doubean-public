@@ -3,7 +3,6 @@ package com.github.bumblebee202111.doubean.ui.component
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
@@ -18,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.model.SizedImage
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ListItemImages(
     images: List<SizedImage>,

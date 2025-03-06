@@ -160,10 +160,6 @@ fun SettingsScreen(
                 )
             }
         }
-//        AndroidFragment<SettingsContentFragment>(modifier = Modifier.padding(it)) { fragment ->
-//            fragment.onGroupDefaultNotificationsPreferencesSettingsClick =
-//                onGroupDefaultNotificationsPreferencesSettingsClick
-//        }
     }
 
 }

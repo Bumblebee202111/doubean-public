@@ -45,8 +45,8 @@ class GroupsSearchViewModel @Inject constructor(private val groupRepository: Gro
         query.value = input
     }
 
-    val groupsOfTheDay = query.flatMapLatest {
-        if (it == null) {
+    val groupsOfTheDay = query.flatMapLatest { query ->
+        if (query == null) {
             groupRepository.getGroupRecommendation(GroupRecommendationType.DAILY).map { it.data }
                 .flowOn(Dispatchers.IO)
         } else {

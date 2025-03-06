@@ -194,12 +194,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### Current release \(0.7.16\)
 
-- Eliminate Android RatingBar
 - Pagination of interests: mixed below status sections
 
 #### Next release \(0.7.17)
-
-- Eliminate Android colors
 
 
 #### Future plans
