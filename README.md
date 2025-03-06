@@ -139,18 +139,18 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
   * Locally favorite tabs/groups 
   * Keep original list orders or sort by create time within any page
   * Customizable topic notifications
-* Ad-free and lightweight (~4MB)
+* Ad-free and lightweight (~3MB)
 * Rooted users can reuse login sessions from Douban app (phone login unsupported)
 * Partial URL deep linking support
 * Basic Statuses tab (no longer updated)
 * Partial mobile-optimized Douban WebView support (no longer maintained).
-* Basic MD2/MD3 implementation (migration ongoing)
+* Basic MD3 implementation
 
 ## Tech Stack
 
-* [Foundation][foundation]: [AppCompat][appcompat], [Android KTX][android-ktx]
+* [Foundation][foundation]: [Android KTX][android-ktx]
 * [Architecture][arch]: [Lifecycles][lifecycle], [Navigation][navigation], [Paging][paging], [Room][room], DataStore, [ViewModel][viewmodel], [WorkManager][workmanager]
-* [UI][ui]: [Animations & Transitions][animation], Jetpack Compose, [Fragment][fragment], [Layout][layout]
+* [UI][ui]: [Animations & Transitions][animation], Jetpack Compose, [Layout][layout]
 * Behavior: [Notifications][notifications]
 * Third party libraries
   * [Kotlin Coroutines][kotlin-coroutines]
@@ -200,10 +200,12 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### Current release \(0.7.16\)
 
-- Eleminate `appcompat` and `preference-ktx`
+- Eliminate Android RatingBar
 - Pagination of interests: mixed below status sections
 
 #### Next release \(0.7.17)
+
+- Eliminate Android colors
 
 
 #### Future plans
@@ -212,6 +214,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Subjects
 
+  * Colors
   * More details & sub-features
   
 * Remember last active bottom navigation/Subjects tabs
@@ -256,12 +259,10 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Process error body
   * Show error messages
 
-* Load state visualization (removed during migrations for simplicity)
+* Load state visualization (removed during Compose migrations for simplicity)
   * Paging 3 refresh, loading status ...
 
 * Restore dark mode & landscape support
-
-* Migrate `RatingBar` and `PreferenceFragmentCompat` to Jetpack Compose/MD3.
 
 * ImageScreen -> Shared element
 

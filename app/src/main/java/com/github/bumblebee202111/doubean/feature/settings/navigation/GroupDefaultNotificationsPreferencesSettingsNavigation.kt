@@ -16,6 +16,6 @@ fun NavController.navigateToGroupDefaultNotificationsPreferencesSettings() =
 fun NavGraphBuilder.groupDefaultNotificationsPreferencesSettingsScreen(onBackClick: () -> Unit) =
     composable<GroupDefaultNotificationsPreferencesSettingsRoute> {
         GroupDefaultNotificationsPreferencesSettingsScreen(
-            onBackClick = onBackClick,
+            onBackClick = onBackClick
         )
     }

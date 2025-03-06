@@ -77,19 +77,15 @@ dependencies {
     androidTestImplementation(composeBom)
 
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material.iconsExtended)
     implementation(libs.androidx.compose.material3.windowSizeClass)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
-    implementation(libs.androidx.compose.ui.viewbinding)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.fragment.ktx)
-    implementation(libs.androidx.fragment.compose)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)
@@ -106,8 +102,6 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.webkit)
     implementation(libs.androidx.work.runtime.ktx)
-
-    implementation(libs.google.android.material)
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)

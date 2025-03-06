@@ -1,6 +1,9 @@
 package com.github.bumblebee202111.doubean.feature.settings
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -8,15 +11,48 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.fragment.compose.AndroidFragment
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github.bumblebee202111.doubean.BuildConfig
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.ui.component.ClickablePreferenceItem
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
+import com.github.bumblebee202111.doubean.ui.component.PreferenceCategoryHeader
+import com.github.bumblebee202111.doubean.ui.component.PreferenceDivider
+import com.github.bumblebee202111.doubean.ui.component.SwitchPreferenceItem
+import com.github.bumblebee202111.doubean.util.OpenInUtils
+
+@Composable
+fun SettingsScreen(
+    onBackClick: () -> Unit,
+    onGroupDefaultNotificationsPreferencesSettingsClick: () -> Unit,
+    viewModel: SettingsViewModel = hiltViewModel(),
+) {
+    val enableNotifications by viewModel.enableNotifications.collectAsStateWithLifecycle()
+    val startAppWithGroups by viewModel.startAppWithGroups.collectAsStateWithLifecycle()
+    SettingsScreen(
+        enableNotifications = enableNotifications,
+        startAppWithGroups = startAppWithGroups,
+        onBackClick = onBackClick,
+        toggleSetGroupsAsStartDestination = viewModel::toggleSetGroupsAsStartDestination,
+        toggleEnableNotifications = viewModel::toggleEnableNotifications,
+        onGroupDefaultNotificationsPreferencesSettingsClick = onGroupDefaultNotificationsPreferencesSettingsClick
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
+    enableNotifications: Boolean?,
+    startAppWithGroups: Boolean?,
     onBackClick: () -> Unit,
+    toggleSetGroupsAsStartDestination: () -> Unit,
+    toggleEnableNotifications: () -> Unit,
     onGroupDefaultNotificationsPreferencesSettingsClick: () -> Unit,
 ) {
     Scaffold(
@@ -33,9 +69,101 @@ fun SettingsScreen(
                 })
         }
     ) {
-        AndroidFragment<SettingsContentFragment>(modifier = Modifier.padding(it)) { fragment ->
-            fragment.onGroupDefaultNotificationsPreferencesSettingsClick =
-                onGroupDefaultNotificationsPreferencesSettingsClick
+        val context = LocalContext.current
+        LazyColumn(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize(),
+            contentPadding = PaddingValues(vertical = 8.dp)
+        ) {
+            // Navigation Category
+            item {
+                PreferenceCategoryHeader(title = stringResource(R.string.pref_title_navigation))
+            }
+            if (startAppWithGroups != null) {
+                item {
+                    SwitchPreferenceItem(
+                        title = stringResource(R.string.pref_title_start_app_with_groups),
+                        summary = stringResource(R.string.pref_summary_start_app_with_groups),
+                        checked = startAppWithGroups,
+                        onCheckedChange = { toggleSetGroupsAsStartDestination() }
+                    )
+                }
+            }
+
+            item {
+                PreferenceDivider()
+            }
+
+            // Notifications Category
+            item {
+                PreferenceCategoryHeader(title = stringResource(R.string.pref_cat_title_notifications))
+            }
+            if (enableNotifications != null) {
+                item {
+
+                    SwitchPreferenceItem(
+                        title = stringResource(R.string.enable_notifications_title),
+                        checked = enableNotifications,
+                        onCheckedChange = { toggleEnableNotifications() }
+                    )
+                }
+            }
+            item {
+                ClickablePreferenceItem(
+                    title = stringResource(R.string.group_default_notification_preferences_settings_title),
+                    onClick = onGroupDefaultNotificationsPreferencesSettingsClick
+                )
+            }
+
+            item {
+                PreferenceDivider()
+            }
+
+            // About Category
+            item {
+                PreferenceCategoryHeader(title = stringResource(R.string.about_header))
+            }
+            item {
+                ClickablePreferenceItem(
+                    title = stringResource(R.string.app_version_title),
+                    summary = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
+                    onClick = {
+                        OpenInUtils.viewInActivity(
+                            context,
+                            "https://github.com/Bumblebee202111/doubean-public"
+                        )
+                    }
+                )
+            }
+            item {
+                ClickablePreferenceItem(
+                    title = stringResource(R.string.app_author_title),
+                    summary = stringResource(R.string.app_author),
+                    onClick = {
+                        OpenInUtils.viewInActivity(
+                            context,
+                            "https://github.com/Bumblebee202111"
+                        )
+                    }
+                )
+            }
+            item {
+                ClickablePreferenceItem(
+                    title = stringResource(R.string.send_feedback_title),
+                    onClick = {
+                        OpenInUtils.viewInActivity(
+                            context,
+                            "https://github.com/Bumblebee202111/doubean-public/issues"
+                        )
+                    }
+                )
+            }
         }
+//        AndroidFragment<SettingsContentFragment>(modifier = Modifier.padding(it)) { fragment ->
+//            fragment.onGroupDefaultNotificationsPreferencesSettingsClick =
+//                onGroupDefaultNotificationsPreferencesSettingsClick
+//        }
     }
+
 }
