@@ -19,12 +19,12 @@ import kotlin.math.sin
 
 enum class DoubeanRatingBarSize(val iconSize: Dp, val spacing: Dp) {
     Small(
-        iconSize = 16.dp,
-        spacing = 2.dp
+        iconSize = 14.dp,
+        spacing = 1.dp
     ),
     Large(
         iconSize = 24.dp,
-        spacing = 4.dp
+        spacing = 2.dp
     )
 }
 
