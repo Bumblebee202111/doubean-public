@@ -1,6 +1,10 @@
 package com.github.bumblebee202111.doubean.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.map
 import com.github.bumblebee202111.doubean.coroutines.suspendRunCatching
+import com.github.bumblebee202111.doubean.data.paging.UserSubjectInterestItemPagingSource
 import com.github.bumblebee202111.doubean.model.MySubject
 import com.github.bumblebee202111.doubean.model.Subject
 import com.github.bumblebee202111.doubean.model.SubjectInterest
@@ -10,12 +14,14 @@ import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.model.SubjectWithInterest
 import com.github.bumblebee202111.doubean.model.toNetworkStatus
 import com.github.bumblebee202111.doubean.network.ApiService
+import com.github.bumblebee202111.doubean.network.model.NetworkSubjectInterestWithSubject
 import com.github.bumblebee202111.doubean.network.model.asExternalModel
 import com.github.bumblebee202111.doubean.network.model.toExternalModel
 import com.github.bumblebee202111.doubean.network.model.toMySubjects
 import com.github.bumblebee202111.doubean.network.model.toNetworkSubjectType
 import com.github.bumblebee202111.doubean.network.model.toSubjectInterest
 import com.github.bumblebee202111.doubean.network.model.toSubjectInterestWithUserList
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -30,9 +36,32 @@ class UserSubjectRepository @Inject constructor(private val apiService: ApiServi
     suspend fun getUserInterests(userId: String, subjectType: SubjectType) = suspendRunCatching {
         apiService.getUserSubjectInterests(
             userId = userId,
-            type = subjectType.toNetworkSubjectType().value
+            type = subjectType.toNetworkSubjectType().value,
+            count = USER_SUBJECT_COUNT
         ).toExternalModel()
     }
+
+    fun getUserInterestsPagingData(
+        userId: String,
+        subjectType: SubjectType,
+        skipFirstPage: Boolean = true,
+    ) =
+        Pager(
+            config = PagingConfig(
+                pageSize = USER_SUBJECT_COUNT,
+                initialLoadSize = USER_SUBJECT_COUNT,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                UserSubjectInterestItemPagingSource(
+                    backend = apiService,
+                    userId = userId,
+                    subjectType = subjectType,
+                    initialStart = if (skipFirstPage) USER_SUBJECT_COUNT else 0
+                )
+            }
+        ).flow.map { pagingData -> pagingData.map(NetworkSubjectInterestWithSubject::asExternalModel) }
+
 
     suspend fun addSubjectToInterests(
         type: SubjectType, id: String,
@@ -67,5 +96,9 @@ class UserSubjectRepository @Inject constructor(private val apiService: ApiServi
             )
                 .toSubjectInterestWithUserList()
         }
+    }
+
+    private companion object {
+        const val USER_SUBJECT_COUNT = 20
     }
 }

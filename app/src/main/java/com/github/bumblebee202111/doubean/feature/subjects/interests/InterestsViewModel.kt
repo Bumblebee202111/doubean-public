@@ -1,9 +1,12 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package com.github.bumblebee202111.doubean.feature.subjects.interests
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.InterestsRoute
@@ -12,8 +15,11 @@ import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.SubjectWithInterest
 import com.github.bumblebee202111.doubean.ui.common.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -35,7 +41,7 @@ class InterestsViewModel @Inject constructor(
         emit(userSubjectRepository.getUserSubjects(userId).map { subjects ->
             subjects.first { it.type == subjectType }
         })
-    }
+    }.stateInUi()
 
     private val interests = MutableStateFlow<List<SubjectWithInterest<*>>>(emptyList())
 
@@ -44,7 +50,21 @@ class InterestsViewModel @Inject constructor(
             emit(userSubjectRepository.getUserInterests(userId = userId, subjectType = subjectType))
         }.onEach {
             interests.value = it.getOrDefault(emptyList())
+        }.stateInUi()
+
+    private val hasMore =
+        combine(subjectResult, interestsResult) { subjectResult, interestsResult ->
+            return@combine subjectResult?.isSuccess == true && interestsResult?.isSuccess == true && subjectResult.getOrThrow().interests.sumOf { it.count } > interestsResult.getOrThrow().size
+        }.stateInUi(false)
+
+    val moreInterestsPagingData = hasMore.flatMapLatest { hasMore ->
+        if (hasMore) {
+            userSubjectRepository.getUserInterestsPagingData(userId, subjectType)
+                .cachedIn(viewModelScope)
+        } else {
+            emptyFlow()
         }
+    }.cachedIn(viewModelScope)
 
     private val isLoggedIn = authRepository.isLoggedIn()
 
@@ -53,10 +73,11 @@ class InterestsViewModel @Inject constructor(
             subjectResult,
             interestsResult,
             interests,
+            hasMore,
             isLoggedIn
-        ) { subjectResult, interestsResult, interests, isLoggedIn ->
+        ) { subjectResult, interestsResult, interests, hasMore, isLoggedIn ->
             when {
-                subjectResult.isSuccess && interestsResult.isSuccess -> {
+                subjectResult?.isSuccess == true && interestsResult?.isSuccess == true -> {
                     val subject = subjectResult.getOrThrow()
                     val statusesWithInterests = subject.interests.map { interestStatus ->
                         Pair(
@@ -65,7 +86,8 @@ class InterestsViewModel @Inject constructor(
                     }
                     InterestsUiState.Success(
                         title = subject.name,
-                        interests = statusesWithInterests,
+                        statusesAndInterests = statusesWithInterests,
+                        hasMore = hasMore,
                         isLoggedIn = isLoggedIn
                     )
                 }
@@ -106,7 +128,6 @@ class InterestsViewModel @Inject constructor(
                             set(indexOf(subjectWithInterest), result.getOrThrow())
                         }
                     }
-                    interests
                 }
             }
         }
@@ -117,7 +138,8 @@ class InterestsViewModel @Inject constructor(
 sealed interface InterestsUiState {
     data class Success(
         val title: String,
-        val interests: List<Pair<MySubjectStatus, List<SubjectWithInterest<*>>>>,
+        val statusesAndInterests: List<Pair<MySubjectStatus, List<SubjectWithInterest<*>>>>,
+        val hasMore: Boolean,
         val isLoggedIn: Boolean,
     ) : InterestsUiState
 
