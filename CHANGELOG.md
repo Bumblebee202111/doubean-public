@@ -3,9 +3,12 @@ Change Log
 
 ## Version 0.7.17(717)
 
+- Added support for more user interests (vertical pagination below status sections)
+  - Not well tested since I don't have long interest lists
+
 - Eliminated AndroidX Preferences along with AppCompat/Fragment
   - APK size reduced by around 1MB
-- Convert RatingBar to Compose with precise star values
+- Converted RatingBar to Compose with precise star values
 
 ## Version 0.7.16(716)
 
