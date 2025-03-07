@@ -45,7 +45,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -89,6 +88,7 @@ import com.github.bumblebee202111.doubean.ui.common.TopicWebViewClient
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.SortByDropDownMenu
+import com.github.bumblebee202111.doubean.ui.groupTopAppBarColor
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.TOPIC_CSS_FILENAME
@@ -201,7 +201,7 @@ fun TopicDetailScreen(
         topBar = {
             var appBarMenuExpanded by remember { mutableStateOf(false) }
             var viewInMenuExpanded by remember { mutableStateOf(false) }
-            val groupColor = groupColorInt?.let(::Color)
+            val groupColor = groupColorInt?.let(::Color) ?: MaterialTheme.colorScheme.primary
             DoubeanTopAppBar(
                 title = {
                     topic?.title?.let {
@@ -282,11 +282,8 @@ fun TopicDetailScreen(
 
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors().run {
-                    groupColor?.let {
-                        copy(containerColor = it)
-                    } ?: this
-                })
+                colors = groupTopAppBarColor(groupColor)
+            )
         },
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->

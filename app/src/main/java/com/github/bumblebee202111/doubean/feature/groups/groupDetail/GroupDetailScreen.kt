@@ -63,6 +63,7 @@ import com.github.bumblebee202111.doubean.model.GroupTab
 import com.github.bumblebee202111.doubean.ui.GroupNotificationPreferencesDialog
 import com.github.bumblebee202111.doubean.ui.LargeGroupAvatar
 import com.github.bumblebee202111.doubean.ui.component.ExpandCollapseText
+import com.github.bumblebee202111.doubean.ui.groupTopAppBarColor
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import kotlinx.coroutines.launch
@@ -415,13 +416,7 @@ fun GroupDetailTopBar(
 
         },
         scrollBehavior = scrollBehavior,
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = groupColor,
-            scrolledContainerColor = groupColor,
-            navigationIconContentColor = Color.White,
-            titleContentColor = Color.White,
-            actionIconContentColor = Color.White
-        )
+        colors = groupTopAppBarColor(groupColor)
     )
 }
 
