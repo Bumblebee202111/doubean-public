@@ -1,7 +1,7 @@
 Change Log
 ==========
 
-## Version 0.7.17(717)
+## Version 0.7.16(716)
 
 - Added support for more user interests (vertical pagination below status sections)
   - Not well tested since I don't have long interest lists
@@ -10,7 +10,7 @@ Change Log
   - APK size reduced by around 1MB
 - Converted RatingBar to Compose with precise star values
 
-## Version 0.7.16(716)
+## Version 0.7.15(715)
 
 - Improved organization of subject review counts
 - Updated simple interest button to use a subtler `FilledTonalButton` for softer appearance
