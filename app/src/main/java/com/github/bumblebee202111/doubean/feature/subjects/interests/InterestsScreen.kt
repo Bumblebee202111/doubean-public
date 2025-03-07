@@ -1,10 +1,12 @@
 package com.github.bumblebee202111.doubean.feature.subjects.interests
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -102,6 +104,15 @@ fun InterestsScreen(
             }) { innerPadding ->
                 val lazyListState = rememberLazyListState()
                 val coroutineScope = rememberCoroutineScope()
+                val onSubjectClick: (SubjectWithInterest<*>) -> Unit = {
+                    when (it.subject) {
+                        is Movie -> onMovieClick(it.subject.id)
+                        is Tv -> onTvClick(it.subject.id)
+                        is Book -> onBookClick(it.subject.id)
+                        is Subject.Unsupported -> {
+                        }
+                    }
+                }
                 val onMoreClick: () -> Unit = {
                     coroutineScope.launch {
                         lazyListState.animateScrollToItem(uiState.statusesAndInterests.size)
@@ -128,15 +139,7 @@ fun InterestsScreen(
                                 MySubjectItem(
                                     subject = it,
                                     isLoggedIn = uiState.isLoggedIn,
-                                    onClick = {
-                                        when (it.subject) {
-                                            is Movie -> onMovieClick(it.subject.id)
-                                            is Tv -> onTvClick(it.subject.id)
-                                            is Book -> onBookClick(it.subject.id)
-                                            is Subject.Unsupported -> {
-                                            }
-                                        }
-                                    },
+                                    onClick = { onSubjectClick(it) },
                                     onUpdateStatus = onUpdateInterestStatus
                                 )
                             }
@@ -166,7 +169,7 @@ fun InterestsScreen(
                             count = moreInterestPagingItems.itemCount,
                             key = moreInterestPagingItems.itemKey { it.id }) { index ->
                             moreInterestPagingItems[index]?.let {
-                                SubjectArchiveItem(it)
+                                SubjectArchiveItem(subject = it, onClick = { onSubjectClick(it) })
                             }
                         }
                     }
@@ -198,8 +201,13 @@ private fun InterestsSectionTitleText(text: String) {
 }
 
 @Composable
-private fun SubjectArchiveItem(subject: SubjectWithInterest<*>) {
-    Row(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+private fun SubjectArchiveItem(subject: SubjectWithInterest<*>, onClick: () -> Unit) {
+    Row(
+        Modifier
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+    ) {
         //cover
         SubjectItemImage(url = subject.subject.imageUrl)
         Spacer(Modifier.width(16.dp))

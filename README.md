@@ -143,7 +143,7 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
 * Rooted users can reuse login sessions from Douban app (phone login unsupported)
 * Partial URL deep linking support
 * Basic Statuses tab (no longer updated)
-* Partial mobile-optimized Douban WebView support (no longer maintained).
+* Partial mobile-optimized Douban WebView support (no longer maintained)
 * Basic MD3 implementation
 
 ## Tech Stack
