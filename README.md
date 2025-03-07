@@ -194,9 +194,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### Current release \(0.7.16\)
 
-- Pagination of interests: mixed below status sections
-- More compact rating
-
 #### Next release \(0.7.17)
 
 
