@@ -249,7 +249,7 @@ val unspecified_scheme = ColorFamily(
 )
 
 @Composable
-fun AppTheme(
+fun DoubeanTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {

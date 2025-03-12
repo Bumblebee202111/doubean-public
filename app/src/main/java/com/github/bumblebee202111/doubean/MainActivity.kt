@@ -16,7 +16,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.ui.DoubeanApp
-import com.github.bumblebee202111.doubean.ui.theme.AppTheme
+import com.github.bumblebee202111.doubean.ui.theme.DoubeanTheme
 import com.github.bumblebee202111.doubean.workers.TopicNotificationsWorker
 import com.github.bumblebee202111.doubean.workers.TopicNotificationsWorker.Companion.WORK_NAME
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            AppTheme {
+            DoubeanTheme {
                 val startAppWithGroups by mainActivityViewModel.startAppWithGroups.collectAsStateWithLifecycle()
                 startAppWithGroups?.let {
                     DoubeanApp(
