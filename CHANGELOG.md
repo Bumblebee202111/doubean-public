@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.7.17(717)
+
 ## Version 0.7.16(716)
 
 - Added support for more user interests (vertical pagination below status sections)
