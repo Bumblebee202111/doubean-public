@@ -205,7 +205,6 @@ private fun SubjectArchiveItem(subject: SubjectWithInterest<*>, onClick: () -> U
     Row(
         Modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .fillMaxWidth()
             .clickable(onClick = onClick)
     ) {
         //cover
@@ -225,6 +224,7 @@ private fun SubjectArchiveItem(subject: SubjectWithInterest<*>, onClick: () -> U
             //title
             Text(
                 text = subject.subject.title,
+                modifier = Modifier.fillMaxWidth(),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
