@@ -9,11 +9,12 @@ import androidx.compose.ui.graphics.Color
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun groupTopAppBarColor(groupColor: Color): TopAppBarColors {
+    val contentColor = Color.White
     return TopAppBarDefaults.topAppBarColors(
         containerColor = groupColor,
         scrolledContainerColor = groupColor,
-        navigationIconContentColor = Color.White,
-        titleContentColor = Color.White,
-        actionIconContentColor = Color.White
+        navigationIconContentColor = contentColor,
+        titleContentColor = contentColor,
+        actionIconContentColor = contentColor
     )
 }

@@ -28,5 +28,5 @@ data class JoinedGroupPartialEntity(
     @ColumnInfo("desc_abstract")
     val descAbstract: String?,
 
-    val color: Int,
+    val color: String,
 )

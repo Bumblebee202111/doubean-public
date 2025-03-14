@@ -57,7 +57,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LocalPinnableContainer
 import androidx.compose.ui.platform.LocalContext
@@ -92,6 +91,7 @@ import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.TOPIC_CSS_FILENAME
 import com.github.bumblebee202111.doubean.util.fullDateTimeString
+import com.github.bumblebee202111.doubean.util.toColorOrPrimary
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberSaveableWebViewState
 import com.google.accompanist.web.rememberWebViewNavigator
@@ -113,7 +113,7 @@ fun TopicScreen(
     val shouldShowPhotoList by viewModel.shouldShowPhotoList.collectAsStateWithLifecycle()
     val contentHtml by viewModel.contentHtml.collectAsStateWithLifecycle()
     val commentSortBy by viewModel.commentsSortBy.collectAsStateWithLifecycle()
-    val groupColorInt = topic?.group?.color
+    val groupColor = topic?.group?.color
     val shouldShowSpinner by viewModel.shouldShowSpinner.collectAsStateWithLifecycle()
     val shouldDisplayInvalidImageUrl = viewModel.shouldDisplayInvalidImageUrl
 
@@ -124,7 +124,7 @@ fun TopicScreen(
         shouldShowPhotoList = shouldShowPhotoList,
         contentHtml = contentHtml,
         commentSortBy = commentSortBy,
-        groupColorInt = groupColorInt,
+        groupColorString = groupColor,
         shouldShowSpinner = shouldShowSpinner,
         shouldDisplayInvalidImageUrl = shouldDisplayInvalidImageUrl,
         updateCommentSortBy = viewModel::updateCommentsSortBy,
@@ -153,7 +153,7 @@ fun TopicScreen(
     shouldShowPhotoList: Boolean?,
     contentHtml: String?,
     commentSortBy: TopicCommentSortBy,
-    groupColorInt: Int?,
+    groupColorString: String?,
     shouldShowSpinner: Boolean,
     shouldDisplayInvalidImageUrl: Boolean,
     updateCommentSortBy: (TopicCommentSortBy) -> Unit,
@@ -200,7 +200,7 @@ fun TopicScreen(
         topBar = {
             var appBarMenuExpanded by remember { mutableStateOf(false) }
             var viewInMenuExpanded by remember { mutableStateOf(false) }
-            val groupColor = groupColorInt?.let(::Color) ?: MaterialTheme.colorScheme.primary
+            val groupColor = groupColorString.toColorOrPrimary()
             DoubeanTopAppBar(
                 title = {
                     topic?.title?.let {
@@ -325,7 +325,7 @@ fun TopicScreen(
                 }
 
             }
-            if (topic != null && groupColorInt != null) {
+            if (topic != null) {
                 when (commentSortBy) {
                     TopicCommentSortBy.TOP -> {
                         items(
@@ -334,7 +334,7 @@ fun TopicScreen(
                             contentType = { "TopicComment" }) { index ->
                             TopicComment(
                                 comment = popularCommentsLazyPagingItems[index],
-                                groupColorInt = groupColorInt,
+                                groupColor = groupColorString,
                                 topic = topic,
                                 onImageClick = onImageClick
                             )
@@ -350,7 +350,7 @@ fun TopicScreen(
                             contentType = allCommentLazyPagingItems.itemContentType { "TopicComment" }) { index ->
                             TopicComment(
                                 comment = allCommentLazyPagingItems[index],
-                                groupColorInt = groupColorInt,
+                                groupColor = groupColorString,
                                 topic = topic,
                                 onImageClick = onImageClick
                             )
