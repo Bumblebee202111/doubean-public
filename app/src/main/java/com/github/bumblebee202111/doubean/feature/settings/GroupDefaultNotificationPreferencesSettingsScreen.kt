@@ -93,14 +93,6 @@ fun GroupDefaultNotificationsPreferencesSettingsScreen(
 
                 item {
                     SwitchPreferenceItem(
-                        title = stringResource(R.string.enable_topic_notifications_title),
-                        checked = preferences.notificationsEnabled,
-                        onCheckedChange = { toggleEnableNotifications() }
-                    )
-                }
-
-                item {
-                    SwitchPreferenceItem(
                         title = stringResource(R.string.notify_on_updates_title),
                         checked = preferences.notifyOnUpdates,
                         onCheckedChange = { toggleNotifyOnUpdates() }
