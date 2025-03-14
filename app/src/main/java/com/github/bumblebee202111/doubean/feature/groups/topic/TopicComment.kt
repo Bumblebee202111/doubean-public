@@ -26,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,12 +44,13 @@ import com.github.bumblebee202111.doubean.ui.component.ListItemImages
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.intermediateDateTimeString
+import com.github.bumblebee202111.doubean.util.toColorOrPrimary
 import java.time.LocalDateTime
 
 @Composable
 fun TopicComment(
     comment: TopicComment?,
-    groupColorInt: Int,
+    groupColor: String?,
     topic: TopicDetail,
     onImageClick: (url: String) -> Unit,
 ) {
@@ -74,7 +74,7 @@ fun TopicComment(
                 TopicCommentHeaderRow(
                     author = comment?.author,
                     topic = topic,
-                    groupColorInt = groupColorInt,
+                    groupColor = groupColor,
                     createTime = comment?.createTime,
                     ipLocation = comment?.ipLocation,
                     showAuthorAvatar = false
@@ -85,7 +85,7 @@ fun TopicComment(
                         TopicRefCommentCard(
                             refComment = refComment,
                             topic = topic,
-                            groupColorInt = groupColorInt,
+                            groupColor = groupColor,
                             onImageClick = onImageClick
                         )
                     }
@@ -135,7 +135,7 @@ fun TopicComment(
 private fun TopicCommentHeaderRow(
     author: User?,
     topic: TopicDetail,
-    groupColorInt: Int,
+    groupColor: String?,
     createTime: LocalDateTime?,
     ipLocation: String?,
     showAuthorAvatar: Boolean,
@@ -157,7 +157,7 @@ private fun TopicCommentHeaderRow(
             Text(
                 text = stringResource(id = R.string.op),
                 modifier = Modifier.padding(start = 4.dp),
-                color = Color(groupColorInt),
+                color = groupColor.toColorOrPrimary(),
                 style = MaterialTheme.typography.bodyMedium
             )
         }
@@ -181,7 +181,7 @@ private fun TopicCommentHeaderRow(
 private fun TopicRefCommentCard(
     refComment: TopicRefComment,
     topic: TopicDetail,
-    groupColorInt: Int,
+    groupColor: String?,
     onImageClick: (url: String) -> Unit,
 ) {
     OutlinedCard(modifier = Modifier.fillMaxWidth()) {
@@ -189,7 +189,7 @@ private fun TopicRefCommentCard(
             TopicCommentHeaderRow(
                 author = refComment.author,
                 topic = topic,
-                groupColorInt = groupColorInt,
+                groupColor = groupColor,
                 createTime = refComment.createTime,
                 ipLocation = refComment.ipLocation,
                 showAuthorAvatar = true,

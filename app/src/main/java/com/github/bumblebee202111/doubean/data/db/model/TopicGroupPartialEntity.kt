@@ -30,6 +30,6 @@ data class TopicGroupPartialEntity(
     @ColumnInfo("desc_abstract")
     val descAbstract: String? = null,
 
-    val color: Int?,
+    val color: String?,
 )
 

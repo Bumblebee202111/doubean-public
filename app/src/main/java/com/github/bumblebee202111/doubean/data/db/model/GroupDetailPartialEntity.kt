@@ -21,7 +21,7 @@ data class GroupDetailPartialEntity(
     @ColumnInfo("member_name")
     val memberName: String? = null,
     val description: String?,
-    val color: Int?,
+    val color: String?,
     val uri: String,
     @ColumnInfo("member_role")
     val memberRole: GroupMemberRole? = null,

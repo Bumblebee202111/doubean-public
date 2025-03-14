@@ -66,6 +66,7 @@ import com.github.bumblebee202111.doubean.model.GroupTab
 import com.github.bumblebee202111.doubean.ui.component.ExpandCollapseText
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.ShareUtil
+import com.github.bumblebee202111.doubean.util.toColorOrPrimary
 import kotlinx.coroutines.launch
 
 
@@ -233,9 +234,7 @@ fun GroupDetailTopBar(
     onBackClick: () -> Unit,
 ) {
 
-    val groupColor = group?.color?.let {
-        Color(it)
-    } ?: MaterialTheme.colorScheme.primary
+    val groupColor = group?.color.toColorOrPrimary()
     TwoRowsTopAppBar(
         title = { expanded ->
             if (expanded) {
@@ -267,9 +266,7 @@ fun GroupDetailTopBar(
                                     )
                                 ) { // only shown when its your group or db record exists with notificationsEnabled being true
                                     GroupNotificationsButton(
-                                        groupColor = group.color?.let {
-                                            Color(it)
-                                        } ?: MaterialTheme.colorScheme.primary,
+                                        groupColor = groupColor,
                                         notificationsEnabled = notificationPreferences?.notificationsEnabled
                                             ?: false,
                                         onOpenPreferencesDialog = showNotificationsPrefDialog)
@@ -423,7 +420,7 @@ fun GroupDetailTopBar(
 fun GroupTabRow(
     pagerState: PagerState,
     taggedTabs: List<GroupTab>,
-    groupColor: Int?,
+    groupColor: String?,
     modifier: Modifier = Modifier,
 ) {
     val selectedTabIndex = pagerState.currentPage
@@ -435,7 +432,7 @@ fun GroupTabRow(
                 Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex])
             groupColor?.let {
                 TabRowDefaults.SecondaryIndicator(
-                    color = Color(it),
+                    color = it.toColorOrPrimary(),
                     modifier = indicatorModifier
                 )
             } ?: TabRowDefaults.SecondaryIndicator(modifier = indicatorModifier)

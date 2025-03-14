@@ -19,5 +19,5 @@ data class RecommendedGroupItemGroupPartialEntity(
     val memberName: String,
     @ColumnInfo("desc_abstract")
     val descAbstract: String?,
-    val color: Int?,
+    val color: String?,
 )
