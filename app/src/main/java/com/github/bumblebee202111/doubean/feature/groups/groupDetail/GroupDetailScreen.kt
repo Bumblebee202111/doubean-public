@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.groups.groupDetail
+package com.github.bumblebee202111.doubean.feature.groups.groupdetail
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,15 +55,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.groups.groupTab.GroupTabScreen
+import com.github.bumblebee202111.doubean.feature.groups.grouptab.GroupTabScreen
+import com.github.bumblebee202111.doubean.feature.groups.shared.GroupNotificationPreferencesDialog
+import com.github.bumblebee202111.doubean.feature.groups.shared.LargeGroupAvatar
+import com.github.bumblebee202111.doubean.feature.groups.shared.groupTopAppBarColor
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.GroupMemberRole
 import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.GroupTab
-import com.github.bumblebee202111.doubean.ui.GroupNotificationPreferencesDialog
-import com.github.bumblebee202111.doubean.ui.LargeGroupAvatar
 import com.github.bumblebee202111.doubean.ui.component.ExpandCollapseText
-import com.github.bumblebee202111.doubean.ui.groupTopAppBarColor
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import kotlinx.coroutines.launch
@@ -168,12 +168,8 @@ fun GroupDetailScreen(
                     val shareText = it.name + ' ' + it.shareUrl + "\r\n"
                     ShareUtil.share(context, shareText)
                 },
-                viewInDouban = {
-                    OpenInUtils.openInDouban(context, it)
-                },
-                viewInBrowser = {
-                    OpenInUtils.openInBrowser(context, it)
-                },
+                viewInDouban = { OpenInUtils.openInDouban(context, it) },
+                viewInBrowser = { OpenInUtils.openInBrowser(context, it) },
                 onBackClick = onBackClick
             )
         }

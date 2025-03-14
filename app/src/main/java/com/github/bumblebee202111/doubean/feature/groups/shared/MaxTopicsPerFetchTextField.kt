@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.groups.common
+package com.github.bumblebee202111.doubean.feature.groups.shared
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn

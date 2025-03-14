@@ -195,6 +195,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 #### Current release \(0.7.17\)
 
 - Code cleanups
+- Fix: Group detail: Collapsed top bar height = 56.dp
 
 #### Next release \(0.7.18)
 

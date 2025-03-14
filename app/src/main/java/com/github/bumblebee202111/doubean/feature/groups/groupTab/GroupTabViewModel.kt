@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.groups.groupTab
+package com.github.bumblebee202111.doubean.feature.groups.grouptab
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

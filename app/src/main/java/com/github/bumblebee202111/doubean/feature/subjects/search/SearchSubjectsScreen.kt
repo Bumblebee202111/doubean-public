@@ -22,11 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.feature.subjects.shared.SubjectItem
+import com.github.bumblebee202111.doubean.feature.subjects.shared.SubjectItemBasicContent
 import com.github.bumblebee202111.doubean.model.SearchResultSubjectItem
 import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.model.SubjectsSearchType
-import com.github.bumblebee202111.doubean.ui.SubjectItem
-import com.github.bumblebee202111.doubean.ui.SubjectItemBasicContent
 import com.github.bumblebee202111.doubean.ui.component.SearchTextField
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 

@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.groups.groupTab
+package com.github.bumblebee202111.doubean.feature.groups.grouptab
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -40,16 +40,15 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.feature.groups.shared.GroupNotificationPreferencesDialog
+import com.github.bumblebee202111.doubean.feature.groups.shared.SortTopicsByDropDownMenu
+import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItem
+import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItemDisplayMode
 import com.github.bumblebee202111.doubean.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.TopicItem
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import com.github.bumblebee202111.doubean.model.toItem
-import com.github.bumblebee202111.doubean.ui.GroupNotificationPreferencesDialog
-import com.github.bumblebee202111.doubean.ui.SortTopicsByDropDownMenu
-import com.github.bumblebee202111.doubean.ui.TopicItem
-import com.github.bumblebee202111.doubean.ui.TopicItemDisplayMode
-import com.github.bumblebee202111.doubean.ui.common.rememberLazyListStatePagingWorkaround
 import com.github.bumblebee202111.doubean.util.ShareUtil
 
 @Composable
@@ -132,7 +131,7 @@ fun GroupTabScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize(),
-        state = topicPagingItems.rememberLazyListStatePagingWorkaround()
+        //state = topicPagingItems.rememberLazyListStatePagingWorkaround()
 
     ) {
 

@@ -46,14 +46,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.groups.common.groupsOfTheDay
+import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItem
+import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItemDisplayMode
+import com.github.bumblebee202111.doubean.feature.groups.shared.groupsOfTheDay
 import com.github.bumblebee202111.doubean.model.GroupFavoriteItem
 import com.github.bumblebee202111.doubean.model.GroupItem
 import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
 import com.github.bumblebee202111.doubean.model.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.model.User
-import com.github.bumblebee202111.doubean.ui.TopicItem
-import com.github.bumblebee202111.doubean.ui.TopicItemDisplayMode
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import java.util.Calendar
 
