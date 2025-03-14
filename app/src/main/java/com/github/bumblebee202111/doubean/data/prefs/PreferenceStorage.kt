@@ -12,7 +12,6 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_ACCESS_TOKEN
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_AUTO_IMPORT_SESSION_AT_STARTUP
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_DOUBAN_USER_ID
-import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_GROUP_NOTIFICATIONS_DEFAULT_ENABLE_NOTIFICATIONS
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_GROUP_NOTIFICATIONS_DEFAULT_SORT_BY
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_GROUP_NOTIFICATIONS_MAX_TOPICS_PER_FETCH
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_GROUP_NOTIFICATIONS_NOTIFY_ON_UPDATES
@@ -44,8 +43,6 @@ class PreferenceStorage(
         val PREF_AUTO_IMPORT_SESSION_AT_STARTUP =
             booleanPreferencesKey("pref_auto_import_session_at_startup")
 
-        val PREF_GROUP_NOTIFICATIONS_DEFAULT_ENABLE_NOTIFICATIONS =
-            booleanPreferencesKey("group_notifications_default_enable_notifications")
         val PREF_GROUP_NOTIFICATIONS_NOTIFY_ON_UPDATES =
             booleanPreferencesKey("group_notifications_default_notify_on_updates")
         val PREF_GROUP_NOTIFICATIONS_DEFAULT_SORT_BY =
@@ -93,7 +90,8 @@ class PreferenceStorage(
 
     val defaultGroupNotificationPreferences = dataStore.data.map { p ->
         GroupNotificationPreferences(
-            notificationsEnabled = p[PREF_GROUP_NOTIFICATIONS_DEFAULT_ENABLE_NOTIFICATIONS] ?: true,
+            
+            notificationsEnabled = false,
             sortBy = p[PREF_GROUP_NOTIFICATIONS_DEFAULT_SORT_BY]?.let { TopicSortBy.valueOf(it) }
                 ?: TopicSortBy.HOT_LAST_CREATED,
             maxTopicsPerFetch = p[PREF_GROUP_NOTIFICATIONS_MAX_TOPICS_PER_FETCH] ?: 3,
@@ -103,8 +101,6 @@ class PreferenceStorage(
 
     suspend fun setDefaultGroupNotificationPreferences(preferences: GroupNotificationPreferences) {
         dataStore.edit {
-            it[PREF_GROUP_NOTIFICATIONS_DEFAULT_ENABLE_NOTIFICATIONS] =
-                preferences.notificationsEnabled
             it[PREF_GROUP_NOTIFICATIONS_DEFAULT_SORT_BY] = preferences.sortBy.toString()
             it[PREF_GROUP_NOTIFICATIONS_MAX_TOPICS_PER_FETCH] = preferences.maxTopicsPerFetch
             it[PREF_GROUP_NOTIFICATIONS_NOTIFY_ON_UPDATES] = preferences.notifyOnUpdates
