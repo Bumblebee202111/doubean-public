@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
+val doubeanTopAppBarHeight = 56.dp
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DoubeanTopAppBar(
@@ -26,7 +28,7 @@ fun DoubeanTopAppBar(
         modifier = modifier,
         navigationIcon = navigationIcon,
         actions = actions,
-        expandedHeight = 56.dp,
+        expandedHeight = doubeanTopAppBarHeight,
         colors = colors
     )
 }
