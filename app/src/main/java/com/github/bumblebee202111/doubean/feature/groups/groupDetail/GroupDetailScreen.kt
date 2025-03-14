@@ -64,6 +64,7 @@ import com.github.bumblebee202111.doubean.model.GroupMemberRole
 import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.GroupTab
 import com.github.bumblebee202111.doubean.ui.component.ExpandCollapseText
+import com.github.bumblebee202111.doubean.ui.component.doubeanTopAppBarHeight
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.toColorOrPrimary
@@ -409,6 +410,7 @@ fun GroupDetailTopBar(
 
         },
         scrollBehavior = scrollBehavior,
+        collapsedHeight = doubeanTopAppBarHeight,
         colors = groupTopAppBarColor(groupColor)
     )
 }
