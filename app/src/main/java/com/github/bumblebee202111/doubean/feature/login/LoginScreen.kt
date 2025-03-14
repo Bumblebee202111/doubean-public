@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,6 +60,7 @@ fun LoginScreen(
         message = message,
         updatePhoneNumber = viewModel::updatePhoneNumber,
         updatePassword = viewModel::updatePassword,
+        triggerAutoImport = viewModel::triggerAutoImport,
         loginWithDoubanSession = viewModel::loginWithDoubanSession,
         login = viewModel::login,
         clearMessage = viewModel::clearMessage,
@@ -79,6 +81,7 @@ fun LoginScreen(
     message: String?,
     updatePhoneNumber: (phoneNumberInput: String) -> Unit,
     updatePassword: (passwordInput: String) -> Unit,
+    triggerAutoImport: () -> Unit,
     loginWithDoubanSession: (sessionPref: String) -> Unit,
     login: () -> Unit,
     clearMessage: () -> Unit,
@@ -137,11 +140,11 @@ fun LoginScreen(
         ) {
 
             Text(
-                text = "Login with username and password",
+                text = "Username/Password Login",
                 style = MaterialTheme.typography.titleLarge
             )
             Text(
-                text = "Too hard to implement... :(",
+                text = "Traditional login method (currently unavailable)",
                 style = MaterialTheme.typography.titleMedium
             )
             OutlinedTextField(
@@ -172,19 +175,30 @@ fun LoginScreen(
             HorizontalDivider()
 
             Text(
-                text = "\"Login\" with existing session of Douban app",
+                text = "Douban App Session Import",
                 style = MaterialTheme.typography.titleLarge
             )
             Text(
-                text = "Accessing the login session of Douban usually requires root permission.\n" +
-                        "Syncing it to doubean is expected to be automatically done at app startup if root is granted\n" +
-                        "Manual sync form is provided below for those in need, but it's highly discouraged since\n" +
-                        "1. It is not carefully designed and you may meet bugs.\n" +
-                        "2. It requires many steps and extra care.\n" +
-                        "3. You will probably have to import session again when the session pref is updated",
+                text = "Note: This method typically requires root access. " +
+                        "Automatic sync should happen at app startup if it is enabled in Settings & root is granted.",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            TextButton(onClick = triggerAutoImport) {
+                Text("Auto-Import Session Now")
+            }
+            Text(
+                text = "For non-rooted phones:\n" +
+                        "Copy from rooted device → Paste here\n\n" +
+                        "⚠️Manual submission not recommended because:\n" +
+                        "• Unmaintained\n" +
+                        "• Multi-step process\n" +
+                        "• Frequent expirations\n" +
+                        "• Unstable",
 
                 style = MaterialTheme.typography.bodyMedium
             )
+
+
             var pref by remember { mutableStateOf("") }
 
             val keyboardController = LocalSoftwareKeyboardController.current
@@ -192,7 +206,7 @@ fun LoginScreen(
                 value = pref,
                 onValueChange = { pref = it },
                 Modifier.fillMaxWidth(),
-                label = { Text("key_current_account_info pref line (whitespaces are optional)") },
+                label = { Text("key_current_account_info preference line") },
                 supportingText = {
                     Text(
                         "Path: /data/data/com.douban.frodo/shared_prefs/com.douban.frodo_preferences.xml\n" +
@@ -215,9 +229,9 @@ fun LoginScreen(
                 },
                 Modifier.fillMaxWidth(),
             ) {
-                Text(text = "Login")
+                Text(text = "Import Session")
             }
-            Text(text = "No Chinese/neat UI of this screen is planned to be implemented both due to my laziness and for the sustainability of doubean.\n")
+            Text(text = "This minimal UI is intentional — prioritizing functional access\n")
 
         }
     }

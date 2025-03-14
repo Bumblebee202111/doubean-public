@@ -14,10 +14,12 @@ fun NavController.navigateToSettings() = navigate(route = SettingsRoute)
 fun NavGraphBuilder.settingsScreen(
     onBackClick: () -> Unit,
     onGroupDefaultNotificationsPreferencesSettingsClick: () -> Unit,
+    onLoginClick: () -> Unit,
 ) = composable<SettingsRoute> {
     SettingsScreen(
         onBackClick = onBackClick,
         onGroupDefaultNotificationsPreferencesSettingsClick =
-        onGroupDefaultNotificationsPreferencesSettingsClick
+        onGroupDefaultNotificationsPreferencesSettingsClick,
+        onLoginClick = onLoginClick
     )
 }
