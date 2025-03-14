@@ -1,10 +1,10 @@
-package com.github.bumblebee202111.doubean.feature.groups.groupDetail.navigation
+package com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
-import com.github.bumblebee202111.doubean.feature.groups.groupDetail.GroupDetailScreen
+import com.github.bumblebee202111.doubean.feature.groups.groupdetail.GroupDetailScreen
 import kotlinx.serialization.Serializable
 
 @Serializable

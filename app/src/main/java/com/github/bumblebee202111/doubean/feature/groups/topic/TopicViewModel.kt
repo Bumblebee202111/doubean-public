@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.groups.topicdetail
+package com.github.bumblebee202111.doubean.feature.groups.topic
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -12,7 +12,7 @@ import androidx.navigation.toRoute
 import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.repository.GroupTopicRepo
 import com.github.bumblebee202111.doubean.data.repository.PollRepository
-import com.github.bumblebee202111.doubean.feature.groups.topicdetail.navigation.TopicDetailRoute
+import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.TopicRoute
 import com.github.bumblebee202111.doubean.model.Poll
 import com.github.bumblebee202111.doubean.model.PollId
 import com.github.bumblebee202111.doubean.model.Question
@@ -31,13 +31,13 @@ import java.math.RoundingMode
 import javax.inject.Inject
 
 @HiltViewModel
-class TopicDetailViewModel @Inject constructor(
+class TopicViewModel @Inject constructor(
     private val pollRepository: PollRepository,
     topicRepo: GroupTopicRepo,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    val topicId = savedStateHandle.toRoute<TopicDetailRoute>().topicId
+    val topicId = savedStateHandle.toRoute<TopicRoute>().topicId
 
     private val commentsData = topicRepo.getTopicCommentsData(topicId)
 

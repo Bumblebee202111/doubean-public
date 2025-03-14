@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.groups.groupDetail
+package com.github.bumblebee202111.doubean.feature.groups.groupdetail
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,7 +13,7 @@ import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupsRepo
 import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
-import com.github.bumblebee202111.doubean.feature.groups.groupDetail.navigation.GroupDetailRoute
+import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.GroupDetailRoute
 import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.Result
 import com.github.bumblebee202111.doubean.ui.common.stateInUi

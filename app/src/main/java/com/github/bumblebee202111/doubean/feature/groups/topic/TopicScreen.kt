@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.github.bumblebee202111.doubean.feature.groups.topicdetail
+package com.github.bumblebee202111.doubean.feature.groups.topic
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -78,17 +78,16 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.feature.groups.shared.SmallGroupAvatar
+import com.github.bumblebee202111.doubean.feature.groups.shared.groupTopAppBarColor
 import com.github.bumblebee202111.doubean.model.TopicComment
 import com.github.bumblebee202111.doubean.model.TopicCommentSortBy
 import com.github.bumblebee202111.doubean.model.TopicDetail
-import com.github.bumblebee202111.doubean.ui.SmallGroupAvatar
-import com.github.bumblebee202111.doubean.ui.UserProfileImage
 import com.github.bumblebee202111.doubean.ui.common.DoubeanWebView
-import com.github.bumblebee202111.doubean.ui.common.TopicWebViewClient
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.SortByDropDownMenu
-import com.github.bumblebee202111.doubean.ui.groupTopAppBarColor
+import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.TOPIC_CSS_FILENAME
@@ -98,14 +97,14 @@ import com.google.accompanist.web.rememberSaveableWebViewState
 import com.google.accompanist.web.rememberWebViewNavigator
 
 @Composable
-fun TopicDetailScreen(
+fun TopicScreen(
     onBackClick: () -> Unit,
     onWebViewClick: (url: String) -> Unit,
     onGroupClick: (groupId: String, tabId: String?) -> Unit,
     onReshareStatusesClick: (topicId: String) -> Unit,
     onImageClick: (url: String) -> Unit,
     onOpenDeepLinkUrl: (url: String) -> Unit,
-    viewModel: TopicDetailViewModel = hiltViewModel(),
+    viewModel: TopicViewModel = hiltViewModel(),
     onShowSnackbar: suspend (String) -> Unit,
 ) {
     val topic by viewModel.topic.collectAsStateWithLifecycle()
@@ -118,7 +117,7 @@ fun TopicDetailScreen(
     val shouldShowSpinner by viewModel.shouldShowSpinner.collectAsStateWithLifecycle()
     val shouldDisplayInvalidImageUrl = viewModel.shouldDisplayInvalidImageUrl
 
-    TopicDetailScreen(
+    TopicScreen(
         topic = topic,
         popularCommentsLazyPagingItems = popularComments,
         allCommentLazyPagingItems = allCommentLazyPagingItems,
@@ -147,7 +146,7 @@ fun TopicDetailScreen(
 @SuppressLint("ClickableViewAccessibility")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopicDetailScreen(
+fun TopicScreen(
     topic: TopicDetail?,
     popularCommentsLazyPagingItems: List<TopicComment>,
     allCommentLazyPagingItems: LazyPagingItems<TopicComment>,
@@ -296,7 +295,7 @@ fun TopicDetailScreen(
             topic?.let { topic ->
                 item(key = "TopicDetailHeader", contentType = "TopicDetailHeader") {
                     LocalPinnableContainer.current?.pin()
-                    TopicDetailHeader(
+                    TopicHeader(
                         topic = topic,
                         shouldShowPhotoList = shouldShowPhotoList,
                         contentHtml = contentHtml,
@@ -442,7 +441,7 @@ fun JumpToCommentSliderPreview() {
 
 @SuppressLint("ClickableViewAccessibility")
 @Composable
-fun TopicDetailHeader(
+fun TopicHeader(
     topic: TopicDetail,
     shouldShowPhotoList: Boolean?,
     contentHtml: String?,

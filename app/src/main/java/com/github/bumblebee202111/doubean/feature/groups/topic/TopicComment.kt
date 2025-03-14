@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.groups.topicdetail
+package com.github.bumblebee202111.doubean.feature.groups.topic
 
 import android.content.Context
 import androidx.compose.foundation.layout.Box
@@ -33,16 +33,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.groups.common.TopicDetailActivityItemUserProfileImage
+import com.github.bumblebee202111.doubean.feature.groups.shared.TopicActivityItemUserProfileImage
 import com.github.bumblebee202111.doubean.model.SizedPhoto
 import com.github.bumblebee202111.doubean.model.TopicComment
 import com.github.bumblebee202111.doubean.model.TopicDetail
 import com.github.bumblebee202111.doubean.model.TopicRefComment
 import com.github.bumblebee202111.doubean.model.User
-import com.github.bumblebee202111.doubean.ui.UserProfileImage
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.ListItemCount
 import com.github.bumblebee202111.doubean.ui.component.ListItemImages
+import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.intermediateDateTimeString
 import java.time.LocalDateTime
@@ -67,7 +67,7 @@ fun TopicComment(
                 .padding(vertical = 12.dp)
                 .weight(1f)
         ) {
-            TopicDetailActivityItemUserProfileImage(url = comment?.author?.avatarUrl)
+            TopicActivityItemUserProfileImage(url = comment?.author?.avatarUrl)
             Spacer(modifier = Modifier.width(8.dp))
             Column(Modifier.fillMaxWidth()) {
                 

@@ -25,10 +25,10 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.groups.common.groupsOfTheDay
+import com.github.bumblebee202111.doubean.feature.groups.shared.SearchResultGroupItem
+import com.github.bumblebee202111.doubean.feature.groups.shared.groupsOfTheDay
 import com.github.bumblebee202111.doubean.model.GroupSearchResultGroupItem
 import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
-import com.github.bumblebee202111.doubean.ui.SearchResultGroupItem
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.SearchTextField
 

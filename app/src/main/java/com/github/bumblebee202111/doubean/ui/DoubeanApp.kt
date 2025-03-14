@@ -16,9 +16,9 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.github.bumblebee202111.doubean.feature.groups.groupDetail.navigation.GroupDetailRoute
+import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.GroupDetailRoute
 import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.ReshareStatusesRoute
-import com.github.bumblebee202111.doubean.feature.groups.topicdetail.navigation.TopicDetailRoute
+import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.TopicRoute
 
 @Composable
 fun DoubeanApp(navController: NavHostController, startWithGroups: Boolean) {
@@ -29,7 +29,7 @@ fun DoubeanApp(navController: NavHostController, startWithGroups: Boolean) {
     val context = LocalContext.current
 
     val forceLightIcons = setOf(
-        GroupDetailRoute::class, TopicDetailRoute::class, ReshareStatusesRoute::class
+        GroupDetailRoute::class, TopicRoute::class, ReshareStatusesRoute::class
     ).any {
         currentDestination?.hasRoute(it) == true
     }

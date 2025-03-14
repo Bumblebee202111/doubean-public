@@ -11,12 +11,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.MySubjectUiState
+import com.github.bumblebee202111.doubean.feature.subjects.shared.SearchSubjectButton
+import com.github.bumblebee202111.doubean.feature.subjects.shared.mySubject
+import com.github.bumblebee202111.doubean.feature.subjects.shared.rankLists
 import com.github.bumblebee202111.doubean.model.SubjectModule
 import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.model.SubjectsSearchType
-import com.github.bumblebee202111.doubean.ui.SearchSubjectButton
-import com.github.bumblebee202111.doubean.ui.mySubject
-import com.github.bumblebee202111.doubean.ui.rankLists
 
 @Composable
 fun MoviesScreen(

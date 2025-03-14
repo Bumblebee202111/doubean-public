@@ -4,14 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.github.bumblebee202111.doubean.feature.groups.groupDetail.navigation.groupDetailScreen
-import com.github.bumblebee202111.doubean.feature.groups.groupDetail.navigation.navigateToGroup
+import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.groupDetailScreen
+import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.navigateToGroup
 import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.navigateToReshareStatuses
 import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.reshareStatusesScreen
 import com.github.bumblebee202111.doubean.feature.groups.search.navigation.groupsSearchScreen
 import com.github.bumblebee202111.doubean.feature.groups.search.navigation.navigateToSearch
-import com.github.bumblebee202111.doubean.feature.groups.topicdetail.navigation.navigateToTopic
-import com.github.bumblebee202111.doubean.feature.groups.topicdetail.navigation.topicDetailScreen
+import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.navigateToTopic
+import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.topicScreen
 import com.github.bumblebee202111.doubean.feature.groups.webView.navigation.navigateToWebView
 import com.github.bumblebee202111.doubean.feature.groups.webView.navigation.webViewScreen
 import com.github.bumblebee202111.doubean.feature.image.navigation.imageScreen
@@ -84,7 +84,7 @@ fun MainNavHost(
             onTopicClick = navController::navigateToTopic,
             onShowSnackbar = onShowSnackbar
         )
-        topicDetailScreen(
+        topicScreen(
             onBackClick = navController::navigateUp,
             onWebViewClick = navController::navigateToWebView,
             onGroupClick = navController::navigateToGroup,

@@ -31,10 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.groups.common.MaxTopicsPerFetchTextField
+import com.github.bumblebee202111.doubean.feature.groups.shared.MaxTopicsPerFetchTextField
+import com.github.bumblebee202111.doubean.feature.subjects.shared.SortTopicsByOption
 import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.TopicSortBy
-import com.github.bumblebee202111.doubean.ui.SortTopicsByOption
 import com.github.bumblebee202111.doubean.ui.component.ClickablePreferenceItem
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.RadioButtonItem
