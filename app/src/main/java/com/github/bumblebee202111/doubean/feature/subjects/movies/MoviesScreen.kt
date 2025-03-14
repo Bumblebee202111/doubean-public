@@ -29,7 +29,7 @@ fun MoviesScreen(
     viewModel: MoviesViewModel = hiltViewModel(),
 ) {
     val myMoviesUiState by viewModel.myMoviesUiState.collectAsStateWithLifecycle()
-    val moviesUiState by viewModel.tvsUiState.collectAsStateWithLifecycle()
+    val moviesUiState by viewModel.moviesUiState.collectAsStateWithLifecycle()
     MoviesScreen(
         myMoviesUiState = myMoviesUiState,
         moviesUiState = moviesUiState,

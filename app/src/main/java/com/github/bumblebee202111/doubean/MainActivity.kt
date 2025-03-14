@@ -52,7 +52,14 @@ class MainActivity : ComponentActivity() {
 
         setupWorkManager()
 
-        syncDoubanSession()
+        lifecycleScope.launch {
+            mainActivityViewModel.autoImportSessionAtStartup.collect {
+                if (it == true) {
+                    syncDoubanSession()
+                }
+            }
+        }
+
     }
 
     private fun syncDoubanSession() {

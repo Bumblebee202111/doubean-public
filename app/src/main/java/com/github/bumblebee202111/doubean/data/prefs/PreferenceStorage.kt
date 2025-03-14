@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_ACCESS_TOKEN
+import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_AUTO_IMPORT_SESSION_AT_STARTUP
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_DOUBAN_USER_ID
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_GROUP_NOTIFICATIONS_DEFAULT_ENABLE_NOTIFICATIONS
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_GROUP_NOTIFICATIONS_DEFAULT_SORT_BY
@@ -40,6 +41,8 @@ class PreferenceStorage(
     object PreferencesKeys {
         val PREF_RECEIVE_NOTIFICATIONS = booleanPreferencesKey("pref_receive_notifications")
         val PREF_START_APP_WITH_GROUPS = booleanPreferencesKey("pref_start_app_with_groups")
+        val PREF_AUTO_IMPORT_SESSION_AT_STARTUP =
+            booleanPreferencesKey("pref_auto_import_session_at_startup")
 
         val PREF_GROUP_NOTIFICATIONS_DEFAULT_ENABLE_NOTIFICATIONS =
             booleanPreferencesKey("group_notifications_default_enable_notifications")
@@ -61,6 +64,16 @@ class PreferenceStorage(
     suspend fun preferToReceiveNotifications(prefer: Boolean) {
         dataStore.edit {
             it[PREF_RECEIVE_NOTIFICATIONS] = prefer
+        }
+    }
+
+    val preferToAutoImportSessionAtStartup = dataStore.data.map {
+        it[PREF_AUTO_IMPORT_SESSION_AT_STARTUP] ?: true
+    }
+
+    suspend fun preferToAutoImportSessionAtStartup(prefer: Boolean) {
+        dataStore.edit {
+            it[PREF_AUTO_IMPORT_SESSION_AT_STARTUP] = prefer
         }
     }
 

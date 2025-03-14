@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,6 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.BuildConfig
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.ui.component.ClickablePreferenceItem
+import com.github.bumblebee202111.doubean.ui.component.DangerButtonPreferenceItem
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.PreferenceCategoryHeader
 import com.github.bumblebee202111.doubean.ui.component.PreferenceDivider
@@ -31,17 +33,26 @@ import com.github.bumblebee202111.doubean.util.OpenInUtils
 fun SettingsScreen(
     onBackClick: () -> Unit,
     onGroupDefaultNotificationsPreferencesSettingsClick: () -> Unit,
+    onLoginClick: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val enableNotifications by viewModel.enableNotifications.collectAsStateWithLifecycle()
     val startAppWithGroups by viewModel.startAppWithGroups.collectAsStateWithLifecycle()
+    val autoImportSessionAtStartup by viewModel.autoImportSessionAtStartup.collectAsStateWithLifecycle()
+    val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
     SettingsScreen(
         enableNotifications = enableNotifications,
         startAppWithGroups = startAppWithGroups,
+        autoImportSessionAtStartup = autoImportSessionAtStartup,
+        isLoggedIn = isLoggedIn,
         onBackClick = onBackClick,
         toggleSetGroupsAsStartDestination = viewModel::toggleSetGroupsAsStartDestination,
         toggleEnableNotifications = viewModel::toggleEnableNotifications,
-        onGroupDefaultNotificationsPreferencesSettingsClick = onGroupDefaultNotificationsPreferencesSettingsClick
+        toggleAutoImportSessionAtStartup = viewModel::toggleAutoImportSessionAtStartup,
+        triggerAutoImport = viewModel::triggerAutoImport,
+        logout = viewModel::logout,
+        onGroupDefaultNotificationsPreferencesSettingsClick = onGroupDefaultNotificationsPreferencesSettingsClick,
+        onLoginClick = onLoginClick
     )
 }
 
@@ -50,10 +61,16 @@ fun SettingsScreen(
 fun SettingsScreen(
     enableNotifications: Boolean?,
     startAppWithGroups: Boolean?,
+    autoImportSessionAtStartup: Boolean?,
+    isLoggedIn: Boolean?,
     onBackClick: () -> Unit,
     toggleSetGroupsAsStartDestination: () -> Unit,
     toggleEnableNotifications: () -> Unit,
+    toggleAutoImportSessionAtStartup: () -> Unit,
+    triggerAutoImport: () -> Unit,
+    logout: () -> Unit,
     onGroupDefaultNotificationsPreferencesSettingsClick: () -> Unit,
+    onLoginClick: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -101,7 +118,6 @@ fun SettingsScreen(
             }
             if (enableNotifications != null) {
                 item {
-
                     SwitchPreferenceItem(
                         title = stringResource(R.string.enable_notifications_title),
                         checked = enableNotifications,
@@ -114,6 +130,46 @@ fun SettingsScreen(
                     title = stringResource(R.string.group_default_notification_preferences_settings_title),
                     onClick = onGroupDefaultNotificationsPreferencesSettingsClick
                 )
+            }
+
+            item {
+                PreferenceDivider()
+            }
+
+            
+            item {
+                PreferenceCategoryHeader(stringResource(R.string.title_account_and_session))
+            }
+
+            if (autoImportSessionAtStartup != null) {
+                item {
+                    SwitchPreferenceItem(
+                        title = "(Root required) Auto-import session at startup",
+                        summary = "Keep enabled to minimize expiration frequency",
+                        checked = autoImportSessionAtStartup,
+                        onCheckedChange = { toggleAutoImportSessionAtStartup() }
+                    )
+                }
+            }
+            item {
+                ClickablePreferenceItem(
+                    title = "(Root required) Run auto-import now",
+                    onClick = { triggerAutoImport() },
+                    summary = "Manually trigger the auto-import process",
+                    trailingContent = {
+                        Icon(
+                            imageVector = Icons.Default.Sync,
+                            contentDescription = null
+                        )
+                    })
+            }
+            if (isLoggedIn == false) {
+                item {
+                    ClickablePreferenceItem(
+                        title = "Open Login screen",
+                        onClick = onLoginClick
+                    )
+                }
             }
 
             item {
@@ -159,6 +215,18 @@ fun SettingsScreen(
                     }
                 )
             }
+
+
+            if (isLoggedIn == true) {
+                item {
+                    PreferenceDivider()
+                }
+                item {
+                    DangerButtonPreferenceItem(title = "Log Out", onClick = logout)
+                }
+
+            }
+
         }
     }
 

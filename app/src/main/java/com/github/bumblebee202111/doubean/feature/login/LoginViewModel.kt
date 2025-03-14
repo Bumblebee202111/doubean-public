@@ -35,6 +35,12 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
 
     val errorMessage = _errorMessage.asStateFlow()
 
+    fun triggerAutoImport() {
+        viewModelScope.launch {
+            authRepository.syncSessionFromDoubanPrefs()
+        }
+    }
+
     fun loginWithDoubanSession(sessionPref: String) {
         sessionLoginResult.value = null
         val loginResult = authRepository.loginWithDoubanSessionPref(sessionPref)

@@ -110,7 +110,8 @@ fun MainNavHost(
         settingsScreen(
             onBackClick = navController::navigateUp,
             onGroupDefaultNotificationsPreferencesSettingsClick =
-            navController::navigateToGroupDefaultNotificationsPreferencesSettings
+            navController::navigateToGroupDefaultNotificationsPreferencesSettings,
+            onLoginClick = navController::navigateToLogin
         )
         groupDefaultNotificationsPreferencesSettingsScreen(
             onBackClick = navController::navigateUp

@@ -29,6 +29,9 @@ class MainActivityViewModel @Inject constructor(
     val startAppWithGroups =
         preferenceStorage.startAppWithGroups.flowOn(ioDispatcher).take(1).stateInUi()
 
+    val autoImportSessionAtStartup =
+        preferenceStorage.preferToAutoImportSessionAtStartup.stateInUi()
+
     init {
         viewModelScope.launch {
             authRepository.observeLoggedInUserId().collect {
