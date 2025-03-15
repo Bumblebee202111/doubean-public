@@ -232,6 +232,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
     * Collapse on entrance for the subscribed/favorited group/tab
     * Fix group description action overflows
+  * Fix topic content losing scroll position after navigating back
   * Fix notification taps not working when app is active
   * Hide officially-flagged unfriendly content by default
   * Support blocking unwanted content

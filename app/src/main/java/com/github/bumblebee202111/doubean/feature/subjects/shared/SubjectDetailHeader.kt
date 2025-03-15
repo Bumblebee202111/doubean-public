@@ -25,7 +25,7 @@ import com.github.bumblebee202111.doubean.model.MovieDetail
 import com.github.bumblebee202111.doubean.model.SubjectDetail
 import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.TvDetail
-import com.github.bumblebee202111.doubean.ui.LoginPromptText
+import com.github.bumblebee202111.doubean.ui.component.LoginPromptText
 
 @Composable
 fun SubjectDetailHeader(

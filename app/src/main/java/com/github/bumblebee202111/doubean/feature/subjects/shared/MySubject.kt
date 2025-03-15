@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.MySubjectUiState
 import com.github.bumblebee202111.doubean.model.SubjectType
-import com.github.bumblebee202111.doubean.ui.LoginPromptText
+import com.github.bumblebee202111.doubean.ui.component.LoginPromptText
 
 fun LazyListScope.mySubject(
     mySubjectUiState: MySubjectUiState,

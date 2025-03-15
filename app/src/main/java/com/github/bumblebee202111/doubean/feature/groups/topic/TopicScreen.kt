@@ -4,6 +4,7 @@ package com.github.bumblebee202111.doubean.feature.groups.topic
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.util.Log
 import android.view.MotionEvent
 import android.webkit.URLUtil
@@ -82,9 +83,10 @@ import com.github.bumblebee202111.doubean.feature.groups.shared.groupTopAppBarCo
 import com.github.bumblebee202111.doubean.model.TopicComment
 import com.github.bumblebee202111.doubean.model.TopicCommentSortBy
 import com.github.bumblebee202111.doubean.model.TopicDetail
-import com.github.bumblebee202111.doubean.ui.common.DoubeanWebView
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
+import com.github.bumblebee202111.doubean.ui.component.DoubeanWebView
+import com.github.bumblebee202111.doubean.ui.component.DoubeanWebViewClient
 import com.github.bumblebee202111.doubean.ui.component.SortByDropDownMenu
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
 import com.github.bumblebee202111.doubean.util.OpenInUtils
@@ -92,9 +94,7 @@ import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.TOPIC_CSS_FILENAME
 import com.github.bumblebee202111.doubean.util.fullDateTimeString
 import com.github.bumblebee202111.doubean.util.toColorOrPrimary
-import com.google.accompanist.web.WebView
-import com.google.accompanist.web.rememberSaveableWebViewState
-import com.google.accompanist.web.rememberWebViewNavigator
+import com.google.accompanist.web.rememberWebViewStateWithHTMLData
 
 @Composable
 fun TopicScreen(
@@ -286,83 +286,86 @@ fun TopicScreen(
         },
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
-        LazyColumn(
-            contentPadding = paddingValues,
-            state = listState,
-            modifier = Modifier.fillMaxSize()
-        ) {
+        if (contentHtml != null) {
+            LazyColumn(
+                contentPadding = paddingValues,
+                state = listState,
+                modifier = Modifier.fillMaxSize()
+            ) {
 
-            topic?.let { topic ->
-                item(key = "TopicDetailHeader", contentType = "TopicDetailHeader") {
-                    LocalPinnableContainer.current?.pin()
-                    TopicHeader(
-                        topic = topic,
-                        shouldShowPhotoList = shouldShowPhotoList,
-                        contentHtml = contentHtml,
-                        displayInvalidImageUrl = displayInvalidImageUrl,
-                        onImageClick = onImageClick,
-                        onGroupClick = onGroupClick,
-                        onReshareStatusesClick = onReshareStatusesClick,
-                        onOpenDeepLinkUrl = onOpenDeepLinkUrl,
-                    )
-                }
-            }
-
-            if (shouldShowSpinner) {
-                item(key = "TopicCommentSortBy", contentType = "TopicCommentSortBy") {
-                    TopicCommentSortByDropDownMenu(
-                        commentSortBy = commentSortBy,
-                        updateCommentSortBy = updateCommentSortBy,
-                        modifier = Modifier.padding(
-                            horizontal = dimensionResource(id = R.dimen.margin_normal),
-                            vertical = dimensionResource(id = R.dimen.margin_small)
+                topic?.let { topic ->
+                    item(key = "TopicDetailHeader", contentType = "TopicDetailHeader") {
+                        LocalPinnableContainer.current?.pin()
+                        TopicHeader(
+                            topic = topic,
+                            shouldShowPhotoList = shouldShowPhotoList,
+                            contentHtml = contentHtml,
+                            displayInvalidImageUrl = displayInvalidImageUrl,
+                            onImageClick = onImageClick,
+                            onGroupClick = onGroupClick,
+                            onReshareStatusesClick = onReshareStatusesClick,
+                            onOpenDeepLinkUrl = onOpenDeepLinkUrl,
                         )
-                    )
-                }
-            } else {
-                item {
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-
-            }
-            if (topic != null) {
-                when (commentSortBy) {
-                    TopicCommentSortBy.TOP -> {
-                        items(
-                            count = popularCommentsLazyPagingItems.size,
-                            key = { popularCommentsLazyPagingItems[it].id },
-                            contentType = { "TopicComment" }) { index ->
-                            TopicComment(
-                                comment = popularCommentsLazyPagingItems[index],
-                                groupColor = groupColorString,
-                                topic = topic,
-                                onImageClick = onImageClick
-                            )
-                            if (index < popularCommentsLazyPagingItems.size - 1)
-                                HorizontalDivider(thickness = 1.dp)
-                        }
-                    }
-
-                    TopicCommentSortBy.ALL -> {
-                        items(
-                            count = allCommentLazyPagingItems.itemCount,
-                            key = allCommentLazyPagingItems.itemKey { it.id },
-                            contentType = allCommentLazyPagingItems.itemContentType { "TopicComment" }) { index ->
-                            TopicComment(
-                                comment = allCommentLazyPagingItems[index],
-                                groupColor = groupColorString,
-                                topic = topic,
-                                onImageClick = onImageClick
-                            )
-                            if (index < allCommentLazyPagingItems.itemCount - 1)
-                                HorizontalDivider(thickness = 1.dp)
-                        }
                     }
                 }
+
+                if (shouldShowSpinner) {
+                    item(key = "TopicCommentSortBy", contentType = "TopicCommentSortBy") {
+                        TopicCommentSortByDropDownMenu(
+                            commentSortBy = commentSortBy,
+                            updateCommentSortBy = updateCommentSortBy,
+                            modifier = Modifier.padding(
+                                horizontal = dimensionResource(id = R.dimen.margin_normal),
+                                vertical = dimensionResource(id = R.dimen.margin_small)
+                            )
+                        )
+                    }
+                } else {
+                    item {
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                }
+                if (topic != null) {
+                    when (commentSortBy) {
+                        TopicCommentSortBy.TOP -> {
+                            items(
+                                count = popularCommentsLazyPagingItems.size,
+                                key = { popularCommentsLazyPagingItems[it].id },
+                                contentType = { "TopicComment" }) { index ->
+                                TopicComment(
+                                    comment = popularCommentsLazyPagingItems[index],
+                                    groupColor = groupColorString,
+                                    topic = topic,
+                                    onImageClick = onImageClick
+                                )
+                                if (index < popularCommentsLazyPagingItems.size - 1)
+                                    HorizontalDivider(thickness = 1.dp)
+                            }
+                        }
+
+                        TopicCommentSortBy.ALL -> {
+                            items(
+                                count = allCommentLazyPagingItems.itemCount,
+                                key = allCommentLazyPagingItems.itemKey { it.id },
+                                contentType = allCommentLazyPagingItems.itemContentType { "TopicComment" }) { index ->
+                                TopicComment(
+                                    comment = allCommentLazyPagingItems[index],
+                                    groupColor = groupColorString,
+                                    topic = topic,
+                                    onImageClick = onImageClick
+                                )
+                                if (index < allCommentLazyPagingItems.itemCount - 1)
+                                    HorizontalDivider(thickness = 1.dp)
+                            }
+                        }
+                    }
+                }
+
+
             }
-
-
         }
+
     }
     (if (commentSortBy == TopicCommentSortBy.TOP) popularCommentsLazyPagingItems.size else topic?.commentCount)?.let {
         if (shouldShowDialog) {
@@ -452,12 +455,7 @@ fun TopicHeader(
     displayInvalidImageUrl: () -> Unit,
 ) {
     Surface(modifier = Modifier.fillMaxWidth()) {
-        val context = LocalContext.current
-        Column(
-            Modifier
-                .fillMaxWidth()
-
-        ) {
+        Column(Modifier.fillMaxWidth()) {
             Spacer(Modifier.height(12.dp))
             topic.group?.let { group ->
                 Row(
@@ -543,77 +541,13 @@ fun TopicHeader(
                 )
             }
             contentHtml?.let {
-                val webViewState = rememberSaveableWebViewState()
-                val navigator = rememberWebViewNavigator()
-
-                LaunchedEffect(navigator) {
-                    val bundle = webViewState.viewState
-                    if (bundle == null) {
-                        
-                        navigator.loadHtml(it)
-                    }
-                }
-
-                
-                WebView(state = webViewState,
-                    navigator = navigator,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .fillMaxSize()
-                        .alpha(0.99F),
-                    captureBackPresses = false,
-                    client = remember {
-                        object : TopicWebViewClient(listOf(TOPIC_CSS_FILENAME)) {
-                            @Deprecated("Deprecated in Java")
-                            override fun shouldOverrideUrlLoading(
-                                view: WebView?,
-                                url: String?,
-                            ): Boolean {
-                                if (url == null) return false
-
-                                try {
-                                    onOpenDeepLinkUrl(url)
-                                } catch (e: IllegalArgumentException) {
-                                    Log.i("doubean", "shouldOverrideUrlLoading: $e")
-                                    OpenInUtils.viewInActivity(context, url)
-                                }
-                                return true
-                            }
-
-                        }
-                    },
-                    factory = { context ->
-                        DoubeanWebView(context).apply {
-                            setPadding(0, 0, 0, 0)
-                            setBackgroundColor(android.graphics.Color.TRANSPARENT)
-                            settings.apply {
-                                setNeedInitialFocus(false)
-                                
-                                useWideViewPort = true
-                            }
-
-                            setOnTouchListener { _, event ->
-                                if (event.action == MotionEvent.ACTION_UP
-                                ) {
-                                    val webViewHitTestResult = getHitTestResult()
-                                    if (webViewHitTestResult.type == WebView.HitTestResult.IMAGE_TYPE ||
-                                        webViewHitTestResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
-                                    ) {
-                                        val imageUrl = webViewHitTestResult.extra
-                                        if (URLUtil.isValidUrl(imageUrl)) {
-                                            val largeImageUrl =
-                                                topic.images!!.first { it.normal.url == imageUrl }.large.url
-                                            onImageClick(largeImageUrl)
-                                        } else {
-                                            displayInvalidImageUrl()
-                                        }
-                                    }
-                                }
-                                return@setOnTouchListener false
-                            }
-                        }
-                    })
-
+                ContentWebView(
+                    topic = topic,
+                    html = it,
+                    onImageClick = onImageClick,
+                    displayInvalidImageUrl = displayInvalidImageUrl,
+                    onOpenDeepLinkUrl = onOpenDeepLinkUrl
+                )
             }
             Row(
                 modifier = Modifier
@@ -653,6 +587,78 @@ fun TopicHeader(
             }
         }
     }
+}
+
+@SuppressLint("ClickableViewAccessibility")
+@Composable
+private fun ContentWebView(
+    topic: TopicDetail,
+    html: String,
+    onImageClick: (String) -> Unit,
+    displayInvalidImageUrl: () -> Unit,
+    onOpenDeepLinkUrl: (String) -> Unit,
+) {
+    val context = LocalContext.current
+    val webViewState = rememberWebViewStateWithHTMLData(html)
+    
+    DoubeanWebView(
+        state = webViewState,
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxSize()
+            .alpha(0.99F),
+        captureBackPresses = false,
+        onCreated = {
+            it.apply {
+                setPadding(0, 0, 0, 0)
+                setBackgroundColor(Color.TRANSPARENT)
+                settings.apply {
+                    setNeedInitialFocus(false)
+                    
+                    useWideViewPort = true
+                }
+
+                setOnTouchListener { _, event ->
+                    if (event.action == MotionEvent.ACTION_UP
+                    ) {
+                        val webViewHitTestResult = getHitTestResult()
+                        if (webViewHitTestResult.type == WebView.HitTestResult.IMAGE_TYPE ||
+                            webViewHitTestResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
+                        ) {
+                            val imageUrl = webViewHitTestResult.extra!!
+                            if (URLUtil.isValidUrl(imageUrl)) {
+                                val largeImageUrl =
+                                    topic.images?.firstOrNull { image -> image.normal.url == imageUrl }?.large?.url
+                                        ?: return@setOnTouchListener false
+                                onImageClick(largeImageUrl)
+                            } else {
+                                displayInvalidImageUrl()
+                            }
+                        }
+                    }
+                    return@setOnTouchListener false
+                }
+            }
+        },
+        client = remember {
+            object : DoubeanWebViewClient(listOf(TOPIC_CSS_FILENAME)) {
+                @Deprecated("Deprecated in Java")
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?,
+                    url: String?,
+                ): Boolean {
+                    if (url == null) return false
+                    try {
+                        onOpenDeepLinkUrl(url)
+                    } catch (e: IllegalArgumentException) {
+                        Log.i("ContentWebView", "shouldOverrideUrlLoading: $e")
+                        OpenInUtils.viewInActivity(context, url)
+                    }
+                    return true
+                }
+            }
+        },
+    )
 }
 
 @Composable
