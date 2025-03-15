@@ -13,7 +13,7 @@ import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.
 import com.github.bumblebee202111.doubean.model.MySubjectStatus
 import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.SubjectWithInterest
-import com.github.bumblebee202111.doubean.ui.common.stateInUi
+import com.github.bumblebee202111.doubean.ui.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow

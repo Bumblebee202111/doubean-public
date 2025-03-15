@@ -6,7 +6,7 @@ import com.github.bumblebee202111.doubean.coroutines.AppDispatchers
 import com.github.bumblebee202111.doubean.coroutines.Dispatcher
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.model.TopicSortBy
-import com.github.bumblebee202111.doubean.ui.common.stateInUi
+import com.github.bumblebee202111.doubean.ui.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOn

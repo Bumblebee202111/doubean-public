@@ -16,7 +16,7 @@ import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
 import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.GroupDetailRoute
 import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.Result
-import com.github.bumblebee202111.doubean.ui.common.stateInUi
+import com.github.bumblebee202111.doubean.ui.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

@@ -13,7 +13,7 @@ import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.TvRoute
 import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.model.TvDetail
-import com.github.bumblebee202111.doubean.ui.common.stateInUi
+import com.github.bumblebee202111.doubean.ui.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
