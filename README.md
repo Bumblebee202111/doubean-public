@@ -192,26 +192,32 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for myself.
 
-#### Current release \(0.7.16\)
+#### Current release \(0.7.17\)
 
-#### Next release \(0.7.17)
+#### Next release \(0.7.18)
 
 
 #### Future plans
 
-* Allow non rooted users (guests) to browse their subjects/groups if a user ID is provided
+* Another attempt to implement p/p login
+
+  * If fails, allow non rooted users (guests) to browse their subjects/groups if a user ID is provided
 
 * Subjects
 
   * Colors
   * More details & sub-features
-  
+
 * Remember last active bottom navigation/Subjects tabs
 
 * Groups
   * Dynamic topic sorts-by
 
   - Re-evaluate ROOM caching (complexity reduction)
+    - Isolate cache/fresh logic in repository layer
+    - Only save the shared fields of simple/detail models
+    - Make detail UI states use both models 
+
   - Tweak component colors for group-themed screens
 
   * Home
@@ -230,11 +236,13 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
     * Collapse on entrance for the subscribed/favorited group/tab
     * Fix group description action overflows
+  * Fix topic content losing scroll position after navigating back
+  * Fix notification taps not working when app is active
   * Hide officially-flagged unfriendly content by default
   * Support blocking unwanted content
   * Lists: Reddit-style item expand/collapse
   * Find API for all followed topics (currently unlikely)
-  
+
 * Expand/collapse component: Hide action for short text
 
 * Search suggestions
