@@ -194,21 +194,20 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### Current release \(0.7.17\)
 
-- Code cleanups
-- Add "from Douban app" for import settings
-
 #### Next release \(0.7.18)
 
 
 #### Future plans
 
-* Allow non rooted users (guests) to browse their subjects/groups if a user ID is provided
+* Another attempt to implement p/p login
+
+  * If fails, allow non rooted users (guests) to browse their subjects/groups if a user ID is provided
 
 * Subjects
 
   * Colors
   * More details & sub-features
-  
+
 * Remember last active bottom navigation/Subjects tabs
 
 * Groups
@@ -218,9 +217,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     - Isolate cache/fresh logic in repository layer
     - Only save the shared fields of simple/detail models
     - Make detail UI states use both models 
-  
+
   - Tweak component colors for group-themed screens
-  
+
   * Home
     * Maybe support pagination of recommended topics
   * Subscribe/favorite/save
@@ -234,7 +233,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Use the new nullable "edit_time" property of network topics
   * Revert naming conventions to match Douban's standards
   * Group Detail
-  
+
     * Collapse on entrance for the subscribed/favorited group/tab
     * Fix group description action overflows
   * Fix topic content losing scroll position after navigating back
@@ -243,7 +242,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Support blocking unwanted content
   * Lists: Reddit-style item expand/collapse
   * Find API for all followed topics (currently unlikely)
-  
+
 * Expand/collapse component: Hide action for short text
 
 * Search suggestions
