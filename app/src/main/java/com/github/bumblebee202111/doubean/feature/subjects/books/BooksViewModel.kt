@@ -6,7 +6,9 @@ import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.MySubjectUiState
-import com.github.bumblebee202111.doubean.model.SubjectModule
+import com.github.bumblebee202111.doubean.feature.subjects.SubjectModulesUiState
+import com.github.bumblebee202111.doubean.model.AppError
+import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +18,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,32 +29,41 @@ class BooksViewModel @Inject constructor(
     private val subjectCommonRepository: SubjectCommonRepository,
 ) : ViewModel() {
 
+    private val _uiErrors = MutableStateFlow(emptyList<AppError>())
+    val uiErrors = _uiErrors.asStateFlow()
+
     private val _myBooksUiState: MutableStateFlow<MySubjectUiState> =
         MutableStateFlow(MySubjectUiState.Loading)
     val myBooksUiState = _myBooksUiState.asStateFlow()
 
     private val modulesResult = flow {
         emit(subjectCommonRepository.getSubjectModules(SubjectType.BOOK))
+    }.onEach { result ->
+        if (result is AppResult.Error) {
+            _uiErrors.update {
+                it + result.error
+            }
+        }
     }
 
     val isLoggedIn = authRepository.isLoggedIn()
 
-    val booksUiState = combine(
+    val modulesUiState = combine(
         isLoggedIn,
         modulesResult
     ) { isLoggedIn, modulesResult ->
-        when {
-            modulesResult.isSuccess -> {
-                BooksUiState.Success(
-                    modules = modulesResult.getOrThrow(),
+        when (modulesResult) {
+            is AppResult.Success -> {
+                SubjectModulesUiState.Success(
+                    modules = modulesResult.data,
                     isLoggedIn = isLoggedIn
                 )
             }
 
-            else ->
-                BooksUiState.Error
+            is AppResult.Error ->
+                SubjectModulesUiState.Error(modulesResult.error)
         }
-    }.stateInUi(BooksUiState.Loading)
+    }.stateInUi(SubjectModulesUiState.Loading)
 
     init {
         getMyBooks()
@@ -63,10 +75,7 @@ class BooksViewModel @Inject constructor(
                 _myBooksUiState.value = when (userId) {
                     null -> MySubjectUiState.NotLoggedIn
                     else -> {
-                        val result = userSubjectRepository.getUserSubjects(
-                            userId =
-                            userId
-                        )
+                        val result = userSubjectRepository.getUserSubjects(userId = userId)
                         when (result.isSuccess) {
                             true ->
                                 MySubjectUiState.Success(
@@ -82,14 +91,10 @@ class BooksViewModel @Inject constructor(
         }
     }
 
-}
+    fun onErrorShown(error: AppError) {
+        _uiErrors.update { oldUiErrors ->
+            oldUiErrors - error
+        }
+    }
 
-sealed interface BooksUiState {
-    data class Success(
-        val modules: List<SubjectModule>,
-        val isLoggedIn: Boolean,
-    ) : BooksUiState
-
-    data object Error : BooksUiState
-    data object Loading : BooksUiState
 }

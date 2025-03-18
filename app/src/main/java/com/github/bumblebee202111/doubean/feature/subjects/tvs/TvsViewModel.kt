@@ -6,7 +6,9 @@ import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.MySubjectUiState
-import com.github.bumblebee202111.doubean.model.SubjectModule
+import com.github.bumblebee202111.doubean.feature.subjects.SubjectModulesUiState
+import com.github.bumblebee202111.doubean.model.AppError
+import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +18,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,32 +29,38 @@ class TvsViewModel @Inject constructor(
     private val authRepository: AuthRepository,
 ) : ViewModel() {
 
+    private val _uiErrors = MutableStateFlow(emptyList<AppError>())
+    val uiErrors = _uiErrors.asStateFlow()
+
     private val _myTvsUiState: MutableStateFlow<MySubjectUiState> =
         MutableStateFlow(MySubjectUiState.Loading)
     val myMoviesUiState = _myTvsUiState.asStateFlow()
 
     private val modulesResult = flow {
         emit(subjectCommonRepository.getSubjectModules(SubjectType.TV))
+    }.onEach { result ->
+        if (result is AppResult.Error) {
+            _uiErrors.update {
+                it + result.error
+            }
+        }
     }
 
     val isLoggedIn = authRepository.isLoggedIn()
 
-    val tvsUiState = combine(
+    val modulesUiState = combine(
         isLoggedIn,
         modulesResult,
     ) { isLoggedIn, modules ->
-        when {
-            modules.isSuccess -> {
-                TvsUiState.Success(
-                    modules = modules.getOrThrow(),
-                    isLoggedIn = isLoggedIn
-                )
+        when (modules) {
+            is AppResult.Success -> {
+                SubjectModulesUiState.Success(modules = modules.data, isLoggedIn = isLoggedIn)
             }
 
-            else ->
-                TvsUiState.Error
+            is AppResult.Error ->
+                SubjectModulesUiState.Error(modules.error)
         }
-    }.stateInUi(TvsUiState.Loading)
+    }.stateInUi(SubjectModulesUiState.Loading)
 
     init {
         getMyMovies()
@@ -83,15 +92,10 @@ class TvsViewModel @Inject constructor(
             }.collectLatest { }
         }
     }
+
+    fun onErrorShown(error: AppError) {
+        _uiErrors.update { oldUiErrors ->
+            oldUiErrors - error
+        }
+    }
 }
-
-sealed interface TvsUiState {
-    data class Success(
-        val modules: List<SubjectModule>,
-        val isLoggedIn: Boolean,
-    ) : TvsUiState
-
-    data object Error : TvsUiState
-    data object Loading : TvsUiState
-}
-

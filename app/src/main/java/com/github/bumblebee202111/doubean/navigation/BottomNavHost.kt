@@ -28,6 +28,7 @@ fun BottomNavHost(
     navigateToMovie: (movieId: String) -> Unit,
     navigateToTv: (tvId: String) -> Unit,
     navigateToBook: (bookId: String) -> Unit,
+    onShowSnackbar: suspend (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -48,6 +49,7 @@ fun BottomNavHost(
             onMovieClick = navigateToMovie,
             onTvClick = navigateToTv,
             onBookClick = navigateToBook,
+            onShowSnackbar = onShowSnackbar
         )
         groupsHomeScreen(
             onAvatarClick = navigateToProfile,
