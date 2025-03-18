@@ -3,6 +3,15 @@ Change Log
 
 ## Version 0.7.17(717)
 
+- Introduced a better way of handling errors
+  - Parse error bodies
+  - Show Snackbar messages
+  - Currently only applied to subject tab modules (rank lists)
+- Updated session handling: Tweak UI text, add session controls
+  - The two main bullets above are also preparations for another attempt to implement p/p login
+- Code rearrangements, cleanups & optimizations
+- Fix TV rank nullability
+
 ## Version 0.7.16(716)
 
 - Added support for more user interests (vertical pagination below status sections)
