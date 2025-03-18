@@ -6,7 +6,9 @@ import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.MySubjectUiState
-import com.github.bumblebee202111.doubean.model.SubjectModule
+import com.github.bumblebee202111.doubean.feature.subjects.SubjectModulesUiState
+import com.github.bumblebee202111.doubean.model.AppError
+import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +18,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,33 +29,42 @@ class MoviesViewModel @Inject constructor(
     private val authRepository: AuthRepository,
 ) : ViewModel() {
 
+    private val _uiErrors = MutableStateFlow(emptyList<AppError>())
+    val uiErrors = _uiErrors.asStateFlow()
+
     private val _myMoviesUiState: MutableStateFlow<MySubjectUiState> =
         MutableStateFlow(MySubjectUiState.Loading)
     val myMoviesUiState = _myMoviesUiState.asStateFlow()
 
-
     private val modulesResult = flow {
         emit(subjectCommonRepository.getSubjectModules(SubjectType.MOVIE))
+    }.onEach { result ->
+        if (result is AppResult.Error) {
+            _uiErrors.update {
+                it + result.error
+            }
+        }
     }
 
     val isLoggedIn = authRepository.isLoggedIn()
 
-    val moviesUiState = combine(
+    val modulesUiState = combine(
         isLoggedIn,
-        modulesResult,
-    ) { isLoggedIn, modules ->
-        when {
-            modules.isSuccess -> {
-                MoviesUiState.Success(
-                    modules = modules.getOrThrow(),
+        modulesResult
+    ) { isLoggedIn, modulesResult ->
+        when (modulesResult) {
+            is AppResult.Success -> {
+                SubjectModulesUiState.Success(
+                    modules = modulesResult.data,
                     isLoggedIn = isLoggedIn
                 )
             }
 
-            else ->
-                MoviesUiState.Error
+            is AppResult.Error -> {
+                SubjectModulesUiState.Error(modulesResult.error)
+            }
         }
-    }.stateInUi(MoviesUiState.Loading)
+    }.stateInUi(SubjectModulesUiState.Loading)
 
     init {
         getMyMovies()
@@ -64,10 +76,7 @@ class MoviesViewModel @Inject constructor(
                 _myMoviesUiState.value = when (userId) {
                     null -> MySubjectUiState.NotLoggedIn
                     else -> {
-                        val result = userSubjectRepository.getUserSubjects(
-                            userId =
-                            userId
-                        )
+                        val result = userSubjectRepository.getUserSubjects(userId = userId)
                         when (result.isSuccess) {
                             true ->
                                 MySubjectUiState.Success(
@@ -85,17 +94,11 @@ class MoviesViewModel @Inject constructor(
         }
     }
 
+    fun onErrorShown(error: AppError) {
+        _uiErrors.update { oldUiErrors ->
+            oldUiErrors - error
+        }
+    }
 
-
-}
-
-sealed interface MoviesUiState {
-    data class Success(
-        val modules: List<SubjectModule>,
-        val isLoggedIn: Boolean,
-    ) : MoviesUiState
-
-    data object Error : MoviesUiState
-    data object Loading : MoviesUiState
 }
 

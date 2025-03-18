@@ -3,6 +3,7 @@ package com.github.bumblebee202111.doubean.ui
 import android.app.Activity
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -47,7 +48,12 @@ fun DoubeanApp(navController: NavHostController, startWithGroups: Boolean) {
     }
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.systemBarsPadding()
+            )
+        },
     ) {
         MainNavScreen(
             navController = navController,

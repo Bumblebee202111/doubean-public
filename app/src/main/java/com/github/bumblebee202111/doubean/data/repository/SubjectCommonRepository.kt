@@ -1,9 +1,12 @@
 package com.github.bumblebee202111.doubean.data.repository
 
 import com.github.bumblebee202111.doubean.coroutines.suspendRunCatching
+import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.SubjectModule
 import com.github.bumblebee202111.doubean.model.SubjectType
+import com.github.bumblebee202111.doubean.model.safeApiCall
 import com.github.bumblebee202111.doubean.network.ApiService
+import com.github.bumblebee202111.doubean.network.model.NetworkSubjectModules
 import com.github.bumblebee202111.doubean.network.model.toNetworkSubjectType
 import com.github.bumblebee202111.doubean.network.model.toSubjectModules
 import com.github.bumblebee202111.doubean.network.model.toSubjectReviewList
@@ -20,9 +23,11 @@ class SubjectCommonRepository @Inject constructor(private val service: ApiServic
             ).toSubjectReviewList()
         }
 
-    suspend fun getSubjectModules(subjectType: SubjectType): Result<List<SubjectModule>> =
-        suspendRunCatching {
-            service.getSubjectModules(subjectType = subjectType.toNetworkSubjectType().value)
-                .toSubjectModules()
-        }
+    suspend fun getSubjectModules(subjectType: SubjectType): AppResult<List<SubjectModule>> =
+        safeApiCall(
+            apiCall = {
+                service.getSubjectModules(subjectType = subjectType.toNetworkSubjectType().value)
+            },
+            mapSuccess = NetworkSubjectModules::toSubjectModules
+        )
 }
