@@ -21,8 +21,8 @@ android {
         applicationId = "com.github.bumblebee202111.doubean"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 717
-        versionName = "0.7.17"
+        versionCode = 718
+        versionName = "0.7.18"
         setProperty("archivesBaseName", "doubean_$versionName")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
