@@ -241,12 +241,14 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * Collapse on entrance for the subscribed/favorited group/tab
     * Fix group description action overflows
   * Fix topic content losing scroll position after navigating back
-  * Fix notification taps not working when app is active
+  * Notifications
+    * Fix notification taps not working when app is active
+    * Custom interval. Add option of 1h 
   * Hide officially-flagged unfriendly content by default
   * Support blocking unwanted content
   * Lists: Reddit-style item expand/collapse
   * Find API for all followed topics (currently unlikely)
-
+  
 * Expand/collapse component: Hide action for short text
 
 * Search suggestions

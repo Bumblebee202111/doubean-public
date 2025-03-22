@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## Version 0.7.18(718)
+
+- Fix WebView not darkening in system dark theme (fix #7)
+
 ## Version 0.7.17(717)
 
 - Introduced a better way of handling errors
