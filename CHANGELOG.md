@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+## Version 0.8.0(800)
+
+- Added Experimental phone/password login
+  ⚠️ *Warning*:
+  → Code remains unoptimized (high failure rate)
+  → Frozen development to avoid developer account restrictions
+  → Use may trigger platform safeguards  
+- Fixed manual session imports
+- Fixed WebView not darkening in system dark theme (fix #7)
+
 ## Version 0.7.17(717)
 
 - Introduced a better way of handling errors

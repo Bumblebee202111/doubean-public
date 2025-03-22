@@ -140,7 +140,8 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
   * Keep original list orders or sort by create time within any page
   * Customizable topic notifications
 * Ad-free and lightweight (~3MB)
-* Rooted users can reuse login sessions from Douban app (phone login unsupported)
+* Rooted users can reuse login sessions from Douban app
+* Phone/password login (experimental)
 * Partial URL deep linking support
 * Basic Statuses tab (no longer updated)
 * Partial mobile-optimized Douban WebView support (no longer maintained)
@@ -192,16 +193,16 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for myself.
 
-#### Current release \(0.7.17\)
+#### Current release \(0.8.0)
 
-#### Next release \(0.7.18)
+#### Next release \(0.8.1)
+
+- Notifications
+  - Fetch fixed number & filter from first x
+  - Fix taps not working
 
 
 #### Future plans
-
-* Another attempt to implement p/p login
-
-  * If fails, allow non rooted users (guests) to browse their subjects/groups if a user ID is provided
 
 * Subjects
 
@@ -237,7 +238,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * Collapse on entrance for the subscribed/favorited group/tab
     * Fix group description action overflows
   * Fix topic content losing scroll position after navigating back
-  * Fix notification taps not working when app is active
+  * Notifications
+    * Custom interval. Add option of 1h 
   * Hide officially-flagged unfriendly content by default
   * Support blocking unwanted content
   * Lists: Reddit-style item expand/collapse
