@@ -65,7 +65,7 @@ class PreferenceStorage(
     }
 
     val preferToAutoImportSessionAtStartup = dataStore.data.map {
-        it[PREF_AUTO_IMPORT_SESSION_AT_STARTUP] ?: true
+        it[PREF_AUTO_IMPORT_SESSION_AT_STARTUP] ?: false
     }
 
     suspend fun preferToAutoImportSessionAtStartup(prefer: Boolean) {

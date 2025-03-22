@@ -1,5 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.login
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -40,7 +41,9 @@ class VerifyPhoneViewModel @Inject constructor(
 
     fun requestSendCode() {
         viewModelScope.launch {
-            requestCodeResult.value = authRepository.verifyPhoneRequestSendCode(userId)
+            val result = authRepository.verifyPhoneRequestSendCode(userId)
+            Log.d("requestSendCode", result.toString())
+            requestCodeResult.value = result
         }
     }
 

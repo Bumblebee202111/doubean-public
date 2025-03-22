@@ -145,7 +145,6 @@ fun SettingsScreen(
                 item {
                     SwitchPreferenceItem(
                         title = "(Root required) Auto-import session from Douban app at startup",
-                        summary = "Keep enabled to minimize expiration frequency",
                         checked = autoImportSessionAtStartup,
                         onCheckedChange = { toggleAutoImportSessionAtStartup() }
                     )
@@ -155,7 +154,7 @@ fun SettingsScreen(
                 ClickablePreferenceItem(
                     title = "(Root required) Run auto-import now",
                     onClick = triggerAutoImport,
-                    summary = "Manually trigger auto-import from Douban app",
+                    summary = "Manually trigger auto-import",
                     trailingContent = {
                         Icon(
                             imageVector = Icons.Default.Sync,
