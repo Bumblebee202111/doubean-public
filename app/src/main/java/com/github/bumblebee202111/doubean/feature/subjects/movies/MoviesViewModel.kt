@@ -72,7 +72,7 @@ class MoviesViewModel @Inject constructor(
 
     private fun getMyMovies() {
         viewModelScope.launch {
-            authRepository.observeLoggedInUserId().onEach { userId ->
+            authRepository.observeLoggedInUserId().collectLatest { userId ->
                 _myMoviesUiState.value = when (userId) {
                     null -> MySubjectUiState.NotLoggedIn
                     else -> {
@@ -90,7 +90,7 @@ class MoviesViewModel @Inject constructor(
                         }
                     }
                 }
-            }.collectLatest { }
+            }
         }
     }
 

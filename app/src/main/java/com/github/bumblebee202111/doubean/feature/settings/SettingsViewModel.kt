@@ -53,7 +53,7 @@ class SettingsViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch {
-            authRepository.clearSavedSession()
+            authRepository.unregisterDevice()
         }
     }
 }

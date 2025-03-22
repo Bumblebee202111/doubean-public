@@ -46,7 +46,7 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
         val loginResult = authRepository.loginWithDoubanSessionPref(sessionPref)
         sessionLoginResult.value = loginResult
         if (!loginResult) {
-            _errorMessage.value = "Login failed. Check your input."
+            _errorMessage.value = "Import failed. Check your input."
         }
     }
 

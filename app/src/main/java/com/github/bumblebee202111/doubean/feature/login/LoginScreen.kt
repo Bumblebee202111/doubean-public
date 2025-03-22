@@ -2,16 +2,18 @@ package com.github.bumblebee202111.doubean.feature.login
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,7 +50,7 @@ fun LoginScreen(
     onShowSnackbar: suspend (String) -> Unit,
 ) {
 
-    //val isFormValid by viewModel.isFormValid.collectAsState()
+    val isFormValid by viewModel.isFormValid.collectAsStateWithLifecycle()
     val sessionLoginResult by viewModel.sessionLoginResult.collectAsStateWithLifecycle()
     val phoneNumber = viewModel.phoneNumber
     val password = viewModel.password
@@ -59,12 +61,13 @@ fun LoginScreen(
         sessionLoginResult = sessionLoginResult,
         phoneNumber = phoneNumber,
         password = password,
+        isFormValid = isFormValid,
         loginResult = loginResult,
         message = message,
         updatePhoneNumber = viewModel::updatePhoneNumber,
         updatePassword = viewModel::updatePassword,
         triggerAutoImport = viewModel::triggerAutoImport,
-        loginWithDoubanSession = viewModel::loginWithDoubanSession,
+        importDoubanSession = viewModel::loginWithDoubanSession,
         login = viewModel::login,
         clearMessage = viewModel::clearMessage,
         onSaveIsLoginSuccessSuccessfulChange = onSaveIsLoginSuccessSuccessfulChange,
@@ -74,18 +77,19 @@ fun LoginScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LoginScreen(
     sessionLoginResult: Boolean?,
     phoneNumber: String,
     password: String,
+    isFormValid: Boolean,
     loginResult: LoginResult?,
     message: String?,
     updatePhoneNumber: (phoneNumberInput: String) -> Unit,
     updatePassword: (passwordInput: String) -> Unit,
     triggerAutoImport: () -> Unit,
-    loginWithDoubanSession: (sessionPref: String) -> Unit,
+    importDoubanSession: (sessionPref: String) -> Unit,
     login: () -> Unit,
     clearMessage: () -> Unit,
     onSaveIsLoginSuccessSuccessfulChange: (Boolean) -> Unit,
@@ -138,20 +142,26 @@ fun LoginScreen(
     ) { innerPadding ->
         Column(
             Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
-                .fillMaxSize()
+
         ) {
 
             Text(
-                text = "Phone/Password Login",
+                text = "Phone/Password Login (Experimental)",
                 style = MaterialTheme.typography.titleLarge
             )
             Text(
-                text = "Traditional login method (currently unavailable)",
-                style = MaterialTheme.typography.titleMedium
+                text = "WARNING: Use at your own risk!",
+                color = MaterialTheme.colorScheme.error
+            )
+            Text(
+                "Actual login attempts may trigger Douban's risk control systems.\n" +
+                        "Always prefer session import if root access is available."
             )
             OutlinedTextField(
-                enabled = false,
+                enabled = SHOULD_ENABLE_PHONE_PASSWORD_LOGIN,
                 value = phoneNumber,
                 onValueChange = updatePhoneNumber,
                 label = { Text("Phone number") },
@@ -159,7 +169,7 @@ fun LoginScreen(
             )
 
             TextField(
-                enabled = false,
+                enabled = SHOULD_ENABLE_PHONE_PASSWORD_LOGIN,
                 value = password,
                 onValueChange = updatePassword,
                 label = { Text("Enter password") },
@@ -169,8 +179,7 @@ fun LoginScreen(
             Button(
                 onClick = login,
                 Modifier.fillMaxWidth(),
-                //enabled = isFormValid, currently disabled
-                enabled = false
+                enabled = isFormValid
             ) {
                 Text(text = "Login")
             }
@@ -229,16 +238,19 @@ fun LoginScreen(
             Button(
                 onClick = {
                     keyboardController?.hide()
-                    loginWithDoubanSession(pref)
+                    importDoubanSession(pref)
                 },
                 Modifier.fillMaxWidth(),
             ) {
                 Text(text = "Import Session")
             }
-            Text(text = "This minimal UI is intentional — prioritizing functional access\n")
-
+            Text(
+                text = "This minimal UI is intentional - prioritizing functional access\n" +
+                        "Use discreetly/低调使用"
+            )
         }
     }
 
 }
 
+private const val SHOULD_ENABLE_PHONE_PASSWORD_LOGIN = true

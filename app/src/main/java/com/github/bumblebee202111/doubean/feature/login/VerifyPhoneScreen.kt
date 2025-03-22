@@ -39,7 +39,7 @@ fun VerifyPhoneScreen(
         requestCodeResult = requestCodeResult,
         verifyPhoneVerifyCodeResult = verifyPhoneVerifyCodeResult,
         clearDisplaySuccessState = viewModel::clearDisplaySuccessState,
-        clearDisplayErrorState = viewModel::clearDisplaySuccessState,
+        clearDisplayErrorState = viewModel::clearDisplayErrorState,
         requestSendCode = viewModel::requestSendCode,
         updateCodeInput = viewModel::updateCodeInput,
         submitCode = viewModel::submitCode,
@@ -103,7 +103,7 @@ fun VerifyPhoneScreen(
             TextField(
                 value = code,
                 onValueChange = { updateCodeInput(it) },
-                enabled = requestCodeResult is VerifyPhoneRequestCodeResult.Success,
+                enabled = true,//requestCodeResult is VerifyPhoneRequestCodeResult.Success,
                 label = { Text("Enter received verification code") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )

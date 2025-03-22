@@ -63,12 +63,12 @@ class TvsViewModel @Inject constructor(
     }.stateInUi(SubjectModulesUiState.Loading)
 
     init {
-        getMyMovies()
+        getMyTvs()
     }
 
-    private fun getMyMovies() {
+    private fun getMyTvs() {
         viewModelScope.launch {
-            authRepository.observeLoggedInUserId().onEach { userId ->
+            authRepository.observeLoggedInUserId().collectLatest { userId ->
                 _myTvsUiState.value = when (userId) {
                     null -> MySubjectUiState.NotLoggedIn
                     else -> {
@@ -89,7 +89,7 @@ class TvsViewModel @Inject constructor(
                         }
                     }
                 }
-            }.collectLatest { }
+            }
         }
     }
 
