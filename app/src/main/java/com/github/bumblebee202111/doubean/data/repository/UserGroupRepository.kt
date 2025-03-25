@@ -41,6 +41,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.io.IOException
+import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -221,18 +222,20 @@ class UserGroupRepository @Inject constructor(
                 networkUpdatedTopics.filter { it.id in truncatedTopicIds }
             val truncatedNetworkNewTopics = networkNewTopics.filter { it.id in truncatedTopicIds }
 
+            val now = LocalDateTime.now()
+
             val topicNotificationEntities = truncatedNetworkUpdatedTopics
                 .map {
                     TopicNotificationEntity(
                         topicId = it.id,
-                        updateTime = it.updateTime,
+                        updateTime = now,
                         isNotificationUpdated = true
                     )
                 } + truncatedNetworkNewTopics
                 .map {
                     TopicNotificationEntity(
                         topicId = it.id,
-                        updateTime = it.updateTime
+                        updateTime = now
                     )
                 }
 
