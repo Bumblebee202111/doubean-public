@@ -193,13 +193,14 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for myself.
 
-#### Current release \(0.8.0)
+#### Current release \(0.8.1)
 
-#### Next release \(0.8.1)
-
+- More error handling
 - Notifications
   - Fetch fixed number & filter from first x
   - Fix taps not working
+
+#### Next release \(0.8.2)
 
 
 #### Future plans
@@ -209,15 +210,22 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Colors
   * More details & sub-features
 
+* Error handling
+
+  * Process error body
+  * Show error messages
+
 * Remember last active bottom navigation/Subjects tabs
+
+* Slowly optimize login (avoid too frequent attempts when testing)
 
 * Groups
   * Dynamic topic sorts-by
 
   - Re-evaluate ROOM caching (complexity reduction)
     - Isolate cache/fresh logic in repository layer
-    - Only save the shared fields of simple/detail models
-    - Make detail UI states use both models 
+    - Only save common basic fields
+    - Use both cached/fresh models in detail screens 
 
   - Tweak component colors for group-themed screens
 
@@ -239,7 +247,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * Fix group description action overflows
   * Fix topic content losing scroll position after navigating back
   * Notifications
-    * Custom interval. Add option of 1h 
+    * Custom interval. Support options of 15 min & 1 h 
   * Hide officially-flagged unfriendly content by default
   * Support blocking unwanted content
   * Lists: Reddit-style item expand/collapse
@@ -252,11 +260,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Shortcuts
 
 * Properly show login prompts & normal tooltips/info
-
-* Error handling
-
-  * Process error body
-  * Show error messages
 
 * Load state visualization (removed during Compose migrations for simplicity)
   * Paging 3 refresh, loading status ...
