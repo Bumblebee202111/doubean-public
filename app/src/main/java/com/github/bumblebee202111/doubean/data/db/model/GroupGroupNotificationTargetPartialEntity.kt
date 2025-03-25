@@ -10,8 +10,8 @@ data class GroupGroupNotificationTargetPartialEntity(
     val notificationsEnabled: Boolean,
     @ColumnInfo("sort_by")
     val sortBy: TopicSortBy,
-    @ColumnInfo("max_topics_per_fetch")
-    val maxTopicsPerFetch: Int,
+    @ColumnInfo("max_topic_notifications_per_fetch")
+    val maxTopicNotificationsPerFetch: Int,
     @ColumnInfo("notify_on_updates")
     val notifyOnUpdates: Boolean,
 )

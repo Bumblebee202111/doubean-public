@@ -7,7 +7,7 @@ sealed interface GroupNotificationTarget {
     val groupId: String
     val notificationsEnabled: Boolean
     val sortBy: TopicSortBy
-    val maxTopicsPerFetch: Int
+    val maxTopicNotificationsPerFetch: Int
     val notifyOnUpdates: Boolean
     val lastFetchedTimeMillis: Long
 }
@@ -15,6 +15,6 @@ sealed interface GroupNotificationTarget {
 fun GroupNotificationTarget.toGroupNotificationPreferences() = GroupNotificationPreferences(
     notificationsEnabled = notificationsEnabled,
     sortBy = sortBy,
-    maxTopicsPerFetch = maxTopicsPerFetch,
+    maxTopicNotificationsPerFetch = maxTopicNotificationsPerFetch,
     notifyOnUpdates = notifyOnUpdates,
 )

@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.groups.shared.MaxTopicsPerFetchTextField
+import com.github.bumblebee202111.doubean.feature.groups.shared.MaxTopicNotificationsPerFetchTextField
 import com.github.bumblebee202111.doubean.feature.subjects.shared.SortTopicsByOption
 import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.TopicSortBy
@@ -52,7 +52,7 @@ fun GroupDefaultNotificationsPreferencesSettingsScreen(
         toggleEnableNotifications = viewModel::toggleEnableNotifications,
         toggleNotifyOnUpdates = viewModel::toggleNotifyOnUpdates,
         setSortBy = viewModel::setSortBy,
-        setMaxTopicsPerFetch = viewModel::setMaxTopicsPerFetch,
+        setMaxTopicNotificationsPerFetch = viewModel::setMaxTopicNotificationsPerFetch,
         onBackClick = onBackClick
     )
 }
@@ -64,11 +64,11 @@ fun GroupDefaultNotificationsPreferencesSettingsScreen(
     toggleEnableNotifications: () -> Unit,
     toggleNotifyOnUpdates: () -> Unit,
     setSortBy: (TopicSortBy) -> Unit,
-    setMaxTopicsPerFetch: (Int) -> Unit,
+    setMaxTopicNotificationsPerFetch: (Int) -> Unit,
     onBackClick: () -> Unit,
 ) {
     var showSortByDialog by remember { mutableStateOf(false) }
-    var showMaxTopicsPerFetchDialog by remember { mutableStateOf(false) }
+    var showMaxTopicNotificationsPerFetch by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -109,9 +109,9 @@ fun GroupDefaultNotificationsPreferencesSettingsScreen(
 
                 item {
                     ClickablePreferenceItem(
-                        title = stringResource(R.string.max_topics_per_fetch_title),
-                        summary = preferences.maxTopicsPerFetch.toString(),
-                        onClick = { showMaxTopicsPerFetchDialog = true }
+                        title = stringResource(R.string.max_topic_notifications_per_fetch_title),
+                        summary = preferences.maxTopicNotificationsPerFetch.toString(),
+                        onClick = { showMaxTopicNotificationsPerFetch = true }
                     )
 
                 }
@@ -124,11 +124,11 @@ fun GroupDefaultNotificationsPreferencesSettingsScreen(
                 )
             }
 
-            if (showMaxTopicsPerFetchDialog) {
-                MaxTopicsPerFetchDialog(
-                    currentValue = preferences.maxTopicsPerFetch,
-                    onDismiss = { showMaxTopicsPerFetchDialog = false },
-                    onConfirm = setMaxTopicsPerFetch
+            if (showMaxTopicNotificationsPerFetch) {
+                MaxTopicNotificationsPerFetchDialog(
+                    currentValue = preferences.maxTopicNotificationsPerFetch,
+                    onDismiss = { showMaxTopicNotificationsPerFetch = false },
+                    onConfirm = setMaxTopicNotificationsPerFetch
                 )
             }
         }
@@ -179,7 +179,7 @@ private fun SortByDialog(
 }
 
 @Composable
-private fun MaxTopicsPerFetchDialog(
+private fun MaxTopicNotificationsPerFetchDialog(
     currentValue: Int,
     onDismiss: () -> Unit,
     onConfirm: (Int) -> Unit,
@@ -189,11 +189,11 @@ private fun MaxTopicsPerFetchDialog(
     }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.max_topics_per_fetch_title)) },
+        title = { Text(stringResource(R.string.max_topic_notifications_per_fetch_title)) },
         text = {
-            MaxTopicsPerFetchTextField(
-                maxTopicsPerFetch = value,
-                onUpdateMaxTopicsPerFetch = {
+            MaxTopicNotificationsPerFetchTextField(
+                maxTopicNotificationsPerFetch = value,
+                onUpdateMaxTopicNotificationsPerFetch = {
                     value = it
                 },
                 requestFocus = true,

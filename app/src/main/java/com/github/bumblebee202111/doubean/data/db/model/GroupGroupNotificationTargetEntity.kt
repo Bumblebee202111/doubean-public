@@ -14,8 +14,8 @@ data class GroupGroupNotificationTargetEntity(
     override val notificationsEnabled: Boolean,
     @ColumnInfo("sort_by")
     override val sortBy: TopicSortBy,
-    @ColumnInfo("max_topics_per_fetch")
-    override val maxTopicsPerFetch: Int,
+    @ColumnInfo("max_topic_notifications_per_fetch")
+    override val maxTopicNotificationsPerFetch: Int,
     @ColumnInfo("notify_on_updates")
     override val notifyOnUpdates: Boolean,
     @ColumnInfo("last_fetched_time_millis", defaultValue = "0")
