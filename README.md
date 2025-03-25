@@ -198,7 +198,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 - More error handling
 - Notifications
   - Fetch fixed number & filter from first x
-  - Fix taps not working
+  - Fix preferences in dark theme
 
 #### Next release \(0.8.2)
 
