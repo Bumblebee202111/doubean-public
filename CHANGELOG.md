@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.8.1(801)
+
 ## Version 0.8.0(800)
 
 - Added experimental phone/password login
