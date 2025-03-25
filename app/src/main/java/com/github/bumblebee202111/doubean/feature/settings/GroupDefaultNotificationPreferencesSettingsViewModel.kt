@@ -51,11 +51,11 @@ class GroupDefaultNotificationPreferencesSettingsViewModel @Inject constructor(
         }
     }
 
-    fun setMaxTopicsPerFetch(maxTopicsPerFetch: Int) {
+    fun setMaxTopicNotificationsPerFetch(maxTopicNotificationsPerFetch: Int) {
         val preferences = defaultGroupNotificationPreferences.value ?: return
         viewModelScope.launch {
             preferenceStorage.setDefaultGroupNotificationPreferences(preferences.run {
-                copy(maxTopicsPerFetch = maxTopicsPerFetch)
+                copy(maxTopicNotificationsPerFetch = maxTopicNotificationsPerFetch)
             })
         }
     }

@@ -104,15 +104,15 @@ fun GroupNotificationPreferencesDialog(
                 ListItem(
                     headlineContent = {
                         Text(
-                            text = stringResource(R.string.max_topics_per_fetch_title),
+                            text = stringResource(R.string.max_topic_notifications_per_fetch_title),
                             color = detailTitleColor
                         )
                     },
                     trailingContent = {
-                        MaxTopicsPerFetchTextField(
-                            maxTopicsPerFetch = preferences.maxTopicsPerFetch,
-                            onUpdateMaxTopicsPerFetch = {
-                                preferences = preferences.copy(maxTopicsPerFetch = it)
+                        MaxTopicNotificationsPerFetchTextField(
+                            maxTopicNotificationsPerFetch = preferences.maxTopicNotificationsPerFetch,
+                            onUpdateMaxTopicNotificationsPerFetch = {
+                                preferences = preferences.copy(maxTopicNotificationsPerFetch = it)
                             },
                             enabled = preferences.notificationsEnabled
                         )

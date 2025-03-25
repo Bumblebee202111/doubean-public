@@ -65,7 +65,7 @@ import kotlinx.serialization.json.Json
         TopicNotificationEntity::class,
         UserEntity::class,
     ],
-    version = 12,
+    version = 13,
     exportSchema = false
 )
 @TypeConverters(

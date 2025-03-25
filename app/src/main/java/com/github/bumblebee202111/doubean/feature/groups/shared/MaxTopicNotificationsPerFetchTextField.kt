@@ -23,28 +23,28 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun MaxTopicsPerFetchTextField(
-    maxTopicsPerFetch: Int,
-    onUpdateMaxTopicsPerFetch: (intValue: Int) -> Unit,
+fun MaxTopicNotificationsPerFetchTextField(
+    maxTopicNotificationsPerFetch: Int,
+    onUpdateMaxTopicNotificationsPerFetch: (intValue: Int) -> Unit,
     enabled: Boolean = true,
     requestFocus: Boolean = false,
     fillMaxWidth: Boolean = false,
 ) {
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
-    var maxTopicsPerFetchValue by rememberSaveable {
-        mutableStateOf(maxTopicsPerFetch.toString())
+    var maxTopicNotificationsPerFetchValue by rememberSaveable {
+        mutableStateOf(maxTopicNotificationsPerFetch.toString())
     }
     TextField(
-        value = maxTopicsPerFetchValue,
+        value = maxTopicNotificationsPerFetchValue,
         onValueChange = { value ->
             if (value.isBlank()) {
-                maxTopicsPerFetchValue = ""
+                maxTopicNotificationsPerFetchValue = ""
             } else {
-                value.toIntOrNull()?.takeIf { it in 1..50 }
+                value.toIntOrNull()?.takeIf { it in 1..5 }
                     ?.let {
-                        maxTopicsPerFetchValue = value
-                        onUpdateMaxTopicsPerFetch(it)
+                        maxTopicNotificationsPerFetchValue = value
+                        onUpdateMaxTopicNotificationsPerFetch(it)
                     }
             }
         },

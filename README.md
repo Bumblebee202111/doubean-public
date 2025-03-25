@@ -202,6 +202,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### Next release \(0.8.2)
 
+- Optimize login
+
 
 #### Future plans
 

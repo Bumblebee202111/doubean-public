@@ -19,6 +19,7 @@ import com.github.bumblebee202111.doubean.data.db.model.TopicItemPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicNotificationEntity
 import com.github.bumblebee202111.doubean.data.db.model.UserJoinedGroupIdEntity
 import com.github.bumblebee202111.doubean.data.db.model.asExternalModel
+import com.github.bumblebee202111.doubean.data.repository.GroupRepository.Companion.RESULT_TOPICS_PAGE_SIZE
 import com.github.bumblebee202111.doubean.model.GroupFavoriteItem
 import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.TopicItemWithGroup
@@ -170,7 +171,7 @@ class UserGroupRepository @Inject constructor(
                     apiService.getGroupTopics(
                         groupId = currentNotificationTarget.groupId,
                         sortBy = currentNotificationTarget.sortBy.getRequestParamString(),
-                        count = currentNotificationTarget.maxTopicsPerFetch
+                        count = RESULT_TOPICS_PAGE_SIZE
                     )
                 }
 
@@ -179,7 +180,7 @@ class UserGroupRepository @Inject constructor(
                         groupId = currentNotificationTarget.groupId,
                         topicTagId = currentNotificationTarget.tabId,
                         sortBy = currentNotificationTarget.sortBy.getRequestParamString(),
-                        count = currentNotificationTarget.maxTopicsPerFetch
+                        count = currentNotificationTarget.maxTopicNotificationsPerFetch
                     )
                 }
             }
@@ -213,7 +214,8 @@ class UserGroupRepository @Inject constructor(
                     NetworkTopicItem::id
                 )
             }
-                .take(MAX_NUM_TOPIC_NOTIFICATIONS).map(NetworkTopicItem::id)
+                .take(currentNotificationTarget.maxTopicNotificationsPerFetch)
+                .map(NetworkTopicItem::id)
 
             val truncatedNetworkUpdatedTopics =
                 networkUpdatedTopics.filter { it.id in truncatedTopicIds }
