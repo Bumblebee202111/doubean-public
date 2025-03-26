@@ -86,16 +86,16 @@ ON user_joined_group_ids.group_id = groups.id WHERE user_id=:userId ORDER BY `in
     )
     fun loadAllFavorites(): Flow<List<PopulatedGroupFavoriteItem>>
 
-    @Query("SELECT * FROM topic_notifications")
-    suspend fun getTopicNotifications(): List<TopicNotificationEntity>
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTopicNotifications(topicNotifications: List<TopicNotificationEntity>)
 
     @Transaction
-    @Query("SELECT * FROM topic_notifications ORDER BY update_time DESC")
+    @Query("SELECT * FROM topic_notifications ORDER BY time DESC")
     fun topicNotificationsPagingSource(): PagingSource<Int, PopulatedTopicNotificationItem>
 
+    @Transaction
+    @Query("SELECT * FROM topic_notifications WHERE topic_id IN (:ids) ORDER BY time DESC")
+    fun getTopicsAndNotifications(ids: List<String>): List<PopulatedTopicNotificationItem>
 
     @Upsert(entity = GroupGroupNotificationTargetEntity::class)
     suspend fun upsertGroupNotificationTargetPreferences(
