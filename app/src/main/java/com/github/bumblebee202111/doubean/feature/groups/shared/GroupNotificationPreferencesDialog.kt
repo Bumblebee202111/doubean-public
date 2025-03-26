@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -61,17 +62,16 @@ fun GroupNotificationPreferencesDialog(
                         )
                     }
                 )
-                val detailTitleColor = Color.Unspecified.run {
+                val disabledTextColor =
                     if (preferences.notificationsEnabled)
-                        this
+                        Color.Unspecified
                     else
-                        copy(alpha = 0.38f)
-                }
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f).copy(alpha = 0.38f)
                 ListItem(
                     headlineContent = {
                         Text(
                             text = stringResource(R.string.notify_on_updates_title),
-                            color = detailTitleColor
+                            color = disabledTextColor
                         )
                     },
                     trailingContent = {
@@ -88,7 +88,7 @@ fun GroupNotificationPreferencesDialog(
                     headlineContent = {
                         Text(
                             text = stringResource(R.string.sort_by_title),
-                            color = detailTitleColor
+                            color = disabledTextColor
                         )
 
                     },
@@ -105,7 +105,7 @@ fun GroupNotificationPreferencesDialog(
                     headlineContent = {
                         Text(
                             text = stringResource(R.string.max_topic_notifications_per_fetch_title),
-                            color = detailTitleColor
+                            color = disabledTextColor
                         )
                     },
                     trailingContent = {
