@@ -15,7 +15,6 @@ import com.github.bumblebee202111.doubean.data.db.model.PopulatedGroupFavoriteIt
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItemWithGroup
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicNotificationItem
 import com.github.bumblebee202111.doubean.data.db.model.SimpleGroupPartialEntity
-import com.github.bumblebee202111.doubean.data.db.model.TopicItemPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicNotificationEntity
 import com.github.bumblebee202111.doubean.data.db.model.UserJoinedGroupIdEntity
 import com.github.bumblebee202111.doubean.data.db.model.asExternalModel
@@ -28,6 +27,7 @@ import com.github.bumblebee202111.doubean.model.getRequestParamString
 import com.github.bumblebee202111.doubean.model.toGroupNotificationTargetPartialEntity
 import com.github.bumblebee202111.doubean.model.toGroupTabNotificationTargetPartialEntity
 import com.github.bumblebee202111.doubean.network.ApiService
+import com.github.bumblebee202111.doubean.network.model.NetworkGroupTopicTag
 import com.github.bumblebee202111.doubean.network.model.NetworkRecentTopicsFeedItem
 import com.github.bumblebee202111.doubean.network.model.NetworkTopicItem
 import com.github.bumblebee202111.doubean.network.model.NetworkTopicItemWithGroup
@@ -41,11 +41,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.io.IOException
-import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
-
-private const val MAX_NUM_TOPIC_NOTIFICATIONS = 5
 
 @Singleton
 class UserGroupRepository @Inject constructor(
@@ -181,68 +178,62 @@ class UserGroupRepository @Inject constructor(
                         groupId = currentNotificationTarget.groupId,
                         topicTagId = currentNotificationTarget.tabId,
                         sortBy = currentNotificationTarget.sortBy.getRequestParamString(),
-                        count = currentNotificationTarget.maxTopicNotificationsPerFetch
+                        count = RESULT_TOPICS_PAGE_SIZE
                     )
                 }
             }
             val networkTopics = response.items.filterIsInstance<NetworkTopicItem>()
             val groupId = currentNotificationTarget.groupId
-            val topics = networkTopics.map { it.asPartialEntity(groupId) }.also {
+
+            // truncate early for better quality
+            val networkTopicCandidates = networkTopics.also {
                 if (currentNotificationTarget.sortBy == TopicSortBy.HOT_LAST_CREATED ||
                     currentNotificationTarget.sortBy == TopicSortBy.NEW_LAST_CREATED
                 )
-                    it.sortedByDescending(TopicItemPartialEntity::createTime)
-            }
+                    it.sortedByDescending(NetworkTopicItem::createTime)
+            }.take(currentNotificationTarget.maxTopicNotificationsPerFetch)
 
-            val existingTopicNotifications = userGroupDao.getTopicNotifications()
+            val existingTopicNotifications =
+                userGroupDao.getTopicsAndNotifications(networkTopicCandidates.map { it.id })
 
-            val networkUpdatedTopics =
+            val finalNetworkUpdatedTopics =
                 if (currentNotificationTarget.notifyOnUpdates) {
                     networkTopics.filter { networkTopic ->
-                        existingTopicNotifications.find { existingTopicNotifications ->
-                            existingTopicNotifications.topicId == networkTopic.id && existingTopicNotifications.updateTime != networkTopic.updateTime
+                        existingTopicNotifications.find { existingTopicNotification ->
+                            existingTopicNotification.topicWithGroup.partialEntity.id == networkTopic.id && existingTopicNotification.topicWithGroup.partialEntity.updateTime != networkTopic.updateTime
                         } != null
                     }
                 } else emptyList()
-            val networkNewTopics = networkTopics.filter {
-                it.id !in existingTopicNotifications.map(
-                    TopicNotificationEntity::topicId
-                )
+            val finalNetworkNewTopics = networkTopics.filter { networkTopic ->
+                networkTopic.id !in existingTopicNotifications.map { existingTopicNotification ->
+                    existingTopicNotification.topicWithGroup.partialEntity.id
+                }
             }
 
-            val truncatedTopicIds = networkTopics.filter {
-                it.id in (networkUpdatedTopics + networkNewTopics).map(
-                    NetworkTopicItem::id
-                )
+            val finalOrderedNetworkTopics = networkTopicCandidates.filter { candidate ->
+                candidate.id in (finalNetworkUpdatedTopics + finalNetworkNewTopics).map { final -> final.id }
             }
-                .take(currentNotificationTarget.maxTopicNotificationsPerFetch)
-                .map(NetworkTopicItem::id)
 
-            val truncatedNetworkUpdatedTopics =
-                networkUpdatedTopics.filter { it.id in truncatedTopicIds }
-            val truncatedNetworkNewTopics = networkNewTopics.filter { it.id in truncatedTopicIds }
-
-            val now = LocalDateTime.now()
-
-            val topicNotificationEntities = truncatedNetworkUpdatedTopics
+            val topicNotificationEntities = finalNetworkUpdatedTopics
                 .map {
                     TopicNotificationEntity(
                         topicId = it.id,
-                        updateTime = now,
+                        time = System.currentTimeMillis(),
                         isNotificationUpdated = true
                     )
-                } + truncatedNetworkNewTopics
-                .map {
-                    TopicNotificationEntity(
-                        topicId = it.id,
-                        updateTime = now
-                    )
-                }
+                } + finalNetworkNewTopics.map {
+                TopicNotificationEntity(
+                    topicId = it.id,
+                    time = System.currentTimeMillis()
+                )
+            }
+            val finalTopicEntities = finalOrderedNetworkTopics.map { it.asPartialEntity(groupId) }
 
-            val topicTags = networkTopics.flatMap { it.topicTags }.map { it.asEntity(groupId) }
-            val authors = networkTopics.map { it.author.asEntity() }
+            val topicTags = finalOrderedNetworkTopics.flatMap(NetworkTopicItem::topicTags)
+                .distinctBy(NetworkGroupTopicTag::id).map { it.asEntity(groupId) }
+            val authors = finalOrderedNetworkTopics.map { it.author.asEntity() }
             appDatabase.withTransaction {
-                topicDao.upsertTopics(topics)
+                topicDao.upsertTopics(finalTopicEntities)
                 groupDao.insertTopicTags(topicTags)
                 userDao.insertUsers(authors)
                 when (currentNotificationTarget) {
@@ -264,11 +255,12 @@ class UserGroupRepository @Inject constructor(
 
                 userGroupDao.insertTopicNotifications(topicNotificationEntities)
             }
-            val truncatedTopics =
-                topicDao.loadOrderedTopicsWithGroups(truncatedTopicIds).first()
+            val finalTopics =
+                topicDao.loadOrderedTopicsWithGroups(finalOrderedNetworkTopics.map(NetworkTopicItem::id))
+                    .first()
                     .map(PopulatedTopicItemWithGroup::asExternalModel)
-            if (truncatedTopics.isNotEmpty()) {
-                notifier.postTopicNotifications(truncatedTopics)
+            if (finalTopics.isNotEmpty()) {
+                notifier.postTopicNotifications(finalTopics)
             }
             true
         } catch (e: IOException) {

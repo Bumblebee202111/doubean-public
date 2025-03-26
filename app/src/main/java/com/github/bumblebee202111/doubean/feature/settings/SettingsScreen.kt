@@ -1,5 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.settings
 
+import android.content.Context
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.app.NotificationManagerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.BuildConfig
@@ -118,10 +120,20 @@ fun SettingsScreen(
             }
             if (enableNotifications != null) {
                 item {
+                    val showWarning = !checkNotificationPermission(context)
+
                     SwitchPreferenceItem(
                         title = stringResource(R.string.enable_notifications_title),
                         checked = enableNotifications,
-                        onCheckedChange = { toggleEnableNotifications() }
+                        onCheckedChange = { toggleEnableNotifications() },
+                        summary = if (showWarning) {
+                            stringResource(
+                                id = R.string.notification_permission_tip,
+                                stringResource(R.string.app_name)
+                            )
+                        } else {
+                            stringResource(R.string.notification_permission_granted)
+                        }
                     )
                 }
             }
@@ -229,4 +241,8 @@ fun SettingsScreen(
         }
     }
 
+}
+
+private fun checkNotificationPermission(context: Context): Boolean {
+    return NotificationManagerCompat.from(context).areNotificationsEnabled()
 }
