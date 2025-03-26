@@ -11,6 +11,7 @@ data class ApiError(
     val code: Int,
     val message: String,
     val request: String,
+    val solutionUri: String? = null,
     override val originalError: Throwable?,
 ) : NetworkError {
     companion object {

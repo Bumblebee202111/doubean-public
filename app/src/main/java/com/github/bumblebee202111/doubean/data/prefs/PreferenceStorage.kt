@@ -15,7 +15,9 @@ import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.Preferenc
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_GROUP_NOTIFICATIONS_DEFAULT_SORT_BY
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_GROUP_NOTIFICATIONS_MAX_TOPIC_NOTIFICATIONS_PER_FETCH
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_GROUP_NOTIFICATIONS_NOTIFY_ON_UPDATES
+import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_LAST_REFRESH_TIME
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_RECEIVE_NOTIFICATIONS
+import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_REFRESH_TOKEN
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_START_APP_WITH_GROUPS
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_UDID
 import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
@@ -56,6 +58,7 @@ class PreferenceStorage(
         val PREF_REFRESH_TOKEN = stringPreferencesKey("refresh_token")
         val PREF_DOUBAN_USER_ID = stringPreferencesKey("douban_user_id")
         val PREF_DOUBAN_SESSION = stringPreferencesKey("douban_session")
+        val PREF_LAST_REFRESH_TIME = longPreferencesKey("last_refresh_time")
     }
 
     suspend fun preferToReceiveNotifications(prefer: Boolean) {
@@ -128,12 +131,28 @@ class PreferenceStorage(
         p[PREF_ACCESS_TOKEN]
     }
 
+    suspend fun setRefreshToken(refreshToken: String?) {
+        put(PREF_REFRESH_TOKEN, refreshToken)
+    }
+
+    val refreshToken = dataStore.data.map { p ->
+        p[PREF_REFRESH_TOKEN]
+    }
+
     suspend fun setLoggedInUserId(accessToken: String?) {
         put(PREF_DOUBAN_USER_ID, accessToken)
     }
 
     val loggedInUserId = dataStore.data.map { p ->
         p[PREF_DOUBAN_USER_ID]
+    }
+
+    suspend fun setLastRefreshTime(lastRefreshTime: Long?) {
+        put(PREF_LAST_REFRESH_TIME, lastRefreshTime)
+    }
+
+    val lastRefreshTime = dataStore.data.map { p ->
+        p[PREF_LAST_REFRESH_TIME]
     }
 
     private suspend fun <T> put(key: Preferences.Key<T>, value: T?) {

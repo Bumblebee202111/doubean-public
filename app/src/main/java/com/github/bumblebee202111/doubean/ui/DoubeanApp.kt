@@ -9,6 +9,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -20,9 +21,17 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.GroupDetailRoute
 import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.ReshareStatusesRoute
 import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.TopicRoute
+import com.github.bumblebee202111.doubean.model.AppError
+import com.github.bumblebee202111.doubean.util.uiMessage
+import kotlin.reflect.KFunction0
 
 @Composable
-fun DoubeanApp(navController: NavHostController, startWithGroups: Boolean) {
+fun DoubeanApp(
+    navController: NavHostController,
+    startWithGroups: Boolean,
+    uiError: AppError?,
+    clearUiError: KFunction0<Unit>,
+) {
     val snackbarHostState = remember { SnackbarHostState() }
     val currentDestination = navController
         .currentBackStackEntryAsState().value?.destination
@@ -46,6 +55,15 @@ fun DoubeanApp(navController: NavHostController, startWithGroups: Boolean) {
             insetsController.isAppearanceLightStatusBars = originalIconState
         }
     }
+
+    if (uiError != null) {
+        val message = uiError.uiMessage
+        LaunchedEffect(uiError) {
+            snackbarHostState.showSnackbar(message)
+            clearUiError()
+        }
+    }
+
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         snackbarHost = {

@@ -6,6 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
+import com.github.bumblebee202111.doubean.model.AppError
+import com.github.bumblebee202111.doubean.model.AppResult
+import com.github.bumblebee202111.doubean.model.GenericError
 import com.github.bumblebee202111.doubean.model.LoginResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,9 +34,9 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
 
     val sessionLoginResult = MutableStateFlow<Boolean?>(null)
 
-    private val _errorMessage = MutableStateFlow<String?>(null)
+    private val _uiError = MutableStateFlow<AppError?>(null)
 
-    val errorMessage = _errorMessage.asStateFlow()
+    val uiError = _uiError.asStateFlow()
 
     fun triggerAutoImport() {
         viewModelScope.launch {
@@ -46,16 +49,24 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
         val loginResult = authRepository.loginWithDoubanSessionPref(sessionPref)
         sessionLoginResult.value = loginResult
         if (!loginResult) {
-            _errorMessage.value = "Import failed. Check your input."
+            _uiError.value = GenericError(Throwable("Import failed. Check your input."))
         }
     }
 
     fun login() {
         viewModelScope.launch {
-            val loginResult = authRepository.login(phoneNumber, password)
-            _loginResult.value = loginResult
-            if (loginResult is LoginResult.Error) {
-                _errorMessage.value = "Login failed"
+            val sessionResult = authRepository.login(phoneNumber, password)
+            _loginResult.value = when (sessionResult) {
+                is AppResult.Error -> {
+                    LoginResult.Error(appError = sessionResult.error)
+                }
+
+                is AppResult.Success -> {
+                    LoginResult.Success
+                }
+            }
+            if (sessionResult is AppResult.Error) {
+                _uiError.value = sessionResult.error
             }
         }
     }
@@ -75,7 +86,7 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
     }
 
     fun clearMessage() {
-        _errorMessage.value = null
+        _uiError.value = null
     }
 
 }

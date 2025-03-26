@@ -44,6 +44,9 @@ class VerifyPhoneViewModel @Inject constructor(
             val result = authRepository.verifyPhoneRequestSendCode(userId)
             Log.d("requestSendCode", result.toString())
             requestCodeResult.value = result
+            if (result is VerifyPhoneRequestCodeResult.Error) {
+                errorMessage = result.message
+            }
         }
     }
 

@@ -20,6 +20,7 @@ import com.github.bumblebee202111.doubean.ui.theme.DoubeanTheme
 import com.github.bumblebee202111.doubean.workers.TopicNotificationsWorker
 import com.github.bumblebee202111.doubean.workers.TopicNotificationsWorker.Companion.WORK_NAME
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -41,10 +42,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             DoubeanTheme {
                 val startAppWithGroups by mainActivityViewModel.startAppWithGroups.collectAsStateWithLifecycle()
+                val uiError by mainActivityViewModel.uiError.collectAsStateWithLifecycle()
                 startAppWithGroups?.let {
                     DoubeanApp(
                         navController = rememberNavController(),
-                        startWithGroups = it
+                        startWithGroups = it,
+                        uiError = uiError,
+                        clearUiError = mainActivityViewModel::clearUiError
                     )
                 }
             }
@@ -53,11 +57,12 @@ class MainActivity : ComponentActivity() {
         setupWorkManager()
 
         lifecycleScope.launch {
-            mainActivityViewModel.autoImportSessionAtStartup.collect {
+            mainActivityViewModel.autoImportSessionAtStartup.take(1).collect {
                 if (it == true) {
                     syncDoubanSession()
                 }
             }
+
         }
 
     }

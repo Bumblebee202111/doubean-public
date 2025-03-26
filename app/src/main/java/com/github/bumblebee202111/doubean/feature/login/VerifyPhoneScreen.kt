@@ -3,7 +3,11 @@ package com.github.bumblebee202111.doubean.feature.login
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -92,7 +96,14 @@ fun VerifyPhoneScreen(
 
     Scaffold(
         topBar = {
-            DoubeanTopAppBar(titleText = "Verify Phone")
+            DoubeanTopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = onPopBackStack) {
+                        Icon(Icons.AutoMirrored.Default.ArrowBack, null)
+                    }
+                },
+                titleText = "Verify Phone"
+            )
         },
     ) { paddingValues ->
         Column(Modifier.padding(paddingValues)) {
@@ -103,7 +114,7 @@ fun VerifyPhoneScreen(
             TextField(
                 value = code,
                 onValueChange = { updateCodeInput(it) },
-                enabled = true,
+                enabled = requestCodeResult is VerifyPhoneRequestCodeResult.Success,
                 label = { Text("Enter received verification code") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
