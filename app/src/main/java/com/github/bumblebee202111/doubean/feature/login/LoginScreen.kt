@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,8 +35,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github.bumblebee202111.doubean.model.ApiError
+import com.github.bumblebee202111.doubean.model.AppError
 import com.github.bumblebee202111.doubean.model.LoginResult
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
+import com.github.bumblebee202111.doubean.util.uiMessage
 
 const val LOGIN_SUCCESSFUL: String = "LOGIN_SUCCESSFUL"
 
@@ -55,7 +57,7 @@ fun LoginScreen(
     val phoneNumber = viewModel.phoneNumber
     val password = viewModel.password
     val loginResult by viewModel.loginResult.collectAsStateWithLifecycle()
-    val message by viewModel.errorMessage.collectAsStateWithLifecycle()
+    val uiError by viewModel.uiError.collectAsStateWithLifecycle()
 
     LoginScreen(
         sessionLoginResult = sessionLoginResult,
@@ -63,7 +65,7 @@ fun LoginScreen(
         password = password,
         isFormValid = isFormValid,
         loginResult = loginResult,
-        message = message,
+        uiError = uiError,
         updatePhoneNumber = viewModel::updatePhoneNumber,
         updatePassword = viewModel::updatePassword,
         triggerAutoImport = viewModel::triggerAutoImport,
@@ -77,7 +79,7 @@ fun LoginScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     sessionLoginResult: Boolean?,
@@ -85,7 +87,7 @@ fun LoginScreen(
     password: String,
     isFormValid: Boolean,
     loginResult: LoginResult?,
-    message: String?,
+    uiError: AppError?,
     updatePhoneNumber: (phoneNumberInput: String) -> Unit,
     updatePassword: (passwordInput: String) -> Unit,
     triggerAutoImport: () -> Unit,
@@ -105,11 +107,18 @@ fun LoginScreen(
                 onPopBackStack()
             }
 
-            is LoginResult.ShouldVerifyPhone -> {
-                onOpenDeepLinkUrl(loginResult.uri)
+            is LoginResult.Error -> {
+                val appError = loginResult.appError
+                (appError as? ApiError)?.solutionUri?.let { solutionUri ->
+                    try {
+                        onOpenDeepLinkUrl(solutionUri)
+                    } catch (_: Exception) {
+                    }
+                }
             }
 
             else -> Unit
+
         }
     }
 
@@ -120,9 +129,11 @@ fun LoginScreen(
         }
     }
 
-    LaunchedEffect(message) {
-        message?.let {
-            onShowSnackbar(it)
+
+    uiError?.let {
+        val message = uiError.uiMessage
+        LaunchedEffect(uiError) {
+            onShowSnackbar(message)
             clearMessage()
         }
     }
