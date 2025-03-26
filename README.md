@@ -196,9 +196,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 #### Current release \(0.8.1)
 
 - More error handling
-- Notifications
-  - Fetch fixed number & filter from first x
-  - Fix preferences in dark theme
 
 #### Next release \(0.8.2)
 
