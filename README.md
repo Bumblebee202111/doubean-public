@@ -250,6 +250,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Lists: Reddit-style item expand/collapse
   * Find API for all followed topics (currently unlikely)
 
+* Dou Lists
+
 * Expand/collapse component: Hide action for short text
 
 * Search suggestions

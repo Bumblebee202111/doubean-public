@@ -4,10 +4,16 @@ Change Log
 ## Version 0.8.1(801)
 
 - Login updates
-  - Fixed common login problems
-  - Improved error messages
-  - Added captcha support *(untested - it vanished during development)*
-  - **Important Note**: *Use at your own risk*
+  - Fixed frequent login failures
+  - Added clearer error messages
+  - Implemented captcha support *(not fully tested — captcha prompts stopped appearing during development)*
+
+- Notification updates
+  - Fixed text color in dark mode for group/tab notification dialogs
+  - Preference of max topics (queried) per fetch -> max topic *notifications* per fetch
+    - Local create time orders now bring more relevant & less frequent notifications
+
+  - Fixed broken notification taps by simply updating the Navigation library *(took all afternoon – thanks, bug!)*
 
 
 ## Version 0.8.0(800)
