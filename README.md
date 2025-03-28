@@ -195,11 +195,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### Current release \(0.8.1)
 
-- More error handling
-
 #### Next release \(0.8.2)
 
-- Optimize login
+- More error handling
 
 
 #### Future plans
