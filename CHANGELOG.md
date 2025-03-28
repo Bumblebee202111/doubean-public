@@ -1,14 +1,33 @@
 Change Log
 ==========
 
+## Version 0.8.1(801)
+
+- Login updates
+  - Fixed frequent login failures
+  - Added clearer error messages
+  - Implemented captcha support *(not fully tested — captcha prompts stopped appearing during development)*
+
+- Notification updates
+  - Fixed text color in dark mode for group/tab notification dialogs
+  - Preference of max topics (queried) per fetch -> max topic *notifications* per fetch
+    - Local create time orders now bring more relevant & less frequent notifications
+
+  - Fixed broken notification taps by simply updating the Navigation library *(took all afternoon – thanks, bug!)*
+
+
 ## Version 0.8.0(800)
 
-- Added Experimental phone/password login
+- Added experimental phone/password login
   ⚠️ *Warning*:
-  → Code remains unoptimized (high failure rate)
+  → TOO BUGGY, DON'T USE
+  → Next release: Captcha :eyes::eyes:
+  ~~→ Code remains unoptimized (high failure rate)
   → Frozen development to avoid developer account restrictions
-  → Use may trigger platform safeguards  
+  → Use may trigger platform safeguards~~  
+  
 - Fixed manual session imports
+
 - Fixed WebView not darkening in system dark theme (fix #7)
 
 ## Version 0.7.17(717)
