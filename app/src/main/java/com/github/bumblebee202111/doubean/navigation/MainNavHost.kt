@@ -104,7 +104,8 @@ fun MainNavHost(
             onShowSnackbar = onShowSnackbar
         )
         verifyPhoneScreen(
-            onPopBackStack = { navController.popBackStack(LoginRoute, false) },
+            onBackClick = navController::navigateUp,
+            onSuccess = { navController.popBackStack(LoginRoute, true) },
             onShowSnackbar = onShowSnackbar
         )
         settingsScreen(

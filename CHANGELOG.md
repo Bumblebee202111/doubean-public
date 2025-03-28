@@ -3,14 +3,25 @@ Change Log
 
 ## Version 0.8.1(801)
 
+- Login updates
+  - Fixed common login problems
+  - Improved error messages
+  - Added captcha support *(untested - it vanished during development)*
+  - **Important Note**: *Use at your own risk*
+
+
 ## Version 0.8.0(800)
 
 - Added experimental phone/password login
   ⚠️ *Warning*:
-  → Code remains unoptimized (high failure rate)
+  → TOO BUGGY, DON'T USE
+  → Next release: Captcha :eyes::eyes:
+  ~~→ Code remains unoptimized (high failure rate)
   → Frozen development to avoid developer account restrictions
-  → Use may trigger platform safeguards  
+  → Use may trigger platform safeguards~~  
+  
 - Fixed manual session imports
+
 - Fixed WebView not darkening in system dark theme (fix #7)
 
 ## Version 0.7.17(717)

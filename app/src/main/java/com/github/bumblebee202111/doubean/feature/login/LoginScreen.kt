@@ -1,5 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.login
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,7 +22,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -69,9 +69,9 @@ fun LoginScreen(
         updatePhoneNumber = viewModel::updatePhoneNumber,
         updatePassword = viewModel::updatePassword,
         triggerAutoImport = viewModel::triggerAutoImport,
-        importDoubanSession = viewModel::loginWithDoubanSession,
+        onSubmitSessionPreference = viewModel::loginWithDoubanSession,
         login = viewModel::login,
-        clearMessage = viewModel::clearMessage,
+        clearError = viewModel::clearMessage,
         onSaveIsLoginSuccessSuccessfulChange = onSaveIsLoginSuccessSuccessfulChange,
         onPopBackStack = onBackClick,
         onOpenDeepLinkUrl = onOpenDeepLinkUrl,
@@ -91,9 +91,9 @@ fun LoginScreen(
     updatePhoneNumber: (phoneNumberInput: String) -> Unit,
     updatePassword: (passwordInput: String) -> Unit,
     triggerAutoImport: () -> Unit,
-    importDoubanSession: (sessionPref: String) -> Unit,
+    onSubmitSessionPreference: (sessionPref: String) -> Unit,
     login: () -> Unit,
-    clearMessage: () -> Unit,
+    clearError: () -> Unit,
     onSaveIsLoginSuccessSuccessfulChange: (Boolean) -> Unit,
     onPopBackStack: () -> Unit,
     onOpenDeepLinkUrl: (url: String) -> Unit,
@@ -106,17 +106,6 @@ fun LoginScreen(
                 onSaveIsLoginSuccessSuccessfulChange(true)
                 onPopBackStack()
             }
-
-            is LoginResult.Error -> {
-                val appError = loginResult.appError
-                (appError as? ApiError)?.solutionUri?.let { solutionUri ->
-                    try {
-                        onOpenDeepLinkUrl(solutionUri)
-                    } catch (_: Exception) {
-                    }
-                }
-            }
-
             else -> Unit
 
         }
@@ -133,14 +122,21 @@ fun LoginScreen(
     uiError?.let {
         val message = uiError.uiMessage
         LaunchedEffect(uiError) {
-            onShowSnackbar(message)
-            clearMessage()
+            (it as? ApiError)?.solutionUri?.let { solutionUri ->
+                try {
+                    onOpenDeepLinkUrl(solutionUri)
+                } catch (e: Exception) {
+                    Log.e("onOpenDeepLinkUrl", "Failed to open solutionUri", e)
+                }
+            } ?: onShowSnackbar(message)
+            clearError()
         }
     }
 
     Scaffold(
         topBar = {
-            DoubeanTopAppBar(titleText = "Login",
+            DoubeanTopAppBar(
+                titleText = "Login",
                 navigationIcon = {
                     IconButton(onClick = onPopBackStack) {
                         Icon(
@@ -148,7 +144,8 @@ fun LoginScreen(
                             contentDescription = null
                         )
                     }
-                })
+                }
+            )
         },
     ) { innerPadding ->
         Column(
@@ -156,112 +153,135 @@ fun LoginScreen(
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
-
+                .padding(horizontal = 16.dp)
         ) {
-
-            Text(
-                text = "Phone/Password Login (Experimental)",
-                style = MaterialTheme.typography.titleLarge
-            )
-            Text(
-                text = "WARNING: Use at your own risk!",
-                color = MaterialTheme.colorScheme.error
-            )
-            Text(
-                "Actual login attempts may trigger Douban's risk control systems.\n" +
-                        "Always prefer session import if root access is available."
-            )
-            OutlinedTextField(
-                enabled = SHOULD_ENABLE_PHONE_PASSWORD_LOGIN,
-                value = phoneNumber,
-                onValueChange = updatePhoneNumber,
-                label = { Text("Phone number") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+            LoginSection(
+                phoneNumber = phoneNumber,
+                password = password,
+                isFormValid = isFormValid,
+                updatePhoneNumber = updatePhoneNumber,
+                updatePassword = updatePassword,
+                login = login
             )
 
-            TextField(
-                enabled = SHOULD_ENABLE_PHONE_PASSWORD_LOGIN,
-                value = password,
-                onValueChange = updatePassword,
-                label = { Text("Enter password") },
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-            )
-            Button(
-                onClick = login,
-                Modifier.fillMaxWidth(),
-                enabled = isFormValid
-            ) {
-                Text(text = "Login")
-            }
-
+            Spacer(modifier = Modifier.height(24.dp))
             HorizontalDivider()
+            Spacer(modifier = Modifier.height(24.dp))
 
-            Text(
-                text = "Douban App Session Import",
-                style = MaterialTheme.typography.titleLarge
-            )
-            Text(
-                text = "Note: This method typically requires root access. " +
-                        "Automatic sync should happen at app startup if it is enabled in Settings & root is granted.",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Spacer(Modifier.height(4.dp))
-            TextButton(onClick = triggerAutoImport) {
-                Text("Auto-Import Session Now")
-            }
-            Text(
-                text = "For non-rooted phones:\n" +
-                        "Copy from rooted device → Paste here\n\n" +
-                        "⚠️Manual submission not recommended because:\n" +
-                        "• Unmaintained\n" +
-                        "• Multi-step process\n" +
-                        "• Frequent expirations\n" +
-                        "• Unstable",
-
-                style = MaterialTheme.typography.bodyMedium
-            )
-
-
-            var pref by remember { mutableStateOf("") }
-
-            val keyboardController = LocalSoftwareKeyboardController.current
-            OutlinedTextField(
-                value = pref,
-                onValueChange = { pref = it },
-                Modifier.fillMaxWidth(),
-                label = { Text("key_current_account_info preference line") },
-                supportingText = {
-                    Text(
-                        "Path: /data/data/com.douban.frodo/shared_prefs/com.douban.frodo_preferences.xml\n" +
-                                "Format:    <string name=\"key_current_account_info\">...</string>"
-                    )
-                },
-                maxLines = 5,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        keyboardController?.hide()
-                    }
-                ),
-            )
-
-            Button(
-                onClick = {
-                    keyboardController?.hide()
-                    importDoubanSession(pref)
-                },
-                Modifier.fillMaxWidth(),
-            ) {
-                Text(text = "Import Session")
-            }
-            Text(
-                text = "This minimal UI is intentional - prioritizing functional access\n" +
-                        "Use discreetly/低调使用"
+            SessionImportSection(
+                triggerAutoImport = triggerAutoImport,
+                onSubmitSessionPreference = onSubmitSessionPreference,
             )
         }
     }
+}
 
+@Composable
+private fun LoginSection(
+    phoneNumber: String,
+    password: String,
+    isFormValid: Boolean,
+    updatePhoneNumber: (String) -> Unit,
+    updatePassword: (String) -> Unit,
+    login: () -> Unit,
+) {
+    Text(
+        text = "Phone/Password Login (Experimental)",
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.error
+    )
+    Text(
+        text = "Use phone/password at your own risk. Avoid frequent attempts. Prefer session import when possible.",
+        style = MaterialTheme.typography.bodySmall
+    )
+
+    OutlinedTextField(
+        value = phoneNumber,
+        onValueChange = updatePhoneNumber,
+        modifier = Modifier.fillMaxWidth(),
+        enabled = SHOULD_ENABLE_PHONE_PASSWORD_LOGIN,
+        label = { Text("Phone") },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+    )
+
+    OutlinedTextField(
+        value = password,
+        onValueChange = updatePassword,
+        modifier = Modifier.fillMaxWidth(),
+        enabled = SHOULD_ENABLE_PHONE_PASSWORD_LOGIN,
+        label = { Text("Password") },
+        visualTransformation = PasswordVisualTransformation(),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+    )
+    Button(
+        onClick = login,
+        modifier = Modifier.fillMaxWidth(),
+        enabled = isFormValid && SHOULD_ENABLE_PHONE_PASSWORD_LOGIN
+    ) {
+        Text(text = "Login")
+    }
+}
+
+@Composable
+private fun SessionImportSection(
+    triggerAutoImport: () -> Unit,
+    onSubmitSessionPreference: (String) -> Unit,
+) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    Text(
+        text = "Douban App Session Import",
+        style = MaterialTheme.typography.titleMedium
+    )
+    Text(
+        text = "Note: This method typically requires root access. " +
+                "Automatic sync should happen at app startup if it is enabled in Settings & root is granted.",
+        style = MaterialTheme.typography.bodyMedium
+    )
+    TextButton(onClick = triggerAutoImport, modifier = Modifier.fillMaxWidth()) {
+        Text("Auto-Import Session Now")
+    }
+    Text(
+        text = "For non-rooted phones:\n" +
+                "Copy from rooted device → Paste here\n" +
+                "⚠️Manual submission not recommended because:\n" +
+                "• Complex process\n" +
+                "• Session expiration\n",
+        style = MaterialTheme.typography.bodyMedium
+    )
+    var pref by remember { mutableStateOf("") }
+    OutlinedTextField(
+        value = pref,
+        onValueChange = { pref = it },
+        modifier = Modifier
+            .fillMaxWidth(),
+        label = { Text("key_current_account_info preference line") },
+        supportingText = {
+            Text(
+                "Path: /data/data/com.douban.frodo/shared_prefs/com.douban.frodo_preferences.xml\n" +
+                        "Format:    <string name=\"key_current_account_info\">...</string>"
+            )
+        },
+        maxLines = 5,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                keyboardController?.hide()
+            }
+        ),
+    )
+    Button(
+        onClick = {
+            keyboardController?.hide()
+            onSubmitSessionPreference(pref)
+        },
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Text(text = "Import Session")
+    }
+    Text(
+        text = "This minimal UI is intentional - prioritizing functional access\n" +
+                "Use discreetly/低调使用"
+    )
 }
 
 private const val SHOULD_ENABLE_PHONE_PASSWORD_LOGIN = true
