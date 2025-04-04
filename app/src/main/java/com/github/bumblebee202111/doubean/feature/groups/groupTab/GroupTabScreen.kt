@@ -1,6 +1,7 @@
 package com.github.bumblebee202111.doubean.feature.groups.grouptab
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -64,6 +65,7 @@ fun GroupTabScreen(
         },
         key = groupId + tabId
     ),
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
     val topicPagingItems = viewModel.topicsPagingData.collectAsLazyPagingItems()
     val shouldDisplayFavoritedTab = viewModel.shouldDisplayFavoritedTab
@@ -85,7 +87,8 @@ fun GroupTabScreen(
         addFavorite = viewModel::addFavorite,
         saveNotificationsPreference = viewModel::saveNotificationPreferences,
         onTopicClick = onTopicClick,
-        onShowSnackbar = onShowSnackbar
+        onShowSnackbar = onShowSnackbar,
+        contentPadding = contentPadding
     )
 }
 
@@ -106,6 +109,7 @@ fun GroupTabScreen(
     saveNotificationsPreference: (preferences: GroupNotificationPreferences) -> Unit,
     onTopicClick: (topicId: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
 
     var openAlertDialog by remember { mutableStateOf(false) }
@@ -131,8 +135,7 @@ fun GroupTabScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize(),
-        //state = topicPagingItems.rememberLazyListStatePagingWorkaround()
-
+        contentPadding = contentPadding
     ) {
 
         tabActionsItem(

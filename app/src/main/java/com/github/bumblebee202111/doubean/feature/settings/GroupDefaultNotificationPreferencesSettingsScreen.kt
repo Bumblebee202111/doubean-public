@@ -87,8 +87,8 @@ fun GroupDefaultNotificationsPreferencesSettingsScreen(
         if (preferences != null) {
             LazyColumn(
                 modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize()
+                    .fillMaxSize(),
+                contentPadding = innerPadding
             ) {
 
                 item {

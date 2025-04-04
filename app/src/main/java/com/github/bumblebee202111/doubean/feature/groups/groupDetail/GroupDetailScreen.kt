@@ -1,6 +1,7 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupdetail
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -183,7 +184,7 @@ fun GroupDetailScreen(
                 pageCount = { taggedTabs.size + 1 }
             )
             Column(
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding(top = innerPadding.calculateTopPadding())
             ) {
                 GroupTabRow(
                     pagerState = pagerState,
@@ -196,7 +197,11 @@ fun GroupDetailScreen(
                     groupId = groupId,
                     group = group,
                     onTopicClick = onTopicClick,
-                    onShowSnackbar = onShowSnackbar
+                    onShowSnackbar = onShowSnackbar,
+                    tabContentPadding = PaddingValues(
+                        bottom = innerPadding.calculateBottomPadding()
+                    )
+
                 )
             }
 
@@ -270,7 +275,8 @@ fun GroupDetailTopBar(
                                         groupColor = groupColor,
                                         notificationsEnabled = notificationPreferences?.notificationsEnabled
                                             ?: false,
-                                        onOpenPreferencesDialog = showNotificationsPrefDialog)
+                                        onOpenPreferencesDialog = showNotificationsPrefDialog
+                                    )
                                 }
                             }
 
@@ -484,6 +490,7 @@ fun GroupPager(
     onTopicClick: (topicId: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
+    tabContentPadding: PaddingValues = PaddingValues(),
 ) {
     HorizontalPager(state = pagerState,
         modifier = modifier,
@@ -502,7 +509,8 @@ fun GroupPager(
             tabId = tabId,
             group = group,
             onTopicClick = onTopicClick,
-            onShowSnackbar = onShowSnackbar
+            onShowSnackbar = onShowSnackbar,
+            contentPadding = tabContentPadding
         )
     }
 }
