@@ -193,11 +193,11 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for myself.
 
-#### Current release \(0.8.1)
-
-#### Next release \(0.8.2)
+#### Current release \(0.8.2)
 
 - More error handling
+
+#### Next release \(0.8.3)
 
 
 #### Future plans
