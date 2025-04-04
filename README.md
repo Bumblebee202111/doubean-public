@@ -1,10 +1,16 @@
 doubean
 =======
 
-An unofficial [Douban][douban] app focused on browsing [Groups][douban-groups] and exploring Subjects  (books/movies/TV). The Subjects module is under construction.
-\([豆瓣][douban]非官方app，主要用于浏览[小组][douban-groups]和探索书影~~音~~，后者开发中。\)
+An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and exploring Subjects  (books/movies/TVs)
+\([豆瓣][douban]非官方app，支持[小组][douban-groups]浏览和书影~~音~~探索\)
 
-**Note**: This personal project implements essential and user-requested features while serving as a playground for experimenting with trending technologies like Jetpack Compose. Occasional crashes, incomplete UI designs, or missing features may occur.
+**Note**:  Experimental project focusing on core features while testing Jetpack Compose. Occasional crashes, incomplete UI designs, or missing features may occur.
+
+**Known Issues**:
+- **Login Captcha Check**
+  Needs testing! Report via issues if:
+  ✓ Saw & passed
+  ✗ Saw & failed
 
 [douban]: https://www.douban.com/
 
@@ -15,137 +21,82 @@ Introduction
 
 ### Screens
 
-#### Statuses Screen
+#### Statuses
 
-- Statuse feed
+- Statuses feed
 
-#### Subjects Screens
+#### Subjects
 
-##### Home Screen
+- **Home**: Top 250 movies/books + personal statuses
+- **Interests**: Tracked subject statuses
+- **Search**: Subject discovery
+- **Details**: Metadata/intro/interactions
+- **Rank List**
 
-- Top 250 Movies/Books
-- My movie/TV/book statuses
+#### Groups
 
-##### Interests Screen
+- **Home**: Favorites/subscriptions
+- **Detail**: Group info + tabs
+- **Topics**: Content + comments
+- **Search**: Group discovery
+- **Notifications**: Topic updates
 
-- My subject statuses with interests
+#### Shared
 
-##### Search Subjects Screen
-
-- Search subjects
-
-##### Movie/Tv/Book  Screen
-
-- Header
-- Intro
-- Interests
-- More
-
-##### Rank List Screen
-
-- Rank list
-
-#### Groups Screens
-
-##### Home Screen
-
-* My groups
-* Favorite groups and tabs
-* My topics (or groups of the day for guests)
-
-
-##### Group Detail Screen
-
-* Group information
-* Group tabs
-
-##### Topic Detail Screen
-
-* Topic content
-* Topic comments
-
-##### Reshare Statuses Screen
-
-- Reshare statuses
-
-##### Groups Search  Screen
-
-* Search groups
-* Groups of the day
-
-##### Notifications Screen 
-
-* Group topic notifications
-
-#### Profile Screen
-
-- Login status
-
-#### Image Screen
-
-- View/save images
-
-**Login Screen**
-
-- Session login
-  - Guide
-  - Manual input
-
+- Image Viewer
+- Profile & Login
 
 ### Screenshots
 
 <p> <img src="screenshots/tablet_movie.png" alt="tablet_movie" height="450" />   
     <img src="screenshots/phone_subjects.png" alt="phone_subjects" height="300" />
-<img src="screenshots/phone_search_subjects.png" alt="phone_search_subjects" height="300" />
 <img src="screenshots/tablet_interests.png" alt="tablet_interests" height="450" />   
 <img src="screenshots/phone_groups_home.png" alt="phone_groups" height="300" />
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
-<img src="screenshots/phone_group_search.png" alt="phone_group_search" height="300" />
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
 
 
+## Features
 
-### Getting Started
-
-### Using this app
-
-- [Latest release][latest-release]
-- Android: 8.1–14 (and virtually 15)
-- Feel free to file issues
-  - Include details if data fails to display (common causes: JSON parsing errors):
-    - Titles and related URLs (from Douban app)
-    - Raw JSON (if accessible).
-- Keep the official Douban app installed:
-  - Support the official product
-  - Access content unavailable in doubean
-  - Essential for [rooted users](#reuse-login-session)
-- Clear app data manually after updates if the app crashes (possibly due to failed Room database migrations)
-
-[latest-release]: https://github.com/Bumblebee202111/doubean-public/releases/latest
-
-### Limited Open-Source
-
-To avoid potential issues, public repo retains an outdated codebase. Non-sensitive code may be shared upon request.
-
-### Guidelines
-
-- **Do:** Use for personal learning.
-- **Don’t:** Promote elsewhere without permission.
-
-### Features
-
-* Simple type-based Subjects experience with user actions (WIP 🚧)
+* Subjects: Basic interactions (WIP 🚧)
 * Group enhancements:
   * Locally favorite tabs/groups 
   * Keep original list orders or sort by create time within any page
   * Customizable topic notifications
 * Ad-free and lightweight (~3MB)
-* Rooted users can reuse login sessions from Douban app
-* Phone/password login (experimental)
+* Auth: Session reuse (root) + experimental login
 * Partial URL deep linking support
-* Basic Statuses tab (no longer updated)
-* Partial mobile-optimized Douban WebView support (no longer maintained)
+* Direct official API calls
+* Statuses (legacy)
+* Mobile-optimized pure Web screens (deprecated)
 * Basic MD3 implementation
+
+## Getting Started
+
+- [Latest release][latest-release]
+- Requirements: Android: 8.1+
+- Feel free to file issues
+  - Include details if data fails to display (common causes: JSON parsing errors):
+    - Titles and related URLs (from Douban app)
+    - Raw JSON (if accessible).
+- Keep the official Douban app installed:
+  - Support Douban's service  
+  - Access unsupported content 
+  - Root users: Reuse login sessions
+- Clear app data after updates if crashes occur
+
+[latest-release]: https://github.com/Bumblebee202111/doubean-public/releases/latest
+
+## Important Notices
+
+### Limited Open-Source
+
+To avoid potential issues, public repo retains an **outdated codebase**. Non-sensitive snippets may be shared upon request.
+
+### Guidelines
+
+- **Do:** Use for personal learning.
+- **Don’t:** Promote elsewhere without permission.
 
 ## Tech Stack
 
@@ -189,32 +140,33 @@ To avoid potential issues, public repo retains an outdated codebase. Non-sensiti
 
 [kotlin-coroutines]: https://kotlinlang.org/docs/reference/coroutines-overview.html
 
-### Plans
+## Roadmap
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for myself.
 
-#### Current release \(0.8.2)
+### Current release \(0.8.2)
 
+- Transparent navigation bar
 - More error handling
 
-#### Next release \(0.8.3)
+### Next release \(0.8.3)
 
 
-#### Future plans
+### Future plans
 
 * Subjects
 
-  * Colors
-  * More details & sub-features
+  * Color schemes
+  * More
 
 * Error handling
 
   * Process error body
   * Show error messages
 
-* Remember last active bottom navigation/Subjects tabs
+* Last-active tab persistence
 
-* Slowly optimize login (avoid too frequent attempts when testing)
+* Slowly optimize login (avoid too frequent attempts for testing)
 
 * Groups
   * Dynamic topic sorts-by
@@ -244,7 +196,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * Fix group description action overflows
   * Fix topic content losing scroll position after navigating back
   * Notifications
-    * Custom interval. Support options of 15 min & 1 h 
+    * Custom interval. Support options of 15m/1h 
   * Hide officially-flagged unfriendly content by default
   * Support blocking unwanted content
   * Lists: Reddit-style item expand/collapse
@@ -254,7 +206,10 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Expand/collapse component: Hide action for short text
 
-* Search suggestions
+* Search
+
+  * Main search bars & result tabs
+  * Suggestions
 
 * Shortcuts
 
@@ -265,9 +220,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Restore dark mode & landscape support
 
-* ImageScreen -> Shared element
+* ImageScreen -> Shared element transitions
 
-* Display menu dialog sheets instead for list items
+* List item menus → dialog sheets
 
 * Improve model layering
 
@@ -279,11 +234,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Widgets
 
-* Optionally sync more preferences from the official Douban app for API request consistency for rooted users
+* Optionally sync more official app prefs for API request consistency for rooted users
 
 * Consider use single NavHost
-
-* Independent login (currently unlikely)
 
 * Statuses (maintenance mode)
   * Additional card types
@@ -291,7 +244,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 * Test
 
-### References
+## References
 
 * Jetpack Compose samples
 * [Android Sunflower][sunflower]
@@ -311,7 +264,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 [material]:https://material.io/
 
-### Utilities
+## Utilities
 
 * [HTTPCanary][http-canary] for analyzing Douban API requests
 * [jadx][jadx]-gui for understanding models
@@ -323,9 +276,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 [google-chrome]:https://www.google.com/chrome/
 
-### Stars :star: & Donation :coffee:
+## Stars :star: & Donation :coffee:
 
 I know this app isn’t perfect, but your stars keeps me motivated. Thank you!
 
-To support development (though not actively seeking donations), contact me via issues.
+To support development (though not actively seeking donations), contact me via issues. 
 
