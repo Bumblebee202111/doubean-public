@@ -1,9 +1,7 @@
 package com.github.bumblebee202111.doubean.feature.settings
 
 import android.content.Context
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -17,7 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.core.app.NotificationManagerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -87,13 +84,11 @@ fun SettingsScreen(
                     }
                 })
         }
-    ) {
+    ) { innerPadding ->
         val context = LocalContext.current
         LazyColumn(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxSize(),
-            contentPadding = PaddingValues(vertical = 8.dp)
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = innerPadding
         ) {
             
             item {
