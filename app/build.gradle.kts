@@ -12,7 +12,6 @@ android {
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     buildFeatures {
-        viewBinding = true
         buildConfig = true
         compose = true
     }
@@ -21,8 +20,8 @@ android {
         applicationId = "com.github.bumblebee202111.doubean"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 801
-        versionName = "0.8.1"
+        versionCode = 802
+        versionName = "0.8.2"
         setProperty("archivesBaseName", "doubean_$versionName")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

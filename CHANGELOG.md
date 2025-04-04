@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.8.2(802)
+
 ## Version 0.8.1(801)
 
 - Login updates
