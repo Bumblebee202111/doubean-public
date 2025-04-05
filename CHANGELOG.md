@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+## Version 0.8.2(802)
+
+- Make system navigation bar transparent
+- Fix content padding of Group Tab & Settings
+  - Content now scrolls over system navigation bar
+- Fix login captcha
+  - Problems might still occur
+- Auto clear bad saved session
+
 ## Version 0.8.1(801)
 
 - Login updates
