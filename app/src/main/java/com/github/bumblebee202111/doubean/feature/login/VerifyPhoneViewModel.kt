@@ -35,6 +35,7 @@ class VerifyPhoneViewModel @Inject constructor(
 
     fun requestPhoneCode() {
         viewModelScope.launch {
+            val currentState = (_uiState.value as? VerifyPhoneMainUiState.Active) ?: return@launch
             _uiState.update {
                 VerifyPhoneMainUiState.Active(
                     isRequestingCode = true,
@@ -43,8 +44,11 @@ class VerifyPhoneViewModel @Inject constructor(
                     error = null
                 )
             }
-
-            when (val result = authRepository.requestPhoneCode(userId)) {
+            when (val result =
+                authRepository.requestPhoneCode(
+                    userId = userId,
+                    captchaSolution = currentState.captchaSolution
+                )) {
                 is AppResult.Success -> handleRequestResult(result.data)
                 is AppResult.Error -> handleRequestError(result.error)
             }
@@ -99,7 +103,6 @@ class VerifyPhoneViewModel @Inject constructor(
     }
 
     fun verifyCaptcha(solution: CaptchaSolution) {
-        // No need for manual retry - handled by TCaptcha WebView
         val current = _uiState.value as? VerifyPhoneMainUiState.Active ?: return
         _uiState.update {
             current.copy(
@@ -108,6 +111,7 @@ class VerifyPhoneViewModel @Inject constructor(
                 error = null
             )
         }
+        requestPhoneCode()
     }
 
     private fun handleRequestResult(result: RequestPhoneCodeResult) {
