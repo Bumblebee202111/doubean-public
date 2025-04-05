@@ -7,10 +7,7 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 **Note**:  Experimental project focusing on core features while testing Jetpack Compose. Occasional crashes, incomplete UI designs, or missing features may occur.
 
 **Known Issues**:
-- **Login Captcha Check**
-  Needs testing! Report via issues if:
-  ✓ Saw & passed
-  ✗ Saw & failed
+- Login (image) captcha: Needs more testing
 
 [douban]: https://www.douban.com/
 
@@ -146,18 +143,12 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.8.2)
 
-- Transparent navigation bar
-- More error handling
-
 ### Next release \(0.8.3)
+
+- More error handling
 
 
 ### Future plans
-
-* Subjects
-
-  * Color schemes
-  * More
 
 * Error handling
 
@@ -165,8 +156,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Show error messages
 
 * Last-active tab persistence
-
-* Slowly optimize login (avoid too frequent attempts for testing)
 
 * Groups
   * Dynamic topic sorts-by
@@ -210,6 +199,17 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
   * Main search bars & result tabs
   * Suggestions
+
+* Profile/User
+
+* Subjects
+
+  * Color schemes
+  * More
+
+* Login
+
+  * Code login (w/o pw)
 
 * Shortcuts
 

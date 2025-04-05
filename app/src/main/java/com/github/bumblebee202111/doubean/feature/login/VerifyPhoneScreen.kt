@@ -178,26 +178,29 @@ private fun CaptchaWebView(
     onVerifyCaptcha: (solution: CaptchaSolution) -> Unit,
 ) {
     RexxarWebView(
-        filename = "ac/c",
+        filename = "",
         initialParams =
         mapOf(
-            "" to jCaptcha.catchaImageUrl,
+            "" to jCaptcha.touchCapUrl,
             "" to jCaptcha.tcAppId,
             "" to "true"
         ),
-        onProtocolRequest = { path, params ->
-            when (path) {
-                "/api/v2/captcha/verify_captcha" -> {
-                    val  = params[""] ?: return@RexxarWebView
-                    val  = params[""] ?: return@RexxarWebView
-                    val tcAppId = params[""] ?: return@RexxarWebView
+        handleApiRequest = { url, method, headers, params ->
+            when {
+                url.contains("/captcha/verify_captcha") -> {
+                    val  = params[""] ?: return@RexxarWebView null
+                    val  = params[""] ?: return@RexxarWebView null
+                    val tcAppId = params[""] ?: return@RexxarWebView null
                     val solution = CaptchaSolution(
                          = ,
                          = ,
                         tcAppId = tcAppId
                     )
                     onVerifyCaptcha(solution)
+                    return@RexxarWebView null
                 }
+
+                else -> return@RexxarWebView null
             }
         }
     )
