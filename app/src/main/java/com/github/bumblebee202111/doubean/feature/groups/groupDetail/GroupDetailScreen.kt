@@ -30,11 +30,10 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedIconButton
+import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
@@ -430,18 +429,17 @@ fun GroupTabRow(
     modifier: Modifier = Modifier,
 ) {
     val selectedTabIndex = pagerState.currentPage
-    ScrollableTabRow(selectedTabIndex = selectedTabIndex,
+    PrimaryScrollableTabRow(
+        selectedTabIndex = selectedTabIndex,
         modifier = modifier,
         edgePadding = 0.dp,
-        indicator = { tabPositions ->
+        indicator = {
             val indicatorModifier =
-                Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex])
-            groupColor?.let {
+                Modifier.tabIndicatorOffset(selectedTabIndex)
                 TabRowDefaults.SecondaryIndicator(
-                    color = it.toColorOrPrimary(),
+                    color = groupColor.toColorOrPrimary(),
                     modifier = indicatorModifier
                 )
-            } ?: TabRowDefaults.SecondaryIndicator(modifier = indicatorModifier)
         },
         divider = {}
     ) {
