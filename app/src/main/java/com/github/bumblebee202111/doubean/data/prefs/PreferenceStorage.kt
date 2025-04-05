@@ -12,6 +12,8 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_ACCESS_TOKEN
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_AUTO_IMPORT_SESSION_AT_STARTUP
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_DOUBAN_USER_ID
+import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_DOUBAN_USER_NAME
+import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_EXPIRES_AT
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_GROUP_NOTIFICATIONS_DEFAULT_SORT_BY
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_GROUP_NOTIFICATIONS_MAX_TOPIC_NOTIFICATIONS_PER_FETCH
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_GROUP_NOTIFICATIONS_NOTIFY_ON_UPDATES
@@ -20,6 +22,7 @@ import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.Preferenc
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_REFRESH_TOKEN
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_START_APP_WITH_GROUPS
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_UDID
+import com.github.bumblebee202111.doubean.data.repository.DoubanPrefCurrentAccountInfo
 import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.TopicSortBy
 import kotlinx.coroutines.flow.Flow
@@ -57,7 +60,6 @@ class PreferenceStorage(
         val PREF_EXPIRES_AT = longPreferencesKey("expires_at")
         val PREF_REFRESH_TOKEN = stringPreferencesKey("refresh_token")
         val PREF_DOUBAN_USER_ID = stringPreferencesKey("douban_user_id")
-        val PREF_DOUBAN_SESSION = stringPreferencesKey("douban_session")
         val PREF_LAST_REFRESH_TIME = longPreferencesKey("last_refresh_time")
     }
 
@@ -153,6 +155,33 @@ class PreferenceStorage(
 
     val lastRefreshTime = dataStore.data.map { p ->
         p[PREF_LAST_REFRESH_TIME]
+    }
+
+    suspend fun saveSession(
+        session: DoubanPrefCurrentAccountInfo.Session,
+        lastRefreshTime: Long,
+    ) {
+        dataStore.edit { preferences ->
+            preferences[PREF_ACCESS_TOKEN] = session.accessToken
+            session.doubanUserName?.let {
+                preferences[PREF_DOUBAN_USER_NAME] = it
+            } ?: preferences.remove(PREF_DOUBAN_USER_NAME)
+            preferences[PREF_EXPIRES_AT] = session.expiresIn
+            preferences[PREF_REFRESH_TOKEN] = session.refreshToken
+            preferences[PREF_DOUBAN_USER_ID] = session.doubanUserId
+            preferences[PREF_LAST_REFRESH_TIME] = lastRefreshTime
+        }
+    }
+
+    suspend fun clearSession() {
+        dataStore.edit { preferences ->
+            preferences.remove(PREF_ACCESS_TOKEN)
+            preferences.remove(PREF_DOUBAN_USER_NAME)
+            preferences.remove(PREF_EXPIRES_AT)
+            preferences.remove(PREF_REFRESH_TOKEN)
+            preferences.remove(PREF_DOUBAN_USER_ID)
+            preferences.remove(PREF_LAST_REFRESH_TIME)
+        }
     }
 
     private suspend fun <T> put(key: Preferences.Key<T>, value: T?) {
