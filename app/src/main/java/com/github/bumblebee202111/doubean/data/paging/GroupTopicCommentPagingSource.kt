@@ -38,7 +38,7 @@ class GroupTopicCommentPagingSource(
                 prevKey = prevKey,
                 nextKey = nextKey,
                 itemsBefore = start,
-                itemsAfter = response.total - start - realComments.size
+                itemsAfter = response.total - start - response.comments.size
             )
         } catch (e: Exception) {
             return LoadResult.Error(e)
