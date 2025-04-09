@@ -349,14 +349,17 @@ fun TopicScreen(
                                 count = allCommentLazyPagingItems.itemCount,
                                 key = allCommentLazyPagingItems.itemKey { it.id },
                                 contentType = allCommentLazyPagingItems.itemContentType { "TopicComment" }) { index ->
-                                TopicComment(
-                                    comment = allCommentLazyPagingItems[index],
-                                    groupColor = groupColorString,
-                                    topic = topic,
-                                    onImageClick = onImageClick
-                                )
-                                if (index < allCommentLazyPagingItems.itemCount - 1)
-                                    HorizontalDivider(thickness = 1.dp)
+                                allCommentLazyPagingItems[index]?.let {
+                                    TopicComment(
+                                        comment = it,
+                                        groupColor = groupColorString,
+                                        topic = topic,
+                                        onImageClick = onImageClick
+                                    )
+                                    if (index < allCommentLazyPagingItems.itemCount - 1)
+                                        HorizontalDivider(thickness = 1.dp)
+                                }
+
                             }
                         }
                     }

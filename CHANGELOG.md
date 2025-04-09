@@ -3,6 +3,9 @@ Change Log
 
 ## Version 0.8.3(803)
 
+- Fix blank trailing comments for Topic Detail by stop using placeholders
+  - Reason: Actual # returned comments in a page can not be calculated early
+
 ## Version 0.8.2(802)
 
 - Make system navigation bar transparent (#9)

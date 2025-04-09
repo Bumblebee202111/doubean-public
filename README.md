@@ -64,9 +64,9 @@ Introduction
 * Auth: Session reuse (root) + experimental login
 * Partial URL deep linking support
 * Direct official API calls
+* Basic MD3 implementation
 * Statuses (legacy)
 * Mobile-optimized pure Web screens (deprecated)
-* Basic MD3 implementation
 
 ## Getting Started
 
@@ -143,9 +143,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.8.3)
 
-- Subject unions
-- Topic extra blank comments?
-- Notifications bug?
 - More error handling
 
 ### Next release \(0.8.4)

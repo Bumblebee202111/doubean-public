@@ -47,9 +47,12 @@ import com.github.bumblebee202111.doubean.util.intermediateDateTimeString
 import com.github.bumblebee202111.doubean.util.toColorOrPrimary
 import java.time.LocalDateTime
 
+/**
+ * Note: No placeholders since the actual # returned comments in a page can not be calculated early
+ */
 @Composable
 fun TopicComment(
-    comment: TopicComment?,
+    comment: TopicComment,
     groupColor: String?,
     topic: TopicDetail,
     onImageClick: (url: String) -> Unit,
@@ -67,39 +70,37 @@ fun TopicComment(
                 .padding(vertical = 12.dp)
                 .weight(1f)
         ) {
-            TopicActivityItemUserProfileImage(url = comment?.author?.avatarUrl)
+            TopicActivityItemUserProfileImage(url = comment.author.avatarUrl)
             Spacer(modifier = Modifier.width(8.dp))
             Column(Modifier.fillMaxWidth()) {
                 //header
                 TopicCommentHeaderRow(
-                    author = comment?.author,
+                    author = comment.author,
                     topic = topic,
                     groupColor = groupColor,
-                    createTime = comment?.createTime,
-                    ipLocation = comment?.ipLocation,
+                    createTime = comment.createTime,
+                    ipLocation = comment.ipLocation,
                     showAuthorAvatar = false
                 )
-                if (comment != null) {
-                    comment.refComment?.let { refComment ->
-                        Spacer(modifier = Modifier.height(4.dp))
-                        TopicRefCommentCard(
-                            refComment = refComment,
-                            topic = topic,
-                            groupColor = groupColor,
-                            onImageClick = onImageClick
-                        )
-                    }
+                comment.refComment?.let { refComment ->
+                    Spacer(modifier = Modifier.height(4.dp))
+                    TopicRefCommentCard(
+                        refComment = refComment,
+                        topic = topic,
+                        groupColor = groupColor,
+                        onImageClick = onImageClick
+                    )
                 }
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = comment?.text ?: "", style = MaterialTheme.typography.bodyMedium)
-                comment?.photos.takeUnless(List<SizedPhoto>?::isNullOrEmpty)?.let {
+                Text(text = comment.text ?: "", style = MaterialTheme.typography.bodyMedium)
+                comment.photos.takeUnless(List<SizedPhoto>?::isNullOrEmpty)?.let {
                     Spacer(modifier = Modifier.height(4.dp))
                     ListItemImages(
                         images = it.map(SizedPhoto::image),
                         onImageClick = { image -> onImageClick(image.large.url) }
                     )
                 }
-                comment?.voteCount.takeIf { it != 0 }?.let {
+                comment.voteCount.takeIf { it != 0 }?.let {
                     Spacer(modifier = Modifier.height(8.dp))
                     ListItemCount(iconVector = Icons.Outlined.ThumbUp, count = it)
                 }
@@ -116,7 +117,6 @@ fun TopicComment(
                 DropdownMenuItem(
                     text = { Text(text = stringResource(id = R.string.share)) },
                     onClick = {
-                        if (comment == null) return@DropdownMenuItem
                         val shareText = createTopicCommentShareText(
                             comment = comment,
                             topic = topic,
