@@ -1,7 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.subjects.books
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,9 +15,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.MySubjectUiState
 import com.github.bumblebee202111.doubean.feature.subjects.SubjectModulesUiState
+import com.github.bumblebee202111.doubean.feature.subjects.shared.MySubject
+import com.github.bumblebee202111.doubean.feature.subjects.shared.RankLists
 import com.github.bumblebee202111.doubean.feature.subjects.shared.SearchSubjectButton
-import com.github.bumblebee202111.doubean.feature.subjects.shared.mySubject
-import com.github.bumblebee202111.doubean.feature.subjects.shared.rankLists
 import com.github.bumblebee202111.doubean.model.AppError
 import com.github.bumblebee202111.doubean.model.SubjectModule
 import com.github.bumblebee202111.doubean.model.SubjectType
@@ -82,39 +81,40 @@ fun BooksScreen(
         }
     }
 
-    LazyColumn(modifier = modifier) {
+    LazyColumn(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item {
             SearchSubjectButton(
                 onClick = { onSearchClick(SubjectsSearchType.BOOKS) },
                 hintRes = R.string.search_books_hint
             )
         }
-        mySubject(
-            mySubjectUiState = myBooksUiState,
-            onStatusClick = onSubjectStatusClick,
-            onLoginClick = onLoginClick
-        )
         item {
-            Spacer(modifier = Modifier.size(16.dp))
+            MySubject(
+                mySubjectUiState = myBooksUiState,
+                onStatusClick = onSubjectStatusClick,
+                onLoginClick = onLoginClick
+            )
         }
         when (modulesUiState) {
             is SubjectModulesUiState.Success -> {
                 modulesUiState.modules.forEach { module ->
                     when (module) {
                         is SubjectModule.SelectedCollections -> {
-                            rankLists(
-                                rankLists = module.selectedCollections,
-                                onRankListClick = onRankListClick,
-                                onSubjectClick = { subject ->
-                                    when (subject.type) {
-                                        SubjectType.BOOK -> {
-                                            onBookClick(subject.id)
+                            item {
+                                RankLists(
+                                    rankLists = module.selectedCollections,
+                                    onRankListClick = onRankListClick,
+                                    onSubjectClick = { subject ->
+                                        when (subject.type) {
+                                            SubjectType.BOOK -> onBookClick(subject.id)
+                                            else -> Unit //impossible
                                         }
-                                        else -> Unit //impossible
                                     }
-                                }
-                            )
+                                )
+                            }
                         }
+
+                        is SubjectModule.SubjectUnions -> Unit //impossible
                     }
                 }
             }

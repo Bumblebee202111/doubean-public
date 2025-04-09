@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -32,12 +31,12 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.Subject
 import com.github.bumblebee202111.doubean.model.SubjectCollectionItem
 
-fun LazyListScope.rankLists(
+@Composable
+fun RankLists(
     rankLists: List<SubjectCollectionItem>,
     onRankListClick: (collectionId: String) -> Unit,
     onSubjectClick: (subject: Subject) -> Unit,
 ) {
-    item {
         Text(
             text = stringResource(id = R.string.title_subject_rank_lists),
             modifier = Modifier.padding(horizontal = 16.dp),
@@ -58,7 +57,6 @@ fun LazyListScope.rankLists(
                 )
             }
         }
-    }
 }
 
 @Composable
@@ -123,5 +121,4 @@ private fun RankListItem(
             }
         }
     }
-
 }
