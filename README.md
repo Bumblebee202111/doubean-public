@@ -141,11 +141,14 @@ To avoid potential issues, public repo retains an **outdated codebase**. Non-sen
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for myself.
 
-### Current release \(0.8.2)
+### Current release \(0.8.3)
 
-### Next release \(0.8.3)
-
+- Subject unions
+- Topic extra blank comments?
+- Notifications bug?
 - More error handling
+
+### Next release \(0.8.4)
 
 
 ### Future plans
@@ -210,6 +213,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Login
 
   * Code login (w/o pw)
+
+* Update logo: Swap bg/fg colors
 
 * Shortcuts
 
