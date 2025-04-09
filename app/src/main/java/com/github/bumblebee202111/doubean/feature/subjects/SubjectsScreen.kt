@@ -166,7 +166,7 @@ private fun SubjectsPager(
     onBookClick: (bookId: String) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
 ) {
-    HorizontalPager(state = state) { page ->
+    HorizontalPager(state = state, userScrollEnabled = false) { page ->
         val modifier = Modifier.fillMaxSize()
         when (SubjectsTab.entries[page]) {
             SubjectsTab.MOVIES -> {
@@ -192,6 +192,7 @@ private fun SubjectsPager(
                     modifier = modifier,
                 )
             }
+
             SubjectsTab.BOOKS -> {
                 BooksScreen(
                     onSubjectStatusClick = onSubjectStatusClick,

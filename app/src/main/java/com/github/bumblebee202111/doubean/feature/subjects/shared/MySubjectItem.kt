@@ -3,10 +3,7 @@ package com.github.bumblebee202111.doubean.feature.subjects.shared
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -25,14 +22,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.model.Subject
 import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.SubjectWithInterest
@@ -50,29 +43,7 @@ fun <T : Subject> MySubjectItem(
             .width(100.dp)
             .clickable(onClick = onClick)
     ) {
-        Column(modifier = Modifier.width(100.dp)) {
-            AsyncImage(
-                model = subject.subject.imageUrl,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(width = 100.dp, height = 140.dp)
-                    .clip(SubjectRoundedCornerShape),
-                contentScale = ContentScale.FillBounds
-            )
-            Text(
-                text = subject.subject.title,
-                modifier = Modifier
-                    .padding(top = 4.dp),
-                style = MaterialTheme.typography.titleMedium,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1
-            )
-            SubjectRatingBar(
-                rating = subject.subject.rating,
-                modifier = Modifier.padding(top = 4.dp),
-                size = SubjectRatingBarSize.Compact,
-            )
-        }
+        SimpleSubjectRowItemContent(subject = subject.subject)
         Box(
             modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd
         ) {

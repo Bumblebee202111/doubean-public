@@ -6,6 +6,7 @@ import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.Companion
 import com.github.bumblebee202111.doubean.network.model.NetworkFeedContent
 import com.github.bumblebee202111.doubean.network.model.NetworkStatusCard
 import com.github.bumblebee202111.doubean.network.model.NetworkSubject
+import com.github.bumblebee202111.doubean.network.model.NetworkSubjectModule
 import com.github.bumblebee202111.doubean.network.model.NetworkSubjectWithRankAndInterest
 import com.github.bumblebee202111.doubean.network.model.NetworkUnknownStatusCard
 import com.github.bumblebee202111.doubean.network.model.NetworkUnknownSubject
@@ -50,6 +51,9 @@ internal object DataModule {
                     NetworkSubjectWithRankAndInterest::class
                 ) {
                     NetworkUnknownSubjectWithRankAndInterest.serializer()
+                }
+                polymorphicDefaultDeserializer(NetworkSubjectModule::class) {
+                    NetworkSubjectModule.SubjectOtherModule.serializer()
                 }
             }
         }
