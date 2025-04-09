@@ -1,9 +1,11 @@
 Change Log
 ==========
 
+## Version 0.8.3(803)
+
 ## Version 0.8.2(802)
 
-- Make system navigation bar transparent
+- Make system navigation bar transparent (#9)
 - Fix content padding of Group Tab & Settings
   - Content now scrolls over system navigation bar
 - Fix login captcha
