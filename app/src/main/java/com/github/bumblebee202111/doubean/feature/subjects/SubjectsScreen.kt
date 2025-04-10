@@ -89,15 +89,15 @@ fun SubjectsScreen(
                 onSearchClick = onSearchClick
             )
         }
-    ) {
+    ) { innerPadding ->
         val pagerState = rememberPagerState {
             SubjectsTab.entries.size
         }
         Column(
             modifier = Modifier.padding(
-                start = it.calculateStartPadding(LayoutDirection.Ltr),
-                top = it.calculateTopPadding(),
-                end = it.calculateEndPadding(LayoutDirection.Ltr)
+                start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
+                top = innerPadding.calculateTopPadding(),
+                end = innerPadding.calculateEndPadding(LayoutDirection.Ltr)
             )
         ) {
             SubjectsTabRow(pagerState = pagerState)
