@@ -1,12 +1,13 @@
 package com.github.bumblebee202111.doubean.feature.subjects.search
 
 import com.github.bumblebee202111.doubean.model.SearchResultSubjectItem
+import com.github.bumblebee202111.doubean.model.SubjectSubTag
+import com.github.bumblebee202111.doubean.model.SubjectsSearchType
 
-sealed interface SearchResultUiState {
-    data object Loading : SearchResultUiState
-    data object EmptyQuery : SearchResultUiState
-    data object LoadFailed : SearchResultUiState
-    data class Success(
-        val subjects: List<SearchResultSubjectItem>,
-    ) : SearchResultUiState
-}
+data class SearchResultUiState(
+    val query: String = "",
+    val items: List<SearchResultSubjectItem>? = null,
+    val types: List<SubjectSubTag>? = null,
+    val selectedType: SubjectsSearchType? = null,
+    val isLoading: Boolean = false,
+)

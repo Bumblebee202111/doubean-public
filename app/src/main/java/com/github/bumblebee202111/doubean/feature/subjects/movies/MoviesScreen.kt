@@ -12,24 +12,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.MySubjectUiState
 import com.github.bumblebee202111.doubean.feature.subjects.SubjectModulesUiState
 import com.github.bumblebee202111.doubean.feature.subjects.shared.MySubject
 import com.github.bumblebee202111.doubean.feature.subjects.shared.RankLists
-import com.github.bumblebee202111.doubean.feature.subjects.shared.SearchSubjectButton
 import com.github.bumblebee202111.doubean.feature.subjects.shared.SubjectUnions
 import com.github.bumblebee202111.doubean.model.AppError
 import com.github.bumblebee202111.doubean.model.SubjectModule
 import com.github.bumblebee202111.doubean.model.SubjectType
-import com.github.bumblebee202111.doubean.model.SubjectsSearchType
 import com.github.bumblebee202111.doubean.util.uiMessage
 
 @Composable
 fun MoviesScreen(
     onLoginClick: () -> Unit,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
-    onSearchClick: (type: SubjectsSearchType) -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
     onMovieClick: (movieId: String) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
@@ -45,7 +41,6 @@ fun MoviesScreen(
         uiErrors = uiErrors,
         onSubjectStatusClick = onSubjectStatusClick,
         onLoginClick = onLoginClick,
-        onSearchClick = onSearchClick,
         onRankListClick = onRankListClick,
         onMovieClick = onMovieClick,
         onErrorShown = viewModel::onErrorShown,
@@ -61,7 +56,6 @@ fun MoviesScreen(
     uiErrors: List<AppError>,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
-    onSearchClick: (type: SubjectsSearchType) -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
     onMovieClick: (movieId: String) -> Unit,
     onErrorShown: (AppError) -> Unit,
@@ -83,12 +77,6 @@ fun MoviesScreen(
     }
 
     LazyColumn(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item {
-            SearchSubjectButton(
-                onClick = { onSearchClick(SubjectsSearchType.MOVIES_AND_TVS) },
-                hintRes = R.string.search_movies_and_tvs_hint
-            )
-        }
         item {
             MySubject(
                 mySubjectUiState = myMoviesUiState,
