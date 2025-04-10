@@ -4,7 +4,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.github.bumblebee202111.doubean.feature.subjects.SubjectsScreen
 import com.github.bumblebee202111.doubean.model.SubjectType
-import com.github.bumblebee202111.doubean.model.SubjectsSearchType
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -14,7 +13,7 @@ fun NavGraphBuilder.subjectsScreen(
     onAvatarClick: () -> Unit,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
-    onSearchClick: (type: SubjectsSearchType) -> Unit,
+    onSearchClick: () -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
     onMovieClick: (movieId: String) -> Unit,
     onTvClick: (tvId: String) -> Unit,

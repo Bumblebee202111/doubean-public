@@ -12,16 +12,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.MySubjectUiState
 import com.github.bumblebee202111.doubean.feature.subjects.SubjectModulesUiState
 import com.github.bumblebee202111.doubean.feature.subjects.shared.MySubject
 import com.github.bumblebee202111.doubean.feature.subjects.shared.RankLists
-import com.github.bumblebee202111.doubean.feature.subjects.shared.SearchSubjectButton
 import com.github.bumblebee202111.doubean.model.AppError
 import com.github.bumblebee202111.doubean.model.SubjectModule
 import com.github.bumblebee202111.doubean.model.SubjectType
-import com.github.bumblebee202111.doubean.model.SubjectsSearchType
 import com.github.bumblebee202111.doubean.util.uiMessage
 
 @Composable
@@ -29,7 +26,6 @@ fun BooksScreen(
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
-    onSearchClick: (type: SubjectsSearchType) -> Unit,
     onBookClick: (bookId: String) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -44,7 +40,6 @@ fun BooksScreen(
         uiErrors = uiErrors,
         onSubjectStatusClick = onSubjectStatusClick,
         onLoginClick = onLoginClick,
-        onSearchClick = onSearchClick,
         onRankListClick = onRankListClick,
         onBookClick = onBookClick,
         onErrorShown = viewModel::onErrorShown,
@@ -60,7 +55,6 @@ fun BooksScreen(
     uiErrors: List<AppError>,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
-    onSearchClick: (type: SubjectsSearchType) -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
     onErrorShown: (AppError) -> Unit,
@@ -82,12 +76,6 @@ fun BooksScreen(
     }
 
     LazyColumn(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item {
-            SearchSubjectButton(
-                onClick = { onSearchClick(SubjectsSearchType.BOOKS) },
-                hintRes = R.string.search_books_hint
-            )
-        }
         item {
             MySubject(
                 mySubjectUiState = myBooksUiState,

@@ -3,6 +3,9 @@ Change Log
 
 ## Version 0.8.3(803)
 
+- Add dynamic type/tag support  
+  - Remove individual tab entrances  
+  - Improve error message handling
 - Fix blank trailing comments for Topic Detail by stop using placeholders
   - Reason: Actual # returned comments in a page can not be calculated early
 

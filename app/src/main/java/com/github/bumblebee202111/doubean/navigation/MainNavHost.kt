@@ -131,7 +131,8 @@ fun MainNavHost(
             onBackClick = navController::navigateUp,
             onMovieClick = navController::navigateToMovie,
             onTvClick = navController::navigateToTv,
-            onBookClick = navController::navigateToBook
+            onBookClick = navController::navigateToBook,
+            onShowSnackbar = onShowSnackbar
         )
         movieScreen(
             onBackClick = navController::navigateUp,

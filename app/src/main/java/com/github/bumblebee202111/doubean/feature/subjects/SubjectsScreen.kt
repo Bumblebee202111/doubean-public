@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -35,7 +36,6 @@ import com.github.bumblebee202111.doubean.feature.subjects.books.BooksScreen
 import com.github.bumblebee202111.doubean.feature.subjects.movies.MoviesScreen
 import com.github.bumblebee202111.doubean.feature.subjects.tvs.TvsScreen
 import com.github.bumblebee202111.doubean.model.SubjectType
-import com.github.bumblebee202111.doubean.model.SubjectsSearchType
 import com.github.bumblebee202111.doubean.model.User
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import kotlinx.coroutines.launch
@@ -45,7 +45,7 @@ fun SubjectsScreen(
     onAvatarClick: () -> Unit,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
-    onSearchClick: (type: SubjectsSearchType) -> Unit,
+    onSearchClick: () -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
     onMovieClick: (movieId: String) -> Unit,
     onTvClick: (tvId: String) -> Unit,
@@ -74,7 +74,7 @@ fun SubjectsScreen(
     onAvatarClick: () -> Unit,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
-    onSearchClick: (type: SubjectsSearchType) -> Unit,
+    onSearchClick: () -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
     onMovieClick: (movieId: String) -> Unit,
     onTvClick: (tvId: String) -> Unit,
@@ -83,7 +83,11 @@ fun SubjectsScreen(
 ) {
     Scaffold(
         topBar = {
-            SubjectsAppBar(currentUser = currentUser, onAvatarClick = onAvatarClick)
+            SubjectsAppBar(
+                currentUser = currentUser,
+                onAvatarClick = onAvatarClick,
+                onSearchClick = onSearchClick
+            )
         }
     ) {
         val pagerState = rememberPagerState {
@@ -101,7 +105,6 @@ fun SubjectsScreen(
                 state = pagerState,
                 onSubjectStatusClick = onSubjectStatusClick,
                 onLoginClick = onLoginClick,
-                onSearchClick = onSearchClick,
                 onRankListClick = onRankListClick,
                 onMovieClick = onMovieClick,
                 onTvClick = onTvClick,
@@ -114,7 +117,11 @@ fun SubjectsScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SubjectsAppBar(currentUser: User?, onAvatarClick: () -> Unit) {
+private fun SubjectsAppBar(
+    currentUser: User?,
+    onAvatarClick: () -> Unit,
+    onSearchClick: () -> Unit,
+) {
     DoubeanTopAppBar(
         navigationIcon = {
             IconButton(onClick = onAvatarClick) {
@@ -129,6 +136,14 @@ private fun SubjectsAppBar(currentUser: User?, onAvatarClick: () -> Unit) {
             }
         },
         title = {},
+        actions = {
+            IconButton(onClick = onSearchClick) {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = null
+                )
+            }
+        }
     )
 }
 
@@ -159,7 +174,6 @@ private fun SubjectsPager(
     state: PagerState,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
-    onSearchClick: (type: SubjectsSearchType) -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
     onMovieClick: (movieId: String) -> Unit,
     onTvClick: (tvId: String) -> Unit,
@@ -173,7 +187,6 @@ private fun SubjectsPager(
                 MoviesScreen(
                     onLoginClick = onLoginClick,
                     onSubjectStatusClick = onSubjectStatusClick,
-                    onSearchClick = onSearchClick,
                     onRankListClick = onRankListClick,
                     onMovieClick = onMovieClick,
                     onShowSnackbar = onShowSnackbar,
@@ -185,7 +198,6 @@ private fun SubjectsPager(
                 TvsScreen(
                     onSubjectStatusClick = onSubjectStatusClick,
                     onLoginClick = onLoginClick,
-                    onSearchClick = onSearchClick,
                     onRankListClick = onRankListClick,
                     onTvClick = onTvClick,
                     onShowSnackbar = onShowSnackbar,
@@ -197,7 +209,6 @@ private fun SubjectsPager(
                 BooksScreen(
                     onSubjectStatusClick = onSubjectStatusClick,
                     onLoginClick = onLoginClick,
-                    onSearchClick = onSearchClick,
                     onRankListClick = onRankListClick,
                     onBookClick = onBookClick,
                     onShowSnackbar = onShowSnackbar,
