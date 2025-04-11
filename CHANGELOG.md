@@ -3,11 +3,13 @@ Change Log
 
 ## Version 0.8.3(803)
 
-- Add dynamic type/tag support  
+- Add Subject Unions module support for Subjects tab
+- Update subject search
+  - Implement official style (dynamic type/tag support)
   - Remove individual tab entrances  
   - Improve error message handling
-- Fix blank trailing comments for Topic Detail by stop using placeholders
-  - Reason: Actual # returned comments in a page can not be calculated early
+- Fix blank trailing comments for Topic by stop using placeholders
+  - Cause: Actual # comments in a page response can not be calculated early
 
 ## Version 0.8.2(802)
 

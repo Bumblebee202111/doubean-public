@@ -143,8 +143,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.8.3)
 
-- More error handling
-
 ### Next release \(0.8.4)
 
 
