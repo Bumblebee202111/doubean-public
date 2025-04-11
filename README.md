@@ -64,9 +64,9 @@ Introduction
 * Auth: Session reuse (root) + experimental login
 * Partial URL deep linking support
 * Direct official API calls
+* Basic MD3 implementation
 * Statuses (legacy)
 * Mobile-optimized pure Web screens (deprecated)
-* Basic MD3 implementation
 
 ## Getting Started
 
@@ -141,11 +141,9 @@ To avoid potential issues, public repo retains an **outdated codebase**. Non-sen
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for myself.
 
-### Current release \(0.8.2)
+### Current release \(0.8.3)
 
-### Next release \(0.8.3)
-
-- More error handling
+### Next release \(0.8.4)
 
 
 ### Future plans
@@ -210,6 +208,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Login
 
   * Code login (w/o pw)
+
+* Update logo: Swap bg/fg colors
 
 * Shortcuts
 

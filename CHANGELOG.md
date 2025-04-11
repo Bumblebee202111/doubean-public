@@ -1,9 +1,19 @@
 Change Log
 ==========
 
+## Version 0.8.3(803)
+
+- Add Subject Unions module support for Subjects tab
+- Update subject search
+  - Implement official style (dynamic type/tag support)
+  - Remove individual tab entrances  
+  - Improve error message handling
+- Fix blank trailing comments for Topic by stop using placeholders
+  - Cause: Actual # comments in a page response can not be calculated early
+
 ## Version 0.8.2(802)
 
-- Make system navigation bar transparent
+- Make system navigation bar transparent (#9)
 - Fix content padding of Group Tab & Settings
   - Content now scrolls over system navigation bar
 - Fix login captcha
