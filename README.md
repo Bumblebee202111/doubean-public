@@ -141,9 +141,9 @@ To avoid potential issues, public repo retains an **outdated codebase**. Non-sen
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for myself.
 
-### Current release \(0.8.3)
+### Current release \(0.8.4)
 
-### Next release \(0.8.4)
+### Next release \(0.8.5)
 
 
 ### Future plans
