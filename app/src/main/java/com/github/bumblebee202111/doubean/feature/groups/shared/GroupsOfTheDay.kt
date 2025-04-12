@@ -10,7 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
+import com.github.bumblebee202111.doubean.model.groups.RecommendedGroupItem
 
 fun LazyListScope.groupsOfTheDay(
     recommendedGroups: List<RecommendedGroupItem>,

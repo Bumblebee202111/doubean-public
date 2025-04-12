@@ -1,7 +1,7 @@
 package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.ColumnInfo
-import com.github.bumblebee202111.doubean.model.GroupMemberRole
+import com.github.bumblebee202111.doubean.model.groups.GroupMemberRole
 import java.time.LocalDateTime
 
 data class GroupDetailPartialEntity(

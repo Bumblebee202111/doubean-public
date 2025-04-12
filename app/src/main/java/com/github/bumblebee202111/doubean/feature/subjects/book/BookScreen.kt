@@ -11,8 +11,8 @@ import com.github.bumblebee202111.doubean.feature.subjects.shared.SubjectScaffol
 import com.github.bumblebee202111.doubean.feature.subjects.shared.SubjectTopBar
 import com.github.bumblebee202111.doubean.feature.subjects.shared.subjectInfoInterestsModuleItem
 import com.github.bumblebee202111.doubean.feature.subjects.shared.subjectInfoIntroModuleItem
-import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
-import com.github.bumblebee202111.doubean.model.SubjectType
+import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 
 @Composable
 fun BookScreen(

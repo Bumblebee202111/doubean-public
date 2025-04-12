@@ -20,10 +20,10 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.github.bumblebee202111.doubean.model.Book
-import com.github.bumblebee202111.doubean.model.Rating
-import com.github.bumblebee202111.doubean.model.Subject
-import com.github.bumblebee202111.doubean.model.SubjectType
+import com.github.bumblebee202111.doubean.model.subjects.Book
+import com.github.bumblebee202111.doubean.model.subjects.Rating
+import com.github.bumblebee202111.doubean.model.subjects.Subject
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 
 @Composable
 fun SubjectItem(

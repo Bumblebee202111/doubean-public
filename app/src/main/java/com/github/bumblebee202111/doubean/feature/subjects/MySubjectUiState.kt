@@ -1,6 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.subjects
 
-import com.github.bumblebee202111.doubean.model.MySubject
+import com.github.bumblebee202111.doubean.model.subjects.MySubject
 
 sealed interface MySubjectUiState {
     data class Success(val userId: String, val mySubject: MySubject) : MySubjectUiState

@@ -1,6 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.subjects.ranklist
 
-import com.github.bumblebee202111.doubean.model.SubjectCollection
+import com.github.bumblebee202111.doubean.model.subjects.SubjectCollection
 
 sealed interface RankListUiState {
     data class Success(

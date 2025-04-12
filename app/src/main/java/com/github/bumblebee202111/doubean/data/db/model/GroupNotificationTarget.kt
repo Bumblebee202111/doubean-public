@@ -1,7 +1,7 @@
 package com.github.bumblebee202111.doubean.data.db.model
 
-import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
-import com.github.bumblebee202111.doubean.model.TopicSortBy
+import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
+import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 
 sealed interface GroupNotificationTarget {
     val groupId: String

@@ -14,8 +14,8 @@ import com.github.bumblebee202111.doubean.feature.subjects.shared.subjectInfoCel
 import com.github.bumblebee202111.doubean.feature.subjects.shared.subjectInfoInterestsModuleItem
 import com.github.bumblebee202111.doubean.feature.subjects.shared.subjectInfoIntroModuleItem
 import com.github.bumblebee202111.doubean.feature.subjects.shared.subjectInfoTrailersModuleItem
-import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
-import com.github.bumblebee202111.doubean.model.SubjectType
+import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 
 @Composable
 fun MovieScreen(

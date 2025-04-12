@@ -15,11 +15,11 @@ import com.github.bumblebee202111.doubean.data.db.model.UserEntity
 import com.github.bumblebee202111.doubean.data.db.model.asExternalModel
 import com.github.bumblebee202111.doubean.data.paging.GroupSearchResultItemRemoteMediator
 import com.github.bumblebee202111.doubean.data.paging.GroupTagTopicRemoteMediator
-import com.github.bumblebee202111.doubean.model.GroupDetail
-import com.github.bumblebee202111.doubean.model.GroupRecommendationType
-import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
 import com.github.bumblebee202111.doubean.model.Result
-import com.github.bumblebee202111.doubean.model.TopicSortBy
+import com.github.bumblebee202111.doubean.model.groups.GroupDetail
+import com.github.bumblebee202111.doubean.model.groups.GroupRecommendationType
+import com.github.bumblebee202111.doubean.model.groups.RecommendedGroupItem
+import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkRecommendedGroup
 import com.github.bumblebee202111.doubean.network.model.NetworkRecommendedGroupItemTopic

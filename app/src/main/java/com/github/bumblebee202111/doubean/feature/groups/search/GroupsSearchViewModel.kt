@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
-import com.github.bumblebee202111.doubean.model.GroupRecommendationType
+import com.github.bumblebee202111.doubean.model.groups.GroupRecommendationType
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

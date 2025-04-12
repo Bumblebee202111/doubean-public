@@ -28,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.Subject
-import com.github.bumblebee202111.doubean.model.SubjectCollectionItem
+import com.github.bumblebee202111.doubean.model.subjects.Subject
+import com.github.bumblebee202111.doubean.model.subjects.SubjectCollectionItem
 
 @Composable
 fun RankLists(

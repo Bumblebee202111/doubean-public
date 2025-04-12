@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.repository.SearchSubjectsRepository
 import com.github.bumblebee202111.doubean.model.AppError
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.model.SubjectsSearchType
+import com.github.bumblebee202111.doubean.model.subjects.SubjectsSearchType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job

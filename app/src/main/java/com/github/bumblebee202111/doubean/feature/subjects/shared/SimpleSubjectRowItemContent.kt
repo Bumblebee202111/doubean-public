@@ -13,7 +13,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.github.bumblebee202111.doubean.model.Subject
+import com.github.bumblebee202111.doubean.model.subjects.Subject
 
 @Composable
 fun SimpleSubjectRowItemContent(subject: Subject) {

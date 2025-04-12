@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
-import com.github.bumblebee202111.doubean.model.SubjectType
+import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 
 val SubjectStatusActionTextResIdsMap = mapOf(
     SubjectType.MOVIE to mapOf(

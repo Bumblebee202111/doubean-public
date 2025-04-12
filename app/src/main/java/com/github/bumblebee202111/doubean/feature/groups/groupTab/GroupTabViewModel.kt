@@ -9,8 +9,8 @@ import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
-import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
-import com.github.bumblebee202111.doubean.model.TopicSortBy
+import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
+import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory

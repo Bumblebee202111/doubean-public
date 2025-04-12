@@ -3,7 +3,7 @@ package com.github.bumblebee202111.doubean.data.db.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.github.bumblebee202111.doubean.model.GroupMemberRole
+import com.github.bumblebee202111.doubean.model.groups.GroupMemberRole
 import java.time.LocalDateTime
 
 @Entity(tableName = "groups")

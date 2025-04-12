@@ -1,9 +1,9 @@
 package com.github.bumblebee202111.doubean.feature.subjects.tv
 
 import com.github.bumblebee202111.doubean.model.PhotoList
-import com.github.bumblebee202111.doubean.model.SubjectInterestWithUserList
-import com.github.bumblebee202111.doubean.model.SubjectReviewList
-import com.github.bumblebee202111.doubean.model.TvDetail
+import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUserList
+import com.github.bumblebee202111.doubean.model.subjects.SubjectReviewList
+import com.github.bumblebee202111.doubean.model.subjects.TvDetail
 
 sealed interface TvUiState {
     data class Success(

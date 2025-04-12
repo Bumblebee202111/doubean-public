@@ -22,8 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.GroupSearchResultGroupItem
-import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
+import com.github.bumblebee202111.doubean.model.groups.GroupSearchResultGroupItem
+import com.github.bumblebee202111.doubean.model.groups.RecommendedGroupItem
 
 @Composable
 fun SearchResultGroupItem(group: GroupSearchResultGroupItem?, onClick: () -> Unit) {

@@ -1,7 +1,7 @@
 package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.ColumnInfo
-import com.github.bumblebee202111.doubean.model.GroupSearchResultGroupItem
+import com.github.bumblebee202111.doubean.model.groups.GroupSearchResultGroupItem
 import java.time.LocalDateTime
 
 data class GroupSearchResultGroupItemPartialEntity(

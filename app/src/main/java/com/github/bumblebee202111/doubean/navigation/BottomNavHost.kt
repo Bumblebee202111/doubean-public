@@ -8,7 +8,7 @@ import com.github.bumblebee202111.doubean.feature.groups.home.navigation.groupsH
 import com.github.bumblebee202111.doubean.feature.profile.navigation.profileScreen
 import com.github.bumblebee202111.doubean.feature.statuses.navigation.statusesScreen
 import com.github.bumblebee202111.doubean.feature.subjects.navigation.subjectsScreen
-import com.github.bumblebee202111.doubean.model.SubjectType
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.ui.BottomNavDestination
 
 @Composable

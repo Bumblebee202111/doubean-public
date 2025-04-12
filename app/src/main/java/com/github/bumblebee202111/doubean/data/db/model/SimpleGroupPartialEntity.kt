@@ -1,7 +1,7 @@
 package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.ColumnInfo
-import com.github.bumblebee202111.doubean.model.GroupItem
+import com.github.bumblebee202111.doubean.model.groups.GroupItem
 
 data class SimpleGroupPartialEntity(
     val id: String,

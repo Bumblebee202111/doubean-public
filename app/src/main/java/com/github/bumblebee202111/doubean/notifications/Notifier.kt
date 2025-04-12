@@ -13,7 +13,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.TopicItemWithGroup
+import com.github.bumblebee202111.doubean.model.groups.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.util.DEEP_LINK_SCHEME_AND_HOST
 import com.github.bumblebee202111.doubean.util.GROUP_PATH
 import com.github.bumblebee202111.doubean.util.TOPIC_PATH

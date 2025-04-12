@@ -37,7 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.model.ApiError
 import com.github.bumblebee202111.doubean.model.AppError
-import com.github.bumblebee202111.doubean.model.LoginResult
+import com.github.bumblebee202111.doubean.model.auth.LoginResult
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.util.uiMessage
 

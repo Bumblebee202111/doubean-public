@@ -80,9 +80,9 @@ import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.shared.SmallGroupAvatar
 import com.github.bumblebee202111.doubean.feature.groups.shared.groupTopAppBarColor
-import com.github.bumblebee202111.doubean.model.TopicComment
-import com.github.bumblebee202111.doubean.model.TopicCommentSortBy
-import com.github.bumblebee202111.doubean.model.TopicDetail
+import com.github.bumblebee202111.doubean.model.groups.TopicComment
+import com.github.bumblebee202111.doubean.model.groups.TopicCommentSortBy
+import com.github.bumblebee202111.doubean.model.groups.TopicDetail
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.DoubeanWebView

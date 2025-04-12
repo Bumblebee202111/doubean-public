@@ -35,10 +35,10 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.shared.SubjectItem
 import com.github.bumblebee202111.doubean.feature.subjects.shared.SubjectItemBasicContent
 import com.github.bumblebee202111.doubean.model.AppError
-import com.github.bumblebee202111.doubean.model.SearchResultSubjectItem
-import com.github.bumblebee202111.doubean.model.SubjectSubTag
-import com.github.bumblebee202111.doubean.model.SubjectType
-import com.github.bumblebee202111.doubean.model.SubjectsSearchType
+import com.github.bumblebee202111.doubean.model.subjects.SearchResultSubjectItem
+import com.github.bumblebee202111.doubean.model.subjects.SubjectSubTag
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.model.subjects.SubjectsSearchType
 import com.github.bumblebee202111.doubean.ui.component.SearchTextField
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.uiMessage
