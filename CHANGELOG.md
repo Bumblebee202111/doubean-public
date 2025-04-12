@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.8.4(804)
+
 ## Version 0.8.3(803)
 
 - Add Subject Unions module support for Subjects tab
