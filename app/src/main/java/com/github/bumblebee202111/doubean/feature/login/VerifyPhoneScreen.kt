@@ -21,8 +21,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.bumblebee202111.doubean.model.CaptchaSolution
-import com.github.bumblebee202111.doubean.model.JCaptcha
+import com.github.bumblebee202111.doubean.model.auth.CaptchaSolution
+import com.github.bumblebee202111.doubean.model.auth.JCaptcha
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.RexxarWebView
 import com.github.bumblebee202111.doubean.util.uiMessage

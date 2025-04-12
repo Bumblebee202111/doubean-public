@@ -2,7 +2,7 @@ package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import com.github.bumblebee202111.doubean.model.TopicSortBy
+import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 
 @Entity("group_tab_topic_remote_keys", primaryKeys = ["group_id", "tab_id", "sort_by"])
 data class GroupTabTopicRemoteKey(

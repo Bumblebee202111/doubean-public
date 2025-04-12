@@ -1,10 +1,10 @@
 package com.github.bumblebee202111.doubean.data.repository
 
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.model.SubjectSearchResult
-import com.github.bumblebee202111.doubean.model.SubjectsSearchType
 import com.github.bumblebee202111.doubean.model.safeApiCall
-import com.github.bumblebee202111.doubean.model.toApiSubjectsSearchType
+import com.github.bumblebee202111.doubean.model.subjects.SubjectSearchResult
+import com.github.bumblebee202111.doubean.model.subjects.SubjectsSearchType
+import com.github.bumblebee202111.doubean.model.subjects.toApiSubjectsSearchType
 import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.toSubjectSearchResult
 import javax.inject.Inject

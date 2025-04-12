@@ -26,9 +26,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.bumblebee202111.doubean.model.Subject
-import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
-import com.github.bumblebee202111.doubean.model.SubjectWithInterest
+import com.github.bumblebee202111.doubean.model.subjects.Subject
+import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
 
 @Composable
 fun <T : Subject> MySubjectItem(

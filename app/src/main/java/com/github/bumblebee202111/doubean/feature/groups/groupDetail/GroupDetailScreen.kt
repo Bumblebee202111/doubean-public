@@ -59,10 +59,10 @@ import com.github.bumblebee202111.doubean.feature.groups.grouptab.GroupTabScreen
 import com.github.bumblebee202111.doubean.feature.groups.shared.GroupNotificationPreferencesDialog
 import com.github.bumblebee202111.doubean.feature.groups.shared.LargeGroupAvatar
 import com.github.bumblebee202111.doubean.feature.groups.shared.groupTopAppBarColor
-import com.github.bumblebee202111.doubean.model.GroupDetail
-import com.github.bumblebee202111.doubean.model.GroupMemberRole
-import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
-import com.github.bumblebee202111.doubean.model.GroupTab
+import com.github.bumblebee202111.doubean.model.groups.GroupDetail
+import com.github.bumblebee202111.doubean.model.groups.GroupMemberRole
+import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
+import com.github.bumblebee202111.doubean.model.groups.GroupTab
 import com.github.bumblebee202111.doubean.ui.component.ExpandCollapseText
 import com.github.bumblebee202111.doubean.ui.component.doubeanTopAppBarHeight
 import com.github.bumblebee202111.doubean.util.OpenInUtils

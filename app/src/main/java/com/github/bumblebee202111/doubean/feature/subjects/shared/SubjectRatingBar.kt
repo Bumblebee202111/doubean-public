@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.github.bumblebee202111.doubean.model.Rating
+import com.github.bumblebee202111.doubean.model.subjects.Rating
 import com.github.bumblebee202111.doubean.ui.component.DoubeanRatingBar
 import com.github.bumblebee202111.doubean.ui.component.DoubeanRatingBarSize
 

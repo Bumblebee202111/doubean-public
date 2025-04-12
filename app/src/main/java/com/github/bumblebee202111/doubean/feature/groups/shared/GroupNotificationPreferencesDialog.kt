@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
+import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
 
 @Composable
 fun GroupNotificationPreferencesDialog(

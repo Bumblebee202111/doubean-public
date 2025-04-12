@@ -25,8 +25,8 @@ import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupTopic
 import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupsResult
 import com.github.bumblebee202111.doubean.data.db.model.TopicGroupPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicItemGroupPartialEntity
-import com.github.bumblebee202111.doubean.model.GroupRecommendationType
-import com.github.bumblebee202111.doubean.model.TopicSortBy
+import com.github.bumblebee202111.doubean.model.groups.GroupRecommendationType
+import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 import kotlinx.coroutines.flow.Flow
 
 

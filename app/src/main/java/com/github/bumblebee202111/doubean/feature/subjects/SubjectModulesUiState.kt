@@ -1,7 +1,7 @@
 package com.github.bumblebee202111.doubean.feature.subjects
 
 import com.github.bumblebee202111.doubean.model.AppError
-import com.github.bumblebee202111.doubean.model.SubjectModule
+import com.github.bumblebee202111.doubean.model.subjects.SubjectModule
 
 sealed interface SubjectModulesUiState {
     data class Success(

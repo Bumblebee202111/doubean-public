@@ -45,11 +45,11 @@ import com.github.bumblebee202111.doubean.feature.groups.shared.GroupNotificatio
 import com.github.bumblebee202111.doubean.feature.groups.shared.SortTopicsByDropDownMenu
 import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItem
 import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItemDisplayMode
-import com.github.bumblebee202111.doubean.model.GroupDetail
-import com.github.bumblebee202111.doubean.model.GroupNotificationPreferences
-import com.github.bumblebee202111.doubean.model.TopicItem
-import com.github.bumblebee202111.doubean.model.TopicSortBy
-import com.github.bumblebee202111.doubean.model.toItem
+import com.github.bumblebee202111.doubean.model.groups.GroupDetail
+import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
+import com.github.bumblebee202111.doubean.model.groups.TopicItem
+import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
+import com.github.bumblebee202111.doubean.model.groups.toItem
 import com.github.bumblebee202111.doubean.util.ShareUtil
 
 @Composable

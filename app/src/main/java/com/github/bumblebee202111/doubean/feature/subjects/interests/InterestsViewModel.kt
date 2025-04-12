@@ -10,9 +10,9 @@ import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.InterestsRoute
-import com.github.bumblebee202111.doubean.model.MySubjectStatus
-import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
-import com.github.bumblebee202111.doubean.model.SubjectWithInterest
+import com.github.bumblebee202111.doubean.model.subjects.MySubjectStatus
+import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi

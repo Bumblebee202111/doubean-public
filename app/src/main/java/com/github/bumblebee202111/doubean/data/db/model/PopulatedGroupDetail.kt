@@ -2,8 +2,8 @@ package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.github.bumblebee202111.doubean.model.GroupDetail
-import com.github.bumblebee202111.doubean.model.GroupTab
+import com.github.bumblebee202111.doubean.model.groups.GroupDetail
+import com.github.bumblebee202111.doubean.model.groups.GroupTab
 
 data class PopulatedGroupDetail(
     @Embedded

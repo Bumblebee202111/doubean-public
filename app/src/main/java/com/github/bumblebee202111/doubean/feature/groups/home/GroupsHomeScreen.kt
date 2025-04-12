@@ -53,11 +53,11 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItem
 import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItemDisplayMode
 import com.github.bumblebee202111.doubean.feature.groups.shared.groupsOfTheDay
-import com.github.bumblebee202111.doubean.model.GroupFavoriteItem
-import com.github.bumblebee202111.doubean.model.GroupItem
-import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
-import com.github.bumblebee202111.doubean.model.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.model.User
+import com.github.bumblebee202111.doubean.model.groups.GroupFavoriteItem
+import com.github.bumblebee202111.doubean.model.groups.GroupItem
+import com.github.bumblebee202111.doubean.model.groups.RecommendedGroupItem
+import com.github.bumblebee202111.doubean.model.groups.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import java.util.Calendar
 

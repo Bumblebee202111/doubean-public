@@ -2,7 +2,7 @@ package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import com.github.bumblebee202111.doubean.model.GroupRecommendationType
+import com.github.bumblebee202111.doubean.model.groups.GroupRecommendationType
 
 @Entity(tableName = "recommended_groups", primaryKeys = ["recommendation_type", "no"])
 data class RecommendedGroupEntity(

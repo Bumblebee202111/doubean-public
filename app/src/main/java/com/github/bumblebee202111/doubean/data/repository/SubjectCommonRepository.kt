@@ -2,9 +2,9 @@ package com.github.bumblebee202111.doubean.data.repository
 
 import com.github.bumblebee202111.doubean.coroutines.suspendRunCatching
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.model.SubjectModule
-import com.github.bumblebee202111.doubean.model.SubjectType
 import com.github.bumblebee202111.doubean.model.safeApiCall
+import com.github.bumblebee202111.doubean.model.subjects.SubjectModule
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkSubjectModules
 import com.github.bumblebee202111.doubean.network.model.toNetworkSubjectType

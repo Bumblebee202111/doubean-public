@@ -22,8 +22,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.github.bumblebee202111.doubean.model.SubjectModule
-import com.github.bumblebee202111.doubean.model.SubjectWithInterest
+import com.github.bumblebee202111.doubean.model.subjects.SubjectModule
+import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
 import kotlinx.coroutines.launch
 
 @Composable

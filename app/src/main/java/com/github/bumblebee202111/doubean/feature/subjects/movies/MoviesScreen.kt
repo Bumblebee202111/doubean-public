@@ -18,8 +18,8 @@ import com.github.bumblebee202111.doubean.feature.subjects.shared.MySubject
 import com.github.bumblebee202111.doubean.feature.subjects.shared.RankLists
 import com.github.bumblebee202111.doubean.feature.subjects.shared.SubjectUnions
 import com.github.bumblebee202111.doubean.model.AppError
-import com.github.bumblebee202111.doubean.model.SubjectModule
-import com.github.bumblebee202111.doubean.model.SubjectType
+import com.github.bumblebee202111.doubean.model.subjects.SubjectModule
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.util.uiMessage
 
 @Composable

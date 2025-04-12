@@ -8,10 +8,10 @@ import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.feature.login.navigation.VerifyPhoneRoute
 import com.github.bumblebee202111.doubean.model.AppError
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.model.CaptchaSolution
-import com.github.bumblebee202111.doubean.model.JCaptcha
-import com.github.bumblebee202111.doubean.model.RequestPhoneCodeResult
-import com.github.bumblebee202111.doubean.model.VerifyPhoneCodeResult
+import com.github.bumblebee202111.doubean.model.auth.CaptchaSolution
+import com.github.bumblebee202111.doubean.model.auth.JCaptcha
+import com.github.bumblebee202111.doubean.model.auth.RequestPhoneCodeResult
+import com.github.bumblebee202111.doubean.model.auth.VerifyPhoneCodeResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

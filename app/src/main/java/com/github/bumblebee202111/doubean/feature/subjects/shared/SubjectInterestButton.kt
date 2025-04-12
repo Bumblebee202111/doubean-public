@@ -19,10 +19,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.github.bumblebee202111.doubean.model.MarkableSubject
-import com.github.bumblebee202111.doubean.model.SubjectInterest
-import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
-import com.github.bumblebee202111.doubean.model.SubjectType
+import com.github.bumblebee202111.doubean.model.subjects.MarkableSubject
+import com.github.bumblebee202111.doubean.model.subjects.SubjectInterest
+import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 
 @Composable
 fun SubjectInterestButtons(

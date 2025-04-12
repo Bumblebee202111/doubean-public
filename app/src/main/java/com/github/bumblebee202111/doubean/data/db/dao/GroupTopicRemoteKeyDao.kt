@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.github.bumblebee202111.doubean.data.db.model.GroupTabTopicRemoteKey
-import com.github.bumblebee202111.doubean.model.TopicSortBy
+import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 
 @Dao
 interface GroupTopicRemoteKeyDao {

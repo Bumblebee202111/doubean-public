@@ -2,7 +2,7 @@ package com.github.bumblebee202111.doubean.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.github.bumblebee202111.doubean.model.SubjectWithRankAndInterest
+import com.github.bumblebee202111.doubean.model.subjects.SubjectWithRankAndInterest
 import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.toSubjectWithRankAndInterest
 

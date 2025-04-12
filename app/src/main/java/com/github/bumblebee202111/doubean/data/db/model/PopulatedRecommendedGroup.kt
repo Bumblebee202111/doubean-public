@@ -2,8 +2,8 @@ package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.github.bumblebee202111.doubean.model.RecommendedGroupItem
-import com.github.bumblebee202111.doubean.model.RecommendedGroupItemGroup
+import com.github.bumblebee202111.doubean.model.groups.RecommendedGroupItem
+import com.github.bumblebee202111.doubean.model.groups.RecommendedGroupItemGroup
 
 
 data class PopulatedRecommendedGroup(

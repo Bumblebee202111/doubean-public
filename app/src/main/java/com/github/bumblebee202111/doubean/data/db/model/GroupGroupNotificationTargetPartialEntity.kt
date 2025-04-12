@@ -1,7 +1,7 @@
 package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.ColumnInfo
-import com.github.bumblebee202111.doubean.model.TopicSortBy
+import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 
 data class GroupGroupNotificationTargetPartialEntity(
     @ColumnInfo("group_id")

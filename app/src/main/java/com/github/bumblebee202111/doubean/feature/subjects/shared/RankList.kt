@@ -12,12 +12,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
-import com.github.bumblebee202111.doubean.model.Book
-import com.github.bumblebee202111.doubean.model.Movie
-import com.github.bumblebee202111.doubean.model.Subject
-import com.github.bumblebee202111.doubean.model.SubjectCollection
-import com.github.bumblebee202111.doubean.model.SubjectWithRankAndInterest
-import com.github.bumblebee202111.doubean.model.Tv
+import com.github.bumblebee202111.doubean.model.subjects.Book
+import com.github.bumblebee202111.doubean.model.subjects.Movie
+import com.github.bumblebee202111.doubean.model.subjects.Subject
+import com.github.bumblebee202111.doubean.model.subjects.SubjectCollection
+import com.github.bumblebee202111.doubean.model.subjects.SubjectWithRankAndInterest
+import com.github.bumblebee202111.doubean.model.subjects.Tv
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 
 fun LazyListScope.rankList(

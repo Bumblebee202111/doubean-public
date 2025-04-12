@@ -41,12 +41,12 @@ import com.github.bumblebee202111.doubean.feature.subjects.shared.MySubjectItem
 import com.github.bumblebee202111.doubean.feature.subjects.shared.MySubjectItemMore
 import com.github.bumblebee202111.doubean.feature.subjects.shared.SubjectItemImage
 import com.github.bumblebee202111.doubean.feature.subjects.shared.SubjectStatusActionTextResIdsMap
-import com.github.bumblebee202111.doubean.model.Book
-import com.github.bumblebee202111.doubean.model.Movie
-import com.github.bumblebee202111.doubean.model.Subject
-import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
-import com.github.bumblebee202111.doubean.model.SubjectWithInterest
-import com.github.bumblebee202111.doubean.model.Tv
+import com.github.bumblebee202111.doubean.model.subjects.Book
+import com.github.bumblebee202111.doubean.model.subjects.Movie
+import com.github.bumblebee202111.doubean.model.subjects.Subject
+import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
+import com.github.bumblebee202111.doubean.model.subjects.Tv
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import kotlinx.coroutines.launch
 

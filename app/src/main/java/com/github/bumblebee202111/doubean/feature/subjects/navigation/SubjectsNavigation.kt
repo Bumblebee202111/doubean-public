@@ -3,7 +3,7 @@ package com.github.bumblebee202111.doubean.feature.subjects.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.github.bumblebee202111.doubean.feature.subjects.SubjectsScreen
-import com.github.bumblebee202111.doubean.model.SubjectType
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import kotlinx.serialization.Serializable
 
 @Serializable

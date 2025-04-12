@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.bumblebee202111.doubean.model.SearchResultSubjectItem
+import com.github.bumblebee202111.doubean.model.subjects.SearchResultSubjectItem
 
 @Composable
 fun RowScope.SubjectItemBasicContent(subject: SearchResultSubjectItem, showType: Boolean = false) {

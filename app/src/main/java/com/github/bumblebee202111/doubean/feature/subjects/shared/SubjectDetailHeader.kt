@@ -20,11 +20,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.BookDetail
-import com.github.bumblebee202111.doubean.model.MovieDetail
-import com.github.bumblebee202111.doubean.model.SubjectDetail
-import com.github.bumblebee202111.doubean.model.SubjectInterestStatus
-import com.github.bumblebee202111.doubean.model.TvDetail
+import com.github.bumblebee202111.doubean.model.subjects.BookDetail
+import com.github.bumblebee202111.doubean.model.subjects.MovieDetail
+import com.github.bumblebee202111.doubean.model.subjects.SubjectDetail
+import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.model.subjects.TvDetail
 import com.github.bumblebee202111.doubean.ui.component.LoginPromptText
 
 @Composable

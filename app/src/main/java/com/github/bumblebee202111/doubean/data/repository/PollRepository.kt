@@ -1,9 +1,9 @@
 package com.github.bumblebee202111.doubean.data.repository
 
 import com.github.bumblebee202111.doubean.coroutines.suspendRunCatching
-import com.github.bumblebee202111.doubean.model.PollId
-import com.github.bumblebee202111.doubean.model.QuestionId
-import com.github.bumblebee202111.doubean.model.TopicContentEntityId
+import com.github.bumblebee202111.doubean.model.groups.PollId
+import com.github.bumblebee202111.doubean.model.groups.QuestionId
+import com.github.bumblebee202111.doubean.model.groups.TopicContentEntityId
 import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.asExternalModel
 import kotlinx.coroutines.Dispatchers
