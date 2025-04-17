@@ -19,8 +19,7 @@ data class JoinedGroupPartialEntity(
 
     val uri: String,
 
-    @ColumnInfo("avatar_url")
-    val avatarUrl: String,
+    val avatar: String,
 
     @ColumnInfo("member_name")
     val memberName: String,

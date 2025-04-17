@@ -22,16 +22,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.groups.GroupSearchResultGroupItem
-import com.github.bumblebee202111.doubean.model.groups.RecommendedGroupItem
+import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
 
 @Composable
-fun SearchResultGroupItem(group: GroupSearchResultGroupItem?, onClick: () -> Unit) {
+fun SearchResultGroupItem(group: GroupItemWithIntroInfo?, onClick: () -> Unit) {
     Row(
         modifier = Modifier.clickable(onClick = onClick)
     ) {
         GroupItemContent(
-            avatarUrl = group?.avatarUrl,
+            avatarUrl = group?.avatar,
             name = group?.name,
             memberName = group?.memberName,
             memberCount = group?.memberCount,
@@ -42,7 +41,7 @@ fun SearchResultGroupItem(group: GroupSearchResultGroupItem?, onClick: () -> Uni
 
 @Composable
 fun DayRankingGroupItem(
-    group: RecommendedGroupItem,
+    group: GroupItemWithIntroInfo,
     position: Int,
     total: Int,
     onClick: () -> Unit,
@@ -67,11 +66,11 @@ fun DayRankingGroupItem(
         }
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.margin_normal)))
         GroupItemContent(
-            avatarUrl = group.group.avatarUrl,
-            name = group.group.name,
-            memberName = group.group.memberName,
-            memberCount = group.group.memberCount,
-            descAbstract = group.group.descAbstract
+            avatarUrl = group.avatar,
+            name = group.name,
+            memberName = group.memberName,
+            memberCount = group.memberCount,
+            descAbstract = group.descAbstract
         )
     }
 }

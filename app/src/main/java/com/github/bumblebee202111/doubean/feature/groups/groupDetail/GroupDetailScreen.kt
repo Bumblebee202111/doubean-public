@@ -55,7 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.groups.grouptab.GroupTabScreen
+import com.github.bumblebee202111.doubean.feature.groups.groupdetail.tab.GroupTab
 import com.github.bumblebee202111.doubean.feature.groups.shared.GroupNotificationPreferencesDialog
 import com.github.bumblebee202111.doubean.feature.groups.shared.LargeGroupAvatar
 import com.github.bumblebee202111.doubean.feature.groups.shared.groupTopAppBarColor
@@ -78,20 +78,16 @@ fun GroupDetailScreen(
     viewModel: GroupDetailViewModel = hiltViewModel(),
     onShowSnackbar: suspend (String) -> Unit,
 ) {
-    val taggedTabs: List<GroupTab>? by viewModel.tabs.collectAsStateWithLifecycle()
-    val group: GroupDetail? by viewModel.group.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val initialTabId: String? = viewModel.initialTabId
     val groupId: String = viewModel.groupId
-    val defaultNotificationsPreference by viewModel.defaultNotificationPreferences.collectAsStateWithLifecycle()
-    val shouldDisplayFavoritedGroup: Boolean = viewModel.shouldDisplayFavoritedGroup
-    val shouldDisplayUnfavoritedGroup = viewModel.shouldDisplayUnfavoritedGroup
+    val shouldDisplayFavoritedGroup by viewModel.shouldDisplayFavoritedGroup.collectAsStateWithLifecycle()
+    val shouldDisplayUnfavoritedGroup by viewModel.shouldDisplayUnfavoritedGroup.collectAsStateWithLifecycle()
 
     GroupDetailScreen(
-        group = group,
-        taggedTabs = taggedTabs,
+        uiState = uiState,
         initialTabId = initialTabId,
         groupId = groupId,
-        defaultNotificationsPreference = defaultNotificationsPreference,
         subscribeGroup = viewModel::subscribe,
         unsubscribeGroup = viewModel::unsubscribe,
         addFavorite = viewModel::addFavorite,
@@ -113,11 +109,9 @@ fun GroupDetailScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupDetailScreen(
-    group: GroupDetail?,
-    taggedTabs: List<GroupTab>?,
+    uiState: GroupDetailUiState,
     initialTabId: String?,
     groupId: String,
-    defaultNotificationsPreference: GroupNotificationPreferences?,
     shouldDisplayFavoritedGroup: Boolean,
     shouldDisplayUnfavoritedGroup: Boolean,
     subscribeGroup: () -> Unit,
@@ -158,7 +152,7 @@ fun GroupDetailScreen(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             GroupDetailTopBar(
-                group = group,
+                uiState = uiState,
                 scrollBehavior = scrollBehavior,
                 showNotificationsPrefDialog = {
                     openNotificationsPreferenceDialog = true
@@ -176,8 +170,10 @@ fun GroupDetailScreen(
             )
         }
     ) { innerPadding ->
-
-        if (taggedTabs != null) {
+        val group = uiState.groupDetail
+        val notificationPreferences = uiState.notificationPreferences
+        if (group != null) {
+            val taggedTabs = group.tabs
             val pagerState = rememberPagerState(
                 initialPage = taggedTabs.indexOfFirst { it.id == initialTabId } + 1,
                 pageCount = { taggedTabs.size + 1 }
@@ -187,7 +183,7 @@ fun GroupDetailScreen(
             ) {
                 GroupTabRow(
                     pagerState = pagerState,
-                    groupColor = group?.color,
+                    groupColor = group.color,
                     taggedTabs = taggedTabs
                 )
                 GroupPager(
@@ -202,54 +198,56 @@ fun GroupDetailScreen(
                     )
 
                 )
-            }
 
-        }
-    }
-    if (group != null && defaultNotificationsPreference != null) {
-
-        if (openNotificationsPreferenceDialog) {
-            GroupNotificationPreferencesDialog(
-                titleTextResId = R.string.group_notification_preferences,
-                initialPreference = group.notificationPreferences ?: defaultNotificationsPreference,
-                onDismissRequest = { openNotificationsPreferenceDialog = false }
-            ) { preferenceToSave ->
-                saveNotificationsPreference(preferenceToSave)
-                openNotificationsPreferenceDialog = false
             }
         }
+        if (group != null && notificationPreferences != null) {
+
+            if (openNotificationsPreferenceDialog) {
+                GroupNotificationPreferencesDialog(
+                    titleTextResId = R.string.group_notification_preferences,
+                    initialPreference = notificationPreferences,
+                    onDismissRequest = { openNotificationsPreferenceDialog = false }
+                ) { preferenceToSave ->
+                    saveNotificationsPreference(preferenceToSave)
+                    openNotificationsPreferenceDialog = false
+                }
+            }
+        }
+
     }
-
-
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun GroupDetailTopBar(
-    group: GroupDetail?,
+    uiState: GroupDetailUiState,
     scrollBehavior: TopAppBarScrollBehavior,
     showNotificationsPrefDialog: () -> Unit,
     addFavorite: () -> Unit,
     removeFavorite: () -> Unit,
     subscribeGroup: () -> Unit,
     unsubscribeGroup: () -> Unit,
-    onShareGroup: (group: GroupDetail) -> Unit,
-    viewInDouban: (uriString: String) -> Unit,
-    viewInBrowser: (urlString: String) -> Unit,
+    onShareGroup: (GroupDetail) -> Unit,
+    viewInDouban: (String) -> Unit,
+    viewInBrowser: (String) -> Unit,
     onBackClick: () -> Unit,
 ) {
-
-    val groupColor = group?.color.toColorOrPrimary()
+    val group = uiState.groupDetail
+    val cachedGroup = uiState.cachedGroup
+    val isFavorited = uiState.isFavorited
+    val notificationPreferences = uiState.notificationPreferences
+    val groupColor = (group?.color ?: cachedGroup?.color).toColorOrPrimary()
     TwoRowsTopAppBar(
         title = { expanded ->
             if (expanded) {
                 Column(modifier = Modifier.padding(end = 16.dp, bottom = 12.dp)) {
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Column(modifier = Modifier.weight(1f)) {
-                            LargeGroupAvatar(avatarUrl = group?.avatarUrl)
+                            LargeGroupAvatar(avatarUrl = group?.avatar ?: cachedGroup?.avatar)
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = group?.name ?: "",
+                                text = group?.name ?: cachedGroup?.name ?: "",
                                 style = MaterialTheme.typography.headlineSmall
                             )
                             Spacer(modifier = Modifier.height(8.dp))
@@ -272,8 +270,7 @@ fun GroupDetailTopBar(
                                 ) { // only shown when its your group or db record exists with notificationsEnabled being true
                                     GroupNotificationsButton(
                                         groupColor = groupColor,
-                                        notificationsEnabled = notificationPreferences?.notificationsEnabled
-                                            ?: false,
+                                        notificationsEnabled = notificationPreferences?.notificationsEnabled == true,
                                         onOpenPreferencesDialog = showNotificationsPrefDialog
                                     )
                                 }
@@ -359,10 +356,10 @@ fun GroupDetailTopBar(
         actions = {
             if (group != null) {
                 IconButton(
-                    onClick = if (group.isFavorited) removeFavorite else addFavorite
+                    onClick = if (uiState.isFavorited) removeFavorite else addFavorite
                 ) {
                     Icon(
-                        imageVector = if (group.isFavorited) Icons.Default.Star else Icons.Default.StarBorder,
+                        imageVector = if (uiState.isFavorited) Icons.Default.Star else Icons.Default.StarBorder,
                         contentDescription = null
                     )
                 }
@@ -385,9 +382,10 @@ fun GroupDetailTopBar(
                         }
                     )
                 }
-                DropdownMenuItem(text = {
-                    Text(text = stringResource(R.string.view_in))
-                },
+                DropdownMenuItem(
+                    text = {
+                        Text(text = stringResource(R.string.view_in))
+                    },
                     trailingIcon = {
                         Icon(
                             imageVector = Icons.Filled.ChevronRight,
@@ -438,10 +436,10 @@ fun GroupTabRow(
         indicator = {
             val indicatorModifier =
                 Modifier.tabIndicatorOffset(selectedTabIndex)
-                TabRowDefaults.SecondaryIndicator(
-                    color = groupColor.toColorOrPrimary(),
-                    modifier = indicatorModifier
-                )
+            TabRowDefaults.SecondaryIndicator(
+                color = groupColor.toColorOrPrimary(),
+                modifier = indicatorModifier
+            )
         },
         divider = {}
     ) {
@@ -490,7 +488,8 @@ fun GroupPager(
     modifier: Modifier = Modifier,
     tabContentPadding: PaddingValues = PaddingValues(),
 ) {
-    HorizontalPager(state = pagerState,
+    HorizontalPager(
+        state = pagerState,
         modifier = modifier,
         key = { index ->
             when (index) {
@@ -502,7 +501,7 @@ fun GroupPager(
             0 -> null
             else -> taggedTabs[page - 1].id
         }
-        GroupTabScreen(
+        GroupTab(
             groupId = groupId,
             tabId = tabId,
             group = group,

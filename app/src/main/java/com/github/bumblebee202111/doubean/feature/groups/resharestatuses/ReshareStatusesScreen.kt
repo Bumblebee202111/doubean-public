@@ -91,7 +91,7 @@ fun ReshareStatusesScreen(
                             vertical = 4.dp
                         ),
                 ) {
-                    TopicActivityItemUserProfileImage(url = reshareStatus?.author?.avatarUrl)
+                    TopicActivityItemUserProfileImage(url = reshareStatus?.author?.avatar)
                     Column(
                         modifier = Modifier
                             .weight(1f)

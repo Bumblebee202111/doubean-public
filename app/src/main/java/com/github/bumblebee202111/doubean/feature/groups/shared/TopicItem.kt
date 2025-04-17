@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.groups.AbstractTopicItem
-import com.github.bumblebee202111.doubean.model.groups.GroupItem
+import com.github.bumblebee202111.doubean.model.groups.SimpleGroup
 import com.github.bumblebee202111.doubean.model.groups.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.ListItemCount
@@ -65,7 +65,7 @@ fun TopicItem(
 @Composable
 fun TopicItem(
     topic: AbstractTopicItem?,
-    group: GroupItem?,
+    group: SimpleGroup?,
     displayMode: TopicItemDisplayMode,
     onTopicClick: (id: String) -> Unit,
 ) {
@@ -87,13 +87,13 @@ fun TopicItem(
                     when (displayMode) {
                         TopicItemDisplayMode.SHOW_AUTHOR -> {
                             UserProfileImage(
-                                url = topic.author.avatarUrl,
+                                url = topic.author.avatar,
                                 size = dimensionResource(id = R.dimen.icon_size_extra_small)
                             )
                         }
 
                         TopicItemDisplayMode.SHOW_GROUP -> {
-                            SmallGroupAvatar(avatarUrl = group?.avatarUrl)
+                            SmallGroupAvatar(avatarUrl = group?.avatar)
                         }
                     }
 
@@ -176,7 +176,7 @@ fun TopicItem(
 
 fun createTopicShareText(
     topic: AbstractTopicItem,
-    group: GroupItem?,
+    group: SimpleGroup?,
     context: Context,
 ): CharSequence {
     return buildString {

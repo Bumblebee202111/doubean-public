@@ -11,8 +11,8 @@ data class PopulatedGroupFavoriteItem(
     val groupId: String,
     @ColumnInfo("group_name")
     val groupName: String?,
-    @ColumnInfo("group_avatar_url")
-    val groupAvatarUrl: String?,
+    @ColumnInfo("group_avatar")
+    val groupAvatar: String?,
     @ColumnInfo("tab_id")
     val tabId: String? = null,
     @ColumnInfo("tab_name")
@@ -23,7 +23,7 @@ fun PopulatedGroupFavoriteItem.asExternalModel() = GroupFavoriteItem(
     favoriteDate = favoriteDate,
     groupId = groupId,
     groupName = groupName,
-    groupAvatarUrl = groupAvatarUrl,
+    groupAvatar = groupAvatar,
     tabId = tabId,
     groupTabName = tabName
 )

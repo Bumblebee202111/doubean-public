@@ -70,7 +70,7 @@ fun TopicComment(
                 .padding(vertical = 12.dp)
                 .weight(1f)
         ) {
-            TopicActivityItemUserProfileImage(url = comment.author.avatarUrl)
+            TopicActivityItemUserProfileImage(url = comment.author.avatar)
             Spacer(modifier = Modifier.width(8.dp))
             Column(Modifier.fillMaxWidth()) {
                 //header
@@ -142,7 +142,7 @@ private fun TopicCommentHeaderRow(
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         if (showAuthorAvatar) {
-            UserProfileImage(url = author?.avatarUrl, size = 16.dp)
+            UserProfileImage(url = author?.avatar, size = 16.dp)
             Spacer(modifier = Modifier.width(4.dp))
         }
         Text(

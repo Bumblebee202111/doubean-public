@@ -110,7 +110,7 @@ fun LazyListScope.subjectInfoInterestsModuleItem(interestList: SubjectInterestWi
                                 }
                                 Row {
                                     UserProfileImage(
-                                        url = interest.user.avatarUrl,
+                                        url = interest.user.avatar,
                                         size = 40.dp
                                     )
                                     Spacer(modifier = Modifier.size(8.dp))
@@ -284,7 +284,7 @@ private fun SubjectReviewCard(review: SubjectReview, modifier: Modifier = Modifi
 
             ) {
                 UserProfileImage(
-                    url = review.user.avatarUrl,
+                    url = review.user.avatar,
                     size = dimensionResource(R.dimen.icon_size_extra_small)
                 )
                 Spacer(modifier = Modifier.size(4.dp))
@@ -428,7 +428,7 @@ private fun SubjectReviewCardPreview() {
             ),
             reactionsCount = 123,
             commentsCount = 12312,
-            user = User("213", "etho", name = "Ethos", avatarUrl = ""),
+            user = User("213", "etho", name = "Ethos", avatar = ""),
             createTime = LocalDateTime.now(),
             resharesCount = 1,
             id = "0",

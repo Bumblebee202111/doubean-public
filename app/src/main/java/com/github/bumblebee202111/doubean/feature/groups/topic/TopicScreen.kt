@@ -467,7 +467,7 @@ fun TopicHeader(
                         .clickable { onGroupClick(group.id, null) },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    SmallGroupAvatar(avatarUrl = group.avatarUrl)
+                    SmallGroupAvatar(avatarUrl = group.avatar)
                     Spacer(Modifier.width(8.dp))
                     Text(
                         text = group.name,
@@ -480,7 +480,7 @@ fun TopicHeader(
             }
             Row(Modifier.padding(horizontal = 16.dp)) {
                 UserProfileImage(
-                    url = topic.author.avatarUrl,
+                    url = topic.author.avatar,
                     size = dimensionResource(id = R.dimen.icon_size_large)
                 )
                 Spacer(Modifier.width(8.dp))

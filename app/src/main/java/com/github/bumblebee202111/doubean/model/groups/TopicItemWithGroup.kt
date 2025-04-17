@@ -3,7 +3,6 @@ package com.github.bumblebee202111.doubean.model.groups
 import com.github.bumblebee202111.doubean.model.User
 import java.time.LocalDateTime
 
-//TODO: delegate
 data class TopicItemWithGroup(
     override val id: String,
     override val title: String,
@@ -15,13 +14,6 @@ data class TopicItemWithGroup(
     override val coverUrl: String?,
     override val url: String,
     override val uri: String,
-    val group: GroupItem,
+    val group: SimpleGroup,
 ) : AbstractTopicItem
 
-data class TopicItemGroup(
-    val id: String,
-    val name: String,
-    val url: String,
-    val uri: String,
-    val avatarUrl: String? = null,
-)

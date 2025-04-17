@@ -7,7 +7,7 @@ data class GroupFavoriteItem(
     val favoriteDate: Calendar,
     val groupId: String,
     val groupName: String?,
-    val groupAvatarUrl: String?,
+    val groupAvatar: String?,
     val tabId: String? = null,
     val groupTabName: String? = null,
 )

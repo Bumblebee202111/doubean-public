@@ -5,7 +5,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import androidx.room.withTransaction
-import com.github.bumblebee202111.doubean.coroutines.suspendRunCatching
 import com.github.bumblebee202111.doubean.data.db.AppDatabase
 import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupEntity
 import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupTabEntity
@@ -14,11 +13,13 @@ import com.github.bumblebee202111.doubean.data.db.model.GroupTabNotificationTarg
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedGroupFavoriteItem
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItemWithGroup
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicNotificationItem
-import com.github.bumblebee202111.doubean.data.db.model.SimpleGroupPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicNotificationEntity
 import com.github.bumblebee202111.doubean.data.db.model.UserJoinedGroupIdEntity
 import com.github.bumblebee202111.doubean.data.db.model.asExternalModel
+import com.github.bumblebee202111.doubean.data.db.model.toGroupNotificationPreferences
+import com.github.bumblebee202111.doubean.data.db.model.toSimpleGroup
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository.Companion.RESULT_TOPICS_PAGE_SIZE
+import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.groups.GroupFavoriteItem
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.groups.TopicItemWithGroup
@@ -33,8 +34,10 @@ import com.github.bumblebee202111.doubean.network.model.NetworkTopicItem
 import com.github.bumblebee202111.doubean.network.model.NetworkTopicItemWithGroup
 import com.github.bumblebee202111.doubean.network.model.asEntity
 import com.github.bumblebee202111.doubean.network.model.asPartialEntity
+import com.github.bumblebee202111.doubean.network.model.toCachedGroupEntity
 import com.github.bumblebee202111.doubean.network.model.toEntity
-import com.github.bumblebee202111.doubean.network.model.toGroupPartialEntity
+import com.github.bumblebee202111.doubean.network.model.toGroupItem
+import com.github.bumblebee202111.doubean.network.model.toSimpleCachedGroupPartialEntity
 import com.github.bumblebee202111.doubean.network.model.toTopicPartialEntity
 import com.github.bumblebee202111.doubean.notifications.Notifier
 import kotlinx.coroutines.flow.Flow
@@ -55,19 +58,23 @@ class UserGroupRepository @Inject constructor(
     private val topicDao = appDatabase.groupTopicDao()
     private val userDao = appDatabase.userDao()
 
-    fun getUserJoinedGroups(userId: String) = offlineFirstApiResultFlow(
-        loadFromDb = {
+    fun getUserJoinedGroups(userId: String) = fetchCached(
+        getCache = {
             userGroupDao.getUserJoinedGroups(userId)
-                .map { it.map(SimpleGroupPartialEntity::asExternalModel) }
         },
-        call = {
+        mapCacheToCacheDomain = {
+            it.map {
+                it.toSimpleGroup()
+            }
+        },
+        fetchRemote = {
             apiService.getUserJoinedGroups(userId)
         },
-        saveSuccess = {
+        saveCache = {
             appDatabase.withTransaction {
                 userGroupDao.deleteAllUserJoinedGroupIds()
-                groupDao.upsertJoinedGroups(groups.map { it.asPartialEntity() })
-                userGroupDao.insertUserJoinedGroupIds(groups.mapIndexed { index, group ->
+                groupDao.insertCachedGroups(it.groups.map { it.toCachedGroupEntity() })
+                userGroupDao.insertUserJoinedGroupIds(it.groups.mapIndexed { index, group ->
                     UserJoinedGroupIdEntity(
                         userId = userId,
                         groupId = group.id,
@@ -75,15 +82,20 @@ class UserGroupRepository @Inject constructor(
                     )
                 })
             }
+        },
+        mapResponseToDomain = {
+            it.groups.map { it.toGroupItem() }
         })
 
-    suspend fun subscribeGroup(groupId: String) = suspendRunCatching {
-        apiService.subscribeGroup(groupId)
-    }
+    suspend fun subscribeGroup(groupId: String): AppResult<Unit> = safeApiCall(
+        apiCall = { apiService.subscribeGroup(groupId) },
+        mapSuccess = { }
+    )
 
-    suspend fun unsubscribeGroup(groupId: String) = suspendRunCatching {
-        apiService.unsubscribeGroup(groupId)
-    }
+    suspend fun unsubscribeGroup(groupId: String): AppResult<Unit> = safeApiCall(
+        apiCall = { apiService.unsubscribeGroup(groupId) },
+        mapSuccess = { }
+    )
 
     fun getRecentTopicsFeed() = offlineFirstApiResultFlow(
         loadFromDb = {
@@ -100,7 +112,7 @@ class UserGroupRepository @Inject constructor(
             val feedItemEntities = networkTopics.map(NetworkTopicItemWithGroup::toEntity)
 
             val topicPartialEntities = networkTopics.map { it.toTopicPartialEntity() }
-            val groups = networkTopics.map { it.group.toGroupPartialEntity() }
+            val groups = networkTopics.map { it.group.toSimpleCachedGroupPartialEntity() }
             val userEntities = networkTopics.map { it.author.asEntity() }
             val topicTagEntities =
                 networkTopics.flatMap { topic -> topic.topicTags.map { it.asEntity(topic.group.id) } }
@@ -114,7 +126,7 @@ class UserGroupRepository @Inject constructor(
                 topicDao.upsertTopics(topicPartialEntities)
                 userDao.insertUsers(userEntities)
                 groupDao.apply {
-                    upsertTopicItemGroups(groups)
+                    upsertSimpleCachedGroups(groups)
                     insertTopicTags(topicTagEntities)
                 }
             }
@@ -157,6 +169,18 @@ class UserGroupRepository @Inject constructor(
         userGroupDao.loadAllFavorites().map {
             it.map(PopulatedGroupFavoriteItem::asExternalModel)
         }
+
+    fun getGroupNotificationPreferences(groupId: String): Flow<GroupNotificationPreferences?> {
+        return userGroupDao.loadGroupNotificationTarget(groupId).map {
+            it?.toGroupNotificationPreferences()
+        }
+    }
+
+    fun getTabNotificationPreferences(tabId: String): Flow<GroupNotificationPreferences?> {
+        return userGroupDao.loadTopicNotificationTarget(tabId).map {
+            it?.toGroupNotificationPreferences()
+        }
+    }
 
     suspend fun getNextTargetTopicNotifications(): Boolean {
         val currentNotificationTarget = setOf(

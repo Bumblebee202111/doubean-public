@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.groups.grouptab
+package com.github.bumblebee202111.doubean.feature.groups.groupdetail.tab
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
@@ -49,11 +49,11 @@ import com.github.bumblebee202111.doubean.model.groups.GroupDetail
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.groups.TopicItem
 import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
-import com.github.bumblebee202111.doubean.model.groups.toItem
+import com.github.bumblebee202111.doubean.model.groups.toSimpleGroup
 import com.github.bumblebee202111.doubean.util.ShareUtil
 
 @Composable
-fun GroupTabScreen(
+fun GroupTab(
     groupId: String,
     tabId: String?,
     group: GroupDetail?,
@@ -68,18 +68,20 @@ fun GroupTabScreen(
     contentPadding: PaddingValues = PaddingValues(),
 ) {
     val topicPagingItems = viewModel.topicsPagingData.collectAsLazyPagingItems()
+    val isFavorited by viewModel.isFavorited.collectAsStateWithLifecycle()
+    val topicNotificationPreferences by viewModel.topicNotificationPreferences.collectAsStateWithLifecycle()
     val shouldDisplayFavoritedTab = viewModel.shouldDisplayFavoritedTab
     val shouldDisplayUnfavoritedTab = viewModel.shouldDisplayUnfavoritedTab
     val sortBy by viewModel.sortBy.collectAsStateWithLifecycle()
-    val defaultNotificationsPreference by viewModel.defaultNotificationPreferences.collectAsStateWithLifecycle()
-    GroupTabScreen(
+    GroupTab(
         tabId = tabId,
+        isFavorited = isFavorited,
+        topicNotificationPreferences = topicNotificationPreferences,
         topicPagingItems = topicPagingItems,
         shouldDisplayFavoritedGroup = shouldDisplayFavoritedTab,
         shouldDisplayUnfavoritedTab = shouldDisplayUnfavoritedTab,
         sortBy = sortBy,
         group = group,
-        defaultNotificationsPreference = defaultNotificationsPreference,
         clearFavoritedTabState = viewModel::clearFavoritedTabState,
         clearUnfavoritedTabState = viewModel::clearUnfavoritedTabState,
         updateSortBy = viewModel::updateSortBy,
@@ -93,14 +95,15 @@ fun GroupTabScreen(
 }
 
 @Composable
-fun GroupTabScreen(
+fun GroupTab(
     tabId: String?,
+    isFavorited: Boolean?,
+    topicNotificationPreferences: GroupNotificationPreferences?,
     topicPagingItems: LazyPagingItems<TopicItem>,
     shouldDisplayFavoritedGroup: Boolean,
     shouldDisplayUnfavoritedTab: Boolean,
     sortBy: TopicSortBy?,
     group: GroupDetail?,
-    defaultNotificationsPreference: GroupNotificationPreferences?,
     clearFavoritedTabState: () -> Unit,
     clearUnfavoritedTabState: () -> Unit,
     updateSortBy: (topicSortBy: TopicSortBy) -> Unit,
@@ -138,26 +141,29 @@ fun GroupTabScreen(
         contentPadding = contentPadding
     ) {
 
-        tabActionsItem(
-            tabId = tabId,
-            group = group,
-            sortBy = sortBy,
-            onOpenAlertDialog = { openAlertDialog = true },
-            onSortByClick = updateSortBy,
-            removeFavorite = removeFavorite,
-            addFavorite = addFavorite
-        )
+        if (group != null) {
+            tabActionsItem(
+                tabId = tabId,
+                isFavorited = isFavorited,
+                topicNotificationPreferences = topicNotificationPreferences,
+                group = group,
+                sortBy = sortBy,
+                onOpenAlertDialog = { openAlertDialog = true },
+                onSortByClick = updateSortBy,
+                removeFavorite = removeFavorite,
+                addFavorite = addFavorite
+            )
+        }
 
         topicItems(topicPagingItems = topicPagingItems, group = group, onTopicClick = onTopicClick)
     }
 
     if (openAlertDialog) {
         group?.tabs?.find { it.id == tabId }?.let { tab ->
-            if (defaultNotificationsPreference != null) {
+            if (topicNotificationPreferences != null) {
                 GroupNotificationPreferencesDialog(
                     titleTextResId = R.string.tab_notification_preferences,
-                    initialPreference = tab.notificationPreferences
-                        ?: defaultNotificationsPreference,
+                    initialPreference = topicNotificationPreferences,
                     onDismissRequest = {
                         openAlertDialog = false
                     }) { preferencesToSave ->
@@ -173,7 +179,9 @@ fun GroupTabScreen(
 
 private fun LazyListScope.tabActionsItem(
     tabId: String?,
-    group: GroupDetail?,
+    isFavorited: Boolean?,
+    topicNotificationPreferences: GroupNotificationPreferences?,
+    group: GroupDetail,
     sortBy: TopicSortBy?,
     onOpenAlertDialog: () -> Unit,
     onSortByClick: (topicSortBy: TopicSortBy) -> Unit,
@@ -195,82 +203,85 @@ private fun LazyListScope.tabActionsItem(
                 onSortBySelected = onSortByClick
             )
             Spacer(Modifier.weight(1f))
-            group?.findTab(tabId)?.let { tab ->
-                //actions
-                Row {
-                    // Only displayed when either condition meets:
-                    // 1. Favorited
-                    // 2. Record exists and enabled
-                    if (tab.isFavorite || tab.notificationPreferences?.notificationsEnabled == true) {
-                        TabNotificationsButton(
-                            notificationsEnabled = tab.notificationPreferences?.notificationsEnabled
-                                ?: false,
-                            onOpenPreferencesDialog = onOpenAlertDialog
-                        )
-                    }
-                    IconButton(
-                        onClick = if (tab.isFavorite) removeFavorite else addFavorite,
-                        modifier = Modifier.size(32.dp)
-                    ) {
-                        Icon(
-                            imageVector = if (tab.isFavorite) Icons.Filled.Star else Icons.Default.StarBorder,
-                            contentDescription = null,
-                            tint = if (tab.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
+            val tab = group.tabs.firstOrNull { it.id == tabId }
+            if (tab != null && isFavorited != null && topicNotificationPreferences != null) {
+                group.findTab(tabId)?.let { tab ->
+                    //actions
+                    Row {
+                        // Only displayed when either condition meets:
+                        // 1. Favorited
+                        // 2. Record exists and enabled
+                        if (isFavorited || topicNotificationPreferences.notificationsEnabled == true) {
+                            TabNotificationsButton(
+                                notificationsEnabled = topicNotificationPreferences.notificationsEnabled == true,
+                                onOpenPreferencesDialog = onOpenAlertDialog
+                            )
+                        }
+                        IconButton(
+                            onClick = if (isFavorited) removeFavorite else addFavorite,
+                            modifier = Modifier.size(32.dp)
+                        ) {
+                            Icon(
+                                imageVector = if (isFavorited) Icons.Filled.Star else Icons.Default.StarBorder,
+                                contentDescription = null,
+                                tint = if (isFavorited) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
 
-                    var moreExpanded by remember { mutableStateOf(false) }
-                    IconButton(
-                        onClick = { moreExpanded = true },
-                        modifier = Modifier.size(32.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = null
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = moreExpanded, onDismissRequest = {
-                            moreExpanded = false
-                        },
-                        modifier = Modifier.background(
-                            MaterialTheme.colorScheme.surface
-                        )
-                    ) {
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    stringResource(
-                                        R.string.share
-                                    ),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
+                        var moreExpanded by remember { mutableStateOf(false) }
+                        IconButton(
+                            onClick = { moreExpanded = true },
+                            modifier = Modifier.size(32.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = null
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = moreExpanded, onDismissRequest = {
+                                moreExpanded = false
                             },
-                            onClick = {
-                                val shareText = buildString {
-                                    append(group.name + "|")
-                                    append(tab.name)
-                                    group.shareUrl?.let { shareUrl ->
-                                        append(" $shareUrl\r\n")
+                            modifier = Modifier.background(
+                                MaterialTheme.colorScheme.surface
+                            )
+                        ) {
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        stringResource(
+                                            R.string.share
+                                        ),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                },
+                                onClick = {
+                                    val shareText = buildString {
+                                        append(group.name + "|")
+                                        append(tab.name)
+                                        group.shareUrl?.let { shareUrl ->
+                                            append(" $shareUrl\r\n")
+                                        }
                                     }
+                                    ShareUtil.share(context, shareText)
+
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Outlined.Share,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
                                 }
-                                ShareUtil.share(context, shareText)
-
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    Icons.Outlined.Share,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        )
+                            )
+                        }
                     }
+
+
                 }
-
-
             }
+
         }
     }
 }
@@ -288,7 +299,7 @@ private fun LazyListScope.topicItems(
         val topic = topicPagingItems[index]
         TopicItem(
             topic = topic,
-            group = group?.toItem(),
+            group = group?.toSimpleGroup(),
             displayMode = TopicItemDisplayMode.SHOW_AUTHOR,
             onTopicClick = onTopicClick
         )

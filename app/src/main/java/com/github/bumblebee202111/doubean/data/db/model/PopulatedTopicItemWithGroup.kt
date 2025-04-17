@@ -28,9 +28,9 @@ data class PopulatedTopicItemWithGroup(
     @Relation(
         parentColumn = "group_id",
         entityColumn = "id",
-        entity = GroupEntity::class
+        entity = CachedGroupEntity::class
     )
-    val group: TopicItemGroupPartialEntity,
+    val group: SimpleCachedGroupPartialEntity,
     //@Relation(...)
     //val viewedPost
 )
@@ -46,7 +46,7 @@ fun PopulatedTopicItemWithGroup.asExternalModel() = TopicItemWithGroup(
     coverUrl = partialEntity.coverUrl,
     url = partialEntity.url,
     uri = partialEntity.uri,
-    group = group.asExternalModel()
+    group = group.toSimpleGroup()
     //hasBeenView = ...,
     //isBlocked = ...
 )

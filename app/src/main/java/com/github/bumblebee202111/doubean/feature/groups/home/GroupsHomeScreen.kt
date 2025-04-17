@@ -52,11 +52,10 @@ import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItem
 import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItemDisplayMode
-import com.github.bumblebee202111.doubean.feature.groups.shared.groupsOfTheDay
+import com.github.bumblebee202111.doubean.feature.groups.shared.dayRanking
 import com.github.bumblebee202111.doubean.model.User
 import com.github.bumblebee202111.doubean.model.groups.GroupFavoriteItem
-import com.github.bumblebee202111.doubean.model.groups.GroupItem
-import com.github.bumblebee202111.doubean.model.groups.RecommendedGroupItem
+import com.github.bumblebee202111.doubean.model.groups.SimpleGroup
 import com.github.bumblebee202111.doubean.model.groups.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import java.util.Calendar
@@ -71,15 +70,15 @@ fun GroupsHomeScreen(
     onTopicClick: (topicId: String) -> Unit,
 ) {
     val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
-    val joinedGroups by viewModel.joinedGroups.collectAsStateWithLifecycle()
+    val joinedGroupsUiState by viewModel.joinedGroupsUiState.collectAsStateWithLifecycle()
     val favorites by viewModel.favorites.collectAsStateWithLifecycle()
-    val groupsOfTheDay by viewModel.groupsOfTheDay.collectAsStateWithLifecycle()
+    val dayRankingUiState by viewModel.dayRankingUiState.collectAsStateWithLifecycle()
     val recentTopicsFeed by viewModel.recentTopicsFeed.collectAsStateWithLifecycle()
     GroupsHomeScreen(
         currentUser = currentUser,
-        joinedGroups = joinedGroups,
+        joinedGroupsUiState = joinedGroupsUiState,
         favorites = favorites,
-        groupsOfTheDay = groupsOfTheDay,
+        dayRankingUiState = dayRankingUiState,
         recentTopicsFeed = recentTopicsFeed,
         onAvatarClick = onAvatarClick,
         onSearchClick = onSearchClick,
@@ -93,15 +92,15 @@ fun GroupsHomeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 fun GroupsHomeScreen(
     currentUser: User?,
-    joinedGroups: List<GroupItem>?,
+    joinedGroupsUiState: JoinedGroupsUiState,
     favorites: List<GroupFavoriteItem>?,
-    groupsOfTheDay: List<RecommendedGroupItem>?,
+    dayRankingUiState: DayRankingUiState,
     recentTopicsFeed: List<TopicItemWithGroup>?,
     onAvatarClick: () -> Unit,
     onSearchClick: () -> Unit,
     onNotificationsClick: () -> Unit,
-    onGroupClick: (groupId: String, tabId: String?) -> Unit,
-    onTopicClick: (topicId: String) -> Unit,
+    onGroupClick: (String, String?) -> Unit,
+    onTopicClick: (String) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -112,7 +111,7 @@ fun GroupsHomeScreen(
                             Icon(imageVector = Icons.Default.Person, contentDescription = null)
                         } else {
                             AsyncImage(
-                                model = currentUser.avatarUrl,
+                                model = currentUser.avatar,
                                 contentDescription = null
                             )
                         }
@@ -145,15 +144,16 @@ fun GroupsHomeScreen(
                 end = innerPadding.calculateEndPadding(LayoutDirection.Ltr)
             )
         ) {
-            joinedGroups?.let { groups ->
+            joinedGroupsUiState.groups?.let { groups ->
                 myGroups(groups) { onGroupClick(it, null) }
             }
             favorites?.takeIf(List<GroupFavoriteItem>::isNotEmpty)?.let { groups ->
                 favorites(groups, onGroupClick)
             }
-            groupsOfTheDay?.let { groups ->
-                groupsOfTheDay(groups) { onGroupClick(it, null) }
+            if (dayRankingUiState is DayRankingUiState.Success) {
+                this.dayRanking(dayRankingUiState.items) { onGroupClick(it, null) }
             }
+
             recentTopicsFeed?.let { topic ->
                 myTopics(topic, onTopicClick)
             }
@@ -162,7 +162,7 @@ fun GroupsHomeScreen(
 }
 
 private fun LazyListScope.myGroups(
-    groups: List<GroupItem>,
+    groups: List<SimpleGroup>,
     onGroupItemClick: (groupId: String) -> Unit,
 ) {
     item(contentType = "myGroups") {
@@ -190,7 +190,7 @@ private fun LazyListScope.myGroups(
                 ) {
                     Column {
                         AsyncImage(
-                            group.avatarUrl, contentDescription = null,
+                            group.avatar, contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -246,7 +246,7 @@ private fun LazyListScope.favorites(
                 ) {
                     Column {
                         AsyncImage(
-                            group.groupAvatarUrl, contentDescription = null,
+                            group.groupAvatar, contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier.aspectRatio(1f)
                         )
@@ -355,10 +355,9 @@ fun MyGroupsPreview(
 @Preview(showBackground = true)
 private fun JoinedGroupsPreview() {
     val mockData = listOf(
-        GroupItem("1345", "wwww", "avatar"),
-        GroupItem("1234", "wwww", "avatar"),
-        GroupItem("1534", "wwww", "avatar"),
-        GroupItem("1324", "wwww", "avatar"),
+        SimpleGroup(id = "1", name = "aa", url = "", uri = "", avatar = ""),
+        SimpleGroup(id = "2", name = "bb", url = "", uri = "", avatar = ""),
+        SimpleGroup(id = "3", name = "cc", url = "", uri = "", avatar = ""),
     )
     LazyColumn {
         myGroups(mockData) { }

@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
+import com.github.bumblebee202111.doubean.data.db.model.SimpleCachedGroupPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupEntity
 import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupTabEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupGroupNotificationTargetEntity
@@ -17,7 +18,6 @@ import com.github.bumblebee202111.doubean.data.db.model.GroupUserTopicFeedItemEn
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedGroupFavoriteItem
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItemWithGroup
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicNotificationItem
-import com.github.bumblebee202111.doubean.data.db.model.SimpleGroupPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicNotificationEntity
 import com.github.bumblebee202111.doubean.data.db.model.UserJoinedGroupIdEntity
 import kotlinx.coroutines.flow.Flow
@@ -29,16 +29,17 @@ import kotlinx.coroutines.flow.Flow
 interface UserGroupDao {
 
     @Query(
-        """SELECT groups.* FROM user_joined_group_ids LEFT JOIN groups 
-ON user_joined_group_ids.group_id = groups.id WHERE user_id=:userId ORDER BY `index`"""
+        """SELECT cached_groups.* FROM user_joined_group_ids LEFT JOIN cached_groups
+ON user_joined_group_ids.group_id = cached_groups.id WHERE user_id=:userId ORDER BY `index`"""
     )
-    fun getUserJoinedGroups(userId: String): Flow<List<SimpleGroupPartialEntity>>
+    fun getUserJoinedGroups(userId: String): Flow<List<SimpleCachedGroupPartialEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertUserJoinedGroupIds(userJoinedGroupIds: List<UserJoinedGroupIdEntity>)
 
     @Query("DELETE FROM user_joined_group_ids")
     fun deleteAllUserJoinedGroupIds()
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFavoriteGroup(favoriteGroup: FavoriteGroupEntity)
 
@@ -63,30 +64,36 @@ ON user_joined_group_ids.group_id = groups.id WHERE user_id=:userId ORDER BY `in
         SELECT 
         favorite_groups.favorite_date AS favorite_date, 
         favorite_groups.group_id AS group_id, 
-        groups.name AS group_name, 
-        groups.avatar_url AS group_avatar_url, 
+        cached_groups.name AS group_name, 
+        cached_groups.avatar AS group_avatar, 
         NULL AS tab_id, 
         NULL AS tab_name 
         FROM favorite_groups 
-        LEFT OUTER JOIN groups 
-        ON favorite_groups.group_id = groups.id 
+        LEFT OUTER JOIN cached_groups 
+        ON favorite_groups.group_id = cached_groups.id 
         UNION ALL 
         SELECT 
         favorite_group_tabs.favorite_date AS favorite_date, 
-        groups.id AS group_id,
-        groups.name AS group_name, 
-        groups.avatar_url AS group_avatar_url, 
+        cached_groups.id AS group_id,
+        cached_groups.name AS group_name, 
+        cached_groups.avatar AS group_avatar, 
         favorite_group_tabs.tab_id AS tab_id, 
         group_tabs.name AS tab_name 
         FROM favorite_group_tabs 
         LEFT OUTER JOIN group_tabs 
         ON favorite_group_tabs.tab_id = group_tabs.id 
-        LEFT OUTER JOIN groups 
-        ON groups.id = group_tabs.group_id 
+        LEFT OUTER JOIN cached_groups 
+        ON cached_groups.id = group_tabs.group_id 
         ORDER BY favorite_date
         """
     )
     fun loadAllFavorites(): Flow<List<PopulatedGroupFavoriteItem>>
+
+    @Query("SELECT * FROM group_notification_group_targets WHERE group_id = :groupId")
+    fun loadGroupNotificationTarget(groupId: String): Flow<GroupGroupNotificationTargetEntity?>
+
+    @Query("SELECT * FROM group_notification_tab_targets WHERE tab_id = :tabId")
+    fun loadTopicNotificationTarget(tabId: String): Flow<GroupTabNotificationTargetEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTopicNotifications(topicNotifications: List<TopicNotificationEntity>)
@@ -139,6 +146,7 @@ ON user_joined_group_ids.group_id = groups.id WHERE user_id=:userId ORDER BY `in
 
     @Query("SELECT * FROM group_notification_tab_targets WHERE notifications_enabled = 1 ORDER BY last_fetched_time_millis ASC LIMIT 1")
     suspend fun getLeastRecentlyFetchedTabNotificationTarget(): GroupTabNotificationTargetEntity?
+
     @Transaction
     @Query(
         """

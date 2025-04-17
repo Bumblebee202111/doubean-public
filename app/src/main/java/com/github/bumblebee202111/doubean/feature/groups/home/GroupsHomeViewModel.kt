@@ -3,20 +3,28 @@
 package com.github.bumblebee202111.doubean.feature.groups.home
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
 import com.github.bumblebee202111.doubean.data.repository.UserRepository
-import com.github.bumblebee202111.doubean.model.groups.GroupRecommendationType
+import com.github.bumblebee202111.doubean.model.AppResult
+import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -35,25 +43,52 @@ class GroupsHomeViewModel @Inject constructor(
         userId?.let { userRepository.getCachedUser(it) } ?: emptyFlow()
     }.stateInUi()
 
-    val joinedGroups = authRepository.observeLoggedInUserId().flatMapLatest { userId ->
+
+    val joinedGroupsUiState = authRepository.observeLoggedInUserId().flatMapLatest { userId ->
         when (userId) {
-            null -> flowOf(null)
+            null -> flowOf(JoinedGroupsUiState(isLoading = false))
             else ->
-                userGroupRepository.getUserJoinedGroups(userId).map { it.data }
+                userGroupRepository.getUserJoinedGroups(userId).map { result ->
+                    when (result) {
+                        is CachedAppResult.Error -> {
+                            JoinedGroupsUiState(isLoading = false, groups = result.cache)
+                        }
+
+                        is CachedAppResult.Loading -> {
+                            JoinedGroupsUiState(isLoading = false, groups = result.cache)
+                        }
+
+                        is CachedAppResult.Success -> {
+                            JoinedGroupsUiState(isLoading = false, groups = result.data)
+                        }
+                    }
+                }
         }
-    }.stateInUi()
+    }.stateInUi(JoinedGroupsUiState(isLoading = true))
 
     val favorites =
         userGroupRepository.getAllGroupFavorites().flowOn(Dispatchers.IO).stateInUi()
 
-    val groupsOfTheDay = authRepository.isLoggedIn().flatMapLatest { isLoggedIn ->
-        when (isLoggedIn) {
-            true -> flowOf(null)
-            false -> groupRepository.getGroupRecommendation(GroupRecommendationType.DAILY)
-                .map { it.data }
-                .flowOn(Dispatchers.IO)
+    private val _dayRankingUiState =
+        MutableStateFlow<DayRankingUiState>(DayRankingUiState.Loading)
+    val dayRankingUiState = _dayRankingUiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            authRepository.isLoggedIn().onEach { isLoggedIn ->
+                _dayRankingUiState.value = when (isLoggedIn) {
+                    true -> DayRankingUiState.Hidden
+                    false ->
+                        when (val result = groupRepository.getDayRanking()) {
+                            is AppResult.Error -> DayRankingUiState.Error(result.error)
+                            is AppResult.Success -> DayRankingUiState.Success(result.data)
+                        }
+                }
+            }.collect { }
         }
-    }.stateInUi()
+
+    }
+
 
     val recentTopicsFeed = authRepository.isLoggedIn().flatMapLatest { isLoggedIn ->
         when (isLoggedIn) {
@@ -62,3 +97,4 @@ class GroupsHomeViewModel @Inject constructor(
         }
     }.stateInUi()
 }
+
