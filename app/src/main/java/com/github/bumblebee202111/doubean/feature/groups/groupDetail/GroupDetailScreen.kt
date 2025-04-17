@@ -439,7 +439,8 @@ fun GroupTabRow(
                 modifier = indicatorModifier
             )
         },
-        divider = {}
+        divider = {},
+        minTabWidth = 0.dp
     ) {
         val coroutineScope = rememberCoroutineScope()
 
