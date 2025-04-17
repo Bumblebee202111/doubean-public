@@ -32,15 +32,5 @@ class MainApplication : Application(), ImageLoaderFactory, Configuration.Provide
                 .setFlags(Shell.FLAG_MOUNT_MASTER or Shell.FLAG_REDIRECT_STDERR)
                 .setTimeout(10)
         )
-
-        try {
-            Class
-                .forName("androidx.compose.material3.TabRowKt")
-                .getDeclaredField("ScrollableTabRowMinimumTabWidth").apply {
-                    isAccessible = true
-                }.set(this, 0f)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 }

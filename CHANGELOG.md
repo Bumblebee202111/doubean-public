@@ -4,6 +4,7 @@ Change Log
 ## Version 0.8.4(804)
 
 - Simplify group caching
+- Fix Tab component min width for group detail
 
 ## Version 0.8.3(803)
 
