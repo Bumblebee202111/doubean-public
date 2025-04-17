@@ -10,16 +10,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.bumblebee202111.doubean.model.groups.RecommendedGroupItem
+import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
 
-fun LazyListScope.groupsOfTheDay(
-    recommendedGroups: List<RecommendedGroupItem>,
+fun LazyListScope.dayRanking(
+    recommendedGroups: List<GroupItemWithIntroInfo>,
     onGroupItemClick: (groupId: String) -> Unit,
 ) {
 
     item {
         Text(
-            text = "Groups of the Day",
+            text = "Day Ranking",
             modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
             style = MaterialTheme.typography.titleMedium
         )
@@ -28,14 +28,14 @@ fun LazyListScope.groupsOfTheDay(
 
     itemsIndexed(
         recommendedGroups,
-        key = { _, recommendedGroup -> recommendedGroup.group.id },
+        key = { _, recommendedGroup -> recommendedGroup.id },
         contentType = { _, _ -> "dayRankingGroupItem" }) { index, group ->
         DayRankingGroupItem(
             group = group,
             position = index + 1,
             total = recommendedGroups.size,
             onClick = {
-                onGroupItemClick(group.group.id)
+                onGroupItemClick(group.id)
             },
             modifier = Modifier.padding(horizontal = 16.dp)
         )

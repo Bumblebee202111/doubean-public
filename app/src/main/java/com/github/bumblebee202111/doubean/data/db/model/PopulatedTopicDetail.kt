@@ -4,7 +4,6 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 import com.github.bumblebee202111.doubean.model.groups.TopicDetail
-import com.github.bumblebee202111.doubean.model.groups.TopicGroup
 
 data class PopulatedTopicDetail(
     @Embedded
@@ -28,26 +27,16 @@ data class PopulatedTopicDetail(
     @Relation(
         parentColumn = "group_id",
         entityColumn = "id",
-        entity = GroupEntity::class
+        entity = CachedGroupEntity::class
     )
-    val group: PopulatedTopicGroup? = null,
+    val group: CachedGroupEntity? = null,
 
     
     
 )
 
-data class PopulatedTopicGroup(
-    @Embedded
-    val partialEntity: TopicGroupPartialEntity,
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "group_id"
-    )
-    val favoriteGroup: FavoriteGroupEntity?,
-)
 
-
-fun PopulatedTopicDetail.asExternalModel() = TopicDetail(
+fun PopulatedTopicDetail.toTopicDetail() = TopicDetail(
     id = partialEntity.id,
     title = partialEntity.title,
     author = author.asExternalModel(),
@@ -63,22 +52,8 @@ fun PopulatedTopicDetail.asExternalModel() = TopicDetail(
     tags = topicTags.map(GroupTopicTagEntity::asExternalModel),
     coverUrl = partialEntity.coverUrl,
     url = partialEntity.url,
-    group = group?.asExternalModel(),
+    group = group?.toSimpleGroupWithColor(),
     uri = partialEntity.uri,
     images = partialEntity.images,
     ipLocation = partialEntity.ipLocation
-)
-
-fun PopulatedTopicGroup.asExternalModel() = TopicGroup(
-    id = partialEntity.id,
-    name = partialEntity.name,
-    memberCount = partialEntity.memberCount,
-    topicCount = partialEntity.topicCount,
-    dateCreated = partialEntity.dateCreated,
-    url = partialEntity.url,
-    avatarUrl = partialEntity.avatarUrl,
-    memberName = partialEntity.memberName,
-    descAbstract = partialEntity.descAbstract,
-    color = partialEntity.color,
-    isFavorite = favoriteGroup != null
 )

@@ -3,6 +3,8 @@ Change Log
 
 ## Version 0.8.4(804)
 
+- Simplify group caching
+
 ## Version 0.8.3(803)
 
 - Add Subject Unions module support for Subjects tab

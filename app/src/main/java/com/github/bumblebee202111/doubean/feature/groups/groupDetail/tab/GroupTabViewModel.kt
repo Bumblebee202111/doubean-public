@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.groups.grouptab
+package com.github.bumblebee202111.doubean.feature.groups.groupdetail.tab
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +20,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -36,7 +38,7 @@ class GroupTabViewModel @AssistedInject constructor(
     private val _sortBy = MutableStateFlow(TopicSortBy.NEW_LAST_CREATED)
     val sortBy = _sortBy.asStateFlow()
     val defaultNotificationPreferences =
-        preferenceStorage.defaultGroupNotificationPreferences.stateInUi()
+        preferenceStorage.defaultGroupNotificationPreferences
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val topicsPagingData =
@@ -54,6 +56,18 @@ class GroupTabViewModel @AssistedInject constructor(
     fun updateSortBy(topicSortBy: TopicSortBy) {
         _sortBy.value = topicSortBy
     }
+
+    val isFavorited =
+        (tabId?.let { userGroupRepository.getTabFavorite(it) } ?: emptyFlow()).stateInUi()
+
+    val topicNotificationPreferences = (tabId?.let {
+        combine(
+            userGroupRepository.getTabNotificationPreferences(it),
+            defaultNotificationPreferences
+        ) { created, default ->
+            return@combine created ?: default
+        }
+    } ?: emptyFlow()).stateInUi()
 
     fun addFavorite() {
         val tabId = tabId ?: return

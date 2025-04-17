@@ -9,7 +9,6 @@ import androidx.room.Upsert
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicDetail
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItem
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItemWithGroup
-import com.github.bumblebee202111.doubean.data.db.model.RecommendedGroupItemTopicPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicDetailPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicItemPartialEntity
@@ -40,9 +39,6 @@ interface GroupTopicDao {
 
     @Upsert(entity = TopicEntity::class)
     suspend fun upsertTopics(topics: List<TopicItemPartialEntity>)
-
-    @Upsert(entity = TopicEntity::class)
-    suspend fun upsertRecommendedGroupItemTopics(topics: List<RecommendedGroupItemTopicPartialEntity>)
 
     @Transaction
     @Query("SELECT * FROM topics WHERE id=:topicId")

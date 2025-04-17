@@ -16,18 +16,3 @@ data class TopicItem(
     override val uri: String,
 ) : AbstractTopicItem
 
-fun TopicItem.withGroup(groupItem: GroupItem): TopicItemWithGroup {
-    return TopicItemWithGroup(
-        id = id,
-        title = title,
-        author = author,
-        createTime = createTime,
-        updateTime = updateTime,
-        commentsCount = commentsCount,
-        tags = tags,
-        coverUrl = coverUrl,
-        url = url,
-        uri = uri,
-        group = groupItem
-    )
-}

@@ -1,6 +1,6 @@
 package com.github.bumblebee202111.doubean.model
 
-sealed interface AppResult<out T : Any> {
-    data class Success<T : Any>(val data: T) : AppResult<T>
-    data class Error<T : Any>(val error: AppError) : AppResult<T>
+sealed interface AppResult<out R> {
+    data class Success<out T>(val data: T) : AppResult<T>
+    data class Error(val error: AppError) : AppResult<Nothing>
 }

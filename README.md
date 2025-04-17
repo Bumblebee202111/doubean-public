@@ -158,13 +158,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 * Groups
   * Dynamic topic sorts-by
 
-  - Re-evaluate ROOM caching (complexity reduction)
-    - Isolate cache/fresh logic in repository layer
-    - Only save common basic fields
-    - Use both cached/fresh models in detail screens 
-
-  - Tweak component colors for group-themed screens
-
+  - Simplify topic caching
+  
   * Home
     * Maybe support pagination of recommended topics
   * Subscribe/favorite/save
@@ -178,7 +173,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Use the new nullable "edit_time" property of network topics
   * Revert naming conventions to match Douban's standards
   * Group Detail
-
+  
     * Collapse on entrance for the subscribed/favorited group/tab
     * Fix group description action overflows
   * Fix topic content losing scroll position after navigating back
@@ -188,7 +183,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Support blocking unwanted content
   * Lists: Reddit-style item expand/collapse
   * Find API for all followed topics (currently unlikely)
-
+  
 * Dou Lists
 
 * Expand/collapse component: Hide action for short text

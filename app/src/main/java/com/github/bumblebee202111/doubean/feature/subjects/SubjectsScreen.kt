@@ -129,7 +129,7 @@ private fun SubjectsAppBar(
                     Icon(imageVector = Icons.Default.Person, contentDescription = null)
                 } else {
                     AsyncImage(
-                        model = currentUser.avatarUrl,
+                        model = currentUser.avatar,
                         contentDescription = null
                     )
                 }

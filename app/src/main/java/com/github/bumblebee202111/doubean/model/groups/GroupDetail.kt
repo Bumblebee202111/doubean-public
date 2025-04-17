@@ -11,21 +11,19 @@ data class GroupDetail(
     val shareUrl: String?,
     val url: String,
     val uri: String,
-    val avatarUrl: String,
+    val avatar: String,
     val memberName: String?,
-    val dateCreated: LocalDateTime?,
+    val createTime: LocalDateTime?,
     val description: String?,
-    val tabs: List<GroupTab>?,
+    val tabs: List<GroupTab>,
     val color: String?,
     val memberRole: GroupMemberRole?,
     val isSubscriptionEnabled: Boolean?,
     val isSubscribed: Boolean?,
-    val isFavorited: Boolean,
-    val notificationPreferences: GroupNotificationPreferences?,
 ) {
     fun findTab(tabId: String?): GroupTab? {
-        Log.d("xxx", tabs?.firstOrNull { tab -> tab.id == tabId }.toString())
-        return tabs?.firstOrNull { tab -> tab.id == tabId }
+        Log.d("xxx", tabs.firstOrNull { tab -> tab.id == tabId }.toString())
+        return tabs.firstOrNull { tab -> tab.id == tabId }
     }
 }
 
@@ -33,12 +31,12 @@ data class GroupTab(
     val id: String,
     val name: String?,
     val seq: Int,
-    val isFavorite: Boolean,
-    val notificationPreferences: GroupNotificationPreferences?,
 )
 
-fun GroupDetail.toItem() = GroupItem(
+fun GroupDetail.toSimpleGroup() = SimpleGroup(
     id = id,
     name = name,
-    avatarUrl = avatarUrl
+    url = url,
+    uri = uri,
+    avatar = avatar
 )

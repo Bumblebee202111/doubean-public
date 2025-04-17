@@ -1,7 +1,6 @@
 package com.github.bumblebee202111.doubean.data.repository
 
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.model.safeApiCall
 import com.github.bumblebee202111.doubean.model.subjects.SubjectSearchResult
 import com.github.bumblebee202111.doubean.model.subjects.SubjectsSearchType
 import com.github.bumblebee202111.doubean.model.subjects.toApiSubjectsSearchType

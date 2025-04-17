@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import androidx.paging.cachedIn
-import com.github.bumblebee202111.doubean.data.repository.GroupTopicRepo
+import com.github.bumblebee202111.doubean.data.repository.GroupTopicRepository
 import com.github.bumblebee202111.doubean.data.repository.PollRepository
 import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.TopicRoute
 import com.github.bumblebee202111.doubean.model.Result
@@ -33,7 +33,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TopicViewModel @Inject constructor(
     private val pollRepository: PollRepository,
-    topicRepo: GroupTopicRepo,
+    topicRepo: GroupTopicRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 

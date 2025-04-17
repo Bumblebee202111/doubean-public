@@ -26,9 +26,8 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.shared.SearchResultGroupItem
-import com.github.bumblebee202111.doubean.feature.groups.shared.groupsOfTheDay
-import com.github.bumblebee202111.doubean.model.groups.GroupSearchResultGroupItem
-import com.github.bumblebee202111.doubean.model.groups.RecommendedGroupItem
+import com.github.bumblebee202111.doubean.feature.groups.shared.dayRanking
+import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.SearchTextField
 
@@ -38,11 +37,13 @@ fun GroupsSearchScreen(
     onBackClick: () -> Unit,
     viewModel: GroupsSearchViewModel = hiltViewModel(),
 ) {
+    val query by viewModel.query.collectAsStateWithLifecycle()
     val groupPagingItems = viewModel.results.collectAsLazyPagingItems()
-    val groupsOfTheDay by viewModel.groupsOfTheDay.collectAsStateWithLifecycle()
+    val dayRankingUiState by viewModel.dayRankingUiState.collectAsStateWithLifecycle()
     GroupsSearchScreen(
+        query = query,
         groupPagingItems = groupPagingItems,
-        groupsOfTheDay = groupsOfTheDay,
+        dayRankingUiState = dayRankingUiState,
         onQueryChange = viewModel::onQueryChange,
         onSearchTriggered = viewModel::onSearchTriggered,
         onGroupClick = onGroupClick,
@@ -53,11 +54,12 @@ fun GroupsSearchScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupsSearchScreen(
-    groupPagingItems: LazyPagingItems<GroupSearchResultGroupItem>,
-    groupsOfTheDay: List<RecommendedGroupItem>?,
+    query: String,
+    groupPagingItems: LazyPagingItems<GroupItemWithIntroInfo>,
+    dayRankingUiState: DayRankingUiState,
     onQueryChange: (String) -> Unit,
-    onSearchTriggered: (originalInput: String) -> Unit,
-    onGroupClick: (groupId: String) -> Unit,
+    onSearchTriggered: (String) -> Unit,
+    onGroupClick: (String) -> Unit,
     onBackClick: () -> Unit,
 ) {
     Scaffold(topBar = {
@@ -75,10 +77,17 @@ fun GroupsSearchScreen(
         })
     }) {
 
-        if (groupsOfTheDay != null) {
-            LazyColumn(contentPadding = it) {
-                groupsOfTheDay(groupsOfTheDay, onGroupClick)
+        if (query.isBlank()) {
+            when (dayRankingUiState) {
+                is DayRankingUiState.Success -> {
+                    LazyColumn(contentPadding = it) {
+                        dayRanking(dayRankingUiState.items, onGroupClick)
+                    }
+                }
+
+                else -> Unit
             }
+
         } else {
             GroupList(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
@@ -93,7 +102,7 @@ fun GroupsSearchScreen(
 @Composable
 fun GroupList(
     modifier: Modifier,
-    groupPagingItems: LazyPagingItems<GroupSearchResultGroupItem>,
+    groupPagingItems: LazyPagingItems<GroupItemWithIntroInfo>,
     onGroupClick: (String) -> Unit,
     contentPadding: PaddingValues,
 ) {
