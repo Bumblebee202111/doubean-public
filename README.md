@@ -62,7 +62,7 @@ Introduction
   * Keep original list orders or sort by create time within any page
   * Customizable topic notifications
 * Ad-free and lightweight (~3MB)
-* Auth: Session reuse (root) + experimental login
+* Auth: Session reuse (root) + login (beta)
 * Partial URL deep linking support
 * Direct official API calls
 * Basic MD3 implementation
@@ -164,7 +164,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Home
     * Maybe support pagination of recommended topics
   * Subscribe/favorite/save
-    * Remove support for locally favoriting groups (subscribing groups already supported)
+    * Remove support for locally favoriting groups (subscribing groups already available)
     * Save topics
     * Pin my groups
     * Add corresponding item actions
