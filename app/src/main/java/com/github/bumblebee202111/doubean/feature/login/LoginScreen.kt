@@ -163,15 +163,15 @@ fun LoginScreen(
                 updatePassword = updatePassword,
                 login = login
             )
-
             Spacer(modifier = Modifier.height(24.dp))
             HorizontalDivider()
             Spacer(modifier = Modifier.height(24.dp))
-
             SessionImportSection(
                 triggerAutoImport = triggerAutoImport,
                 onSubmitSessionPreference = onSubmitSessionPreference,
             )
+            Spacer(modifier = Modifier.height(24.dp))
+            FinalReminderText()
         }
     }
 }
@@ -186,12 +186,12 @@ private fun LoginSection(
     login: () -> Unit,
 ) {
     Text(
-        text = "Phone/Password Login (Experimental)",
+        text = "Phone/Password Login (BETA)",
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.error
     )
     Text(
-        text = "Use phone/password at your own risk. Avoid frequent attempts. Prefer session import when possible.",
+        text = "Need feedback on whether it works.",
         style = MaterialTheme.typography.bodySmall
     )
 
@@ -229,12 +229,12 @@ private fun SessionImportSection(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     Text(
-        text = "Douban App Session Import",
+        text = "Douban app Session Import (Advanced)",
         style = MaterialTheme.typography.titleMedium
     )
     Text(
         text = "Note: This method typically requires root access. " +
-                "Automatic sync should happen at app startup if it is enabled in Settings & root is granted.",
+                "Automatic sync should happen at app startup if it is enabled in Settings and root access is granted.",
         style = MaterialTheme.typography.bodyMedium
     )
     TextButton(onClick = triggerAutoImport, modifier = Modifier.fillMaxWidth()) {
@@ -242,9 +242,9 @@ private fun SessionImportSection(
     }
     Text(
         text = "For non-rooted phones:\n" +
-                "Copy from rooted device → Paste here\n" +
-                "⚠️Manual submission not recommended because:\n" +
-                "• Complex process\n" +
+                "Copy from a rooted device and paste here\n" +
+                "⚠️ Manual entry not recommended because:\n" +
+                "• Complicated process\n" +
                 "• Session expiration\n",
         style = MaterialTheme.typography.bodyMedium
     )
@@ -278,9 +278,12 @@ private fun SessionImportSection(
     ) {
         Text(text = "Import Session")
     }
+}
+
+@Composable
+private fun FinalReminderText() {
     Text(
-        text = "This minimal UI is intentional - prioritizing functional access\n" +
-                "Use discreetly/低调使用"
+        text = "While we mimic official login behavior without third-party services, use login-related features at your own risk. This minimal UI is intentional - prioritizing functional access\n"
     )
 }
 
