@@ -232,7 +232,7 @@ private fun createTopicCommentShareText(
             append("${context.getString(R.string.repliedTo)}@${repliedTo.author.name}： ${repliedTo.text}")
         }
         append(
-            "${context.getString(R.string.post)}@${topic.author.name}${
+            "${context.getString(R.string.topic)}@${topic.author.name}${
                 context.getString(R.string.colon)
             }\n${topic.title} ${topic.url}\n"
         )

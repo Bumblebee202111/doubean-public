@@ -7,6 +7,7 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 **Note**:  Experimental project focusing on core features while testing Jetpack Compose. Occasional crashes, incomplete UI designs, or missing features may occur.
 
 **Known Issues**:
+
 - Login (image) captcha: Needs more testing
 
 [douban]: https://www.douban.com/
@@ -24,7 +25,7 @@ Introduction
 
 #### Subjects
 
-- **Home**: Top 250 movies/books + personal statuses
+- **Home**: Personal statuses + subject unions + rank lists
 - **Interests**: Tracked subject statuses
 - **Search**: Subject discovery
 - **Details**: Metadata/intro/interactions
@@ -163,7 +164,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Home
     * Maybe support pagination of recommended topics
   * Subscribe/favorite/save
-    * Remove support for locally favoriting groups if login captcha keeps functioning (subscribing groups already supported)
+    * Remove support for locally favoriting groups (subscribing groups already supported)
     * Save topics
     * Pin my groups
     * Add corresponding item actions
@@ -171,7 +172,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Search
     * Search topics within a specific group/tab
     * Global topic search across all groups
-  * Use the new nullable "edit_time" property of network topics
+    * Result tabs
   * Revert naming conventions to match Douban's standards
   * Group Detail
   
@@ -187,12 +188,11 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   
 * Dou Lists
 
+* Sync certain files to public repo with a script
+
 * Expand/collapse component: Hide action for short text
 
-* Search
-
-  * Main search bars & result tabs
-  * Suggestions
+* Search suggestions
 
 * Profile/User
 
