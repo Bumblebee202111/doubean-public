@@ -148,7 +148,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Future plans
 
-* Error handling
+* More error handling
 
   * Process error body
   * Show error messages
@@ -163,6 +163,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   * Home
     * Maybe support pagination of recommended topics
   * Subscribe/favorite/save
+    * Remove support for locally favoriting groups if login captcha keeps functioning (subscribing groups already supported)
     * Save topics
     * Pin my groups
     * Add corresponding item actions
