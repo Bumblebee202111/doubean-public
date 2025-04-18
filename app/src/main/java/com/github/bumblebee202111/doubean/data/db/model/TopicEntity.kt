@@ -25,6 +25,9 @@ data class TopicEntity(
     @ColumnInfo("update_time")
     val updateTime: LocalDateTime,
 
+    @ColumnInfo("edit_time")
+    val editTime: LocalDateTime? = null,
+
     @ColumnInfo("like_count")
     val likeCount: Int? = null,
 

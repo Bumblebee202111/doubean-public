@@ -17,9 +17,9 @@ import com.github.bumblebee202111.doubean.network.model.NetworkGroupTopicComment
 import com.github.bumblebee202111.doubean.network.model.NetworkReshareItem
 import com.github.bumblebee202111.doubean.network.model.asEntity
 import com.github.bumblebee202111.doubean.network.model.asExternalModel
-import com.github.bumblebee202111.doubean.network.model.asPartialEntity
-import com.github.bumblebee202111.doubean.network.model.toCachedGroupEntity
 import com.github.bumblebee202111.doubean.network.model.tagCrossRefs
+import com.github.bumblebee202111.doubean.network.model.toCachedGroupEntity
+import com.github.bumblebee202111.doubean.network.model.toTopicItemPartialEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -43,7 +43,7 @@ class GroupTopicRepository @Inject constructor(
         },
         call = { apiService.getGroupTopic(id) },
         saveSuccess = {
-            val topicDetail = asPartialEntity()
+            val topicDetail = toTopicItemPartialEntity()
             val topicTags = topicTags.map { it.asEntity(group.id) }
             val topicTagCrossRefs = tagCrossRefs()
             val group = group.toCachedGroupEntity()

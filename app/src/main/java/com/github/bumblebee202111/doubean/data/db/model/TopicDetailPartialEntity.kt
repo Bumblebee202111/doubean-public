@@ -14,10 +14,13 @@ data class TopicDetailPartialEntity(
     val authorId: String,
 
     @ColumnInfo("create_time")
-    val createTime: LocalDateTime? = null,
+    val createTime: LocalDateTime,
 
     @ColumnInfo("update_time")
-    val updateTime: LocalDateTime? = null,
+    val updateTime: LocalDateTime,
+
+    @ColumnInfo("edit_time")
+    val editTime: LocalDateTime? = null,
 
     @ColumnInfo("like_count")
     val likeCount: Int? = null,

@@ -11,6 +11,12 @@ import android.webkit.URLUtil
 import android.webkit.WebView
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.with
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -95,6 +101,7 @@ import com.github.bumblebee202111.doubean.util.TOPIC_CSS_FILENAME
 import com.github.bumblebee202111.doubean.util.fullDateTimeString
 import com.github.bumblebee202111.doubean.util.toColorOrPrimary
 import com.google.accompanist.web.rememberWebViewStateWithHTMLData
+import kotlinx.coroutines.delay
 
 @Composable
 fun TopicScreen(
@@ -241,18 +248,20 @@ fun TopicScreen(
                         expanded = appBarMenuExpanded,
                         onDismissRequest = { appBarMenuExpanded = false }) {
                         if (topic != null) {
-                            DropdownMenuItem(text = {
-                                Text(text = "Jump to comment")
-                            },
+                            DropdownMenuItem(
+                                text = {
+                                    Text(text = "Jump to comment")
+                                },
                                 onClick = {
                                     appBarMenuExpanded = false
                                     shouldShowDialog = true
                                 })
 
                         }
-                        DropdownMenuItem(text = {
-                            Text(text = stringResource(R.string.view_in))
-                        },
+                        DropdownMenuItem(
+                            text = {
+                                Text(text = stringResource(R.string.view_in))
+                            },
                             trailingIcon = {
                                 Icon(
                                     imageVector = Icons.Filled.ChevronRight,
@@ -445,6 +454,7 @@ fun JumpToCommentSliderPreview() {
     JumpToCommentOfIndexSlider(100, 1000) {}
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @SuppressLint("ClickableViewAccessibility")
 @Composable
 fun TopicHeader(
@@ -493,14 +503,45 @@ fun TopicHeader(
                     )
                     Spacer(Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        topic.createTime?.let {
-                            DateTimeText(text = it.fullDateTimeString())
+                        var showCreateTime by remember { mutableStateOf(true) }
+                        val createTime = topic.createTime
+                        val editTime = topic.editTime
+                        when {
+                            editTime != null -> {
+                                LaunchedEffect(Unit) {
+                                    while (true) {
+                                        delay(3000)
+                                        showCreateTime = !showCreateTime
+                                    }
+                                }
+
+                                AnimatedContent(
+                                    targetState = showCreateTime,
+                                    transitionSpec = {
+                                        fadeIn() with fadeOut() using SizeTransform(clip = false)
+                                    },
+                                    label = "timeAnimation"
+                                ) { target ->
+                                    DateTimeText(
+                                        text = if (target) createTime.fullDateTimeString() else stringResource(
+                                            R.string.content_edited, editTime.fullDateTimeString()
+                                        )
+                                    )
+                                }
+                            }
+
+                            else -> {
+                                DateTimeText(
+                                    text = createTime.fullDateTimeString()
+                                )
+                            }
+
                         }
-                        Spacer(Modifier.width(8.dp))
                         topic.ipLocation?.let {
                             Text(
                                 text = it,
-                                style = MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.padding(start = 8.dp)
                             )
                         }
                     }
