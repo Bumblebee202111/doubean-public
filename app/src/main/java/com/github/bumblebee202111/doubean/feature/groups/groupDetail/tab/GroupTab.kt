@@ -260,8 +260,8 @@ private fun LazyListScope.tabActionsItem(
                                     val shareText = buildString {
                                         append(group.name + "|")
                                         append(tab.name)
-                                        group.shareUrl?.let { shareUrl ->
-                                            append(" $shareUrl\r\n")
+                                        group.sharingUrl?.let { sharingUrl ->
+                                            append(" $sharingUrl\r\n")
                                         }
                                     }
                                     ShareUtil.share(context, shareText)
