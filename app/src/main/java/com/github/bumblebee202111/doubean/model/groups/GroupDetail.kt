@@ -8,7 +8,7 @@ data class GroupDetail(
     val name: String,
     val memberCount: Int?,
     val topicCount: Int?,
-    val shareUrl: String?,
+    val sharingUrl: String?,
     val url: String,
     val uri: String,
     val avatar: String,

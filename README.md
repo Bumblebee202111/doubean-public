@@ -173,7 +173,6 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
     * Search topics within a specific group/tab
     * Global topic search across all groups
     * Result tabs
-  * Revert naming conventions to match Douban's standards
   * Group Detail
   
     * Collapse on entrance for the subscribed/favorited group/tab

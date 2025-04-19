@@ -159,7 +159,7 @@ fun GroupDetailScreen(
                 subscribeGroup = subscribeGroup,
                 unsubscribeGroup = unsubscribeGroup,
                 onShareGroup = {
-                    val shareText = it.name + ' ' + it.shareUrl + "\r\n"
+                    val shareText = it.name + ' ' + it.sharingUrl + "\r\n"
                     ShareUtil.share(context, shareText)
                 },
                 viewInDouban = { OpenInUtils.openInDouban(context, it) },
