@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+## Version 0.8.4(804)
+
+- Simplify caching of the group entity
+- Topic: Display edit time (if available) with animation
+- Fix Tab component min width for Group Getail
+
 ## Version 0.8.3(803)
 
 - Add Subject Unions module support for Subjects tab

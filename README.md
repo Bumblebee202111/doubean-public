@@ -7,6 +7,7 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 **Note**:  Experimental project focusing on core features while testing Jetpack Compose. Occasional crashes, incomplete UI designs, or missing features may occur.
 
 **Known Issues**:
+
 - Login (image) captcha: Needs more testing
 
 [douban]: https://www.douban.com/
@@ -24,7 +25,7 @@ Introduction
 
 #### Subjects
 
-- **Home**: Top 250 movies/books + personal statuses
+- **Home**: Personal statuses + subject unions + rank lists
 - **Interests**: Tracked subject statuses
 - **Search**: Subject discovery
 - **Details**: Metadata/intro/interactions
@@ -55,29 +56,30 @@ Introduction
 
 ## Features
 
-* Subjects: Basic interactions (WIP 🚧)
-* Group enhancements:
-  * Locally favorite tabs/groups 
-  * Keep original list orders or sort by create time within any page
-  * Customizable topic notifications
-* Ad-free and lightweight (~3MB)
-* Auth: Session reuse (root) + experimental login
-* Partial URL deep linking support
-* Direct official API calls
-* Basic MD3 implementation
-* Statuses (legacy)
-* Mobile-optimized pure Web screens (deprecated)
+- Subjects: Basic interactions (WIP 🚧)
+- Group enhancements:
+  - Locally favorite tabs/groups 
+  - Keep original list orders or sort by create time within any page
+  - Customizable topic notifications
+- Ad-free and lightweight (~3MB)
+- Auth: Session reuse (root) + login (beta)
+- Partial URL deep linking support
+- Direct official API calls
+- Basic MD3 implementation
+- Statuses (legacy)
+- Mobile-optimized pure Web screens (deprecated)
 
 ## Getting Started
 
 - [Latest release][latest-release]
 - Requirements: Android: 8.1+
 - Feel free to file issues
-  - Include details if data fails to display (common causes: JSON parsing errors):
-    - Titles and related URLs (from Douban app)
-    - Raw JSON (if accessible).
+  - Include details if data fails to display:
+    - Titles
+    - Error messages (if present)
+    - Raw JSON (if accessible)
 - Keep the official Douban app installed:
-  - Support Douban's service  
+  - Support Douban services 
   - Access unsupported content 
   - Root users: Reuse login sessions
 - Clear app data after updates if crashes occur
@@ -88,7 +90,7 @@ Introduction
 
 ### Limited Open-Source
 
-To avoid potential issues, public repo retains an **outdated codebase**. Non-sensitive snippets may be shared upon request.
+Selected source code synced to public repo, limiting scope to prevent potential issues.
 
 ### Guidelines
 
@@ -97,17 +99,17 @@ To avoid potential issues, public repo retains an **outdated codebase**. Non-sen
 
 ## Tech Stack
 
-* [Foundation][foundation]: [Android KTX][android-ktx]
-* [Architecture][arch]: [Lifecycles][lifecycle], [Navigation][navigation], [Paging][paging], [Room][room], DataStore, [ViewModel][viewmodel], [WorkManager][workmanager]
-* [UI][ui]: Jetpack Compose
-* Behavior: [Notifications][notifications]
-* Third party libraries
-  * [Kotlin Coroutines][kotlin-coroutines]
-  * Kotlinx Serialization
-  * Ktor
-  * Coil
-  * libsu
-  * Accompanist Permissions/WebView
+- [Foundation][foundation]: [Android KTX][android-ktx]
+- [Architecture][arch]: [Lifecycles][lifecycle], [Navigation][navigation], [Paging][paging], [Room][room], DataStore, [ViewModel][viewmodel], [WorkManager][workmanager]
+- [UI][ui]: Jetpack Compose
+- Behavior: [Notifications][notifications]
+- Third-party libraries
+  - [Kotlin Coroutines][kotlin-coroutines]
+  - Kotlinx Serialization
+  - Ktor
+  - Coil
+  - libsu
+  - Accompanist Permissions/WebView
 
 [foundation]: https://developer.android.com/jetpack/components
 
@@ -141,118 +143,85 @@ To avoid potential issues, public repo retains an **outdated codebase**. Non-sen
 
 Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for myself.
 
-### Current release \(0.8.3)
+### Current release \(0.8.4)
 
-### Next release \(0.8.4)
+- Topic saving
+
+### Next release \(0.8.5)
 
 
 ### Future plans
 
-* Error handling
-
-  * Process error body
-  * Show error messages
-
-* Last-active tab persistence
-
-* Groups
-  * Dynamic topic sorts-by
-
-  - Re-evaluate ROOM caching (complexity reduction)
-    - Isolate cache/fresh logic in repository layer
-    - Only save common basic fields
-    - Use both cached/fresh models in detail screens 
-
-  - Tweak component colors for group-themed screens
-
-  * Home
-    * Maybe support pagination of recommended topics
-  * Subscribe/favorite/save
-    * Save topics
-    * Pin my groups
-    * Add corresponding item actions
-  * Group tab: Track topic read status
-  * Search
-    * Search topics within a specific group/tab
-    * Global topic search across all groups
-  * Use the new nullable "edit_time" property of network topics
-  * Revert naming conventions to match Douban's standards
-  * Group Detail
-
-    * Collapse on entrance for the subscribed/favorited group/tab
-    * Fix group description action overflows
-  * Fix topic content losing scroll position after navigating back
-  * Notifications
-    * Custom interval. Support options of 15m/1h 
-  * Hide officially-flagged unfriendly content by default
-  * Support blocking unwanted content
-  * Lists: Reddit-style item expand/collapse
-  * Find API for all followed topics (currently unlikely)
-
-* Dou Lists
-
-* Expand/collapse component: Hide action for short text
-
-* Search
-
-  * Main search bars & result tabs
-  * Suggestions
-
-* Profile/User
-
-* Subjects
-
-  * Color schemes
-  * More
-
-* Login
-
-  * Code login (w/o pw)
-
-* Update logo: Swap bg/fg colors
-
-* Shortcuts
-
-* Properly show login prompts & normal tooltips/info
-
-* Load state visualization (removed during Compose migrations for simplicity)
-  * Paging 3 refresh, loading status ...
-
-* Restore dark mode & landscape support
-
-* ImageScreen -> Shared element transitions
-
-* List item menus → dialog sheets
-
-* Improve model layering
-
-* Languages
-  * Translations
-  * Pick language
-
-* NetworkManager
-
-* Widgets
-
-* Optionally sync more official app prefs for API request consistency for rooted users
-
-* Consider use single NavHost
-
-* Statuses (maintenance mode)
-  * Additional card types
-  * Pagination
-
+- More error handling
+  - Process error body
+  - Show error messages
+- Last-active tab persistence
+- Groups 
+  - Subscribe/favorite/save
+    - Save topics
+    - Remove support for locally favoriting groups (subscribing groups already available)
+    - Pin my groups
+    - Add corresponding item actions
+  - Notifications: Custom interval. Support options of 15m/1h
+  - Search
+    - Search topics within a specific group/tab
+    - Global topic search across all groups
+    - Result tabs
+  - Dynamic topic sorts-by
+  - Simplify topic caching
+  - Home
+    - Maybe support pagination of recommended topics
+  - Group tab: Track topic read status
+  - Group Detail
+    - Collapse on entrance for the subscribed/favorited group/tab
+    - Fix group description action overflows
+  - Fix topic content losing scroll position after navigating back
+  - Hide officially-flagged unfriendly content by default
+  - Support blocking unwanted content
+  - Lists: Reddit-style item expand/collapse
+  - Find API for all followed topics (currently unlikely)
+- Subjects
+  - Subject Detail: Ratings histogram
+  - Color schemes
+  - More
+- Dou Lists
+- Complete deep linking support
+- Sync more files to public repo
+- Expand/collapse component: Hide action for short text
+- Search suggestions
+- Profile/User
+- Login
+  * Code-based (w/o pw)
+- Update logo: Swap bg/fg colors
+- Shortcuts
+- Properly show login prompts & normal tooltips/info
+- Load state visualization (removed during Compose migrations for simplicity)
+  - Paging 3 refresh, loading status ...
+- Restore dark mode & landscape support
+- ImageScreen -> Shared element transitions
+- List item menus → dialog sheets
+- Improve model layering
+- Languages
+  - Translations
+  - Pick language
+- NetworkManager
+- Widgets
+- Optionally sync more official app prefs for API request consistency for rooted users
+- Consider use single NavHost
+- Statuses (maintenance mode)
+  - Additional card types
+  - Pagination
 * Test
 
 ## References
 
-* Jetpack Compose samples
-* [Android Sunflower][sunflower]
-* [Developer Guides][guides]
-* [Github Browser Sample with Android Architecture Components][github-browser-sample]
-* [Android Architecture Blueprints v1 (todo-mvvm-live)][todo-mvvm-live]
-* [Material Design][material]
-* Various social apps: used as references for UI design and functionality
+- Jetpack Compose samples
+- [Android Sunflower][sunflower]
+- [Developer Guides][guides]
+- [Github Browser Sample with Android Architecture Components][github-browser-sample]
+- [Android Architecture Blueprints v1 (todo-mvvm-live)][todo-mvvm-live]
+- [Material Design][material]
+- Various social apps: used as references for UI design and functionality
 
 [sunflower]: https://github.com/android/sunflower
 
@@ -266,9 +235,9 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ## Utilities
 
-* [HTTPCanary][http-canary] for analyzing Douban API requests
-* [jadx][jadx]-gui for understanding models
-* [Google Chrome][google-chrome] for debugging CSS
+- [HTTPCanary][http-canary] for analyzing Douban API requests
+- [jadx][jadx]-gui for understanding models
+- [Google Chrome][google-chrome] for debugging CSS
 
 [http-canary]:https://github.com/MegatronKing/HttpCanary/
 
@@ -278,7 +247,10 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ## Stars :star: & Donation :coffee:
 
-I know this app isn’t perfect, but your stars keeps me motivated. Thank you!
+Your ⭐ **stars** motivate continued development.
+To support development (though not actively seeking donations), contact via issues. 
 
-To support development (though not actively seeking donations), contact me via issues. 
+## License
+
+This code is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for the full license text.
 
