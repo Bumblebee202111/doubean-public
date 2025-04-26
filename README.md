@@ -90,7 +90,7 @@ Introduction
 
 ### Limited Open-Source
 
-Public repo retains an **outdated codebase to prevent potential issues. Non-sensitive  code snippets may be shared upon request.
+Selected source code synced to public repo, limiting scope to prevent potential issues.
 
 ### Guidelines
 
@@ -186,7 +186,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
   - More
 - Dou Lists
 - Complete deep linking support
-- Sync certain files to public repo with a script
+- Sync more files to public repo
 - Expand/collapse component: Hide action for short text
 - Search suggestions
 - Profile/User
@@ -249,4 +249,8 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 Your ⭐ **stars** motivate continued development.
 To support development (though not actively seeking donations), contact via issues. 
+
+## License
+
+This code is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for the full license text.
 
