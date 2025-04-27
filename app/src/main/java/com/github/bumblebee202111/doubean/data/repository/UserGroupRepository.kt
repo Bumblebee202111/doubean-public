@@ -123,7 +123,7 @@ class UserGroupRepository @Inject constructor(
                     deleteTopicsFeed()
                     insertTopicsFeed(feedItemEntities)
                 }
-                topicDao.upsertTopics(topicPartialEntities)
+                topicDao.upsertTopicItems(topicPartialEntities)
                 userDao.insertUsers(userEntities)
                 groupDao.apply {
                     upsertSimpleCachedGroups(groups)
@@ -257,7 +257,7 @@ class UserGroupRepository @Inject constructor(
                 .distinctBy(NetworkGroupTopicTag::id).map { it.asEntity(groupId) }
             val authors = finalOrderedNetworkTopics.map { it.author.asEntity() }
             appDatabase.withTransaction {
-                topicDao.upsertTopics(finalTopicEntities)
+                topicDao.upsertTopicItems(finalTopicEntities)
                 groupDao.insertTopicTags(topicTags)
                 userDao.insertUsers(authors)
                 when (currentNotificationTarget) {

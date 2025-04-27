@@ -36,9 +36,13 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
@@ -86,6 +90,8 @@ import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.shared.SmallGroupAvatar
 import com.github.bumblebee202111.doubean.feature.groups.shared.groupTopAppBarColor
+import com.github.bumblebee202111.doubean.model.AppError
+import com.github.bumblebee202111.doubean.model.fangorns.ReactionType
 import com.github.bumblebee202111.doubean.model.groups.TopicComment
 import com.github.bumblebee202111.doubean.model.groups.TopicCommentSortBy
 import com.github.bumblebee202111.doubean.model.groups.TopicDetail
@@ -100,6 +106,7 @@ import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.TOPIC_CSS_FILENAME
 import com.github.bumblebee202111.doubean.util.fullDateTimeString
 import com.github.bumblebee202111.doubean.util.toColorOrPrimary
+import com.github.bumblebee202111.doubean.util.uiMessage
 import com.google.accompanist.web.rememberWebViewStateWithHTMLData
 import kotlinx.coroutines.delay
 
@@ -120,7 +127,9 @@ fun TopicScreen(
     val shouldShowPhotoList by viewModel.shouldShowPhotoList.collectAsStateWithLifecycle()
     val contentHtml by viewModel.contentHtml.collectAsStateWithLifecycle()
     val commentSortBy by viewModel.commentsSortBy.collectAsStateWithLifecycle()
+    val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
     val groupColor = topic?.group?.color
+    val uiError by viewModel.uiError.collectAsStateWithLifecycle()
     val shouldShowSpinner by viewModel.shouldShowSpinner.collectAsStateWithLifecycle()
     val shouldDisplayInvalidImageUrl = viewModel.shouldDisplayInvalidImageUrl
 
@@ -131,9 +140,11 @@ fun TopicScreen(
         shouldShowPhotoList = shouldShowPhotoList,
         contentHtml = contentHtml,
         commentSortBy = commentSortBy,
+        isLoggedIn = isLoggedIn,
         groupColorString = groupColor,
         shouldShowSpinner = shouldShowSpinner,
         shouldDisplayInvalidImageUrl = shouldDisplayInvalidImageUrl,
+        uiError = uiError,
         updateCommentSortBy = viewModel::updateCommentsSortBy,
         displayInvalidImageUrl = viewModel::displayInvalidImageUrl,
         clearInvalidImageUrlState = viewModel::clearInvalidImageUrlState,
@@ -145,8 +156,10 @@ fun TopicScreen(
         
         
         onImageClick = onImageClick,
+        onClearUiError = viewModel::clearUiError,
         onOpenDeepLinkUrl = onOpenDeepLinkUrl,
-        onShowSnackbar = onShowSnackbar
+        onShowSnackbar = onShowSnackbar,
+        onReact = viewModel::react
     )
 }
 
@@ -160,9 +173,11 @@ fun TopicScreen(
     shouldShowPhotoList: Boolean?,
     contentHtml: String?,
     commentSortBy: TopicCommentSortBy,
+    isLoggedIn: Boolean,
     groupColorString: String?,
     shouldShowSpinner: Boolean,
     shouldDisplayInvalidImageUrl: Boolean,
+    uiError: AppError?,
     updateCommentSortBy: (TopicCommentSortBy) -> Unit,
     displayInvalidImageUrl: () -> Unit,
     clearInvalidImageUrlState: () -> Unit,
@@ -171,13 +186,17 @@ fun TopicScreen(
     onGroupClick: (groupId: String, tabId: String?) -> Unit,
     onReshareStatusesClick: (topicId: String) -> Unit,
     onImageClick: (url: String) -> Unit,
+    onClearUiError: () -> Unit,
     onOpenDeepLinkUrl: (url: String) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
+    onReact: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current
     var shouldShowDialog by remember {
         mutableStateOf(false)
     }
+
+
     var scrollToCommentItemIndex: Int? by remember {
         mutableStateOf(null)
     }
@@ -200,6 +219,14 @@ fun TopicScreen(
         if (shouldDisplayInvalidImageUrl) {
             onShowSnackbar("Invalid Image Url")
             clearInvalidImageUrlState()
+        }
+    }
+
+    val uiMessage = uiError?.uiMessage
+    LaunchedEffect(uiError) {
+        if (uiMessage != null) {
+            onShowSnackbar(uiMessage)
+            onClearUiError()
         }
     }
 
@@ -227,16 +254,6 @@ fun TopicScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        topic?.let { shareTopic(context, it) }
-
-                    }) {
-                        Icon(
-                            Icons.Filled.Share,
-                            contentDescription = null
-                        )
-                    }
-
                     IconButton(onClick = { appBarMenuExpanded = !appBarMenuExpanded }) {
                         Icon(
                             Icons.Filled.MoreVert,
@@ -309,11 +326,13 @@ fun TopicScreen(
                             topic = topic,
                             shouldShowPhotoList = shouldShowPhotoList,
                             contentHtml = contentHtml,
-                            displayInvalidImageUrl = displayInvalidImageUrl,
+                            isLoggedIn = isLoggedIn,
                             onImageClick = onImageClick,
                             onGroupClick = onGroupClick,
                             onReshareStatusesClick = onReshareStatusesClick,
                             onOpenDeepLinkUrl = onOpenDeepLinkUrl,
+                            displayInvalidImageUrl = displayInvalidImageUrl,
+                            onReact = onReact,
                         )
                     }
                 }
@@ -461,11 +480,13 @@ fun TopicHeader(
     topic: TopicDetail,
     shouldShowPhotoList: Boolean?,
     contentHtml: String?,
+    isLoggedIn: Boolean,
     onImageClick: (url: String) -> Unit,
     onGroupClick: (groupId: String, tabId: String?) -> Unit,
     onReshareStatusesClick: (topicId: String) -> Unit,
     onOpenDeepLinkUrl: (url: String) -> Unit,
     displayInvalidImageUrl: () -> Unit,
+    onReact: (Boolean) -> Unit,
 ) {
     Surface(modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.fillMaxWidth()) {
@@ -622,13 +643,14 @@ fun TopicHeader(
                         labelRes = R.plurals.likes
                     )
                 }
-                topic.saveCount?.let { count ->
+                topic.collectionsCount?.let { count ->
                     CountItem(
                         count = count,
                         labelRes = R.plurals.saves
                     )
                 }
             }
+            TopicSocialActions(topic = topic, isLoggedIn = isLoggedIn, onReact = onReact)
         }
     }
 }
@@ -736,6 +758,53 @@ private fun CountItem(
     )
 }
 
+
+@Composable
+private fun TopicSocialActions(
+    topic: TopicDetail? = null,
+    isLoggedIn: Boolean = false,
+    onReact: (Boolean) -> Unit = {},
+) {
+    val context = LocalContext.current
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+
+        if (isLoggedIn) {
+            topic?.reactionType?.let { reactionType ->
+                IconButton(
+                    onClick = {
+                        onReact(reactionType != ReactionType.TYPE_VOTE)
+                    }) {
+                    Icon(
+                        imageVector = if (reactionType == ReactionType.TYPE_VOTE) Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp,
+                        contentDescription = null
+                    )
+                }
+            }
+
+            topic?.isCollected?.let { isCollected ->
+                IconButton(
+                    onClick = { },
+                    enabled = false
+                ) {
+                    Icon(
+                        imageVector = if (isCollected) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                        contentDescription = null
+                    )
+                }
+            }
+
+        }
+
+        IconButton(onClick = {
+            topic?.let { shareTopic(context, it) }
+        }) {
+            Icon(
+                Icons.Filled.Share,
+                contentDescription = null
+            )
+        }
+    }
+}
 
 @Composable
 fun TopicCommentSortByDropDownMenu(

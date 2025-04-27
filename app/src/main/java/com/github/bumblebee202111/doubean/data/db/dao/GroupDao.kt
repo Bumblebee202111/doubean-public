@@ -49,7 +49,7 @@ interface GroupDao {
     fun insertGroupTopicItems(topicItems: List<GroupTagTopicItemEntity>)
 
     @Transaction
-    @Query("""SELECT id, title, author_id, create_time, update_time, like_count, reaction_count, reshares_count, save_count, comments_count, short_content, content, cover_url, url, uri, topics.group_id, images, ip_location FROM group_tag_topics LEFT JOIN topics ON topic_id = topics.id WHERE group_tag_topics.group_id = :groupId AND group_tag_topics.tag_id = :tagId AND sort_by = :sortBy ORDER BY `index` ASC""")
+    @Query("""SELECT id, title, author_id, create_time, update_time, like_count, reaction_count, reshares_count, collections_count, comments_count, short_content, content, cover_url, url, uri, topics.group_id, images, ip_location FROM group_tag_topics LEFT JOIN topics ON topic_id = topics.id WHERE group_tag_topics.group_id = :groupId AND group_tag_topics.tag_id = :tagId AND sort_by = :sortBy ORDER BY `index` ASC""")
     fun groupTagTopicPagingSource(
         groupId: String,
         tagId: String,

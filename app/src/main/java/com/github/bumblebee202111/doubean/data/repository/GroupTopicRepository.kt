@@ -10,6 +10,7 @@ import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicDetail
 import com.github.bumblebee202111.doubean.data.db.model.toTopicDetail
 import com.github.bumblebee202111.doubean.data.paging.GroupTopicCommentPagingSource
 import com.github.bumblebee202111.doubean.data.paging.GroupTopicReshareItemPagingSource
+import com.github.bumblebee202111.doubean.model.fangorns.ReactionType
 import com.github.bumblebee202111.doubean.model.groups.GroupTopicCommentReshareItem
 import com.github.bumblebee202111.doubean.model.groups.TopicComment
 import com.github.bumblebee202111.doubean.network.ApiService
@@ -19,7 +20,9 @@ import com.github.bumblebee202111.doubean.network.model.asEntity
 import com.github.bumblebee202111.doubean.network.model.asExternalModel
 import com.github.bumblebee202111.doubean.network.model.tagCrossRefs
 import com.github.bumblebee202111.doubean.network.model.toCachedGroupEntity
+import com.github.bumblebee202111.doubean.network.model.toNetworkReactionType
 import com.github.bumblebee202111.doubean.network.model.toTopicItemPartialEntity
+import com.github.bumblebee202111.doubean.network.model.toTopicReactionPartialEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -92,6 +95,17 @@ class GroupTopicRepository @Inject constructor(
             }
         ).flow.map { it.map(NetworkReshareItem::asExternalModel) }
     }
+
+    suspend fun react(
+        topicId: String, reactionType: ReactionType,
+    ) = safeApiCall(
+        apiCall = {
+            apiService.reactGroupTopic(topicId, reactionType.toNetworkReactionType())
+        },
+        mapSuccess = {
+            groupTopicDao.insertTopicReaction(it.toTopicReactionPartialEntity(topicId))
+        }
+    )
 
     companion object {
         const val RESULT_COMMENTS_PAGE_SIZE = 40

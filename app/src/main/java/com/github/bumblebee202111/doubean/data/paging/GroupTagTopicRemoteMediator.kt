@@ -110,7 +110,7 @@ class GroupTagTopicRemoteMediator(
                     groupDao.insertTopicTags(topicTagEntities)
                     topicDao.deleteTopicTagCrossRefsByTopicIds(topicIds)
                     topicDao.insertTopicTagCrossRefs(topicTagCrossRefs)
-                    topicDao.upsertTopics(topicEntities)
+                    topicDao.upsertTopicItems(topicEntities)
                     userDao.insertUsers(authors)
                 }
             }

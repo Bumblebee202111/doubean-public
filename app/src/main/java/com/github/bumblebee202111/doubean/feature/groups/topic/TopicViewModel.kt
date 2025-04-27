@@ -10,10 +10,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import androidx.paging.cachedIn
+import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupTopicRepository
 import com.github.bumblebee202111.doubean.data.repository.PollRepository
 import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.TopicRoute
+import com.github.bumblebee202111.doubean.model.AppError
+import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.Result
+import com.github.bumblebee202111.doubean.model.fangorns.ReactionType
 import com.github.bumblebee202111.doubean.model.groups.Poll
 import com.github.bumblebee202111.doubean.model.groups.PollId
 import com.github.bumblebee202111.doubean.model.groups.Question
@@ -27,19 +31,24 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import java.math.RoundingMode
 import javax.inject.Inject
 
 @HiltViewModel
 class TopicViewModel @Inject constructor(
     private val pollRepository: PollRepository,
-    topicRepo: GroupTopicRepository,
+    val authRepository: AuthRepository,
+    private val topicRepository: GroupTopicRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
+    private val _uiError = MutableStateFlow<AppError?>(null)
+    val uiError = _uiError.asStateFlow()
+
     val topicId = savedStateHandle.toRoute<TopicRoute>().topicId
 
-    private val commentsData = topicRepo.getTopicCommentsData(topicId)
+    private val commentsData = topicRepository.getTopicCommentsData(topicId)
 
     val popularComments =
         commentsData.first
@@ -52,7 +61,7 @@ class TopicViewModel @Inject constructor(
 
     val shouldShowSpinner = commentsData.first.map { it.isNotEmpty() }.stateInUi(false)
 
-    private val topicResult = topicRepo.getTopic(topicId).flowOn(Dispatchers.IO).stateInUi()
+    private val topicResult = topicRepository.getTopic(topicId).flowOn(Dispatchers.IO).stateInUi()
 
     val topic = topicResult.map { it?.data }.stateInUi()
 
@@ -183,6 +192,24 @@ class TopicViewModel @Inject constructor(
                     """.trimIndent()
     }.stateInUi()
 
+    val isLoggedIn = authRepository.isLoggedIn().stateInUi(false)
+
+    fun react(isVote: Boolean) {
+        viewModelScope.launch {
+            val result = topicRepository.react(
+                topicId = topicId,
+                reactionType = if (isVote) ReactionType.TYPE_VOTE else ReactionType.TYPE_CANCEL_VOTE
+            )
+            when (result) {
+                is AppResult.Error -> {
+                    _uiError.value = result.error
+                }
+
+                is AppResult.Success -> Unit
+            }
+        }
+    }
+
     val shouldShowPhotoList =
         topicResult.map { it?.data?.content?.contains("image-container") == false }.stateInUi()
 
@@ -204,4 +231,7 @@ class TopicViewModel @Inject constructor(
         shouldDisplayInvalidImageUrl = false
     }
 
+    fun clearUiError() {
+        _uiError.value = null
+    }
 }

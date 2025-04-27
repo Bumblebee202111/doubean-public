@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import androidx.room.Upsert
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicDetail
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItem
@@ -12,6 +13,7 @@ import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItemWithGr
 import com.github.bumblebee202111.doubean.data.db.model.TopicDetailPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicItemPartialEntity
+import com.github.bumblebee202111.doubean.data.db.model.TopicReactionPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicTagCrossRef
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -38,7 +40,10 @@ interface GroupTopicDao {
     suspend fun insertTopicDetail(topic: TopicDetailPartialEntity)
 
     @Upsert(entity = TopicEntity::class)
-    suspend fun upsertTopics(topics: List<TopicItemPartialEntity>)
+    suspend fun upsertTopicItems(topics: List<TopicItemPartialEntity>)
+
+    @Update(entity = TopicEntity::class)
+    suspend fun insertTopicReaction(topic: TopicReactionPartialEntity)
 
     @Transaction
     @Query("SELECT * FROM topics WHERE id=:topicId")
