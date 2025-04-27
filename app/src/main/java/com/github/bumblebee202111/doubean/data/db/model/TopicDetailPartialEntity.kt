@@ -2,6 +2,7 @@ package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.ColumnInfo
 import com.github.bumblebee202111.doubean.model.SizedImage
+import com.github.bumblebee202111.doubean.model.fangorns.ReactionType
 import java.time.LocalDateTime
 
 data class TopicDetailPartialEntity(
@@ -28,11 +29,14 @@ data class TopicDetailPartialEntity(
     @ColumnInfo("reaction_count")
     val reactionCount: Int? = null,
 
+    @ColumnInfo("is_collected")
+    val isCollected: Boolean?,
+
     @ColumnInfo("reshares_count")
     val resharesCount: Int? = null,
 
-    @ColumnInfo("save_count")
-    val saveCount: Int? = null,
+    @ColumnInfo("collections_count")
+    val collectionsCount: Int? = null,
 
     @ColumnInfo("comments_count")
     val commentsCount: Int? = null,
@@ -44,6 +48,9 @@ data class TopicDetailPartialEntity(
 
     @ColumnInfo("cover_url")
     val coverUrl: String? = null,
+
+    @ColumnInfo("reaction_type")
+    val reactionType: ReactionType? = null,
 
     val url: String,
 

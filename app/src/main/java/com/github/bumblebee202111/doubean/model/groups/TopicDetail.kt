@@ -2,6 +2,7 @@ package com.github.bumblebee202111.doubean.model.groups
 
 import com.github.bumblebee202111.doubean.model.SizedImage
 import com.github.bumblebee202111.doubean.model.User
+import com.github.bumblebee202111.doubean.model.fangorns.ReactionType
 import java.time.LocalDateTime
 
 data class TopicDetail(
@@ -10,18 +11,20 @@ data class TopicDetail(
     val author: User,
     val createTime: LocalDateTime,
     val updateTime: LocalDateTime,
-    val likeCount: Int? = null,
+    val likeCount: Int?,
     val editTime: LocalDateTime?,
-    val reactionCount: Int? = null,
-    val resharesCount: Int? = null,
-    val saveCount: Int? = null,
-    val commentCount: Int? = null,
-    val shortContent: String? = null,
+    val reactionCount: Int?,
+    val isCollected: Boolean?,
+    val resharesCount: Int?,
+    val collectionsCount: Int?,
+    val commentCount: Int?,
+    val shortContent: String?,
     val content: String?,
     val tags: List<GroupTopicTag>,
-    val coverUrl: String? = null,
+    val coverUrl: String?,
+    val reactionType: ReactionType?,
     val url: String,
-    val group: SimpleGroupWithColor? = null,
+    val group: SimpleGroupWithColor?,
     val uri: String,
     val images: List<SizedImage>?,
     val ipLocation: String?,

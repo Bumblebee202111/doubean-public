@@ -190,6 +190,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 - Expand/collapse component: Hide action for short text
 - Search suggestions
 - Profile/User
+  - Subject interests...
 - Login
   * Code-based (w/o pw)
 - Update logo: Swap bg/fg colors
