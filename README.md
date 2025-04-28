@@ -190,7 +190,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 - Expand/collapse component: Hide action for short text
 - Search suggestions
 - Profile/User
-  - Subject interests...
+  - Dou lists, my subject...
 - Login
   * Code-based (w/o pw)
 - Update logo: Swap bg/fg colors
@@ -199,7 +199,7 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 - Load state visualization (removed during Compose migrations for simplicity)
   - Paging 3 refresh, loading status ...
 - Restore dark mode & landscape support
-- ImageScreen -> Shared element transitions
+- ImageScreen → Shared element transitions
 - List item menus → dialog sheets
 - Improve model layering
 - Languages

@@ -8,7 +8,7 @@ import com.github.bumblebee202111.doubean.network.model.NetworkGroupTopicComment
 class GroupTopicCommentPagingSource(
     private val apiService: ApiService,
     private val topicId: String,
-    private val onTopCommentsFetched: (List<NetworkGroupTopicComment>) -> Unit,
+    private val onPopularCommentsFetched: (List<NetworkGroupTopicComment>) -> Unit,
 ) :
     PagingSource<Int, NetworkGroupTopicComment>() {
 
@@ -31,7 +31,7 @@ class GroupTopicCommentPagingSource(
             val prevKey = if (start == 0) null else (start - params.loadSize).coerceAtLeast(0)
             val nextKey = (start + params.loadSize).takeIf { it < response.total }
             response.topComments.filterIsInstance<NetworkGroupTopicComment>()
-                .takeIf { it.isNotEmpty() }?.let(onTopCommentsFetched)
+                .takeIf { it.isNotEmpty() }?.let(onPopularCommentsFetched)
             val realComments = response.comments.filterIsInstance<NetworkGroupTopicComment>()
             return LoadResult.Page(
                 data = realComments,

@@ -113,7 +113,9 @@ fun TopicItem(
                         text = stringResource(id = R.string.middle_dot),
                         modifier = Modifier.padding(horizontal = 4.dp)
                     )
-                    DateTimeText(text = topic.createTime.abbreviatedDateTimeString(LocalContext.current))
+                    DateTimeText(
+                        text = topic.createTime.abbreviatedDateTimeString(LocalContext.current)
+                    )
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.margin_small)))
                 val topicAndTagText = topic.tag?.let { tag ->
@@ -131,7 +133,9 @@ fun TopicItem(
                             text = stringResource(id = R.string.middle_dot),
                             modifier = Modifier.padding(horizontal = 4.dp)
                         )
-                        DateTimeText(text = topic.updateTime.abbreviatedDateTimeString(LocalContext.current))
+                        DateTimeText(
+                            text = topic.updateTime.abbreviatedDateTimeString(LocalContext.current)
+                        )
                     }
                 }
 
