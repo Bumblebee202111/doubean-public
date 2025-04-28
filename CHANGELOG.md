@@ -3,8 +3,12 @@ Change Log
 
 ## Version 0.8.4(804)
 
+- Topic
+  - Support react (vote) actions & viewing collection state (preparation for topic collecting support)
+  - Display edit time (if available) with animation
+  - Optimize code
+
 - Simplify caching of the group entity
-- Topic: Display edit time (if available) with animation
 - Fix Tab component min width for Group Getail
 
 ## Version 0.8.3(803)
