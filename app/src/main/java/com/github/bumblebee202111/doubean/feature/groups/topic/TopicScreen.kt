@@ -14,6 +14,7 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.with
@@ -51,6 +52,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
@@ -58,10 +60,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -109,6 +113,7 @@ import com.github.bumblebee202111.doubean.util.toColorOrPrimary
 import com.github.bumblebee202111.doubean.util.uiMessage
 import com.google.accompanist.web.rememberWebViewStateWithHTMLData
 import kotlinx.coroutines.delay
+import java.time.LocalDateTime
 
 @Composable
 fun TopicScreen(
@@ -192,10 +197,7 @@ fun TopicScreen(
     onReact: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current
-    var shouldShowDialog by remember {
-        mutableStateOf(false)
-    }
-
+    var shouldShowDialog by rememberSaveable { mutableStateOf(false) }
 
     var scrollToCommentItemIndex: Int? by remember {
         mutableStateOf(null)
@@ -204,13 +206,22 @@ fun TopicScreen(
 
     val itemCountBeforeComments = 2
 
-    scrollToCommentItemIndex?.let { index ->
-        LaunchedEffect(index) {
-            listState.scrollToItem(itemCountBeforeComments + index)
-            snapshotFlow {
-                allCommentLazyPagingItems.loadState
-            }.awaitNotLoading()
-            listState.scrollToItem(itemCountBeforeComments + index)
+    LaunchedEffect(scrollToCommentItemIndex) {
+        val targetIndex = scrollToCommentItemIndex
+        if (targetIndex != null) {
+            val maxIndex = when (commentSortBy) {
+                TopicCommentSortBy.TOP -> popularCommentsLazyPagingItems.size - 1
+                TopicCommentSortBy.ALL -> allCommentLazyPagingItems.itemCount - 1
+            }
+            val clampedIndex = targetIndex.coerceIn(0, maxIndex.coerceAtLeast(0))
+
+            listState.scrollToItem(itemCountBeforeComments + clampedIndex)
+
+            if (commentSortBy == TopicCommentSortBy.ALL) {
+                snapshotFlow { allCommentLazyPagingItems.loadState }
+                    .awaitNotLoading()
+                listState.scrollToItem(itemCountBeforeComments + clampedIndex)
+            }
             scrollToCommentItemIndex = null
         }
     }
@@ -232,8 +243,8 @@ fun TopicScreen(
 
     Scaffold(
         topBar = {
-            var appBarMenuExpanded by remember { mutableStateOf(false) }
-            var viewInMenuExpanded by remember { mutableStateOf(false) }
+            var appBarMenuExpanded by rememberSaveable { mutableStateOf(false) }
+            var viewInMenuExpanded by rememberSaveable { mutableStateOf(false) }
             val groupColor = groupColorString.toColorOrPrimary()
             DoubeanTopAppBar(
                 title = {
@@ -264,16 +275,18 @@ fun TopicScreen(
                     DropdownMenu(
                         expanded = appBarMenuExpanded,
                         onDismissRequest = { appBarMenuExpanded = false }) {
-                        if (topic != null) {
+                        val canJump = when (commentSortBy) {
+                            TopicCommentSortBy.TOP -> popularCommentsLazyPagingItems.isNotEmpty()
+                            TopicCommentSortBy.ALL -> allCommentLazyPagingItems.itemCount > 0
+                        }
+                        if (topic != null && canJump) {
                             DropdownMenuItem(
-                                text = {
-                                    Text(text = "Jump to comment")
-                                },
+                                text = { Text(text = stringResource(R.string.jump_to_comment)) },
                                 onClick = {
                                     appBarMenuExpanded = false
                                     shouldShowDialog = true
-                                })
-
+                                }
+                            )
                         }
                         DropdownMenuItem(
                             text = {
@@ -296,11 +309,15 @@ fun TopicScreen(
                         onDismissRequest = { viewInMenuExpanded = false }) {
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.view_in_web)) },
-                            onClick = { topic?.url?.let(onWebViewClick) })
+                            onClick = {
+                                viewInMenuExpanded = false
+                                topic?.url?.let(onWebViewClick)
+                            })
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.view_in_douban)) },
                             onClick = {
                                 topic?.uri?.let {
+                                    viewInMenuExpanded = false
                                     OpenInUtils.openInDouban(context, it)
                                 }
                             })
@@ -312,29 +329,27 @@ fun TopicScreen(
         },
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
-        if (contentHtml != null) {
+        if (contentHtml != null && topic != null) {
             LazyColumn(
                 contentPadding = paddingValues,
                 state = listState,
                 modifier = Modifier.fillMaxSize()
             ) {
 
-                topic?.let { topic ->
-                    item(key = "TopicDetailHeader", contentType = "TopicDetailHeader") {
-                        LocalPinnableContainer.current?.pin()
-                        TopicHeader(
-                            topic = topic,
-                            shouldShowPhotoList = shouldShowPhotoList,
-                            contentHtml = contentHtml,
-                            isLoggedIn = isLoggedIn,
-                            onImageClick = onImageClick,
-                            onGroupClick = onGroupClick,
-                            onReshareStatusesClick = onReshareStatusesClick,
-                            onOpenDeepLinkUrl = onOpenDeepLinkUrl,
-                            displayInvalidImageUrl = displayInvalidImageUrl,
-                            onReact = onReact,
-                        )
-                    }
+                item(key = "TopicDetailHeader", contentType = "TopicDetailHeader") {
+                    LocalPinnableContainer.current?.pin()
+                    TopicHeader(
+                        topic = topic,
+                        shouldShowPhotoList = shouldShowPhotoList,
+                        contentHtml = contentHtml,
+                        isLoggedIn = isLoggedIn,
+                        onImageClick = onImageClick,
+                        onGroupClick = onGroupClick,
+                        onReshareStatusesClick = onReshareStatusesClick,
+                        onOpenDeepLinkUrl = onOpenDeepLinkUrl,
+                        displayInvalidImageUrl = displayInvalidImageUrl,
+                        onReact = onReact,
+                    )
                 }
 
                 if (shouldShowSpinner) {
@@ -354,73 +369,80 @@ fun TopicScreen(
                     }
 
                 }
-                if (topic != null) {
-                    when (commentSortBy) {
-                        TopicCommentSortBy.TOP -> {
-                            items(
-                                count = popularCommentsLazyPagingItems.size,
-                                key = { popularCommentsLazyPagingItems[it].id },
-                                contentType = { "TopicComment" }) { index ->
+                when (commentSortBy) {
+                    TopicCommentSortBy.TOP -> {
+                        items(
+                            count = popularCommentsLazyPagingItems.size,
+                            key = { popularCommentsLazyPagingItems[it].id },
+                            contentType = { "TopicComment" }) { index ->
+                            TopicComment(
+                                comment = popularCommentsLazyPagingItems[index],
+                                topic = topic,
+                                onImageClick = onImageClick
+                            )
+                            if (index < popularCommentsLazyPagingItems.size - 1)
+                                HorizontalDivider(thickness = 1.dp)
+                        }
+                    }
+
+                    TopicCommentSortBy.ALL -> {
+                        items(
+                            count = allCommentLazyPagingItems.itemCount,
+                            key = allCommentLazyPagingItems.itemKey { it.id },
+                            contentType = allCommentLazyPagingItems.itemContentType { "TopicComment" }) { index ->
+                            allCommentLazyPagingItems[index]?.let {
                                 TopicComment(
-                                    comment = popularCommentsLazyPagingItems[index],
-                                    groupColor = groupColorString,
+                                    comment = it,
                                     topic = topic,
                                     onImageClick = onImageClick
                                 )
-                                if (index < popularCommentsLazyPagingItems.size - 1)
+                                if (index < allCommentLazyPagingItems.itemCount - 1)
                                     HorizontalDivider(thickness = 1.dp)
                             }
-                        }
 
-                        TopicCommentSortBy.ALL -> {
-                            items(
-                                count = allCommentLazyPagingItems.itemCount,
-                                key = allCommentLazyPagingItems.itemKey { it.id },
-                                contentType = allCommentLazyPagingItems.itemContentType { "TopicComment" }) { index ->
-                                allCommentLazyPagingItems[index]?.let {
-                                    TopicComment(
-                                        comment = it,
-                                        groupColor = groupColorString,
-                                        topic = topic,
-                                        onImageClick = onImageClick
-                                    )
-                                    if (index < allCommentLazyPagingItems.itemCount - 1)
-                                        HorizontalDivider(thickness = 1.dp)
-                                }
-
-                            }
                         }
                     }
                 }
 
-
             }
         }
 
     }
-    (if (commentSortBy == TopicCommentSortBy.TOP) popularCommentsLazyPagingItems.size else topic?.commentCount)?.let {
-        if (shouldShowDialog) {
-
-            JumpToCommentOfIndexDialog(
-                currentCommentIndex = (listState.firstVisibleItemIndex - itemCountBeforeComments).coerceAtLeast(
-                    0
-                ),
-                commentCount = it,
-                onDismissRequest = {
-                    shouldShowDialog = false
-                }) { index ->
-                scrollToCommentItemIndex = index
-            }
+    val commentCount = remember(
+        commentSortBy,
+        popularCommentsLazyPagingItems,
+        allCommentLazyPagingItems.itemCount
+    ) {
+        when (commentSortBy) {
+            TopicCommentSortBy.TOP -> popularCommentsLazyPagingItems.size
+            TopicCommentSortBy.ALL -> allCommentLazyPagingItems.itemCount
         }
     }
-
+    if (shouldShowDialog && commentCount > 0) {
+        val firstVisibleItemIndex by remember { derivedStateOf { listState.firstVisibleItemIndex } }
+        JumpToCommentOfIndexDialog(
+            currentCommentIndex = (firstVisibleItemIndex - itemCountBeforeComments).coerceAtLeast(
+                0
+            ),
+            commentCount = commentCount,
+            onDismissRequest = {
+                shouldShowDialog = false
+            }) { index ->
+            scrollToCommentItemIndex = index
+        }
+    }
 }
+
 
 @Composable
 fun JumpToCommentOfIndexDialog(
     currentCommentIndex: Int, commentCount: Int, onDismissRequest: () -> Unit,
     jumpToCommentOfIndex: (newCommentIndex: Int) -> Unit,
 ) {
+    if (commentCount <= 1) {
+        onDismissRequest()
+        return
+    }
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
@@ -429,8 +451,8 @@ fun JumpToCommentOfIndexDialog(
             shape = RoundedCornerShape(16.dp),
         ) {
             JumpToCommentOfIndexSlider(
-                currentCommentIndex = currentCommentIndex,
-                commentCount = commentCount,
+                initialCommentIndex = currentCommentIndex,
+                maxCommentIndex = commentCount - 1,
                 onTargetCommentIndexConfirmed = {
                     onDismissRequest()
                     jumpToCommentOfIndex(it)
@@ -442,29 +464,40 @@ fun JumpToCommentOfIndexDialog(
 
 @Composable
 fun JumpToCommentOfIndexSlider(
-    currentCommentIndex: Int,
-    commentCount: Int,
+    initialCommentIndex: Int,
+    maxCommentIndex: Int,
     onTargetCommentIndexConfirmed: (newCommentIndex: Int) -> Unit,
 ) {
-    var sliderPosition by remember { mutableIntStateOf(currentCommentIndex) }
-    val steps = commentCount - 1
-    Column(modifier = Modifier.padding(16.dp)) {
-        fun Int.toDisplayPosition() = (this + 1).toString()
-
-        Slider(
-            value = sliderPosition.toFloat(),
-            onValueChange = { sliderPosition = it.toInt() },
-            steps = steps - 1,
-            valueRange = 0f..steps.toFloat(),
-            onValueChangeFinished = { onTargetCommentIndexConfirmed(sliderPosition) },
-        )
-        Text(
-            text = "${sliderPosition.toDisplayPosition()}/$commentCount",
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
+    var sliderPosition by rememberSaveable(initialCommentIndex) {
+        mutableFloatStateOf(
+            initialCommentIndex.toFloat()
         )
     }
-
+    val steps = (maxCommentIndex - 1).coerceAtLeast(0)
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text(
+            text = stringResource(R.string.jump_to_comment),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .padding(bottom = 8.dp)
+                .align(Alignment.CenterHorizontally)
+        )
+        Slider(
+            value = sliderPosition,
+            onValueChange = { sliderPosition = it },
+            steps = steps,
+            valueRange = 0f..maxCommentIndex.toFloat(),
+            onValueChangeFinished = {
+                onTargetCommentIndexConfirmed(sliderPosition.toInt())
+            },
+        )
+        Text(
+            text = "${sliderPosition.toInt() + 1} / ${maxCommentIndex + 1}",
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
 }
 
 @Preview
@@ -509,13 +542,16 @@ fun TopicHeader(
                 }
                 Spacer(Modifier.height(8.dp))
             }
-            Row(Modifier.padding(horizontal = 16.dp)) {
+            Row(
+                Modifier.padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 UserProfileImage(
                     url = topic.author.avatar,
                     size = dimensionResource(id = R.dimen.icon_size_large)
                 )
                 Spacer(Modifier.width(8.dp))
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = topic.author.name,
                         overflow = TextOverflow.Ellipsis,
@@ -524,52 +560,26 @@ fun TopicHeader(
                     )
                     Spacer(Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        var showCreateTime by remember { mutableStateOf(true) }
-                        val createTime = topic.createTime
-                        val editTime = topic.editTime
-                        when {
-                            editTime != null -> {
-                                LaunchedEffect(Unit) {
-                                    while (true) {
-                                        delay(3000)
-                                        showCreateTime = !showCreateTime
-                                    }
-                                }
-
-                                AnimatedContent(
-                                    targetState = showCreateTime,
-                                    transitionSpec = {
-                                        fadeIn() with fadeOut() using SizeTransform(clip = false)
-                                    },
-                                    label = "timeAnimation"
-                                ) { target ->
-                                    DateTimeText(
-                                        text = if (target) createTime.fullDateTimeString() else stringResource(
-                                            R.string.content_edited, editTime.fullDateTimeString()
-                                        )
-                                    )
-                                }
-                            }
-
-                            else -> {
-                                DateTimeText(
-                                    text = createTime.fullDateTimeString()
-                                )
-                            }
-
-                        }
+                        TopicTimeDisplay(
+                            createTime = topic.createTime,
+                            editTime = topic.editTime
+                        )
                         topic.ipLocation?.let {
                             Text(
-                                text = it,
-                                style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier.padding(start = 8.dp)
+                                text = " · $it",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(start = dimensionResource(R.dimen.margin_extra_small))
                             )
                         }
                     }
                 }
             }
             Spacer(Modifier.height(8.dp))
-            if (shouldShowPhotoList == true) {
+            val showPhotos = remember(shouldShowPhotoList, topic.images) {
+                shouldShowPhotoList == true && !topic.images.isNullOrEmpty()
+            }
+            if (showPhotos) {
                 topic.images?.let { images ->
                     LazyRow(
                         contentPadding = PaddingValues(horizontal = 16.dp),
@@ -591,11 +601,11 @@ fun TopicHeader(
                     }
                 }
             }
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(12.dp))
             Text(
                 text = topic.title,
                 modifier = Modifier.padding(horizontal = 16.dp),
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.headlineSmall
             )
             Spacer(Modifier.height(8.dp))
             topic.tag?.let { tag ->
@@ -617,10 +627,10 @@ fun TopicHeader(
             Row(
                 modifier = Modifier
                     .padding(
-                        horizontal = dimensionResource(id = R.dimen.margin_normal),
+                        horizontal = 12.dp,
                     )
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 topic.commentCount?.let { count ->
                     CountItem(
@@ -646,12 +656,55 @@ fun TopicHeader(
                 topic.collectionsCount?.let { count ->
                     CountItem(
                         count = count,
-                        labelRes = R.plurals.saves
+                        labelRes = R.plurals.collections
                     )
                 }
             }
             TopicSocialActions(topic = topic, isLoggedIn = isLoggedIn, onReact = onReact)
         }
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+private fun TopicTimeDisplay(createTime: LocalDateTime, editTime: LocalDateTime?) {
+    var showCreateTime by rememberSaveable { mutableStateOf(true) }
+
+    if (editTime != null && editTime != createTime) {
+        LaunchedEffect(Unit) {
+            while (true) {
+                delay(3000L)
+                showCreateTime = !showCreateTime
+            }
+        }
+
+        AnimatedContent(
+            targetState = showCreateTime,
+            transitionSpec = {
+                fadeIn(animationSpec = tween(durationMillis = 300)) with
+                        fadeOut(animationSpec = tween(durationMillis = 300)) using
+                        SizeTransform(clip = false)
+            },
+            label = "timeAnimation"
+        ) { targetStateIsCreateTime ->
+            val timeToShow = if (targetStateIsCreateTime) createTime else editTime
+            val text = if (targetStateIsCreateTime) {
+                timeToShow.fullDateTimeString()
+            } else {
+                stringResource(R.string.content_edited, timeToShow.fullDateTimeString())
+            }
+            DateTimeText(
+                text = text,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    } else {
+        DateTimeText(
+            text = createTime.fullDateTimeString(),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
@@ -691,13 +744,16 @@ private fun ContentWebView(
                         if (webViewHitTestResult.type == WebView.HitTestResult.IMAGE_TYPE ||
                             webViewHitTestResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
                         ) {
-                            val imageUrl = webViewHitTestResult.extra!!
-                            if (URLUtil.isValidUrl(imageUrl)) {
-                                val largeImageUrl =
-                                    topic.images?.firstOrNull { image -> image.normal.url == imageUrl }?.large?.url
-                                        ?: return@setOnTouchListener false
+                            val imageUrl = webViewHitTestResult.extra
+                            if (imageUrl != null && URLUtil.isValidUrl(imageUrl)) {
+                                val largeImageUrl = topic.images
+                                    ?.firstOrNull { it.normal.url == imageUrl }
+                                    ?.large?.url
+                                    ?: imageUrl
                                 onImageClick(largeImageUrl)
-                            } else {
+                                return@setOnTouchListener true
+                            } else if (imageUrl != null) {
+                                Log.w("ContentWebView", "Invalid image URL clicked: $imageUrl")
                                 displayInvalidImageUrl()
                             }
                         }
@@ -713,18 +769,30 @@ private fun ContentWebView(
                     view: WebView?,
                     url: String?,
                 ): Boolean {
-                    if (url == null) return false
-                    try {
-                        onOpenDeepLinkUrl(url)
-                    } catch (e: IllegalArgumentException) {
-                        Log.i("ContentWebView", "shouldOverrideUrlLoading: $e")
-                        OpenInUtils.viewInActivity(context, url)
-                    }
-                    return true
+                    return url?.let { handleUrlLoading(context, it, onOpenDeepLinkUrl) } ?: false
                 }
             }
         },
     )
+}
+
+private fun handleUrlLoading(
+    context: Context,
+    url: String,
+    onOpenDeepLinkUrl: (String) -> Unit,
+): Boolean {
+    Log.d("ContentWebView", "Link clicked: $url")
+    try {
+        onOpenDeepLinkUrl(url)
+        return true
+    } catch (e: IllegalArgumentException) {
+        Log.i("ContentWebView", "Not a deep link, opening externally: $url")
+        OpenInUtils.viewInActivity(context, url)
+        return true
+    } catch (e: Exception) {
+        Log.e("ContentWebView", "Error handling URL click: $url", e)
+        return false
+    }
 }
 
 @Composable
@@ -734,27 +802,20 @@ private fun CountItem(
     onClick: (() -> Unit)? = null,
 ) {
     val text = pluralStringResource(labelRes, count, count)
-
-    val modifier = Modifier
-        .padding(8.dp)
-        .wrapContentWidth()
-        .then(
-            if (onClick != null) {
-                Modifier.clickable(onClick = onClick)
-            } else {
-                Modifier
-            }
-        )
-
+    val isClickable = onClick != null
     Text(
         text = text,
-        style = MaterialTheme.typography.bodyMedium,
-        color = if (onClick != null) {
-            MaterialTheme.colorScheme.secondary.copy(alpha = 0.9f)
+        style = MaterialTheme.typography.bodySmall,
+        color = if (isClickable) {
+            MaterialTheme.colorScheme.primary
         } else {
             MaterialTheme.colorScheme.onSurfaceVariant
         },
-        modifier = modifier
+        modifier = Modifier
+            .clip(MaterialTheme.shapes.small)
+            .then(if (isClickable) Modifier.clickable(onClick = onClick) else Modifier)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .wrapContentWidth()
     )
 }
 
@@ -766,25 +827,31 @@ private fun TopicSocialActions(
     onReact: (Boolean) -> Unit = {},
 ) {
     val context = LocalContext.current
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-
-        if (isLoggedIn) {
-            topic?.reactionType?.let { reactionType ->
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
+        horizontalArrangement = Arrangement.SpaceAround
+    ) {
+        if (isLoggedIn && topic != null) {
+            topic.reactionType?.let { reactionType ->
                 IconButton(
                     onClick = {
                         onReact(reactionType != ReactionType.TYPE_VOTE)
                     }) {
+                    val isVoted = topic.reactionType == ReactionType.TYPE_VOTE
                     Icon(
                         imageVector = if (reactionType == ReactionType.TYPE_VOTE) Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp,
-                        contentDescription = null
+                        contentDescription = null,
+                        tint = if (isVoted) MaterialTheme.colorScheme.primary else LocalContentColor.current
                     )
                 }
             }
 
-            topic?.isCollected?.let { isCollected ->
+            topic.isCollected?.let { isCollected ->
                 IconButton(
-                    onClick = { },//TODO
-                    enabled = false
+                    onClick = {/* TODO: Implement Save/Unsave action */ },
+                    enabled = false //// Disabled for now
                 ) {
                     Icon(
                         imageVector = if (isCollected) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
@@ -843,11 +910,12 @@ private enum class TopicCommentSortOption(
 }
 
 private fun shareTopic(context: Context, topic: TopicDetail) {
-    val shareText = StringBuilder()
-    topic.group?.name.let { groupName ->
-        shareText.append(groupName)
+    val shareText = buildString {
+        topic.group?.name?.let { append(it) }
+        topic.tag?.let { append("|${it.name}") }
+        if (topic.group != null || topic.tag != null) append(" ")
+
+        append("@${topic.author.name}${context.getString(R.string.colon)} ${topic.title}\n${topic.url}")
     }
-    topic.tag?.let { tag -> shareText.append("|" + tag.name) }
-    shareText.append("@${topic.author.name}： ${topic.title}${topic.url}${topic.content}")
     ShareUtil.share(context = context, shareText = shareText)
 }

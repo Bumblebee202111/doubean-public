@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.shared.TopicActivityItemUserProfileImage
+import com.github.bumblebee202111.doubean.model.SizedImage
 import com.github.bumblebee202111.doubean.model.SizedPhoto
 import com.github.bumblebee202111.doubean.model.User
 import com.github.bumblebee202111.doubean.model.groups.TopicComment
@@ -53,18 +55,18 @@ import java.time.LocalDateTime
 @Composable
 fun TopicComment(
     comment: TopicComment,
-    groupColor: String?,
     topic: TopicDetail,
     onImageClick: (url: String) -> Unit,
 ) {
 
     val context = LocalContext.current
+    val groupThemeColor = topic.group?.color.toColorOrPrimary()
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(start = 16.dp, end = 4.dp)
     ) {
-        Spacer(modifier = Modifier.width(16.dp))
         Row(
             Modifier
                 .padding(vertical = 12.dp)
@@ -76,38 +78,41 @@ fun TopicComment(
                 //header
                 TopicCommentHeaderRow(
                     author = comment.author,
-                    topic = topic,
-                    groupColor = groupColor,
+                    isOp = comment.author.id == topic.author.id,
+                    groupColor = groupThemeColor,
                     createTime = comment.createTime,
                     ipLocation = comment.ipLocation,
-                    showAuthorAvatar = false
-                )
+                    showAuthorAvatar = false,
+
+                    )
                 comment.refComment?.let { refComment ->
                     Spacer(modifier = Modifier.height(4.dp))
                     TopicRefCommentCard(
                         refComment = refComment,
-                        topic = topic,
-                        groupColor = groupColor,
+                        topicAuthorId = topic.author.id,
+                        groupColor = groupThemeColor,
                         onImageClick = onImageClick
                     )
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = comment.text ?: "", style = MaterialTheme.typography.bodyMedium)
-                comment.photos.takeUnless(List<SizedPhoto>?::isNullOrEmpty)?.let {
+                comment.photos.takeUnless(List<SizedPhoto>?::isNullOrEmpty)?.let { photos ->
+                    Spacer(modifier = Modifier.height(8.dp))
+                    val images: List<SizedImage> = remember(photos) { photos.map { it.image } }
                     Spacer(modifier = Modifier.height(4.dp))
                     ListItemImages(
-                        images = it.map(SizedPhoto::image),
+                        images = images,
                         onImageClick = { image -> onImageClick(image.large.url) }
                     )
                 }
-                comment.voteCount.takeIf { it != 0 }?.let {
+                comment.voteCount.takeIf { it > 0 }?.let {
                     Spacer(modifier = Modifier.height(8.dp))
                     ListItemCount(iconVector = Icons.Outlined.ThumbUp, count = it)
                 }
             }
         }
 
-        Box(modifier = Modifier.padding(all = 2.dp)) {
+        Box(modifier = Modifier.padding(top = 4.dp)) {
             var expanded by remember { mutableStateOf(false) }
 
             IconButton(onClick = { expanded = true }) {
@@ -134,12 +139,13 @@ fun TopicComment(
 @Composable
 private fun TopicCommentHeaderRow(
     author: User?,
-    topic: TopicDetail,
-    groupColor: String?,
+    isOp: Boolean,
+    groupColor: Color,
     createTime: LocalDateTime?,
     ipLocation: String?,
     showAuthorAvatar: Boolean,
-) {
+
+    ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         if (showAuthorAvatar) {
             UserProfileImage(url = author?.avatar, size = 16.dp)
@@ -148,17 +154,17 @@ private fun TopicCommentHeaderRow(
         Text(
             text = author?.name ?: "",
             modifier = Modifier.weight(weight = 1f, fill = false),
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Medium,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             style = MaterialTheme.typography.labelLarge
         )
-        if (author?.id == topic.author.id) {
+        if (isOp) {
             Text(
                 text = stringResource(id = R.string.op),
                 modifier = Modifier.padding(start = 4.dp),
-                color = groupColor.toColorOrPrimary(),
-                style = MaterialTheme.typography.bodyMedium
+                color = groupColor,
+                style = MaterialTheme.typography.labelSmall
             )
         }
         createTime?.let {
@@ -166,13 +172,27 @@ private fun TopicCommentHeaderRow(
                 text = stringResource(id = R.string.middle_dot),
                 modifier = Modifier.padding(
                     horizontal = 4.dp
-                )
+                ),
+                style = MaterialTheme.typography.labelLarge
             )
-            DateTimeText(text = it.intermediateDateTimeString())
+            DateTimeText(
+                text = it.intermediateDateTimeString(),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
         Spacer(modifier = Modifier.width(4.dp))
-        if (ipLocation != null) {
-            Text(text = ipLocation, style = MaterialTheme.typography.bodyMedium)
+        ipLocation?.takeIf { it.isNotBlank() }?.let { loc ->
+            Text(
+                text = stringResource(id = R.string.middle_dot),
+                modifier = Modifier.padding(horizontal = 4.dp),
+                style = MaterialTheme.typography.labelLarge
+            )
+            Text(
+                text = loc,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
@@ -180,15 +200,15 @@ private fun TopicCommentHeaderRow(
 @Composable
 private fun TopicRefCommentCard(
     refComment: TopicRefComment,
-    topic: TopicDetail,
-    groupColor: String?,
+    topicAuthorId: String,
+    groupColor: Color,
     onImageClick: (url: String) -> Unit,
 ) {
     OutlinedCard(modifier = Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Column(Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
             TopicCommentHeaderRow(
                 author = refComment.author,
-                topic = topic,
+                isOp = refComment.author.id == topicAuthorId,
                 groupColor = groupColor,
                 createTime = refComment.createTime,
                 ipLocation = refComment.ipLocation,
@@ -199,14 +219,15 @@ private fun TopicRefCommentCard(
                 Text(text = it, style = MaterialTheme.typography.bodyMedium)
 
             }
-            refComment.photos?.takeUnless(List<SizedPhoto>?::isNullOrEmpty)?.let {
-                Spacer(modifier = Modifier.height(4.dp))
+            refComment.photos?.takeUnless(List<SizedPhoto>?::isNullOrEmpty)?.let { photos ->
+                val images = remember(photos) { photos.map { it.image } }
+                Spacer(modifier = Modifier.height(8.dp))
                 ListItemImages(
-                    images = it.map(SizedPhoto::image),
+                    images = images,
                     onImageClick = { image -> onImageClick(image.large.url) }
                 )
             }
-            refComment.voteCount.takeIf { it != 0 }?.let {
+            refComment.voteCount.takeIf { it > 0 }?.let {
                 Spacer(modifier = Modifier.height(8.dp))
                 ListItemCount(iconVector = Icons.Outlined.ThumbUp, count = it)
             }

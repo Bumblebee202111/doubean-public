@@ -69,8 +69,7 @@ class GroupTopicRepository @Inject constructor(
                 pageSize = RESULT_COMMENTS_PAGE_SIZE,
                 prefetchDistance = RESULT_COMMENTS_PAGE_SIZE / 2,
                 enablePlaceholders = true,
-                initialLoadSize = RESULT_COMMENTS_PAGE_SIZE,
-                jumpThreshold = RESULT_COMMENTS_PAGE_SIZE * 2
+                initialLoadSize = RESULT_COMMENTS_PAGE_SIZE
             ),
             pagingSourceFactory = {
                 GroupTopicCommentPagingSource(apiService, topicId) {

@@ -102,8 +102,8 @@ fun ReshareStatusesScreen(
                             UserNameText(reshareStatus?.author?.name ?: "")
                             reshareStatus?.createTime?.let {
                                 DateTimeText(
-                                    modifier = Modifier.padding(start = 4.dp),
                                     text = it.intermediateDateTimeString(),
+                                    modifier = Modifier.padding(start = 4.dp)
                                 )
                             }
                         }

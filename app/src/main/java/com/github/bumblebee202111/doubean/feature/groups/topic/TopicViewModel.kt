@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package com.github.bumblebee202111.doubean.feature.groups.topic
 
 import android.util.Log
@@ -26,10 +28,11 @@ import com.github.bumblebee202111.doubean.model.groups.TopicCommentSortBy
 import com.github.bumblebee202111.doubean.model.groups.TopicContentEntityId
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.math.RoundingMode
@@ -48,32 +51,31 @@ class TopicViewModel @Inject constructor(
 
     val topicId = savedStateHandle.toRoute<TopicRoute>().topicId
 
-    private val commentsData = topicRepository.getTopicCommentsData(topicId)
+    private val commentsDataFlows = topicRepository.getTopicCommentsData(topicId)
 
-    val popularComments =
-        commentsData.first
+    val popularComments = commentsDataFlows.first
 
-    val allComments = commentsData.second.cachedIn(viewModelScope)
+    val allComments = commentsDataFlows.second.cachedIn(viewModelScope)
 
     private val _commentsSortBy: MutableStateFlow<TopicCommentSortBy> =
         MutableStateFlow(TopicCommentSortBy.ALL)
     val commentsSortBy = _commentsSortBy.asStateFlow()
 
-    val shouldShowSpinner = commentsData.first.map { it.isNotEmpty() }.stateInUi(false)
+    val shouldShowSpinner = commentsDataFlows.first.map { it.isNotEmpty() }.stateInUi(false)
 
-    private val topicResult = topicRepository.getTopic(topicId).flowOn(Dispatchers.IO).stateInUi()
+    private val topicResult = topicRepository.getTopic(topicId).stateInUi()
 
     val topic = topicResult.map { it?.data }.stateInUi()
 
-    val contentHtml = topicResult.map {
-        if (it == null || it is Result.Loading) return@map null
-        val content = it.data?.content ?: return@map null
+    val contentHtml = topicResult.flatMapLatest { topicResultData ->
+        val content = topicResultData?.data?.content
+        if (topicResultData == null || topicResultData is Result.Loading || content == null) {
+            return@flatMapLatest flowOf(null)
+        }
 
-        val regex =
-            "(<div data-entity-type=\"(poll|question)\" data-id=\"(\\d*)\">)<div class=\"(poll|question)-wrapper\"><div class=\"(poll|question)-title\"><span>[^<>]*</span></div></div>(</div>)".toRegex()
-        val matchResults = regex.findAll(content)
+        val matchResults = CONTENT_ENTITY_REGEX.findAll(content)
 
-        val ids: List<TopicContentEntityId> = matchResults.map { matchResult ->
+        val ids: List<TopicContentEntityId> = matchResults.mapNotNull { matchResult ->
             val groupValues = matchResult.groupValues
             when (groupValues[2]) {
                 "poll" -> {
@@ -85,111 +87,39 @@ class TopicViewModel @Inject constructor(
                 }
 
                 else -> {
-                    throw IllegalArgumentException()
+                    Log.w(
+                        "TopicViewModel",
+                        "Unknown entity type found in content: ${groupValues.getOrNull(2)}"
+                    )
+                    null
                 }
             }
         }.toList()
-        val entities = pollRepository.getPollsAndQuestions(ids).getOrNull() ?: return@map null
-        var index = 0
-        val expandedContentElement = content.replace(regex) { matchResult ->
-            val groupValues = matchResult.groupValues
-            buildString {
-                append(groupValues[1])
-                when (val entity = entities[index++]) {
-                    is Poll -> {
-                        val showOptionCounts =
-                            entity.options.find { option -> option.votedUserCount > 0 } != null
 
-                        val optionElements = entity.options.joinToString("") { option ->
-                            """
-<label class="poll-label">
-    <span class="poll-checkbox">
-        <input type="radio">
-    </span>
-    <span class="poll-option">
-        <span class="poll-option-title">${option.title.htmlEncode()}</span>
-        <span class="poll-option-voted-count">${
-                                if (showOptionCounts) {
-                                    "${option.votedUserCount}（${roundedPercentage(option.votedUserCount.toFloat() / entity.votedUserCount)}%"
-                                } else ""
-                            }</span>
-    </span>
-</label>
-""".trimIndent()
+        if (ids.isEmpty()) {
+            return@flatMapLatest flowOf(formatHtmlContent(content))
+        }
+
+        flowOf(pollRepository.getPollsAndQuestions(ids)).map { entitiesResult ->
+            entitiesResult.getOrNull()?.let { entities ->
+                val expandedContentElement = content.replace(CONTENT_ENTITY_REGEX) { matchResult ->
+                    val groupValues = matchResult.groupValues
+
+                    buildString {
+                        append(groupValues[1]) // Append prefix like <div data-entity-type="...">
+                        entities.forEach {
+                            when (it) {
+                                is Poll -> append(buildPollHtml(it))
+                                is Question -> append(buildQuestionHtml(it))
+                            }
                         }
-                        append(
-                            """
-<div class="poll-wrapper rendered">
-    <div class="poll-title">
-        <span>${entity.title.htmlEncode()}(${
-                                if (entity.votedLimit == 1) "单选" else "最多选${entity.votedLimit}项"
-                            })</span>
-        ${
-                                entity.expireTime?.let { expireTime ->
-                                    "<span class=\"poll-expire-time\"> · Poll expires at $expireTime</span>"
-                                } ?: ""
-
-                            }
-    </div>
-    <div class="poll-meta">
-        <span>${entity.votedUserCount}人参与</span>
-    </div>
-    <div class="poll-content">
-        <form class="poll-options">
-           $optionElements
-        </form>
-    </div>
-</div>
-                        """.trimIndent()
-                        )
-                    }
-
-                    is Question -> {
-                        append(
-                            """
-<div class="question-wrapper rendered${if (entity.correctAnswer.isNotBlank()) " has-correct" else ""}">
-    <div class="question-title">
-        <span>${entity.title.htmlEncode()}</span>
-        ${
-                                entity.expireTime?.let { expireTime ->
-                                    "<span class=\"question-expire-time\"> · Question expires at $expireTime</span>"
-                                } ?: ""
-                            }
-    </div>
-    <div class="question-meta"><span>${entity.postedUserCount}人参与</span></div>
-    ${
-                                entity.correctAnswer.takeUnless { answer -> answer.isBlank() }
-                                    ?.let { correctAnswer ->
-                                        """
-        <div class="question-content">
-        <form>
-            <div class="question-result">
-                <div class="question-result-answer">正确答案：$correctAnswer</div>
-            </div>
-        </form>
-    </div>
-    """.trimIndent()
-                                    } ?: ""
-                            }
-</div>
-                        """.trimIndent()
-                        )
+                        append(groupValues[6]) // Append suffix </div>
                     }
                 }
-                append(groupValues[6])
-            }
-
+                Log.d("Topic detail", "content: $expandedContentElement")
+                formatHtmlContent(expandedContentElement)
+            } ?: formatHtmlContent(content)
         }
-        Log.d("Topic detail", "content: $expandedContentElement")
-        return@map """
-<!DOCTYPE html>
-<head>
-    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
-</head>
-<body>
-    $expandedContentElement
-<body>
-                    """.trimIndent()
     }.stateInUi()
 
     val isLoggedIn = authRepository.isLoggedIn().stateInUi(false)
@@ -211,16 +141,18 @@ class TopicViewModel @Inject constructor(
     }
 
     val shouldShowPhotoList =
-        topicResult.map { it?.data?.content?.contains("image-container") == false }.stateInUi()
+        topicResult.map { it?.data?.content?.contains("image-container") == false }
+            .stateInUi()
 
     var shouldDisplayInvalidImageUrl by mutableStateOf(false)
+        private set
 
     fun updateCommentsSortBy(commentSortBy: TopicCommentSortBy) {
         _commentsSortBy.value = commentSortBy
     }
 
     private fun roundedPercentage(f: Float): Double {
-        return f.toBigDecimal().setScale(1, RoundingMode.UP).toDouble()
+        return f.toBigDecimal().setScale(1, RoundingMode.HALF_UP).toDouble()
     }
 
     fun displayInvalidImageUrl() {
@@ -233,5 +165,88 @@ class TopicViewModel @Inject constructor(
 
     fun clearUiError() {
         _uiError.value = null
+    }
+
+    private fun buildPollHtml(entity: Poll): String {
+        val showOptionCounts = entity.options.any { it.votedUserCount > 0 }
+        val totalVotes = entity.votedUserCount.toFloat().coerceAtLeast(1f)
+
+        val optionElements = entity.options.joinToString("") { option ->
+            val percentage =
+                if (showOptionCounts) roundedPercentage(option.votedUserCount / totalVotes * 100) else 0.0
+            """
+<label class="poll-label">
+    <span class="poll-checkbox"><input type="radio" disabled></span>
+    <span class="poll-option">
+        <span class="poll-option-title">${option.title.htmlEncode()}</span>
+        <span class="poll-option-voted-count">${if (showOptionCounts) " ${option.votedUserCount} (${percentage}%)" else ""}</span>
+    </span>
+</label>
+""".trimIndent()
+        }
+        val pollType = if (entity.votedLimit == 1) "单选" else "最多选${entity.votedLimit}项"
+        val expireTimeHtml =
+            entity.expireTime?.let { "<span class=\"poll-expire-time\"> · Poll expires at $it</span>" }
+                ?: ""
+
+        return """
+<div class="poll-wrapper rendered">
+    <div class="poll-title">
+        <span>${entity.title.htmlEncode()} ($pollType)</span>$expireTimeHtml
+    </div>
+    <div class="poll-meta">
+        <span>${entity.votedUserCount}人参与</span>
+    </div>
+    <div class="poll-content">
+        <form class="poll-options">$optionElements</form>
+    </div>
+</div>
+""".trimIndent()
+    }
+
+    private fun buildQuestionHtml(entity: Question): String {
+        val correctAnswerHtml = entity.correctAnswer.takeIf { it.isNotBlank() }?.let {
+            """
+<div class="question-content">
+    <form>
+        <div class="question-result">
+            <div class="question-result-answer">正确答案：${it.htmlEncode()}</div>
+        </div>
+    </form>
+</div>
+""".trimIndent()
+        } ?: ""
+        val expireTimeHtml =
+            entity.expireTime?.let { "<span class=\"question-expire-time\"> · Question expires at $it</span>" }
+                ?: ""
+        val renderedClass =
+            "question-wrapper rendered${if (entity.correctAnswer.isNotBlank()) " has-correct" else ""}"
+
+        return """
+<div class="$renderedClass">
+    <div class="question-title">
+        <span>${entity.title.htmlEncode()}</span>$expireTimeHtml
+    </div>
+    <div class="question-meta"><span>${entity.postedUserCount}人参与</span></div>
+    $correctAnswerHtml
+</div>
+""".trimIndent()
+    }
+
+    private fun formatHtmlContent(content: String): String {
+        return """
+        <!DOCTYPE html>
+        <head>
+            <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
+        </head>
+        <body>
+            $content
+        <body>
+        """.trimIndent()
+    }
+
+    companion object {
+        private val CONTENT_ENTITY_REGEX =
+            "(<div data-entity-type=\"(poll|question)\" data-id=\"(\\d*)\">)<div class=\"(poll|question)-wrapper\"><div class=\"(poll|question)-title\"><span>[^<>]*</span></div></div>(</div>)".toRegex()
     }
 }

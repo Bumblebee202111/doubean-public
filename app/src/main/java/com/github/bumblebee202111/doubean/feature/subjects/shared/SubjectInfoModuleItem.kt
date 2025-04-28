@@ -319,7 +319,11 @@ private fun SubjectReviewCard(review: SubjectReview, modifier: Modifier = Modifi
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                DateTimeText(text = review.createTime.abbreviatedDateTimeString(context))
+                DateTimeText(
+                    text = review.createTime.abbreviatedDateTimeString(context),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
             Spacer(modifier = Modifier.size(4.dp))
             Text(
