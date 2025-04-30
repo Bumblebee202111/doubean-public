@@ -1,17 +1,16 @@
 doubean
 =======
 
-An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and exploring Subjects  (books/movies/TVs)
+An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and exploring Subjects (books/movies/TVs)
 \([豆瓣][douban]非官方app，支持[小组][douban-groups]浏览和书影~~音~~探索\)
 
-**Note**:  Experimental project focusing on core features while testing Jetpack Compose. Occasional crashes, incomplete UI designs, or missing features may occur.
+**Note**: This is an experimental project focusing on core features while testing Jetpack Compose. Occasional crashes, incomplete UI designs, or missing features may occur.
 
 **Known Issues**:
 
-- Login (image) captcha: Needs more testing
+*   Login (image) captcha: Needs further testing.
 
 [douban]: https://www.douban.com/
-
 [douban-groups]: https://www.douban.com/group/
 
 Introduction
@@ -28,7 +27,7 @@ Introduction
 - **Home**: Personal statuses + subject unions + rank lists
 - **Interests**: Tracked subject statuses
 - **Search**: Subject discovery
-- **Details**: Metadata/intro/interactions
+- **Details**: Metadata / intro / interactions
 - **Rank List**
 
 #### Groups
@@ -46,23 +45,22 @@ Introduction
 
 ### Screenshots
 
-<p> <img src="screenshots/tablet_movie.png" alt="tablet_movie" height="450" />   
+<p> <img src="screenshots/tablet_movie.png" alt="tablet_movie" height="450" />
     <img src="screenshots/phone_subjects.png" alt="phone_subjects" height="300" />
-<img src="screenshots/tablet_interests.png" alt="tablet_interests" height="450" />   
+<img src="screenshots/tablet_interests.png" alt="tablet_interests" height="450" />
 <img src="screenshots/phone_groups_home.png" alt="phone_groups" height="300" />
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
-
 
 ## Features
 
 - Subjects: Basic interactions (WIP 🚧)
 - Group enhancements:
-  - Locally favorite tabs/groups 
+  - Locally favorite tabs/groups
   - Keep original list orders or sort by create time within any page
   - Customizable topic notifications
 - Ad-free and lightweight (~3MB)
-- Auth: Session reuse (root) + login (beta)
+- Auth: Session reuse (root required) + login (beta)
 - Partial URL deep linking support
 - Direct official API calls
 - Basic MD3 implementation
@@ -74,23 +72,23 @@ Introduction
 - [Latest release][latest-release]
 - Requirements: Android: 8.1+
 - Feel free to file issues
-  - Include details if data fails to display:
+  - If data fails to display, please include:
     - Titles
-    - Error messages (if present)
+    - Error messages (if any are shown)
     - Raw JSON (if accessible)
-- Keep the official Douban app installed:
+- Keep the official Douban app installed to:
   - Support Douban services 
-  - Access unsupported content 
-  - Root users: Reuse login sessions
+  - Access content not supported by this app
+  - Allow root users to reuse login sessions
 - Clear app data after updates if crashes occur
 
 [latest-release]: https://github.com/Bumblebee202111/doubean-public/releases/latest
 
 ## Important Notices
 
-### Limited Open-Source
+### Source Code Availability
 
-Selected source code synced to public repo, limiting scope to prevent potential issues.
+Only selected source code from the private project is shared to mitigate potential issues.
 
 ### Guidelines
 
@@ -112,105 +110,90 @@ Selected source code synced to public repo, limiting scope to prevent potential 
   - Accompanist Permissions/WebView
 
 [foundation]: https://developer.android.com/jetpack/components
-
 [appcompat]: https://developer.android.com/topic/libraries/support-library/packages#v7-appcompat
-
 [android-ktx]: https://developer.android.com/kotlin/ktx
-
 [test]: https://developer.android.com/training/testing/
-
 [arch]: https://developer.android.com/jetpack/arch/
-
 [lifecycle]: https://developer.android.com/topic/libraries/architecture/lifecycle
-
 [navigation]: https://developer.android.com/topic/libraries/architecture/navigation/
-
 [paging]: https://developer.android.com/topic/libraries/architecture/paging/v3-overview
-
 [room]: https://developer.android.com/topic/libraries/architecture/room
-
 [viewmodel]: https://developer.android.com/topic/libraries/architecture/viewmodel
-
 [workmanager]:https://developer.android.com/topic/libraries/architecture/workmanager
-
 [ui]: https://developer.android.com/guide/topics/ui
-
 [notifications]: https://developer.android.com/develop/ui/views/notifications
-
 [kotlin-coroutines]: https://kotlinlang.org/docs/reference/coroutines-overview.html
 
 ## Roadmap
 
-Incoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for myself.
+Upcoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for personal tracking.
 
 ### Current release \(0.8.4)
-
-- Topic saving
 
 ### Next release \(0.8.5)
 
 
 ### Future plans
 
-- More error handling
-  - Process error body
-  - Show error messages
-- Last-active tab persistence
+- Profile/User
+  - Dou lists, my subject...
 - Groups 
-  - Subscribe/favorite/save
-    - Save topics
-    - Remove support for locally favoriting groups (subscribing groups already available)
+  - Subscribe/favorite/collect/react
+    - Collect topics
+    - Remove support for locally favoriting groups (use official subscribing)
     - Pin my groups
     - Add corresponding item actions
-  - Notifications: Custom interval. Support options of 15m/1h
-  - Search
+  - Notifications: Custom interval (e.g., 15m/1h options)
+  - Search:
     - Search topics within a specific group/tab
     - Global topic search across all groups
-    - Result tabs
-  - Dynamic topic sorts-by
+    - Tabbed search results
+  - Dynamic topic sorting options
   - Simplify topic caching
-  - Home
-    - Maybe support pagination of recommended topics
+  - Group Home: Potentially add pagination for recommended topics
   - Group tab: Track topic read status
   - Group Detail
-    - Collapse on entrance for the subscribed/favorited group/tab
+    - Auto-collapse header on entry for subscribed/favorited groups/tabs
     - Fix group description action overflows
-  - Fix topic content losing scroll position after navigating back
-  - Hide officially-flagged unfriendly content by default
-  - Support blocking unwanted content
-  - Lists: Reddit-style item expand/collapse
-  - Find API for all followed topics (currently unlikely)
+  - Fix topic content scroll position loss after navigating back
+  - Hide officially-flagged "unfriendly" content by default
+  - Implement content blocking
+  - Lists: Reddit-style item expand/collapse toggle
+  - Find API for *all* followed topics (currently seems unlikely)
 - Subjects
   - Subject Detail: Ratings histogram
   - Color schemes
   - More
-- Dou Lists
+- More error handling
+  - Process error body
+  - Display error messages
+- Sync more source files to public repo
+- Last-active tab persistence
 - Complete deep linking support
-- Sync more files to public repo
 - Expand/collapse component: Hide action for short text
 - Search suggestions
-- Profile/User
 - Login
-  * Code-based (w/o pw)
-- Update logo: Swap bg/fg colors
+  - Code-based (w/o pw)
+- Update app icon: Swap bg/fg colors
 - Shortcuts
-- Properly show login prompts & normal tooltips/info
-- Load state visualization (removed during Compose migrations for simplicity)
+- Improve display of login prompts and standard tooltips/info messages
+- Restore load state visualization (removed during Compose migration)
   - Paging 3 refresh, loading status ...
 - Restore dark mode & landscape support
-- ImageScreen -> Shared element transitions
-- List item menus → dialog sheets
+- ImageScreen → Shared element transitions
+- List item menus → Bottom dialog sheets
 - Improve model layering
-- Languages
+- i18n
   - Translations
-  - Pick language
+  - Language selection
 - NetworkManager
 - Widgets
-- Optionally sync more official app prefs for API request consistency for rooted users
+- (Rooted users) Optionally sync more official app preferences for API request consistency
 - Consider use single NavHost
 - Statuses (maintenance mode)
   - Additional card types
   - Pagination
+
 * Test
 
 ## References
@@ -221,16 +204,12 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 - [Github Browser Sample with Android Architecture Components][github-browser-sample]
 - [Android Architecture Blueprints v1 (todo-mvvm-live)][todo-mvvm-live]
 - [Material Design][material]
-- Various social apps: used as references for UI design and functionality
+- Various social apps (UI/UX inspiration)
 
 [sunflower]: https://github.com/android/sunflower
-
 [guides]: https://developer.android.google.cn/guide
-
 [github-browser-sample]: https://github.com/android/architecture-components-samples/tree/master/GithubBrowserSample
-
 [todo-mvvm-live]: https://github.com/android/architecture-samples/tree/todo-mvvm-live
-
 [material]:https://material.io/
 
 ## Utilities
@@ -247,10 +226,11 @@ Incoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ## Stars :star: & Donation :coffee:
 
-Your ⭐ **stars** motivate continued development.
-To support development (though not actively seeking donations), contact via issues. 
+Your ⭐ **stars** motivate continued development!
+While not actively seeking donations, if you wish to support development, please open an issue to discuss.
 
 ## License
 
-This code is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for the full license text.
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for the full license text.
+```
 
