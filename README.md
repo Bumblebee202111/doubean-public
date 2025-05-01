@@ -128,15 +128,18 @@ Only selected source code from the private project is shared to mitigate potenti
 
 Upcoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for personal tracking.
 
-### Current release \(0.8.4)
+### Current release \(0.8.5)
 
-### Next release \(0.8.5)
+- Profile/User
+  - Dou list count, my subject counts
+- Dou lists (?)
+- Dep
+
+### Next release \(0.8.6)
 
 
 ### Future plans
 
-- Profile/User
-  - Dou lists, my subject...
 - Groups 
   - Subscribe/favorite/collect/react
     - Collect topics

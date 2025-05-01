@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.8.5(805)
+
 ## Version 0.8.4(804)
 
 - Topic
