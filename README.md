@@ -88,7 +88,7 @@ Introduction
 
 ### Source Code Availability
 
-Only selected source code from the private project is shared to mitigate potential issues.
+Only selected source code from the private project is shared to mitigate potential issues. (WIP)
 
 ### Guidelines
 
@@ -128,21 +128,35 @@ Only selected source code from the private project is shared to mitigate potenti
 
 Upcoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for personal tracking.
 
-### Current release \(0.8.4)
+### Current release \(0.8.5)
 
-### Next release \(0.8.5)
+### Next release \(0.9.0)
+
+- Update base Douban version
+
+- Profile/User
+
+  - Click avatar/name to view
+  - IP
+  - Dou lists
+  - My subjects
+
+  - My groups
+
+- Dou lists
+
+- Update app icon: Swap bg/fg colors (?)
 
 
 ### Future plans
 
-- Profile/User
-  - Dou lists, my subject...
 - Groups 
   - Subscribe/favorite/collect/react
     - Collect topics
     - Remove support for locally favoriting groups (use official subscribing)
     - Pin my groups
     - Add corresponding item actions
+  - Tab/tag → 分区
   - Notifications: Custom interval (e.g., 15m/1h options)
   - Search:
     - Search topics within a specific group/tab
@@ -155,18 +169,18 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Group Detail
     - Auto-collapse header on entry for subscribed/favorited groups/tabs
     - Fix group description action overflows
-  - Fix topic content scroll position loss after navigating back
+  - Topic:
+    - Fully load with official script, no manual parsing
+    - Fix content scroll position loss after navigating back
   - Hide officially-flagged "unfriendly" content by default
   - Implement content blocking
   - Lists: Reddit-style item expand/collapse toggle
-  - Find API for *all* followed topics (currently seems unlikely)
+  - Find API for *all* followed topics like desktop Web app (currently seems unlikely)
+    - Use as home/notifications data source
 - Subjects
   - Subject Detail: Ratings histogram
   - Color schemes
   - More
-- More error handling
-  - Process error body
-  - Display error messages
 - Sync more source files to public repo
 - Last-active tab persistence
 - Complete deep linking support
@@ -174,7 +188,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 - Search suggestions
 - Login
   - Code-based (w/o pw)
-- Update app icon: Swap bg/fg colors
 - Shortcuts
 - Improve display of login prompts and standard tooltips/info messages
 - Restore load state visualization (removed during Compose migration)
@@ -188,6 +201,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Language selection
 - NetworkManager
 - Widgets
+- QR
 - (Rooted users) Optionally sync more official app preferences for API request consistency
 - Consider use single NavHost
 - Statuses (maintenance mode)

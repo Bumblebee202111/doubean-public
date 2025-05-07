@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+## Version 0.8.5(805)
+
+- Improve & refactor snackbar message display
+  - Introduce SnackbarManager
+  - Support displaying error messages via SnackBar for almost every network fetch
+  - Messages can now survive screen navigation
+- Fix group sub button not immediately refreshed
+- Update dependencies
+
 ## Version 0.8.4(804)
 
 - Topic
