@@ -109,7 +109,7 @@ class GroupDetailViewModel @Inject constructor(
                     _uiState.update { prevState ->
                         prevState.copy(
                             groupDetail = prevState.groupDetail?.copy(
-                                isSubscriptionEnabled = true
+                                isSubscribed = true
                             )
                         )
                     }
@@ -132,7 +132,7 @@ class GroupDetailViewModel @Inject constructor(
                     _uiState.update { prevState ->
                         prevState.copy(
                             groupDetail = prevState.groupDetail?.copy(
-                                isSubscriptionEnabled = false
+                                isSubscribed = false
                             )
                         )
                     }
