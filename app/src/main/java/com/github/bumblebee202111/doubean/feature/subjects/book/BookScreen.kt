@@ -21,9 +21,9 @@ fun BookScreen(
     onImageClick: (url: String) -> Unit,
     viewModel: BookViewModel = hiltViewModel(),
 ) {
-    val bookUiState by viewModel.bookUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     BookScreen(
-        bookUiState = bookUiState,
+        uiState = uiState,
         onBackClick = onBackClick,
         onLoginClick = onLoginClick,
         onUpdateStatus = viewModel::onUpdateStatus,
@@ -33,7 +33,7 @@ fun BookScreen(
 
 @Composable
 fun BookScreen(
-    bookUiState: BookUiState,
+    uiState: BookUiState,
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
@@ -41,22 +41,22 @@ fun BookScreen(
 ) {
     SubjectScaffold(
         reviewsSheetContent = {
-            if (bookUiState is BookUiState.Success) {
+            if (uiState is BookUiState.Success) {
                 SubjectReviewsSheetContent(
                     subjectType = SubjectType.BOOK,
-                    reviews = bookUiState.reviews
+                    reviews = uiState.reviews
                 )
 
             }
         },
         topBar = {
-            BookTopBar(bookUiState = bookUiState, onBackClick = onBackClick)
+            BookTopBar(uiState = uiState, onBackClick = onBackClick)
         }
     ) { innerPadding ->
-        when (bookUiState) {
+        when (uiState) {
             is BookUiState.Success -> {
                 LazyColumn(contentPadding = innerPadding) {
-                    with(bookUiState) {
+                    with(uiState) {
                         item {
                             SubjectDetailHeader(
                                 subject = book,
@@ -80,10 +80,10 @@ fun BookScreen(
 }
 
 @Composable
-private fun BookTopBar(bookUiState: BookUiState, onBackClick: () -> Unit) {
+private fun BookTopBar(uiState: BookUiState, onBackClick: () -> Unit) {
     SubjectTopBar(
         subjectType = SubjectType.BOOK,
-        subject = (bookUiState as? BookUiState.Success)?.book,
+        subject = (uiState as? BookUiState.Success)?.book,
         onBackClick = onBackClick
     )
 }

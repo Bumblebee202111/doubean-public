@@ -35,11 +35,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.bumblebee202111.doubean.model.ApiError
-import com.github.bumblebee202111.doubean.model.AppError
 import com.github.bumblebee202111.doubean.model.auth.LoginResult
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
-import com.github.bumblebee202111.doubean.util.uiMessage
 
 const val LOGIN_SUCCESSFUL: String = "LOGIN_SUCCESSFUL"
 
@@ -49,7 +46,6 @@ fun LoginScreen(
     onBackClick: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel(),
     onOpenDeepLinkUrl: (url: String) -> Unit,
-    onShowSnackbar: suspend (String) -> Unit,
 ) {
 
     val isFormValid by viewModel.isFormValid.collectAsStateWithLifecycle()
@@ -57,7 +53,7 @@ fun LoginScreen(
     val phoneNumber = viewModel.phoneNumber
     val password = viewModel.password
     val loginResult by viewModel.loginResult.collectAsStateWithLifecycle()
-    val uiError by viewModel.uiError.collectAsStateWithLifecycle()
+    val solutionUri by viewModel.solutionUri.collectAsStateWithLifecycle()
 
     LoginScreen(
         sessionLoginResult = sessionLoginResult,
@@ -65,17 +61,16 @@ fun LoginScreen(
         password = password,
         isFormValid = isFormValid,
         loginResult = loginResult,
-        uiError = uiError,
+        solutionUri = solutionUri,
         updatePhoneNumber = viewModel::updatePhoneNumber,
         updatePassword = viewModel::updatePassword,
         triggerAutoImport = viewModel::triggerAutoImport,
         onSubmitSessionPreference = viewModel::loginWithDoubanSession,
         login = viewModel::login,
-        clearError = viewModel::clearMessage,
+        clearSolutionUri = viewModel::clearSolutionUri,
         onSaveIsLoginSuccessSuccessfulChange = onSaveIsLoginSuccessSuccessfulChange,
         onPopBackStack = onBackClick,
-        onOpenDeepLinkUrl = onOpenDeepLinkUrl,
-        onShowSnackbar = onShowSnackbar
+        onOpenDeepLinkUrl = onOpenDeepLinkUrl
     )
 }
 
@@ -87,17 +82,16 @@ fun LoginScreen(
     password: String,
     isFormValid: Boolean,
     loginResult: LoginResult?,
-    uiError: AppError?,
+    solutionUri: String?,
     updatePhoneNumber: (phoneNumberInput: String) -> Unit,
     updatePassword: (passwordInput: String) -> Unit,
     triggerAutoImport: () -> Unit,
     onSubmitSessionPreference: (sessionPref: String) -> Unit,
     login: () -> Unit,
-    clearError: () -> Unit,
+    clearSolutionUri: () -> Unit,
     onSaveIsLoginSuccessSuccessfulChange: (Boolean) -> Unit,
     onPopBackStack: () -> Unit,
     onOpenDeepLinkUrl: (url: String) -> Unit,
-    onShowSnackbar: suspend (String) -> Unit,
 ) {
 
     LaunchedEffect(loginResult) {
@@ -118,18 +112,14 @@ fun LoginScreen(
         }
     }
 
-
-    uiError?.let {
-        val message = uiError.uiMessage
-        LaunchedEffect(uiError) {
-            (it as? ApiError)?.solutionUri?.let { solutionUri ->
+    if (solutionUri != null) {
+        LaunchedEffect(solutionUri) {
                 try {
                     onOpenDeepLinkUrl(solutionUri)
                 } catch (e: Exception) {
                     Log.e("onOpenDeepLinkUrl", "Failed to open solutionUri", e)
                 }
-            } ?: onShowSnackbar(message)
-            clearError()
+            clearSolutionUri()
         }
     }
 

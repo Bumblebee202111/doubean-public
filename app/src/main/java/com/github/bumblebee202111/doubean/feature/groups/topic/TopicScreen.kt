@@ -94,7 +94,6 @@ import coil.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.shared.SmallGroupAvatar
 import com.github.bumblebee202111.doubean.feature.groups.shared.groupTopAppBarColor
-import com.github.bumblebee202111.doubean.model.AppError
 import com.github.bumblebee202111.doubean.model.fangorns.ReactionType
 import com.github.bumblebee202111.doubean.model.groups.TopicComment
 import com.github.bumblebee202111.doubean.model.groups.TopicCommentSortBy
@@ -110,7 +109,6 @@ import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.TOPIC_CSS_FILENAME
 import com.github.bumblebee202111.doubean.util.fullDateTimeString
 import com.github.bumblebee202111.doubean.util.toColorOrPrimary
-import com.github.bumblebee202111.doubean.util.uiMessage
 import com.google.accompanist.web.rememberWebViewStateWithHTMLData
 import kotlinx.coroutines.delay
 import java.time.LocalDateTime
@@ -124,7 +122,6 @@ fun TopicScreen(
     onImageClick: (url: String) -> Unit,
     onOpenDeepLinkUrl: (url: String) -> Unit,
     viewModel: TopicViewModel = hiltViewModel(),
-    onShowSnackbar: suspend (String) -> Unit,
 ) {
     val topic by viewModel.topic.collectAsStateWithLifecycle()
     val popularComments: List<TopicComment> by viewModel.popularComments.collectAsStateWithLifecycle()
@@ -134,9 +131,7 @@ fun TopicScreen(
     val commentSortBy by viewModel.commentsSortBy.collectAsStateWithLifecycle()
     val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
     val groupColor = topic?.group?.color
-    val uiError by viewModel.uiError.collectAsStateWithLifecycle()
     val shouldShowSpinner by viewModel.shouldShowSpinner.collectAsStateWithLifecycle()
-    val shouldDisplayInvalidImageUrl = viewModel.shouldDisplayInvalidImageUrl
 
     TopicScreen(
         topic = topic,
@@ -148,11 +143,8 @@ fun TopicScreen(
         isLoggedIn = isLoggedIn,
         groupColorString = groupColor,
         shouldShowSpinner = shouldShowSpinner,
-        shouldDisplayInvalidImageUrl = shouldDisplayInvalidImageUrl,
-        uiError = uiError,
         updateCommentSortBy = viewModel::updateCommentsSortBy,
         displayInvalidImageUrl = viewModel::displayInvalidImageUrl,
-        clearInvalidImageUrlState = viewModel::clearInvalidImageUrlState,
         onBackClick = onBackClick,
         onWebViewClick = onWebViewClick,
         onGroupClick = onGroupClick,
@@ -161,9 +153,7 @@ fun TopicScreen(
         // https://developer.android.google.cn/develop/ui/compose/touch-input/pointer-input/tap-and-press
         // shared element
         onImageClick = onImageClick,
-        onClearUiError = viewModel::clearUiError,
         onOpenDeepLinkUrl = onOpenDeepLinkUrl,
-        onShowSnackbar = onShowSnackbar,
         onReact = viewModel::react
     )
 }
@@ -181,19 +171,14 @@ fun TopicScreen(
     isLoggedIn: Boolean,
     groupColorString: String?,
     shouldShowSpinner: Boolean,
-    shouldDisplayInvalidImageUrl: Boolean,
-    uiError: AppError?,
     updateCommentSortBy: (TopicCommentSortBy) -> Unit,
     displayInvalidImageUrl: () -> Unit,
-    clearInvalidImageUrlState: () -> Unit,
     onBackClick: () -> Unit,
     onWebViewClick: (url: String) -> Unit,
     onGroupClick: (groupId: String, tabId: String?) -> Unit,
     onReshareStatusesClick: (topicId: String) -> Unit,
     onImageClick: (url: String) -> Unit,
-    onClearUiError: () -> Unit,
     onOpenDeepLinkUrl: (url: String) -> Unit,
-    onShowSnackbar: suspend (String) -> Unit,
     onReact: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current
@@ -223,21 +208,6 @@ fun TopicScreen(
                 listState.scrollToItem(itemCountBeforeComments + clampedIndex)
             }
             scrollToCommentItemIndex = null
-        }
-    }
-
-    LaunchedEffect(shouldDisplayInvalidImageUrl) {
-        if (shouldDisplayInvalidImageUrl) {
-            onShowSnackbar("Invalid Image Url")
-            clearInvalidImageUrlState()
-        }
-    }
-
-    val uiMessage = uiError?.uiMessage
-    LaunchedEffect(uiError) {
-        if (uiMessage != null) {
-            onShowSnackbar(uiMessage)
-            onClearUiError()
         }
     }
 
@@ -785,7 +755,7 @@ private fun handleUrlLoading(
     try {
         onOpenDeepLinkUrl(url)
         return true
-    } catch (e: IllegalArgumentException) {
+    } catch (_: IllegalArgumentException) {
         Log.i("ContentWebView", "Not a deep link, opening externally: $url")
         OpenInUtils.viewInActivity(context, url)
         return true

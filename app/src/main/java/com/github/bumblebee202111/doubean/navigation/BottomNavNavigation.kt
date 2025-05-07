@@ -23,7 +23,6 @@ fun NavGraphBuilder.bottomNavScreen(
     navigateToMovie: (movieId: String) -> Unit,
     navigateToTv: (tvId: String) -> Unit,
     navigateToBook: (bookId: String) -> Unit,
-    onShowSnackbar: suspend (String) -> Unit,
 ): Unit = composable<BottomNavRoute> {
     BottomNavScreen(
         startWithGroups = startWithGroups,
@@ -38,7 +37,6 @@ fun NavGraphBuilder.bottomNavScreen(
         navigateToRankList = navigateToRankList,
         navigateToMovie = navigateToMovie,
         navigateToTv = navigateToTv,
-        navigateToBook = navigateToBook,
-        onShowSnackbar = onShowSnackbar
+        navigateToBook = navigateToBook
     )
 }

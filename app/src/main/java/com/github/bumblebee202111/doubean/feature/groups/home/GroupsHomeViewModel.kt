@@ -10,14 +10,15 @@ import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
 import com.github.bumblebee202111.doubean.data.repository.UserRepository
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.CachedAppResult
+import com.github.bumblebee202111.doubean.model.data
+import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.stateInUi
+import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -34,6 +35,7 @@ class GroupsHomeViewModel @Inject constructor(
     userGroupRepository: UserGroupRepository,
     authRepository: AuthRepository,
     userRepository: UserRepository,
+    private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
 
     private val loggedInUserId = authRepository.observeLoggedInUserId()
@@ -51,6 +53,7 @@ class GroupsHomeViewModel @Inject constructor(
                 userGroupRepository.getUserJoinedGroups(userId).map { result ->
                     when (result) {
                         is CachedAppResult.Error -> {
+                            snackbarManager.showSnackBar(result.error.asUiMessage())
                             JoinedGroupsUiState(isLoading = false, groups = result.cache)
                         }
 
@@ -76,12 +79,17 @@ class GroupsHomeViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             authRepository.isLoggedIn().onEach { isLoggedIn ->
-                _dayRankingUiState.value = when (isLoggedIn) {
-                    true -> DayRankingUiState.Hidden
+                when (isLoggedIn) {
+                    true -> _dayRankingUiState.value = DayRankingUiState.Hidden
                     false ->
                         when (val result = groupRepository.getDayRanking()) {
-                            is AppResult.Error -> DayRankingUiState.Error(result.error)
-                            is AppResult.Success -> DayRankingUiState.Success(result.data)
+                            is AppResult.Error -> {
+                                snackbarManager.showSnackBar(result.error.asUiMessage())
+                                _dayRankingUiState.value = DayRankingUiState.Error(result.error)
+                            }
+
+                            is AppResult.Success -> _dayRankingUiState.value =
+                                DayRankingUiState.Success(result.data)
                         }
                 }
             }.collect { }
@@ -92,7 +100,12 @@ class GroupsHomeViewModel @Inject constructor(
 
     val recentTopicsFeed = authRepository.isLoggedIn().flatMapLatest { isLoggedIn ->
         when (isLoggedIn) {
-            true -> userGroupRepository.getRecentTopicsFeed().map { it.data }
+            true -> userGroupRepository.getRecentTopicsFeed()
+                .onEach { if (it is CachedAppResult.Error) snackbarManager.showSnackBar(it.error.asUiMessage()) }
+                .map { result ->
+                    result.data
+                }
+
             false -> flowOf(null)
         }
     }.stateInUi()

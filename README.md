@@ -88,7 +88,7 @@ Introduction
 
 ### Source Code Availability
 
-Only selected source code from the private project is shared to mitigate potential issues.
+Only selected source code from the private project is shared to mitigate potential issues. (WIP)
 
 ### Guidelines
 
@@ -130,12 +130,19 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.8.5)
 
-- Profile/User
-  - Dou list count, my subject counts
-- Dou lists (?)
+- Error handling
+- Profile
+  - My subject counts
 - Dep
+- Fix group sub button not immediately updated
 
-### Next release \(0.8.6)
+### Next release \(0.9.0)
+
+- Update base Douban version
+- Profile/User
+  - Dou lists
+  - Click avatar/name to view
+- Dou lists
 
 
 ### Future plans
@@ -146,6 +153,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
     - Remove support for locally favoriting groups (use official subscribing)
     - Pin my groups
     - Add corresponding item actions
+  - Tab/tag → 分区
   - Notifications: Custom interval (e.g., 15m/1h options)
   - Search:
     - Search topics within a specific group/tab
@@ -158,18 +166,18 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Group Detail
     - Auto-collapse header on entry for subscribed/favorited groups/tabs
     - Fix group description action overflows
-  - Fix topic content scroll position loss after navigating back
+  - Topic:
+    - Fully load with official script, no manual parsing
+    - Fix content scroll position loss after navigating back
   - Hide officially-flagged "unfriendly" content by default
   - Implement content blocking
   - Lists: Reddit-style item expand/collapse toggle
-  - Find API for *all* followed topics (currently seems unlikely)
+  - Find API for *all* followed topics like desktop Web app (currently seems unlikely)
+    - Use as home/notifications data source
 - Subjects
   - Subject Detail: Ratings histogram
   - Color schemes
   - More
-- More error handling
-  - Process error body
-  - Display error messages
 - Sync more source files to public repo
 - Last-active tab persistence
 - Complete deep linking support
@@ -191,6 +199,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Language selection
 - NetworkManager
 - Widgets
+- QR
 - (Rooted users) Optionally sync more official app preferences for API request consistency
 - Consider use single NavHost
 - Statuses (maintenance mode)

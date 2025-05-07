@@ -1,16 +1,16 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupdetail.tab
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
+import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
+import com.github.bumblebee202111.doubean.ui.model.toUiMessage
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -33,6 +33,7 @@ class GroupTabViewModel @AssistedInject constructor(
     private val groupRepository: GroupRepository,
     private val userGroupRepository: UserGroupRepository,
     private val preferenceStorage: PreferenceStorage,
+    private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
 
     private val _sortBy = MutableStateFlow(TopicSortBy.NEW_LAST_CREATED)
@@ -48,10 +49,6 @@ class GroupTabViewModel @AssistedInject constructor(
                 sortBy = sortBy
             ).cachedIn(viewModelScope)
         }.cachedIn(viewModelScope)
-
-    var shouldDisplayFavoritedTab by mutableStateOf(false)
-
-    var shouldDisplayUnfavoritedTab by mutableStateOf(false)
 
     fun updateSortBy(topicSortBy: TopicSortBy) {
         _sortBy.value = topicSortBy
@@ -76,7 +73,7 @@ class GroupTabViewModel @AssistedInject constructor(
                 groupId = groupId,
                 tabId = tabId,
             )
-            shouldDisplayFavoritedTab = true
+            snackbarManager.showSnackBar(R.string.favorited_tab.toUiMessage())
         }
     }
 
@@ -84,16 +81,8 @@ class GroupTabViewModel @AssistedInject constructor(
         val tabId = tabId ?: return
         viewModelScope.launch {
             userGroupRepository.removeFavoriteTab(tabId)
-            shouldDisplayUnfavoritedTab = true
+            snackbarManager.showSnackBar(R.string.unfavorited_tab.toUiMessage())
         }
-    }
-
-    fun clearFavoritedTabState() {
-        shouldDisplayFavoritedTab = false
-    }
-
-    fun clearUnfavoritedTabState() {
-        shouldDisplayUnfavoritedTab = false
     }
 
     fun saveNotificationPreferences(

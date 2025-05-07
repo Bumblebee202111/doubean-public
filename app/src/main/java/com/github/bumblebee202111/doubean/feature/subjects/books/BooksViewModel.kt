@@ -7,10 +7,11 @@ import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepositor
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.MySubjectUiState
 import com.github.bumblebee202111.doubean.feature.subjects.SubjectModulesUiState
-import com.github.bumblebee202111.doubean.model.AppError
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.stateInUi
+import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +19,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,10 +27,8 @@ class BooksViewModel @Inject constructor(
     private val userSubjectRepository: UserSubjectRepository,
     private val authRepository: AuthRepository,
     private val subjectCommonRepository: SubjectCommonRepository,
+    private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
-
-    private val _uiErrors = MutableStateFlow(emptyList<AppError>())
-    val uiErrors = _uiErrors.asStateFlow()
 
     private val _myBooksUiState: MutableStateFlow<MySubjectUiState> =
         MutableStateFlow(MySubjectUiState.Loading)
@@ -40,9 +38,7 @@ class BooksViewModel @Inject constructor(
         emit(subjectCommonRepository.getSubjectModules(SubjectType.BOOK))
     }.onEach { result ->
         if (result is AppResult.Error) {
-            _uiErrors.update {
-                it + result.error
-            }
+            snackbarManager.showSnackBar(result.error.asUiMessage())
         }
     }
 
@@ -75,26 +71,22 @@ class BooksViewModel @Inject constructor(
                 _myBooksUiState.value = when (userId) {
                     null -> MySubjectUiState.NotLoggedIn
                     else -> {
-                        val result = userSubjectRepository.getUserSubjects(userId = userId)
-                        when (result.isSuccess) {
-                            true ->
+                        when (val result = userSubjectRepository.getUserSubjects(userId = userId)) {
+                            is AppResult.Success ->
                                 MySubjectUiState.Success(
                                     userId = userId,
-                                    mySubject = result.getOrThrow()
+                                    mySubject = result.data
                                         .first { it.type == SubjectType.BOOK }
                                 )
-                            false -> MySubjectUiState.Error
+
+                            is AppResult.Error -> {
+                                snackbarManager.showSnackBar(result.error.asUiMessage())
+                                MySubjectUiState.Error
+                            }
                         }
                     }
                 }
             }
         }
     }
-
-    fun onErrorShown(error: AppError) {
-        _uiErrors.update { oldUiErrors ->
-            oldUiErrors - error
-        }
-    }
-
 }

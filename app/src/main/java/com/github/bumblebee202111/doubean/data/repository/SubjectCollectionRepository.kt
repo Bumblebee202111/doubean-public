@@ -2,18 +2,21 @@ package com.github.bumblebee202111.doubean.data.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import com.github.bumblebee202111.doubean.coroutines.suspendRunCatching
 import com.github.bumblebee202111.doubean.data.paging.SubjectCollectionItemPagingSource
 import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.toSubjectCollection
+import com.github.bumblebee202111.doubean.network.util.makeApiCall
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class SubjectCollectionRepository @Inject constructor(private val apiService: ApiService) {
-    suspend fun getSubjectCollection(id: String) = suspendRunCatching {
-        apiService.getSubjectCollection(id).toSubjectCollection()
-    }
+    suspend fun getSubjectCollection(id: String) = makeApiCall(
+        apiCall = { apiService.getSubjectCollection(id) },
+        mapSuccess = {
+            it.toSubjectCollection()
+        }
+    )
 
     fun getSubjectCollectionItemsPagingData(collectionId: String) = Pager(
         config = PagingConfig(

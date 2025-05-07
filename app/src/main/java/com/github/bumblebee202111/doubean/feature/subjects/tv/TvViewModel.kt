@@ -4,21 +4,26 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.github.bumblebee202111.doubean.coroutines.combine
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.data.repository.TvRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.TvRoute
+import com.github.bumblebee202111.doubean.model.AppResult
+import com.github.bumblebee202111.doubean.model.subjects.SubjectInterest
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
-import com.github.bumblebee202111.doubean.model.subjects.TvDetail
-import com.github.bumblebee202111.doubean.ui.stateInUi
+import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
+import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
+import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,84 +32,121 @@ class TvViewModel @Inject constructor(
     private val tvRepository: TvRepository,
     private val userSubjectRepository: UserSubjectRepository,
     private val subjectCommonRepository: SubjectCommonRepository,
-    authRepository: AuthRepository,
+    private val authRepository: AuthRepository,
     savedStateHandle: SavedStateHandle,
+    private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
     private val tvId = savedStateHandle.toRoute<TvRoute>().tvId
-    private val tv = MutableStateFlow<TvDetail?>(null)
-    private val tvResult = flow {
-        emit(tvRepository.getTv(tvId))
-    }.onEach {
-        tv.value = it.getOrNull()
-    }
-    private val interestList = flow {
-        emit(
-            userSubjectRepository.getSubjectDoneFollowingHotInterests(SubjectType.TV, tvId)
-        )
-    }
-    private val photos = flow {
-        emit(
-            tvRepository.getPhotos(tvId)
-        )
-    }
-    private val reviews = flow {
-        emit(
-            subjectCommonRepository.getSubjectReviews(
-                subjectType = SubjectType.TV,
-                subjectId = tvId
-            )
-        )
-    }
-    private val isLoggedIn = authRepository.isLoggedIn()
-    val tvUiState = combine(
-        tv,
-        tvResult,
-        interestList,
-        photos,
-        reviews,
-        isLoggedIn
-    ) { tv, tvResult, interestList, photos, reviews, isLoggedIn ->
-        if (tvResult.isSuccess) {
-            TvUiState.Success(
-                tv = tv!!,
-                interests = interestList.getOrThrow(),
-                photos = photos.getOrThrow(),
-                reviews = reviews.getOrThrow(),
-                isLoggedIn = isLoggedIn
-            )
-        } else {
-            TvUiState.Error
-        }
-    }.stateInUi(TvUiState.Loading)
 
-    fun onUpdateStatus(
-        status: SubjectInterestStatus,
-    ) {
-        val oldTv = tv.value ?: return
-        when (status) {
-            SubjectInterestStatus.MARK_STATUS_UNMARK -> {
-                viewModelScope.launch {
-                    val result = userSubjectRepository.unmarkSubject(oldTv.type, oldTv.id)
-                    if (result.isSuccess) {
-                        tv.value = tv.value?.copy(interest = result.getOrThrow())
-                    }
+    private val _uiState = MutableStateFlow<TvUiState>(TvUiState.Loading)
+    val uiState: StateFlow<TvUiState> = _uiState.asStateFlow()
+
+    private var loadDataJob: Job? = null
+
+    init {
+        viewModelScope.launch {
+            authRepository.isLoggedIn()
+                .distinctUntilChanged()
+                .collect { isLoggedIn ->
+                    triggerDataLoad(isLoggedIn)
                 }
+        }
+    }
+
+    private fun triggerDataLoad(isLoggedIn: Boolean) {
+        loadDataJob?.cancel()
+        loadDataJob = viewModelScope.launch {
+            _uiState.value = TvUiState.Loading
+
+            val tvResultDeferred = async { tvRepository.getTv(tvId) }
+            val interestsResultDeferred = async {
+                userSubjectRepository.getSubjectDoneFollowingHotInterests(SubjectType.TV, tvId)
+            }
+            val photosResultDeferred = async { tvRepository.getPhotos(tvId) }
+            val reviewsResultDeferred = async {
+                subjectCommonRepository.getSubjectReviews(
+                    subjectType = SubjectType.TV,
+                    subjectId = tvId
+                )
             }
 
-            else -> {
-                viewModelScope.launch {
-                    val result = userSubjectRepository.addSubjectToInterests(
-                        type = oldTv.type, id = oldTv.id,
-                        newStatus = status
+            val tvResult = tvResultDeferred.await()
+            val interestResult = interestsResultDeferred.await()
+            val photosResult = photosResultDeferred.await()
+            val reviewsResult = reviewsResultDeferred.await()
+
+            val results = listOf(tvResult, interestResult, photosResult, reviewsResult)
+            results.filterIsInstance<AppResult.Error>().forEach { errorResult ->
+                snackbarManager.showSnackBar(errorResult.error.asUiMessage())
+            }
+
+            if (tvResult is AppResult.Success &&
+                interestResult is AppResult.Success &&
+                photosResult is AppResult.Success &&
+                reviewsResult is AppResult.Success
+            ) {
+                _uiState.value = TvUiState.Success(
+                    tv = tvResult.data,
+                    interests = interestResult.data,
+                    photos = photosResult.data,
+                    reviews = reviewsResult.data,
+                    isLoggedIn = isLoggedIn
+                )
+            } else {
+                _uiState.value = TvUiState.Error
+            }
+        }
+    }
+
+    suspend fun refreshData() {
+        val currentLoginStatus = authRepository.isLoggedIn().first()
+        triggerDataLoad(currentLoginStatus)
+    }
+
+    fun onUpdateStatus(newStatus: SubjectInterestStatus) {
+        val currentSuccessState = _uiState.value as? TvUiState.Success ?: return
+
+        if (!currentSuccessState.isLoggedIn) {
+            return
+        }
+
+        val originalTv = currentSuccessState.tv
+
+        viewModelScope.launch {
+            val result: AppResult<Any> = when (newStatus) {
+                SubjectInterestStatus.MARK_STATUS_UNMARK ->
+                    userSubjectRepository.unmarkSubject(originalTv.type, originalTv.id)
+
+                else ->
+                    userSubjectRepository.addSubjectToInterests(
+                        type = originalTv.type,
+                        id = originalTv.id,
+                        newStatus = newStatus
                     )
-                    if (result.isSuccess) {
-                        tv.update {
-                            it?.copy(interest = result.getOrThrow().interest)
+            }
+
+            when (result) {
+                is AppResult.Success -> {
+                    val confirmedInterest: SubjectInterest? = when (val data = result.data) {
+                        is SubjectInterest -> data
+                        is SubjectWithInterest<*> -> data.interest
+                        else -> {
+                            // Unreachable
+                            originalTv.interest
                         }
                     }
+                    val confirmedTv = originalTv.copy(interest = confirmedInterest)
+
+                    (_uiState.value as? TvUiState.Success)?.takeIf { it.tv.id == originalTv.id }
+                        ?.let { latestSuccessState ->
+                            _uiState.value = latestSuccessState.copy(tv = confirmedTv)
+                        }
+                }
+
+                is AppResult.Error -> {
+                    snackbarManager.showSnackBar(result.error.asUiMessage())
                 }
             }
         }
     }
-
 }

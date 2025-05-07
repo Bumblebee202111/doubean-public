@@ -18,7 +18,6 @@ fun NavGraphBuilder.searchSubjectsScreen(
     onMovieClick: (movieId: String) -> Unit,
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
-    onShowSnackbar: suspend (String) -> Unit,
 ) {
     composable<SearchSubjectsRoute> {
         SearchSubjectsScreen(
@@ -26,7 +25,6 @@ fun NavGraphBuilder.searchSubjectsScreen(
             onMovieClick = onMovieClick,
             onTvClick = onTvClick,
             onBookClick = onBookClick,
-            onShowSnackbar = onShowSnackbar
         )
     }
 }

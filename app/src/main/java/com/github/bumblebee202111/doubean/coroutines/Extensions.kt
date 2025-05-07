@@ -1,26 +1,7 @@
 package com.github.bumblebee202111.doubean.coroutines
 
-import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlin.coroutines.cancellation.CancellationException
-
-/**
- * Attempts [block], returning a successful [Result] if it succeeds, otherwise a [Result.Failure]
- * taking care not to break structured concurrency
- */
-suspend fun <T> suspendRunCatching(block: suspend () -> T): Result<T> = try {
-    Result.success(block())
-} catch (cancellationException: CancellationException) {
-    throw cancellationException
-} catch (exception: Exception) {
-    Log.i(
-        "suspendRunCatching",
-        "Failed to evaluate a suspendRunCatchingBlock. Returning failure Result",
-        exception,
-    )
-    Result.failure(exception)
-}
 
 /**
  * https://github.com/android/nowinandroid/commit/97dfe95d912e736e59ddb72c24a807b856f7eac3#diff-8285d328e41d5a916d5f3a88e45c02d5831f5c4d0a6af5c916d1f778c081c586L108

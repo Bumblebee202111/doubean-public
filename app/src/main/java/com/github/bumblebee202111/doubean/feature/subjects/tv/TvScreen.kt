@@ -23,9 +23,9 @@ fun TvScreen(
     onImageClick: (url: String) -> Unit,
     viewModel: TvViewModel = hiltViewModel(),
 ) {
-    val tvUiState by viewModel.tvUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     TvScreen(
-        tvUiState = tvUiState,
+        uiState = uiState,
         onBackClick = onBackClick,
         onLoginClick = onLoginClick,
         onUpdateStatus = viewModel::onUpdateStatus,
@@ -35,7 +35,7 @@ fun TvScreen(
 
 @Composable
 fun TvScreen(
-    tvUiState: TvUiState,
+    uiState: TvUiState,
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
@@ -43,22 +43,22 @@ fun TvScreen(
 ) {
     SubjectScaffold(
         reviewsSheetContent = {
-            if (tvUiState is TvUiState.Success) {
+            if (uiState is TvUiState.Success) {
                 SubjectReviewsSheetContent(
                     subjectType = SubjectType.TV,
-                    reviews = tvUiState.reviews,
+                    reviews = uiState.reviews,
                 )
 
             }
         },
         topBar = {
-            TvTopBar(tvUiState = tvUiState, onBackClick = onBackClick)
+            TvTopBar(uiState = uiState, onBackClick = onBackClick)
         }
     ) { innerPadding ->
-        when (tvUiState) {
+        when (uiState) {
             is TvUiState.Success -> {
                 LazyColumn(contentPadding = innerPadding) {
-                    with(tvUiState) {
+                    with(uiState) {
                         item {
                             SubjectDetailHeader(
                                 subject = tv,
@@ -91,10 +91,10 @@ fun TvScreen(
 }
 
 @Composable
-private fun TvTopBar(tvUiState: TvUiState, onBackClick: () -> Unit) {
+private fun TvTopBar(uiState: TvUiState, onBackClick: () -> Unit) {
     SubjectTopBar(
         subjectType = SubjectType.TV,
-        subject = (tvUiState as? TvUiState.Success)?.tv,
+        subject = (uiState as? TvUiState.Success)?.tv,
         onBackClick = onBackClick
     )
 }

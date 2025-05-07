@@ -4,22 +4,26 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.github.bumblebee202111.doubean.coroutines.combine
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.MovieRepository
 import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.movie.navigation.MovieRoute
-import com.github.bumblebee202111.doubean.model.subjects.MovieDetail
+import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterest
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
-import com.github.bumblebee202111.doubean.ui.stateInUi
+import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
+import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
+import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,89 +32,124 @@ class MovieViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
     private val userSubjectRepository: UserSubjectRepository,
     private val subjectCommonRepository: SubjectCommonRepository,
-    authRepository: AuthRepository,
+    private val authRepository: AuthRepository,
     savedStateHandle: SavedStateHandle,
+    private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
     private val movieId = savedStateHandle.toRoute<MovieRoute>().movieId
-    private val movie = MutableStateFlow<MovieDetail?>(null)
-    private val movieResult = flow {
-        emit(movieRepository.getMovie(movieId))
-    }.onEach {
-        movie.value = it.getOrNull()
-    }
-    private val interestList = flow {
-        emit(
-            userSubjectRepository.getSubjectDoneFollowingHotInterests(SubjectType.MOVIE, movieId)
-        )
-    }
-    private val photos = flow {
-        emit(
-            movieRepository.getPhotos(movieId)
-        )
-    }
-    private val reviews = flow {
-        emit(
-            subjectCommonRepository.getSubjectReviews(
-                subjectType = SubjectType.MOVIE,
-                subjectId = movieId
-            )
-        )
-    }
-    private val isLoggedIn = authRepository.isLoggedIn()
-    val movieUiState = combine(
-        movie,
-        movieResult,
-        interestList,
-        photos,
-        reviews,
-        isLoggedIn
-    ) { movie, movieResult, interestList, photos, reviews, isLoggedIn ->
-        if (movieResult.isSuccess && interestList.isSuccess && photos.isSuccess && reviews.isSuccess) {
-            MovieUiState.Success(
-                movie = movie!!,
-                interests = interestList.getOrThrow(),
-                photos = photos.getOrThrow(),
-                reviews = reviews.getOrThrow(),
-                isLoggedIn = isLoggedIn
-            )
-        } else {
-            MovieUiState.Error
-        }
-    }.stateInUi(MovieUiState.Loading)
 
-    fun onUpdateStatus(
-        status: SubjectInterestStatus,
-    ) {
-        val oldMovie = movie.value ?: return
-        when (status) {
-            SubjectInterestStatus.MARK_STATUS_UNMARK -> {
-                viewModelScope.launch {
-                    val result = userSubjectRepository.unmarkSubject(oldMovie.type, oldMovie.id)
-                    if (result.isSuccess) {
-                        movie.value = movie.value?.copy(
-                            interest = SubjectInterest(
-                                null,
-                                SubjectInterestStatus.MARK_STATUS_UNMARK
-                            )
-                        )
-                    }
+    private val _uiState = MutableStateFlow<MovieUiState>(MovieUiState.Loading)
+    val uiState: StateFlow<MovieUiState> = _uiState.asStateFlow()
+
+    private var loadDataJob: Job? = null
+
+    init {
+        viewModelScope.launch {
+            authRepository.isLoggedIn()
+                .distinctUntilChanged()
+                .collect { isLoggedIn ->
+                    triggerDataLoad(isLoggedIn)
                 }
+        }
+    }
+
+    private fun triggerDataLoad(isLoggedIn: Boolean) {
+        loadDataJob?.cancel()
+        loadDataJob = viewModelScope.launch {
+            _uiState.value = MovieUiState.Loading
+
+            val movieResultDeferred = async { movieRepository.getMovie(movieId) }
+            val interestsResultDeferred = async {
+                userSubjectRepository.getSubjectDoneFollowingHotInterests(
+                    SubjectType.MOVIE,
+                    movieId
+                )
+            }
+            val photosResultDeferred = async { movieRepository.getPhotos(movieId) }
+            val reviewsResultDeferred = async {
+                subjectCommonRepository.getSubjectReviews(
+                    subjectType = SubjectType.MOVIE,
+                    subjectId = movieId
+                )
             }
 
-            else -> {
-                viewModelScope.launch {
-                    val result = userSubjectRepository.addSubjectToInterests(
-                        type = oldMovie.type, id = oldMovie.id,
-                        newStatus = status
+            val movieResult = movieResultDeferred.await()
+            val interestResult = interestsResultDeferred.await()
+            val photosResult = photosResultDeferred.await()
+            val reviewsResult = reviewsResultDeferred.await()
+
+            val results = listOf(movieResult, interestResult, photosResult, reviewsResult)
+            results.filterIsInstance<AppResult.Error>().forEach { errorResult ->
+                snackbarManager.showSnackBar(errorResult.error.asUiMessage())
+            }
+
+            if (movieResult is AppResult.Success &&
+                interestResult is AppResult.Success &&
+                photosResult is AppResult.Success &&
+                reviewsResult is AppResult.Success
+            ) {
+                _uiState.value = MovieUiState.Success(
+                    movie = movieResult.data,
+                    interests = interestResult.data,
+                    photos = photosResult.data,
+                    reviews = reviewsResult.data,
+                    isLoggedIn = isLoggedIn
+                )
+            } else {
+                _uiState.value = MovieUiState.Error
+            }
+        }
+    }
+
+    suspend fun refreshData() {
+        val currentLoginStatus = authRepository.isLoggedIn().first()
+        triggerDataLoad(currentLoginStatus)
+    }
+
+    fun onUpdateStatus(newStatus: SubjectInterestStatus) {
+        val currentSuccessState = _uiState.value as? MovieUiState.Success ?: return
+
+        if (!currentSuccessState.isLoggedIn) {
+            return
+        }
+
+        val originalMovie = currentSuccessState.movie
+
+        viewModelScope.launch {
+            val result: AppResult<Any> = when (newStatus) {
+                SubjectInterestStatus.MARK_STATUS_UNMARK ->
+                    userSubjectRepository.unmarkSubject(originalMovie.type, originalMovie.id)
+
+                else ->
+                    userSubjectRepository.addSubjectToInterests(
+                        type = originalMovie.type,
+                        id = originalMovie.id,
+                        newStatus = newStatus
                     )
-                    if (result.isSuccess) {
-                        movie.update {
-                            it?.copy(interest = result.getOrThrow().interest)
+            }
+
+            when (result) {
+                is AppResult.Success -> {
+                    val confirmedInterest: SubjectInterest? = when (val data = result.data) {
+                        is SubjectInterest -> data
+                        is SubjectWithInterest<*> -> data.interest
+                        else -> {
+                            // Unreachable
+                            originalMovie.interest
                         }
                     }
+                    val confirmedMovie = originalMovie.copy(interest = confirmedInterest)
+
+                    (_uiState.value as? MovieUiState.Success)?.takeIf { it.movie.id == originalMovie.id }
+                        ?.let { latestSuccessState ->
+                            _uiState.value = latestSuccessState.copy(movie = confirmedMovie)
+                        }
+                }
+
+                is AppResult.Error -> {
+                    snackbarManager.showSnackBar(result.error.asUiMessage())
                 }
             }
         }
     }
-
 }

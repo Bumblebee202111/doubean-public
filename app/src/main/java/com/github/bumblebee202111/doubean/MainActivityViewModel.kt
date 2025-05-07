@@ -7,13 +7,12 @@ import com.github.bumblebee202111.doubean.coroutines.Dispatcher
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.UserRepository
-import com.github.bumblebee202111.doubean.model.AppError
 import com.github.bumblebee202111.doubean.model.AppResult
+import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.stateInUi
+import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.take
@@ -26,6 +25,7 @@ class MainActivityViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     userRepository: UserRepository,
     @Dispatcher(AppDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+    private val snackbarManager: SnackbarManager,
 ) :
     ViewModel() {
     val enableNotifications =
@@ -37,20 +37,13 @@ class MainActivityViewModel @Inject constructor(
     val autoImportSessionAtStartup =
         preferenceStorage.preferToAutoImportSessionAtStartup.stateInUi()
 
-    private val _uiError = MutableStateFlow<AppError?>(null)
-    val uiError = _uiError.asStateFlow()
-
     private fun checkAndRefreshToken() {
         viewModelScope.launch {
             val result = authRepository.checkAndRefreshToken()
             if (result is AppResult.Error && authRepository.isLoggedIn().first()) {
-                _uiError.value = result.error
+                snackbarManager.showSnackBar(result.error.asUiMessage())
             }
         }
-    }
-
-    fun clearUiError() {
-        _uiError.value = null
     }
 
     init {
@@ -58,7 +51,12 @@ class MainActivityViewModel @Inject constructor(
             authRepository.observeLoggedInUserId().collect {
                 if (it != null) {
                     viewModelScope.launch {
-                        userRepository.fetchUser(it)
+                        when (val result = userRepository.fetchUser(it)) {
+                            is AppResult.Success -> Unit
+                            is AppResult.Error -> {
+                                snackbarManager.showSnackBar(result.error.asUiMessage())
+                            }
+                        }
                     }
                 }
             }
