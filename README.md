@@ -130,18 +130,16 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.8.5)
 
-- Error handling
 - Profile
   - My subject counts
 - Dep
-- Fix group sub button not immediately updated
 
 ### Next release \(0.9.0)
 
 - Update base Douban version
 - Profile/User
-  - Dou lists
   - Click avatar/name to view
+  - Dou lists
 - Dou lists
 
 

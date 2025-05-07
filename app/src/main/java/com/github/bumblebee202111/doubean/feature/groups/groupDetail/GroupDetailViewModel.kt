@@ -100,18 +100,18 @@ class GroupDetailViewModel @Inject constructor(
             when (val result = userGroupRepository.subscribeGroup(groupId)) {
                 is AppResult.Error -> {
                     snackBarManager.showSnackBar(result.error.asUiMessage())
-                    _uiState.update {
-                        it.apply {
-                            copy(isError = true)
-                        }
+                    _uiState.update { prevState ->
+                        prevState.copy(isError = true)
                     }
                 }
 
                 is AppResult.Success -> {
-                    _uiState.update {
-                        it.apply {
-                            copy(groupDetail = groupDetail?.copy(isSubscriptionEnabled = true))
-                        }
+                    _uiState.update { prevState ->
+                        prevState.copy(
+                            groupDetail = prevState.groupDetail?.copy(
+                                isSubscriptionEnabled = true
+                            )
+                        )
                     }
                 }
             }
@@ -123,18 +123,18 @@ class GroupDetailViewModel @Inject constructor(
             when (val result = userGroupRepository.unsubscribeGroup(groupId)) {
                 is AppResult.Error -> {
                     snackBarManager.showSnackBar(result.error.asUiMessage())
-                    _uiState.update {
-                        it.apply {
-                            copy(isError = true)
-                        }
+                    _uiState.update { prevState ->
+                        prevState.copy(isError = true)
                     }
                 }
 
                 is AppResult.Success -> {
-                    _uiState.update {
-                        it.apply {
-                            copy(groupDetail = groupDetail?.copy(isSubscriptionEnabled = false))
-                        }
+                    _uiState.update { prevState ->
+                        prevState.copy(
+                            groupDetail = prevState.groupDetail?.copy(
+                                isSubscriptionEnabled = false
+                            )
+                        )
                     }
                 }
             }
