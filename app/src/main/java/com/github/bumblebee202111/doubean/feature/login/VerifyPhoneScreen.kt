@@ -25,27 +25,22 @@ import com.github.bumblebee202111.doubean.model.auth.CaptchaSolution
 import com.github.bumblebee202111.doubean.model.auth.JCaptcha
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.RexxarWebView
-import com.github.bumblebee202111.doubean.util.uiMessage
 
 @Composable
 fun VerifyPhoneScreen(
     onBackClick: () -> Unit,
     onSuccess: () -> Unit,
     viewModel: VerifyPhoneViewModel = hiltViewModel(),
-    onShowSnackbar: suspend (String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     VerifyPhoneScreen(
         uiState = uiState,
-        clearMessage = viewModel::clearMessage,
-        clearError = viewModel::clearError,
         onRequestPhoneCode = viewModel::requestPhoneCode,
         onPhoneCodeChanged = viewModel::updatePhoneCode,
         onVerifyCaptcha = viewModel::verifyCaptcha,
         onverifyPhoneCode = viewModel::verifyPhoneCode,
         onBackClick = onBackClick,
-        onSuccess = onSuccess,
-        onShowSnackbar = onShowSnackbar
+        onSuccess = onSuccess
     )
 }
 
@@ -53,43 +48,18 @@ fun VerifyPhoneScreen(
 @Composable
 fun VerifyPhoneScreen(
     uiState: VerifyPhoneMainUiState,
-    clearMessage: () -> Unit,
-    clearError: () -> Unit,
     onRequestPhoneCode: () -> Unit,
     onPhoneCodeChanged: (String) -> Unit,
     onVerifyCaptcha: (solution: CaptchaSolution) -> Unit,
     onverifyPhoneCode: () -> Unit,
     onBackClick: () -> Unit,
     onSuccess: () -> Unit,
-    onShowSnackbar: suspend (String) -> Unit,
 ) {
 
     if (uiState is VerifyPhoneMainUiState.VerificationSuccess) {
         LaunchedEffect(uiState.message) {
-            onShowSnackbar(uiState.message)
             onSuccess()
         }
-    }
-
-    when (uiState) {
-        is VerifyPhoneMainUiState.Active -> {
-            uiState.message?.let { message ->
-                LaunchedEffect(message) {
-                    onShowSnackbar(message)
-                    clearMessage()
-
-                }
-            }
-            uiState.error?.let { error ->
-                val message = error.uiMessage
-                LaunchedEffect(message) {
-                    onShowSnackbar(message)
-                    clearError()
-                }
-            }
-        }
-
-        is VerifyPhoneMainUiState.VerificationSuccess -> Unit
     }
 
     Scaffold(

@@ -19,6 +19,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.ui.DoubeanApp
+import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.theme.DoubeanTheme
 import com.github.bumblebee202111.doubean.workers.TopicNotificationsWorker
 import com.github.bumblebee202111.doubean.workers.TopicNotificationsWorker.Companion.WORK_NAME
@@ -37,6 +38,10 @@ class MainActivity : ComponentActivity() {
     lateinit var authRepository: AuthRepository
 
     private val mainActivityViewModel: MainActivityViewModel by viewModels()
+
+    @Inject
+    lateinit var snackbarManager: SnackbarManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -53,13 +58,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             DoubeanTheme {
                 val startAppWithGroups by mainActivityViewModel.startAppWithGroups.collectAsStateWithLifecycle()
-                val uiError by mainActivityViewModel.uiError.collectAsStateWithLifecycle()
                 startAppWithGroups?.let {
                     DoubeanApp(
                         navController = rememberNavController(),
-                        startWithGroups = it,
-                        uiError = uiError,
-                        clearUiError = mainActivityViewModel::clearUiError
+                        snackbarManager = snackbarManager,
+                        startWithGroups = it
                     )
                 }
             }

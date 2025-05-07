@@ -10,12 +10,10 @@ import com.github.bumblebee202111.doubean.navigation.MainNavHost
 fun MainNavScreen(
     navController: NavHostController,
     startWithGroups: Boolean,
-    onShowSnackbar: suspend (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     MainNavHost(
         navController = navController,
-        onShowSnackbar = onShowSnackbar,
         startDestination = BottomNavRoute,
         startWithGroups = startWithGroups,
         modifier = modifier

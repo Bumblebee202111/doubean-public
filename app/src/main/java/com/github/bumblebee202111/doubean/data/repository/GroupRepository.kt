@@ -20,6 +20,8 @@ import com.github.bumblebee202111.doubean.network.model.toCachedGroupEntity
 import com.github.bumblebee202111.doubean.network.model.toGroupDetail
 import com.github.bumblebee202111.doubean.network.model.toGroupItemWithMemberInfo
 import com.github.bumblebee202111.doubean.network.model.toSimpleCachedGroupPartialEntity
+import com.github.bumblebee202111.doubean.network.util.loadCacheAndRefresh
+import com.github.bumblebee202111.doubean.network.util.makeApiCall
 import com.github.bumblebee202111.doubean.util.RESULT_GROUPS_COUNT
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
@@ -35,7 +37,7 @@ class GroupRepository @Inject constructor(
     private val groupDao = appDatabase.groupDao()
 
     fun getGroup(id: String) =
-        fetchCached(
+        loadCacheAndRefresh(
             getCache = { groupDao.getCachedGroup(id) },
             mapCacheToCacheDomain = { it.toSimpleGroupWithColor() },
             fetchRemote = {
@@ -86,7 +88,7 @@ class GroupRepository @Inject constructor(
     ).flow.map { it.map(PopulatedTopicItem::asExternalModel) }
 
     suspend fun getDayRanking(): AppResult<List<GroupItemWithIntroInfo>> {
-        return safeApiCall(
+        return makeApiCall(
             apiCall = {
                 ApiService.getDayRanking()
             },
@@ -96,8 +98,8 @@ class GroupRepository @Inject constructor(
                     it.group.toGroupItemWithMemberInfo()
                 }
             },
-         
-        )
+
+            )
     }
 
     companion object {

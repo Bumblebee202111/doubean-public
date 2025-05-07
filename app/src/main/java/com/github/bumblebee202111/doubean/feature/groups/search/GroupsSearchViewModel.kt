@@ -10,6 +10,8 @@ import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.model.AppError
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
+import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
+import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,9 +23,12 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class GroupsSearchViewModel @Inject constructor(private val groupRepository: GroupRepository) :
+class GroupsSearchViewModel @Inject constructor(
+    private val groupRepository: GroupRepository,
+    private val snackbarManager: SnackbarManager,
+) :
     ViewModel() {
-    private val _query = MutableStateFlow<String>("")
+    private val _query = MutableStateFlow("")
 
     val query = _query.asStateFlow()
     private val _dayRankingUiState = MutableStateFlow<DayRankingUiState>(DayRankingUiState.Loading)
@@ -34,6 +39,7 @@ class GroupsSearchViewModel @Inject constructor(private val groupRepository: Gro
 
             when (val result = groupRepository.getDayRanking()) {
                 is AppResult.Error -> {
+                    snackbarManager.showSnackBar(result.error.asUiMessage())
                     _dayRankingUiState.value = DayRankingUiState.Error(result.error)
                 }
 

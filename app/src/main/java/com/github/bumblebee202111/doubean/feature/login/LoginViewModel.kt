@@ -6,10 +6,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
-import com.github.bumblebee202111.doubean.model.AppError
+import com.github.bumblebee202111.doubean.model.ApiError
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.model.GenericError
 import com.github.bumblebee202111.doubean.model.auth.LoginResult
+import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
+import com.github.bumblebee202111.doubean.ui.model.toUiMessage
+import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +20,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val authRepository: AuthRepository) : ViewModel() {
+class LoginViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
+    private val snackbarManager: SnackbarManager,
+) : ViewModel() {
 
     var phoneNumber by mutableStateOf("")
         private set
@@ -34,9 +39,9 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
 
     val sessionLoginResult = MutableStateFlow<Boolean?>(null)
 
-    private val _uiError = MutableStateFlow<AppError?>(null)
+    private val _solutionUri = MutableStateFlow<String?>(null)
 
-    val uiError = _uiError.asStateFlow()
+    val solutionUri = _solutionUri.asStateFlow()
 
     fun triggerAutoImport() {
         viewModelScope.launch {
@@ -49,7 +54,7 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
         val loginResult = authRepository.loginWithDoubanSessionPref(sessionPref)
         sessionLoginResult.value = loginResult
         if (!loginResult) {
-            _uiError.value = GenericError(Throwable("Import failed. Check your input."))
+            snackbarManager.showSnackBar("Import failed. Check your input.".toUiMessage())
         }
     }
 
@@ -66,7 +71,9 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
                 }
             }
             if (sessionResult is AppResult.Error) {
-                _uiError.value = sessionResult.error
+                val error = sessionResult.error
+                _solutionUri.value = (sessionResult.error as? ApiError)?.solutionUri
+                snackbarManager.showSnackBar(error.asUiMessage())
             }
         }
     }
@@ -85,8 +92,8 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
         _isFormValid.value = phoneNumber.length == 11 && password.length >= 6
     }
 
-    fun clearMessage() {
-        _uiError.value = null
+    fun clearSolutionUri() {
+        _solutionUri.value = null
     }
 
 }

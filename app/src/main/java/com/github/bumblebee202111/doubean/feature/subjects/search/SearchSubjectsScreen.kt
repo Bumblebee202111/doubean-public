@@ -23,7 +23,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -34,14 +33,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.shared.SubjectItem
 import com.github.bumblebee202111.doubean.feature.subjects.shared.SubjectItemBasicContent
-import com.github.bumblebee202111.doubean.model.AppError
 import com.github.bumblebee202111.doubean.model.subjects.SearchResultSubjectItem
 import com.github.bumblebee202111.doubean.model.subjects.SubjectSubTag
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectsSearchType
 import com.github.bumblebee202111.doubean.ui.component.SearchTextField
 import com.github.bumblebee202111.doubean.util.OpenInUtils
-import com.github.bumblebee202111.doubean.util.uiMessage
 
 @Composable
 fun SearchSubjectsScreen(
@@ -49,26 +46,18 @@ fun SearchSubjectsScreen(
     onMovieClick: (movieId: String) -> Unit,
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
-    onShowSnackbar: suspend (String) -> Unit,
     viewModel: SearchSubjectsViewModel = hiltViewModel(),
 ) {
     val searchResultUiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val uiError by viewModel.uiError.collectAsStateWithLifecycle()
-    val uiMessage by viewModel.uiMessage.collectAsStateWithLifecycle()
     SearchSubjectsScreen(
         uiState = searchResultUiState,
-        uiError = uiError,
-        uiMessage = uiMessage,
         onSearchTriggered = viewModel::onSearchTriggered,
         onBackClick = onBackClick,
         onQueryChanged = viewModel::onQueryChanged,
         onTypeSelected = viewModel::onTypeSelected,
         onMovieClick = onMovieClick,
         onTvClick = onTvClick,
-        onBookClick = onBookClick,
-        onUiErrorShown = viewModel::onUiErrorShown,
-        onUiMessageShown = viewModel::onUiMessageShown,
-        onShowSnackbar = onShowSnackbar
+        onBookClick = onBookClick
     )
 }
 
@@ -76,8 +65,6 @@ fun SearchSubjectsScreen(
 @Composable
 fun SearchSubjectsScreen(
     uiState: SearchResultUiState,
-    uiError: AppError?,
-    uiMessage: String?,
     onBackClick: () -> Unit,
     onQueryChanged: (query: String) -> Unit,
     onSearchTriggered: () -> Unit,
@@ -85,24 +72,7 @@ fun SearchSubjectsScreen(
     onMovieClick: (movieId: String) -> Unit,
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
-    onUiErrorShown: () -> Unit,
-    onUiMessageShown: () -> Unit,
-    onShowSnackbar: suspend (String) -> Unit,
 ) {
-    if (uiError != null) {
-        val message = uiError.uiMessage
-        LaunchedEffect(uiError) {
-            onShowSnackbar(message)
-            onUiErrorShown()
-        }
-    }
-    if (uiMessage != null) {
-        LaunchedEffect(uiMessage) {
-            onShowSnackbar(uiMessage)
-            onUiMessageShown()
-        }
-    }
-
     Scaffold(
         topBar = {
             TopAppBar(title = {

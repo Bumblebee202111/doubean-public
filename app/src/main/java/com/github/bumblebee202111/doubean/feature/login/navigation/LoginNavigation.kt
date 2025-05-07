@@ -15,12 +15,10 @@ fun NavGraphBuilder.loginScreen(
     onSaveIsLoginSuccessSuccessfulChange: (Boolean) -> Unit,
     onPopBackStack: () -> Unit,
     onOpenDeepLinkUrl: (url: String) -> Unit,
-    onShowSnackbar: suspend (String) -> Unit,
 ) = composable<LoginRoute> {
     LoginScreen(
         onSaveIsLoginSuccessSuccessfulChange = onSaveIsLoginSuccessSuccessfulChange,
         onBackClick = onPopBackStack,
-        onOpenDeepLinkUrl = onOpenDeepLinkUrl,
-        onShowSnackbar = onShowSnackbar
+        onOpenDeepLinkUrl = onOpenDeepLinkUrl
     )
 }

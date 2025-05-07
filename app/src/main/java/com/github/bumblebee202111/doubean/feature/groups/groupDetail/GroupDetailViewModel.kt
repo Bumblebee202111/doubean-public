@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
@@ -11,7 +12,10 @@ import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
+import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
+import com.github.bumblebee202111.doubean.ui.model.toUiMessage
 import com.github.bumblebee202111.doubean.ui.stateInUi
+import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +32,7 @@ class GroupDetailViewModel @Inject constructor(
     private val userGroupRepository: UserGroupRepository,
     private val preferenceStorage: PreferenceStorage,
     savedStateHandle: SavedStateHandle,
+    private val snackBarManager: SnackbarManager,
 ) : ViewModel() {
     val groupId = savedStateHandle.toRoute<GroupDetailRoute>().groupId
     val initialTabId = savedStateHandle.toRoute<GroupDetailRoute>().defaultTabId
@@ -39,8 +44,6 @@ class GroupDetailViewModel @Inject constructor(
         userGroupRepository.getGroupNotificationPreferences(groupId)
     private val defaultNotificationPreferences =
         preferenceStorage.defaultGroupNotificationPreferences.stateInUi()
-    var shouldDisplayFavoritedGroup = MutableStateFlow(false)
-    var shouldDisplayUnfavoritedGroup = MutableStateFlow(false)
 
     init {
         observeCombinedData()
@@ -59,6 +62,7 @@ class GroupDetailViewModel @Inject constructor(
                     notificationPreferences ?: defaultNotificationPreferences
                 when (groupDetailResult) {
                     is CachedAppResult.Error -> {
+                        snackBarManager.showSnackBar(groupDetailResult.error.asUiMessage())
                         GroupDetailUiState(
                             isFavorited = isFavorited,
                             notificationPreferences = uiNotificationPreferences,
@@ -93,9 +97,9 @@ class GroupDetailViewModel @Inject constructor(
 
     fun subscribe() {
         viewModelScope.launch {
-            val result = userGroupRepository.subscribeGroup(groupId)
-            when (result) {
+            when (val result = userGroupRepository.subscribeGroup(groupId)) {
                 is AppResult.Error -> {
+                    snackBarManager.showSnackBar(result.error.asUiMessage())
                     _uiState.update {
                         it.apply {
                             copy(isError = true)
@@ -116,9 +120,9 @@ class GroupDetailViewModel @Inject constructor(
 
     fun unsubscribe() {
         viewModelScope.launch {
-            val result = userGroupRepository.unsubscribeGroup(groupId)
-            when (result) {
+            when (val result = userGroupRepository.unsubscribeGroup(groupId)) {
                 is AppResult.Error -> {
+                    snackBarManager.showSnackBar(result.error.asUiMessage())
                     _uiState.update {
                         it.apply {
                             copy(isError = true)
@@ -140,7 +144,7 @@ class GroupDetailViewModel @Inject constructor(
     fun addFavorite() {
         viewModelScope.launch {
             userGroupRepository.addFavoriteGroup(groupId = groupId)
-            shouldDisplayFavoritedGroup.value = true
+            snackBarManager.showSnackBar(R.string.favorited_group.toUiMessage())
         }
 
     }
@@ -148,16 +152,10 @@ class GroupDetailViewModel @Inject constructor(
     fun removeFavorite() {
         viewModelScope.launch {
             userGroupRepository.removeFavoriteGroup(groupId)
+            snackBarManager.showSnackBar(R.string.unfavorited_group.toUiMessage())
         }
     }
 
-    fun clearFavoritedGroupState() {
-        shouldDisplayFavoritedGroup.value = false
-    }
-
-    fun clearUnfavoritedGroupState() {
-        shouldDisplayUnfavoritedGroup.value = false
-    }
 
     fun saveNotificationPreferences(
         preference: GroupNotificationPreferences,

@@ -40,7 +40,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TwoRowsTopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -76,13 +75,10 @@ fun GroupDetailScreen(
     onBackClick: () -> Unit,
     onTopicClick: (topicId: String) -> Unit,
     viewModel: GroupDetailViewModel = hiltViewModel(),
-    onShowSnackbar: suspend (String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val initialTabId: String? = viewModel.initialTabId
     val groupId: String = viewModel.groupId
-    val shouldDisplayFavoritedGroup by viewModel.shouldDisplayFavoritedGroup.collectAsStateWithLifecycle()
-    val shouldDisplayUnfavoritedGroup by viewModel.shouldDisplayUnfavoritedGroup.collectAsStateWithLifecycle()
 
     GroupDetailScreen(
         uiState = uiState,
@@ -92,14 +88,9 @@ fun GroupDetailScreen(
         unsubscribeGroup = viewModel::unsubscribe,
         addFavorite = viewModel::addFavorite,
         removeFavorite = viewModel::removeFavorite,
-        shouldDisplayFavoritedGroup = shouldDisplayFavoritedGroup,
-        shouldDisplayUnfavoritedGroup = shouldDisplayUnfavoritedGroup,
-        clearFavoritedGroupState = viewModel::clearFavoritedGroupState,
-        clearUnfavoritedGroupState = viewModel::clearUnfavoritedGroupState,
         saveNotificationsPreference = viewModel::saveNotificationPreferences,
         onBackClick = onBackClick,
-        onTopicClick = onTopicClick,
-        onShowSnackbar = onShowSnackbar
+        onTopicClick = onTopicClick
     )
 }
 
@@ -110,40 +101,18 @@ fun GroupDetailScreen(
     uiState: GroupDetailUiState,
     initialTabId: String?,
     groupId: String,
-    shouldDisplayFavoritedGroup: Boolean,
-    shouldDisplayUnfavoritedGroup: Boolean,
     subscribeGroup: () -> Unit,
     unsubscribeGroup: () -> Unit,
     addFavorite: () -> Unit,
     removeFavorite: () -> Unit,
-    clearFavoritedGroupState: () -> Unit,
-    clearUnfavoritedGroupState: () -> Unit,
     saveNotificationsPreference: (preference: GroupNotificationPreferences) -> Unit,
     onBackClick: () -> Unit,
     onTopicClick: (topicId: String) -> Unit,
-    onShowSnackbar: suspend (message: String) -> Unit,
 ) {
 
     var openNotificationsPreferenceDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-    val favoritedGroupMessage = stringResource(id = R.string.favorited_group)
-
-    LaunchedEffect(key1 = shouldDisplayFavoritedGroup) {
-        if (shouldDisplayFavoritedGroup) {
-            onShowSnackbar(favoritedGroupMessage)
-            clearFavoritedGroupState()
-        }
-    }
-
-    val unfavoritedGroupMessage = stringResource(id = R.string.unfavorited_group)
-
-    LaunchedEffect(key1 = shouldDisplayUnfavoritedGroup) {
-        if (shouldDisplayUnfavoritedGroup) {
-            onShowSnackbar(unfavoritedGroupMessage)
-            clearUnfavoritedGroupState()
-        }
-    }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
@@ -190,7 +159,6 @@ fun GroupDetailScreen(
                     groupId = groupId,
                     group = group,
                     onTopicClick = onTopicClick,
-                    onShowSnackbar = onShowSnackbar,
                     tabContentPadding = PaddingValues(
                         bottom = innerPadding.calculateBottomPadding()
                     )
@@ -483,7 +451,6 @@ fun GroupPager(
     groupId: String,
     group: GroupDetail?,
     onTopicClick: (topicId: String) -> Unit,
-    onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
     tabContentPadding: PaddingValues = PaddingValues(),
 ) {
@@ -505,7 +472,6 @@ fun GroupPager(
             tabId = tabId,
             group = group,
             onTopicClick = onTopicClick,
-            onShowSnackbar = onShowSnackbar,
             contentPadding = tabContentPadding
         )
     }

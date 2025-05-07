@@ -39,6 +39,9 @@ import com.github.bumblebee202111.doubean.network.model.toEntity
 import com.github.bumblebee202111.doubean.network.model.toGroupItem
 import com.github.bumblebee202111.doubean.network.model.toSimpleCachedGroupPartialEntity
 import com.github.bumblebee202111.doubean.network.model.toTopicPartialEntity
+import com.github.bumblebee202111.doubean.network.util.loadCacheAndRefresh
+import com.github.bumblebee202111.doubean.network.util.makeApiCall
+import com.github.bumblebee202111.doubean.network.util.networkBoundResource
 import com.github.bumblebee202111.doubean.notifications.Notifier
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -58,7 +61,7 @@ class UserGroupRepository @Inject constructor(
     private val topicDao = appDatabase.groupTopicDao()
     private val userDao = appDatabase.userDao()
 
-    fun getUserJoinedGroups(userId: String) = fetchCached(
+    fun getUserJoinedGroups(userId: String) = loadCacheAndRefresh(
         getCache = {
             userGroupDao.getUserJoinedGroups(userId)
         },
@@ -87,26 +90,25 @@ class UserGroupRepository @Inject constructor(
             it.groups.map { it.toGroupItem() }
         })
 
-    suspend fun subscribeGroup(groupId: String): AppResult<Unit> = safeApiCall(
+    suspend fun subscribeGroup(groupId: String): AppResult<Unit> = makeApiCall(
         apiCall = { apiService.subscribeGroup(groupId) },
         mapSuccess = { }
     )
 
-    suspend fun unsubscribeGroup(groupId: String): AppResult<Unit> = safeApiCall(
+    suspend fun unsubscribeGroup(groupId: String): AppResult<Unit> = makeApiCall(
         apiCall = { apiService.unsubscribeGroup(groupId) },
         mapSuccess = { }
     )
 
-    fun getRecentTopicsFeed() = offlineFirstApiResultFlow(
-        loadFromDb = {
+    fun getRecentTopicsFeed() = networkBoundResource(
+        queryDb = {
             userGroupDao.getTopicsFeed()
-                .map { it.map(PopulatedTopicItemWithGroup::asExternalModel) }
         },
-        call = {
+        fetchRemote = {
             apiService.getGroupUserRecentTopicsFeed()
         },
-        saveSuccess = {
-            val networkTopics = feeds
+        saveRemoteResponseToDb = { response ->
+            val networkTopics = response.feeds
                 .map(NetworkRecentTopicsFeedItem::topic)
                 .filterIsInstance<NetworkTopicItemWithGroup>()
             val feedItemEntities = networkTopics.map(NetworkTopicItemWithGroup::toEntity)
@@ -130,6 +132,9 @@ class UserGroupRepository @Inject constructor(
                     insertTopicTags(topicTagEntities)
                 }
             }
+        },
+        mapDbEntityToDomain = { entity ->
+            entity.map(PopulatedTopicItemWithGroup::asExternalModel)
         }
     )
 

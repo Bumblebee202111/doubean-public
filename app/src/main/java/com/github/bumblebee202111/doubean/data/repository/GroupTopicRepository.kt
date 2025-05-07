@@ -6,13 +6,14 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import androidx.room.withTransaction
 import com.github.bumblebee202111.doubean.data.db.AppDatabase
-import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicDetail
 import com.github.bumblebee202111.doubean.data.db.model.toTopicDetail
 import com.github.bumblebee202111.doubean.data.paging.GroupTopicCommentPagingSource
 import com.github.bumblebee202111.doubean.data.paging.GroupTopicReshareItemPagingSource
+import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.model.fangorns.ReactionType
 import com.github.bumblebee202111.doubean.model.groups.GroupTopicCommentReshareItem
 import com.github.bumblebee202111.doubean.model.groups.TopicComment
+import com.github.bumblebee202111.doubean.model.groups.TopicDetail
 import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkGroupTopicComment
 import com.github.bumblebee202111.doubean.network.model.NetworkReshareItem
@@ -23,6 +24,8 @@ import com.github.bumblebee202111.doubean.network.model.toCachedGroupEntity
 import com.github.bumblebee202111.doubean.network.model.toNetworkReactionType
 import com.github.bumblebee202111.doubean.network.model.toTopicItemPartialEntity
 import com.github.bumblebee202111.doubean.network.model.toTopicReactionPartialEntity
+import com.github.bumblebee202111.doubean.network.util.makeApiCall
+import com.github.bumblebee202111.doubean.network.util.networkBoundResource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,17 +43,18 @@ class GroupTopicRepository @Inject constructor(
     private val groupTopicDao = appDatabase.groupTopicDao()
     private val userDao = appDatabase.userDao()
 
-    fun getTopic(id: String) = offlineFirstApiResultFlow(
-        loadFromDb = {
-            groupTopicDao.loadTopic(id).map { it?.let(PopulatedTopicDetail::toTopicDetail) }
+    fun getTopic(id: String): Flow<CachedAppResult<TopicDetail, TopicDetail?>> =
+        networkBoundResource(
+            queryDb = {
+                groupTopicDao.loadTopic(id)
         },
-        call = { apiService.getGroupTopic(id) },
-        saveSuccess = {
-            val topicDetail = toTopicItemPartialEntity()
-            val topicTags = topicTags.map { it.asEntity(group.id) }
-            val topicTagCrossRefs = tagCrossRefs()
-            val group = group.toCachedGroupEntity()
-            val author = author.asEntity()
+            fetchRemote = { apiService.getGroupTopic(id) },
+            saveRemoteResponseToDb = { response ->
+                val topicDetail = response.toTopicItemPartialEntity()
+                val topicTags = response.topicTags.map { it.asEntity(response.group.id) }
+                val topicTagCrossRefs = response.tagCrossRefs()
+                val group = response.group.toCachedGroupEntity()
+                val author = response.author.asEntity()
             appDatabase.withTransaction {
                 groupDao.insertTopicTags(topicTags)
                 groupTopicDao.insertTopicDetail(topicDetail)
@@ -59,6 +63,9 @@ class GroupTopicRepository @Inject constructor(
                 groupDao.insertCachedGroup(group)
                 userDao.insertUser(author)
             }
+            },
+            mapDbEntityToDomain = { entity ->
+                entity.toTopicDetail()
         }
     )
 
@@ -97,7 +104,7 @@ class GroupTopicRepository @Inject constructor(
 
     suspend fun react(
         topicId: String, reactionType: ReactionType,
-    ) = safeApiCall(
+    ) = makeApiCall(
         apiCall = {
             apiService.reactGroupTopic(topicId, reactionType.toNetworkReactionType())
         },

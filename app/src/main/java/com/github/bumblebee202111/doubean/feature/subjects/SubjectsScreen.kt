@@ -51,7 +51,6 @@ fun SubjectsScreen(
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
     viewModel: SubjectsViewModel = hiltViewModel(),
-    onShowSnackbar: suspend (String) -> Unit,
 ) {
     val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
     SubjectsScreen(
@@ -63,8 +62,7 @@ fun SubjectsScreen(
         onRankListClick = onRankListClick,
         onMovieClick = onMovieClick,
         onTvClick = onTvClick,
-        onBookClick = onBookClick,
-        onShowSnackbar = onShowSnackbar
+        onBookClick = onBookClick
     )
 }
 
@@ -79,7 +77,6 @@ fun SubjectsScreen(
     onMovieClick: (movieId: String) -> Unit,
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
-    onShowSnackbar: suspend (String) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -108,8 +105,7 @@ fun SubjectsScreen(
                 onRankListClick = onRankListClick,
                 onMovieClick = onMovieClick,
                 onTvClick = onTvClick,
-                onBookClick = onBookClick,
-                onShowSnackbar = onShowSnackbar
+                onBookClick = onBookClick
             )
         }
     }
@@ -178,7 +174,6 @@ private fun SubjectsPager(
     onMovieClick: (movieId: String) -> Unit,
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
-    onShowSnackbar: suspend (String) -> Unit,
 ) {
     HorizontalPager(state = state, userScrollEnabled = false) { page ->
         val modifier = Modifier.fillMaxSize()
@@ -189,7 +184,6 @@ private fun SubjectsPager(
                     onSubjectStatusClick = onSubjectStatusClick,
                     onRankListClick = onRankListClick,
                     onMovieClick = onMovieClick,
-                    onShowSnackbar = onShowSnackbar,
                     modifier = modifier
                 )
             }
@@ -200,7 +194,6 @@ private fun SubjectsPager(
                     onLoginClick = onLoginClick,
                     onRankListClick = onRankListClick,
                     onTvClick = onTvClick,
-                    onShowSnackbar = onShowSnackbar,
                     modifier = modifier,
                 )
             }
@@ -211,7 +204,6 @@ private fun SubjectsPager(
                     onLoginClick = onLoginClick,
                     onRankListClick = onRankListClick,
                     onBookClick = onBookClick,
-                    onShowSnackbar = onShowSnackbar,
                     modifier = modifier,
                 )
             }

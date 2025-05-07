@@ -24,7 +24,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,7 +57,6 @@ fun GroupTab(
     tabId: String?,
     group: GroupDetail?,
     onTopicClick: (topicId: String) -> Unit,
-    onShowSnackbar: suspend (message: String) -> Unit,
     viewModel: GroupTabViewModel = hiltViewModel<GroupTabViewModel, GroupTabViewModel.Factory>(
         creationCallback = { factory ->
             factory.create(groupId, tabId)
@@ -70,26 +68,19 @@ fun GroupTab(
     val topicPagingItems = viewModel.topicsPagingData.collectAsLazyPagingItems()
     val isFavorited by viewModel.isFavorited.collectAsStateWithLifecycle()
     val topicNotificationPreferences by viewModel.topicNotificationPreferences.collectAsStateWithLifecycle()
-    val shouldDisplayFavoritedTab = viewModel.shouldDisplayFavoritedTab
-    val shouldDisplayUnfavoritedTab = viewModel.shouldDisplayUnfavoritedTab
     val sortBy by viewModel.sortBy.collectAsStateWithLifecycle()
     GroupTab(
         tabId = tabId,
         isFavorited = isFavorited,
         topicNotificationPreferences = topicNotificationPreferences,
         topicPagingItems = topicPagingItems,
-        shouldDisplayFavoritedGroup = shouldDisplayFavoritedTab,
-        shouldDisplayUnfavoritedTab = shouldDisplayUnfavoritedTab,
         sortBy = sortBy,
         group = group,
-        clearFavoritedTabState = viewModel::clearFavoritedTabState,
-        clearUnfavoritedTabState = viewModel::clearUnfavoritedTabState,
         updateSortBy = viewModel::updateSortBy,
         removeFavorite = viewModel::removeFavorite,
         addFavorite = viewModel::addFavorite,
         saveNotificationsPreference = viewModel::saveNotificationPreferences,
         onTopicClick = onTopicClick,
-        onShowSnackbar = onShowSnackbar,
         contentPadding = contentPadding
     )
 }
@@ -100,40 +91,17 @@ fun GroupTab(
     isFavorited: Boolean?,
     topicNotificationPreferences: GroupNotificationPreferences?,
     topicPagingItems: LazyPagingItems<TopicItem>,
-    shouldDisplayFavoritedGroup: Boolean,
-    shouldDisplayUnfavoritedTab: Boolean,
     sortBy: TopicSortBy?,
     group: GroupDetail?,
-    clearFavoritedTabState: () -> Unit,
-    clearUnfavoritedTabState: () -> Unit,
     updateSortBy: (topicSortBy: TopicSortBy) -> Unit,
     removeFavorite: () -> Unit,
     addFavorite: () -> Unit,
     saveNotificationsPreference: (preferences: GroupNotificationPreferences) -> Unit,
     onTopicClick: (topicId: String) -> Unit,
-    onShowSnackbar: suspend (message: String) -> Unit,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
 
     var openAlertDialog by remember { mutableStateOf(false) }
-
-    val favoritedTabMessage = stringResource(id = R.string.favorited_tab)
-
-    LaunchedEffect(key1 = shouldDisplayFavoritedGroup) {
-        if (shouldDisplayFavoritedGroup) {
-            onShowSnackbar(favoritedTabMessage)
-            clearFavoritedTabState()
-        }
-    }
-
-    val unfavoritedTabMessage = stringResource(id = R.string.unfavorited_tab)
-
-    LaunchedEffect(key1 = shouldDisplayUnfavoritedTab) {
-        if (shouldDisplayUnfavoritedTab) {
-            onShowSnackbar(unfavoritedTabMessage)
-            clearUnfavoritedTabState()
-        }
-    }
 
     LazyColumn(
         modifier = Modifier

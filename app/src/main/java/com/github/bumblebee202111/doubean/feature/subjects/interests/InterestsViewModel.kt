@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalCoroutinesApi::class)
+@file:OptIn(ExperimentalCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 
 package com.github.bumblebee202111.doubean.feature.subjects.interests
 
@@ -10,10 +10,13 @@ import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.InterestsRoute
+import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.subjects.MySubjectStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
+import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.stateInUi
+import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +24,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -31,6 +35,7 @@ class InterestsViewModel @Inject constructor(
     private val userSubjectRepository: UserSubjectRepository,
     private val authRepository: AuthRepository,
     private val savedStateHandle: SavedStateHandle,
+    private val snackbarManager: SnackbarManager,
 ) :
     ViewModel() {
 
@@ -38,9 +43,19 @@ class InterestsViewModel @Inject constructor(
     private val userId = route.userId
     private val subjectType = route.subjectType
     private val subjectResult = flow {
-        emit(userSubjectRepository.getUserSubjects(userId).map { subjects ->
-            subjects.first { it.type == subjectType }
-        })
+        emit(userSubjectRepository.getUserSubjects(userId))
+    }.mapLatest { result ->
+        when (result) {
+            is AppResult.Success -> {
+                AppResult.Success(result.data.first { it.type == subjectType })
+            }
+
+            is AppResult.Error -> {
+                snackbarManager.showSnackBar(result.error.asUiMessage())
+                result
+            }
+        }
+
     }.stateInUi()
 
     private val interests = MutableStateFlow<List<SubjectWithInterest<*>>>(emptyList())
@@ -48,13 +63,23 @@ class InterestsViewModel @Inject constructor(
     private val interestsResult =
         flow {
             emit(userSubjectRepository.getUserInterests(userId = userId, subjectType = subjectType))
-        }.onEach {
-            interests.value = it.getOrDefault(emptyList())
+        }.onEach { result ->
+            when (result) {
+                is AppResult.Success -> interests.value = result.data
+                is AppResult.Error -> {
+                    interests.value = emptyList()
+                    snackbarManager.showSnackBar(result.error.asUiMessage())
+                }
+            }
         }.stateInUi()
 
     private val hasMore =
         combine(subjectResult, interestsResult) { subjectResult, interestsResult ->
-            return@combine subjectResult?.isSuccess == true && interestsResult?.isSuccess == true && subjectResult.getOrThrow().interests.sumOf { it.count } > interestsResult.getOrThrow().size
+            if (subjectResult is AppResult.Success && interestsResult is AppResult.Success) {
+                subjectResult.data.interests.sumOf { it.count } > interestsResult.data.size
+            } else {
+                false
+            }
         }.stateInUi(false)
 
     val moreInterestsPagingData = hasMore.flatMapLatest { hasMore ->
@@ -77,8 +102,8 @@ class InterestsViewModel @Inject constructor(
             isLoggedIn
         ) { subjectResult, interestsResult, interests, hasMore, isLoggedIn ->
             when {
-                subjectResult?.isSuccess == true && interestsResult?.isSuccess == true -> {
-                    val subject = subjectResult.getOrThrow()
+                subjectResult is AppResult.Success && interestsResult is AppResult.Success -> {
+                    val subject = subjectResult.data
                     val statusesWithInterests = subject.interests.map { interestStatus ->
                         Pair(
                             first = interestStatus,
@@ -92,7 +117,13 @@ class InterestsViewModel @Inject constructor(
                     )
                 }
 
-                else -> InterestsUiState.Error
+                subjectResult == null || interestsResult == null -> {
+                    InterestsUiState.Loading
+                }
+
+                else -> {
+                    InterestsUiState.Error
+                }
             }
         }.stateInUi(InterestsUiState.Loading)
 
@@ -100,39 +131,49 @@ class InterestsViewModel @Inject constructor(
         subjectWithInterest: SubjectWithInterest<*>,
         status: SubjectInterestStatus,
     ) {
-        when (status) {
-            SubjectInterestStatus.MARK_STATUS_UNMARK -> {
-                viewModelScope.launch {
-                    val result = userSubjectRepository.unmarkSubject(
+        viewModelScope.launch {
+            val result: AppResult<Any> = when (status) {
+                SubjectInterestStatus.MARK_STATUS_UNMARK -> {
+                    userSubjectRepository.unmarkSubject(
                         type = subjectWithInterest.type,
                         id = subjectWithInterest.id
                     )
-                    if (result.isSuccess) {
-                        interests.update {
-                            it.toMutableList().apply {
-                                remove(subjectWithInterest)
+                }
+
+                else -> {
+                    userSubjectRepository.addSubjectToInterests(
+                        subjectWithInterest.type, subjectWithInterest.id,
+                        newStatus = status
+                    )
+                }
+            }
+
+            when (result) {
+                is AppResult.Success -> {
+                    if (status == SubjectInterestStatus.MARK_STATUS_UNMARK) {
+                        interests.update { list ->
+                            list.filterNot { it.id == subjectWithInterest.id && it.type == subjectWithInterest.type }
+                        }
+                    } else if (result.data is SubjectWithInterest<*>) {
+                        interests.update { list ->
+                            list.map { item ->
+                                if (item.id == subjectWithInterest.id && item.type == subjectWithInterest.type) {
+                                    result.data
+                                } else {
+                                    item
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            else -> {
-                viewModelScope.launch {
-                    val result = userSubjectRepository.addSubjectToInterests(
-                        subjectWithInterest.type, subjectWithInterest.id,
-                        newStatus = status
-                    )
-                    if (result.isSuccess) {
-                        interests.value = interests.value.toMutableList().apply {
-                            set(indexOf(subjectWithInterest), result.getOrThrow())
-                        }
-                    }
+                is AppResult.Error -> {
+                    snackbarManager.showSnackBar(result.error.asUiMessage())
                 }
             }
         }
-    }
 
+    }
 }
 
 sealed interface InterestsUiState {

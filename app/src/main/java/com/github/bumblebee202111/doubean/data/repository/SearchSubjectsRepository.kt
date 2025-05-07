@@ -6,6 +6,7 @@ import com.github.bumblebee202111.doubean.model.subjects.SubjectsSearchType
 import com.github.bumblebee202111.doubean.model.subjects.toApiSubjectsSearchType
 import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.toSubjectSearchResult
+import com.github.bumblebee202111.doubean.network.util.makeApiCall
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,7 +16,7 @@ class SearchSubjectsRepository @Inject constructor(private val apiService: ApiSe
         query: String,
         type: SubjectsSearchType? = null,
     ): AppResult<SubjectSearchResult> {
-        return safeApiCall(
+        return makeApiCall(
             apiCall = {
                 apiService.searchSubjects(q = query, type = type?.toApiSubjectsSearchType())
             },

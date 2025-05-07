@@ -18,7 +18,6 @@ fun NavGraphBuilder.subjectsScreen(
     onMovieClick: (movieId: String) -> Unit,
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
-    onShowSnackbar: suspend (String) -> Unit,
 ) {
     composable<SubjectsRoute> {
         SubjectsScreen(
@@ -29,8 +28,7 @@ fun NavGraphBuilder.subjectsScreen(
             onRankListClick = onRankListClick,
             onMovieClick = onMovieClick,
             onTvClick = onTvClick,
-            onBookClick = onBookClick,
-            onShowSnackbar = onShowSnackbar
+            onBookClick = onBookClick
         )
     }
 }

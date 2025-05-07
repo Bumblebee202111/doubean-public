@@ -12,6 +12,9 @@ import com.github.bumblebee202111.doubean.model.auth.CaptchaSolution
 import com.github.bumblebee202111.doubean.model.auth.JCaptcha
 import com.github.bumblebee202111.doubean.model.auth.RequestPhoneCodeResult
 import com.github.bumblebee202111.doubean.model.auth.VerifyPhoneCodeResult
+import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
+import com.github.bumblebee202111.doubean.ui.model.toUiMessage
+import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +27,7 @@ import javax.inject.Inject
 class VerifyPhoneViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     savedStateHandle: SavedStateHandle,
+    private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
 
     private val userId = savedStateHandle.toRoute<VerifyPhoneRoute>().userId
@@ -92,16 +96,6 @@ class VerifyPhoneViewModel @Inject constructor(
         }
     }
 
-    fun clearMessage() {
-        val current = _uiState.value as? VerifyPhoneMainUiState.Active ?: return
-        _uiState.value = current.copy(message = null)
-    }
-
-    fun clearError() {
-        val current = _uiState.value as? VerifyPhoneMainUiState.Active ?: return
-        _uiState.value = current.copy(error = null)
-    }
-
     fun verifyCaptcha(solution: CaptchaSolution) {
         val current = _uiState.value as? VerifyPhoneMainUiState.Active ?: return
         _uiState.update {
@@ -115,15 +109,17 @@ class VerifyPhoneViewModel @Inject constructor(
     }
 
     private fun handleRequestResult(result: RequestPhoneCodeResult) {
-        _uiState.value = when (result) {
-            is RequestPhoneCodeResult.Success -> VerifyPhoneMainUiState.Active(
+        when (result) {
+            is RequestPhoneCodeResult.Success ->
+                _uiState.value = VerifyPhoneMainUiState.Active(
                 isCodeSent = true,
                 isRequestingCode = false,
                 message = result.description
             )
 
             is RequestPhoneCodeResult.Failed -> {
-                VerifyPhoneMainUiState.Active(
+                snackbarManager.showSnackBar(result.description.toUiMessage())
+                _uiState.value = VerifyPhoneMainUiState.Active(
                     jCaptcha = result.jCaptcha,
                     message = result.description
                 )
@@ -132,6 +128,7 @@ class VerifyPhoneViewModel @Inject constructor(
     }
 
     private fun handleRequestError(error: AppError) {
+        snackbarManager.showSnackBar(error.asUiMessage())
         _uiState.value = VerifyPhoneMainUiState.Active(
             isRequestingCode = false,
             error = error
@@ -139,6 +136,7 @@ class VerifyPhoneViewModel @Inject constructor(
     }
 
     private fun handleVerificationSuccess(result: VerifyPhoneCodeResult) {
+        snackbarManager.showSnackBar(result.description.toUiMessage())
         _uiState.value = when (result) {
             is VerifyPhoneCodeResult.Success -> {
                 VerifyPhoneMainUiState.VerificationSuccess(
@@ -156,6 +154,7 @@ class VerifyPhoneViewModel @Inject constructor(
     }
 
     private fun handleVerificationError(error: AppError) {
+        snackbarManager.showSnackBar(error.asUiMessage())
         _uiState.value = VerifyPhoneMainUiState.Active(
             isVerifyingCode = false,
             error = error

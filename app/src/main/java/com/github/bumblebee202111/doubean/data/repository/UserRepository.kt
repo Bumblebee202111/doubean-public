@@ -1,13 +1,11 @@
 package com.github.bumblebee202111.doubean.data.repository
 
-import com.github.bumblebee202111.doubean.coroutines.AppDispatchers
-import com.github.bumblebee202111.doubean.coroutines.Dispatcher
-import com.github.bumblebee202111.doubean.coroutines.suspendRunCatching
 import com.github.bumblebee202111.doubean.data.db.AppDatabase
 import com.github.bumblebee202111.doubean.data.db.model.asExternalModel
+import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.asEntity
-import kotlinx.coroutines.CoroutineDispatcher
+import com.github.bumblebee202111.doubean.network.util.makeApiCall
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -16,15 +14,17 @@ import javax.inject.Singleton
 class UserRepository @Inject constructor(
     private val service: ApiService,
     private val appDatabase: AppDatabase,
-    @Dispatcher(AppDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ) {
     private val userDao = appDatabase.userDao()
-    suspend fun fetchUser(userId: String): Result<Unit> {
-        return suspendRunCatching {
-            service.getUser(userId).also {
+    suspend fun fetchUser(userId: String): AppResult<Unit> {
+        return makeApiCall(
+            apiCall = {
+                service.getUser(userId)
+            },
+            mapSuccess = {
                 userDao.insertUser(it.asEntity())
             }
-        }
+        )
     }
 
     fun getCachedUser(userId: String) = userDao.observeUser(userId).map { it?.asExternalModel() }

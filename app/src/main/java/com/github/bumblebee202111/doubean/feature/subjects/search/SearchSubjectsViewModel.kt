@@ -5,9 +5,11 @@ package com.github.bumblebee202111.doubean.feature.subjects.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.repository.SearchSubjectsRepository
-import com.github.bumblebee202111.doubean.model.AppError
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.subjects.SubjectsSearchType
+import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
+import com.github.bumblebee202111.doubean.ui.model.toUiMessage
+import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -19,13 +21,10 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchSubjectsViewModel @Inject constructor(
     private val repository: SearchSubjectsRepository,
+    private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SearchResultUiState())
     val uiState = _uiState.asStateFlow()
-    private val _uiError = MutableStateFlow<AppError?>(null)
-    val uiError = _uiError.asStateFlow()
-    private val _uiMessage = MutableStateFlow<String?>(null)
-    val uiMessage = _uiMessage.asStateFlow()
 
     private var currentJob: Job? = null
 
@@ -52,13 +51,16 @@ class SearchSubjectsViewModel @Inject constructor(
             )
             _uiState.value = when (result) {
                 is AppResult.Error -> {
-                    _uiError.value = result.error
+                    snackbarManager.showSnackBar(result.error.asUiMessage())
                     _uiState.value.copy(isLoading = false)
                 }
 
                 is AppResult.Success -> {
                     val (banned, items, types) = result.data
-                    _uiMessage.value = banned
+                    banned?.let {
+                        snackbarManager.showSnackBar(it.toUiMessage())
+                    }
+
                     _uiState.value.copy(
                         items = items,
                         types = types,
@@ -86,13 +88,15 @@ class SearchSubjectsViewModel @Inject constructor(
             )
             _uiState.value = when (result) {
                 is AppResult.Error -> {
-                    _uiError.value = result.error
+                    snackbarManager.showSnackBar(result.error.asUiMessage())
                     _uiState.value.copy(isLoading = false)
                 }
 
                 is AppResult.Success -> {
                     val (banned, items) = result.data
-                    _uiMessage.value = banned
+                    banned?.let {
+                        snackbarManager.showSnackBar(it.toUiMessage())
+                    }
                     _uiState.value.copy(
                         items = items,
                         isLoading = false
@@ -102,11 +106,4 @@ class SearchSubjectsViewModel @Inject constructor(
         }
     }
 
-    fun onUiErrorShown() {
-        _uiError.value = null
-    }
-
-    fun onUiMessageShown() {
-        _uiMessage.value = null
-    }
 }

@@ -10,14 +10,18 @@ import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.SubjectCollectionRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.ranklist.navigation.RankListRoute
+import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithRankAndInterest
+import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.stateInUi
+import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,11 +32,16 @@ class RankListViewModel @Inject constructor(
     private val userSubjectRepository: UserSubjectRepository,
     private val authRepository: AuthRepository,
     savedStateHandle: SavedStateHandle,
+    private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
     private val collectionId = savedStateHandle.toRoute<RankListRoute>().collectionId
 
     private val rankListResult = flow {
         emit(subjectCollectionRepository.getSubjectCollection(collectionId))
+    }.onEach { result ->
+        if (result is AppResult.Error) {
+            snackbarManager.showSnackBar(result.error.asUiMessage())
+        }
     }
 
     private val updatedItems = MutableStateFlow(listOf<SubjectWithInterest<*>>())
@@ -54,13 +63,17 @@ class RankListViewModel @Inject constructor(
         rankListResult,
         isLoggedIn
     ) { rankListResult, isLoggedIn ->
-        if (rankListResult.isSuccess) {
-            RankListUiState.Success(
-                rankList = rankListResult.getOrThrow(),
-                isLoggedIn
-            )
-        } else {
-            RankListUiState.Error
+        when (rankListResult) {
+            is AppResult.Success -> {
+                RankListUiState.Success(
+                    rankList = rankListResult.data,
+                    isLoggedIn = isLoggedIn
+                )
+            }
+
+            is AppResult.Error -> {
+                RankListUiState.Error
+            }
         }
     }.stateInUi(RankListUiState.Loading)
 
@@ -70,9 +83,22 @@ class RankListViewModel @Inject constructor(
                 type = subject.type, id = subject.id,
                 newStatus = SubjectInterestStatus.MARK_STATUS_MARK
             )
-            if (result.isSuccess) {
-                updatedItems.update { oldUpdatedItems ->
-                    oldUpdatedItems.filterNot { it.id == subject.id } + result.getOrThrow()
+            when (result) {
+                is AppResult.Success -> {
+                    val updatedItem = result.data
+                    updatedItems.update { oldUpdatedItems ->
+                        val existingIndex = oldUpdatedItems.indexOfFirst { it.id == updatedItem.id }
+                        if (existingIndex != -1) {
+                            oldUpdatedItems.toMutableList()
+                                .apply { this[existingIndex] = updatedItem }
+                        } else {
+                            oldUpdatedItems + updatedItem
+                        }
+                    }
+                }
+
+                is AppResult.Error -> {
+                    snackbarManager.showSnackBar(result.error.asUiMessage())
                 }
             }
         }

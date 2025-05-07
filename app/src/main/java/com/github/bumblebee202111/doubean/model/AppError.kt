@@ -9,7 +9,7 @@ sealed interface NetworkError : AppError
 data class ApiError(
     val status: Int,
     val code: Int,
-    val message: String,
+    val message: String?,
     val request: String,
     val solutionUri: String? = null,
     override val originalError: Throwable?,

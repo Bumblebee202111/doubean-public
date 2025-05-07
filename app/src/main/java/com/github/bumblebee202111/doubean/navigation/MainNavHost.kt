@@ -43,7 +43,6 @@ import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.tvScree
 @Composable
 fun MainNavHost(
     navController: NavHostController,
-    onShowSnackbar: suspend (String) -> Unit,
     startDestination: Any,
     startWithGroups: Boolean,
     modifier: Modifier = Modifier,
@@ -67,8 +66,7 @@ fun MainNavHost(
             navigateToRankList = navController::navigateToRankList,
             navigateToMovie = navController::navigateToMovie,
             navigateToTv = navController::navigateToTv,
-            navigateToBook = navController::navigateToBook,
-            onShowSnackbar = onShowSnackbar
+            navigateToBook = navController::navigateToBook
         )
         groupsSearchScreen(
             onGroupClick = navController::navigateToGroup,
@@ -81,8 +79,7 @@ fun MainNavHost(
         )
         groupDetailScreen(
             onBackClick = navController::navigateUp,
-            onTopicClick = navController::navigateToTopic,
-            onShowSnackbar = onShowSnackbar
+            onTopicClick = navController::navigateToTopic
         )
         topicScreen(
             onBackClick = navController::navigateUp,
@@ -90,8 +87,7 @@ fun MainNavHost(
             onGroupClick = navController::navigateToGroup,
             onReshareStatusesClick = navController::navigateToReshareStatuses,
             onImageClick = navController::navigateToImage,
-            onOpenDeepLinkUrl = navController::navigateWithDeepLinkUrl,
-            onShowSnackbar = onShowSnackbar
+            onOpenDeepLinkUrl = navController::navigateWithDeepLinkUrl
         )
         reshareStatusesScreen(onBackClick = navController::navigateUp)
         webViewScreen(onBackClick = navController::navigateUp)
@@ -100,13 +96,11 @@ fun MainNavHost(
                 navController.previousBackStackEntry!!.savedStateHandle[LOGIN_SUCCESSFUL] = it
             },
             onPopBackStack = navController::popBackStack,
-            onOpenDeepLinkUrl = navController::navigateWithDeepLinkUrl,
-            onShowSnackbar = onShowSnackbar
+            onOpenDeepLinkUrl = navController::navigateWithDeepLinkUrl
         )
         verifyPhoneScreen(
             onBackClick = navController::navigateUp,
-            onSuccess = { navController.popBackStack(LoginRoute, true) },
-            onShowSnackbar = onShowSnackbar
+            onSuccess = { navController.popBackStack(LoginRoute, true) }
         )
         settingsScreen(
             onBackClick = navController::navigateUp,
@@ -118,8 +112,7 @@ fun MainNavHost(
             onBackClick = navController::navigateUp
         )
         imageScreen(
-            navigateUp = navController::navigateUp,
-            onShowSnackbar = onShowSnackbar
+            navigateUp = navController::navigateUp
         )
         interestsScreen(
             onBackClick = navController::navigateUp,
@@ -132,7 +125,6 @@ fun MainNavHost(
             onMovieClick = navController::navigateToMovie,
             onTvClick = navController::navigateToTv,
             onBookClick = navController::navigateToBook,
-            onShowSnackbar = onShowSnackbar
         )
         movieScreen(
             onBackClick = navController::navigateUp,

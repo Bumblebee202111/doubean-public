@@ -14,7 +14,6 @@ data class VerifyPhoneRoute(
 fun NavGraphBuilder.verifyPhoneScreen(
     onBackClick: () -> Unit,
     onSuccess: () -> Unit,
-    onShowSnackbar: suspend (String) -> Unit,
 ) = composable<VerifyPhoneRoute>(
     deepLinks =
     listOf(
@@ -26,7 +25,6 @@ fun NavGraphBuilder.verifyPhoneScreen(
 ) {
     VerifyPhoneScreen(
         onBackClick = onBackClick,
-        onSuccess = onSuccess,
-        onShowSnackbar = onShowSnackbar
+        onSuccess = onSuccess
     )
 }

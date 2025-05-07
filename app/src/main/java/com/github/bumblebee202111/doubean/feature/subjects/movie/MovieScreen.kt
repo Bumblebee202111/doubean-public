@@ -24,9 +24,9 @@ fun MovieScreen(
     onImageClick: (url: String) -> Unit,
     viewModel: MovieViewModel = hiltViewModel(),
 ) {
-    val movieUiState by viewModel.movieUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     MovieScreen(
-        movieUiState = movieUiState,
+        uiState = uiState,
         onBackClick = onBackClick,
         onLoginClick = onLoginClick,
         onUpdateStatus = viewModel::onUpdateStatus,
@@ -36,7 +36,7 @@ fun MovieScreen(
 
 @Composable
 fun MovieScreen(
-    movieUiState: MovieUiState,
+    uiState: MovieUiState,
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
@@ -44,24 +44,24 @@ fun MovieScreen(
 ) {
     SubjectScaffold(
         reviewsSheetContent = {
-            if (movieUiState is MovieUiState.Success) {
+            if (uiState is MovieUiState.Success) {
                 SubjectReviewsSheetContent(
                     subjectType = SubjectType.MOVIE,
-                    reviews = movieUiState.reviews
+                    reviews = uiState.reviews
                 )
             }
         },
         topBar = {
-            MovieTopBar(movieUiState = movieUiState, onBackClick = onBackClick)
+            MovieTopBar(uiState = uiState, onBackClick = onBackClick)
         }
     ) { innerPadding ->
 
-        when (movieUiState) {
+        when (uiState) {
             is MovieUiState.Success -> {
                 LazyColumn(
                     contentPadding = innerPadding,
                 ) {
-                    with(movieUiState) {
+                    with(uiState) {
                         item {
                             SubjectDetailHeader(
                                 subject = movie,
@@ -98,13 +98,13 @@ fun MovieScreen(
 
 @Composable
 private fun MovieTopBar(
-    movieUiState: MovieUiState,
+    uiState: MovieUiState,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     SubjectTopBar(
         subjectType = SubjectType.MOVIE,
-        subject = (movieUiState as? MovieUiState.Success)?.movie,
+        subject = (uiState as? MovieUiState.Success)?.movie,
         onBackClick = onBackClick,
         modifier = modifier
     )
