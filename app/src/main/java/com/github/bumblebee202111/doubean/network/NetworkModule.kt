@@ -1,10 +1,8 @@
 package com.github.bumblebee202111.doubean.network
 
 import android.content.Context
-import android.os.Build.VERSION.SDK_INT
-import coil.ImageLoader
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
+import coil3.ImageLoader
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import com.github.bumblebee202111.doubean.coroutines.ApplicationScope
 import com.github.bumblebee202111.doubean.security.DOUBAN_API_KEY
 import com.github.bumblebee202111.doubean.util.AppAndDeviceInfoProvider
@@ -49,20 +47,22 @@ class NetworkModule {
         appAndDeviceInfoProvider: AppAndDeviceInfoProvider,
     ): ImageLoader =
         ImageLoader.Builder(application)
-            .okHttpClient {
-                OkHttpClient.Builder().addInterceptor { chain ->
-                    return@addInterceptor chain.proceed(
-                        chain.request().newBuilder()
-                            .addHeader("User-Agent", appAndDeviceInfoProvider.getImageUA()).build()
-                    )
-                }.build()
-            }
             .components {
-                if (SDK_INT >= 28) {
-                    add(ImageDecoderDecoder.Factory())
-                } else {
-                    add(GifDecoder.Factory())
-                }
+                add(
+                    OkHttpNetworkFetcherFactory(
+                        callFactory = {
+                            OkHttpClient.Builder().addInterceptor { chain ->
+                                return@addInterceptor chain.proceed(
+                                    chain.request().newBuilder()
+                                        .addHeader(
+                                            "User-Agent",
+                                            appAndDeviceInfoProvider.getImageUA()
+                                        ).build()
+                                )
+                            }.build()
+                        }
+                    )
+                )
             }
             .build()
 

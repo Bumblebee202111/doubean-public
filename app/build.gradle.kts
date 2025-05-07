@@ -111,8 +111,11 @@ dependencies {
     implementation(libs.okhttp3.logging.interceptor)
     implementation(libs.okhttp3.urlconnection)
 
+    implementation(platform(libs.coil.bom))
+    implementation(libs.coil.core)
     implementation(libs.coil.compose)
     implementation(libs.coil.gif)
+    implementation(libs.coil.network)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
