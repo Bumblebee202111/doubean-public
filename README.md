@@ -130,17 +130,22 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.8.5)
 
-- Profile
-  - My subject counts
-- Dep
-
 ### Next release \(0.9.0)
 
 - Update base Douban version
+
 - Profile/User
+
   - Click avatar/name to view
+  - IP
   - Dou lists
+  - My subjects
+
+  - My groups
+
 - Dou lists
+
+- Update app icon: Swap bg/fg colors (?)
 
 
 ### Future plans
@@ -183,7 +188,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 - Search suggestions
 - Login
   - Code-based (w/o pw)
-- Update app icon: Swap bg/fg colors
 - Shortcuts
 - Improve display of login prompts and standard tooltips/info messages
 - Restore load state visualization (removed during Compose migration)

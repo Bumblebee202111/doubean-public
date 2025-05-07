@@ -90,7 +90,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.shared.SmallGroupAvatar
 import com.github.bumblebee202111.doubean.feature.groups.shared.groupTopAppBarColor

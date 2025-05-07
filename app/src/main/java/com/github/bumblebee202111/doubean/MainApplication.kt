@@ -1,16 +1,17 @@
 package com.github.bumblebee202111.doubean
 
 import android.app.Application
+import android.content.Context
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import coil.ImageLoader
-import coil.ImageLoaderFactory
+import coil3.ImageLoader
+import coil3.SingletonImageLoader
 import com.topjohnwu.superuser.Shell
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
 @HiltAndroidApp
-class MainApplication : Application(), ImageLoaderFactory, Configuration.Provider {
+class MainApplication : Application(), SingletonImageLoader.Factory, Configuration.Provider {
     @Inject
     lateinit var imageLoader: ImageLoader
 
@@ -22,7 +23,7 @@ class MainApplication : Application(), ImageLoaderFactory, Configuration.Provide
             .setWorkerFactory(workerFactory)
             .build()
 
-    override fun newImageLoader(): ImageLoader = imageLoader
+    override fun newImageLoader(context: Context): ImageLoader = imageLoader
 
     init {
         // Set settings before the main shell can be created
