@@ -105,8 +105,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.0)
 
-- Update base Douban version
-
 - Profile/User
 
   - Click avatar/name to view
@@ -115,10 +113,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - My subjects
 
   - My groups
-
 - Dou lists
-
-- Update app icon: Swap bg/fg colors (?)
 
 ### Next release \(0.9.1)
 
