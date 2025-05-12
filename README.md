@@ -4,46 +4,43 @@ doubean
 An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and exploring Subjects (books/movies/TVs)
 \([豆瓣][douban]非官方app，支持[小组][douban-groups]浏览和书影~~音~~探索\)
 
-**Note**: This is an experimental project focusing on core features while testing Jetpack Compose. Occasional crashes, incomplete UI designs, or missing features may occur.
+**Disclaimer:** This is an experimental project focused on core features using Jetpack Compose. Expect potential crashes, incomplete UI, or missing features. 
 
-**Known Issues**:
-
-*   Login (image) captcha: Needs further testing.
+**Known Issue:** 
+- Login image captcha needs more testing.
 
 [douban]: https://www.douban.com/
 [douban-groups]: https://www.douban.com/group/
 
-Introduction
-------------
+## Features
 
-### Screens
+- Subjects (Books/Movies/TVs, WIP 🚧):
+  - Home feed with personal statuses, subject unions, and rank lists
+  - Interests
+  - Subject search
+  - View subject details (metadata, intro, interactions)
+  - Browse rank lists
+- Groups:
+  - Browse my groups and topics
+  - Explore group details, topics, and comments
+  - Search for groups
+  - Enhancements:
+    - Locally favorite tabs/groups
+    - Sort topics by original order or create time within any page
+    - Customizable topic notifications
+- General:
 
-#### Statuses
+  - Ad-free and lightweight (~3MB)
+  - Login support (beta) & session reuse (root required)
+  - Partial deep linking support
+  - Direct official API calls
+  - Basic Material Design 3 (MD3) theming
+  - Image viewer
+  - Profile & login screens
+  - View statuses feed (legacy)
+  - Mobile-optimized pure Web screens (deprecated)
 
-- Statuses feed
-
-#### Subjects
-
-- **Home**: Personal statuses + subject unions + rank lists
-- **Interests**: Tracked subject statuses
-- **Search**: Subject discovery
-- **Details**: Metadata / intro / interactions
-- **Rank List**
-
-#### Groups
-
-- **Home**: Favorites/subscriptions
-- **Detail**: Group info + tabs
-- **Topics**: Content + comments
-- **Search**: Group discovery
-- **Notifications**: Topic updates
-
-#### Shared
-
-- Image Viewer
-- Profile & Login
-
-### Screenshots
+## Screenshots
 
 <p> <img src="screenshots/tablet_movie.png" alt="tablet_movie" height="450" />
     <img src="screenshots/phone_subjects.png" alt="phone_subjects" height="300" />
@@ -51,49 +48,27 @@ Introduction
 <img src="screenshots/phone_groups_home.png" alt="phone_groups" height="300" />
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
-
-## Features
-
-- Subjects: Basic interactions (WIP 🚧)
-- Group enhancements:
-  - Locally favorite tabs/groups
-  - Keep original list orders or sort by create time within any page
-  - Customizable topic notifications
-- Ad-free and lightweight (~3MB)
-- Auth: Session reuse (root required) + login (beta)
-- Partial URL deep linking support
-- Direct official API calls
-- Basic MD3 implementation
-- Statuses (legacy)
-- Mobile-optimized pure Web screens (deprecated)
-
 ## Getting Started
 
-- [Latest release][latest-release]
-- Requirements: Android: 8.1+
-- Feel free to file issues
-  - If data fails to display, please include:
-    - Titles
-    - Error messages (if any are shown)
-    - Raw JSON (if accessible)
-- Keep the official Douban app installed to:
-  - Support Douban services 
-  - Access content not supported by this app
-  - Allow root users to reuse login sessions
-- Clear app data after updates if crashes occur
+- Download the [Latest release][latest-release]
+- Install on Android: 8.1+
+- Feel free to [file issues](https://github.com/Bumblebee202111/doubean-public/issues)
+  - If data fails to load, please include titles and error messages if possible.
+- Keep Official App: It's recommended to keep the official Douban app installed for full functionality, to support Douban, and enable login session reuse (root).
+- Troubleshooting: If you experience crashes after updates, try clearing the app data.
 
 [latest-release]: https://github.com/Bumblebee202111/doubean-public/releases/latest
 
 ## Important Notices
 
-### Source Code Availability
+### Source Code Status
 
-Only selected source code from the private project is shared to mitigate potential issues. (WIP)
+Only selected source code from the private project is shared here to mitigate potential issues. More code may be synced later (WIP).
 
 ### Guidelines
 
-- **Do:** Use for personal learning.
-- **Don’t:** Promote elsewhere without permission.
+- Use for personal learning.
+- Avoid promoting widely without permission.
 
 ## Tech Stack
 
@@ -128,9 +103,7 @@ Only selected source code from the private project is shared to mitigate potenti
 
 Upcoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for personal tracking.
 
-### Current release \(0.8.5)
-
-### Next release \(0.9.0)
+### Current release \(0.9.0)
 
 - Update base Douban version
 
@@ -147,47 +120,48 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 - Update app icon: Swap bg/fg colors (?)
 
+### Next release \(0.9.1)
+
 
 ### Future plans
 
 - Groups 
   - Subscribe/favorite/collect/react
     - Collect topics
-    - Remove support for locally favoriting groups (use official subscribing)
+    - Remove locally group favorites (use official subscribing)
     - Pin my groups
     - Add corresponding item actions
   - Tab/tag → 分区
-  - Notifications: Custom interval (e.g., 15m/1h options)
+  - Notifications: New interval option of 1h (current: 15m)
   - Search:
     - Search topics within a specific group/tab
     - Global topic search across all groups
     - Tabbed search results
   - Dynamic topic sorting options
   - Simplify topic caching
-  - Group Home: Potentially add pagination for recommended topics
+  - Group Home: Potential pagination for recommended topics
   - Group tab: Track topic read status
   - Group Detail
     - Auto-collapse header on entry for subscribed/favorited groups/tabs
     - Fix group description action overflows
   - Topic:
-    - Fully load with official script, no manual parsing
-    - Fix content scroll position loss after navigating back
+    - Fully content via official script, no manual parsing
+    - Fix content scroll position restoration
   - Hide officially-flagged "unfriendly" content by default
   - Implement content blocking
-  - Lists: Reddit-style item expand/collapse toggle
-  - Find API for *all* followed topics like desktop Web app (currently seems unlikely)
+  - Reddit-style item expand/collapse for lists
+  - Investigate API for *all* followed topics like desktop Web app (currently seems unlikely)
     - Use as home/notifications data source
 - Subjects
   - Subject Detail: Ratings histogram
   - Color schemes
   - More
 - Sync more source files to public repo
-- Last-active tab persistence
+- Persist last-active tab
 - Complete deep linking support
 - Expand/collapse component: Hide action for short text
 - Search suggestions
-- Login
-  - Code-based (w/o pw)
+- Login: Code-based (w/o pw)
 - Shortcuts
 - Improve display of login prompts and standard tooltips/info messages
 - Restore load state visualization (removed during Compose migration)
@@ -228,7 +202,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ## Utilities
 
-- [HTTPCanary][http-canary] for analyzing Douban API requests
+- [HTTPCanary][http-canary] for analyzing API
 - [jadx][jadx]-gui for understanding models
 - [Google Chrome][google-chrome] for debugging CSS
 
@@ -240,11 +214,8 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ## Stars :star: & Donation :coffee:
 
-Your ⭐ **stars** motivate continued development!
-While not actively seeking donations, if you wish to support development, please open an issue to discuss.
+Your ⭐ **stars** motivate continued development! While not actively seeking donations, if you wish to support development, please open an issue to discuss.
 
 ## License
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for the full license text.
-```
-
