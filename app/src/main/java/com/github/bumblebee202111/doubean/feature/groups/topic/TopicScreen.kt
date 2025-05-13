@@ -119,6 +119,7 @@ fun TopicScreen(
     onWebViewClick: (url: String) -> Unit,
     onGroupClick: (groupId: String, tabId: String?) -> Unit,
     onReshareStatusesClick: (topicId: String) -> Unit,
+    onUserClick: (id: String) -> Unit,
     onImageClick: (url: String) -> Unit,
     onOpenDeepLinkUrl: (url: String) -> Unit,
     viewModel: TopicViewModel = hiltViewModel(),
@@ -149,6 +150,7 @@ fun TopicScreen(
         onWebViewClick = onWebViewClick,
         onGroupClick = onGroupClick,
         onReshareStatusesClick = onReshareStatusesClick,
+        onUserClick = onUserClick,
         // TODO
         // https://developer.android.google.cn/develop/ui/compose/touch-input/pointer-input/tap-and-press
         // shared element
@@ -177,6 +179,7 @@ fun TopicScreen(
     onWebViewClick: (url: String) -> Unit,
     onGroupClick: (groupId: String, tabId: String?) -> Unit,
     onReshareStatusesClick: (topicId: String) -> Unit,
+    onUserClick: (id: String) -> Unit,
     onImageClick: (url: String) -> Unit,
     onOpenDeepLinkUrl: (url: String) -> Unit,
     onReact: (Boolean) -> Unit,
@@ -315,6 +318,7 @@ fun TopicScreen(
                         isLoggedIn = isLoggedIn,
                         onImageClick = onImageClick,
                         onGroupClick = onGroupClick,
+                        onUserClick = onUserClick,
                         onReshareStatusesClick = onReshareStatusesClick,
                         onOpenDeepLinkUrl = onOpenDeepLinkUrl,
                         displayInvalidImageUrl = displayInvalidImageUrl,
@@ -348,6 +352,7 @@ fun TopicScreen(
                             TopicComment(
                                 comment = popularCommentsLazyPagingItems[index],
                                 topic = topic,
+                                onUserClick = onUserClick,
                                 onImageClick = onImageClick
                             )
                             if (index < popularCommentsLazyPagingItems.size - 1)
@@ -364,6 +369,7 @@ fun TopicScreen(
                                 TopicComment(
                                     comment = it,
                                     topic = topic,
+                                    onUserClick = onUserClick,
                                     onImageClick = onImageClick
                                 )
                                 if (index < allCommentLazyPagingItems.itemCount - 1)
@@ -486,6 +492,7 @@ fun TopicHeader(
     isLoggedIn: Boolean,
     onImageClick: (url: String) -> Unit,
     onGroupClick: (groupId: String, tabId: String?) -> Unit,
+    onUserClick: (id: String) -> Unit,
     onReshareStatusesClick: (topicId: String) -> Unit,
     onOpenDeepLinkUrl: (url: String) -> Unit,
     displayInvalidImageUrl: () -> Unit,
@@ -518,12 +525,14 @@ fun TopicHeader(
             ) {
                 UserProfileImage(
                     url = topic.author.avatar,
-                    size = dimensionResource(id = R.dimen.icon_size_large)
+                    size = dimensionResource(id = R.dimen.icon_size_large),
+                    onClick = { onUserClick(topic.author.id) }
                 )
                 Spacer(Modifier.width(8.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = topic.author.name,
+                        modifier = Modifier.clickable { onUserClick(topic.author.id) },
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
                         style = MaterialTheme.typography.titleMedium

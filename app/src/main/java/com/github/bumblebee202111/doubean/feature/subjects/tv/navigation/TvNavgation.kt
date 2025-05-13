@@ -13,12 +13,14 @@ fun NavGraphBuilder.tvScreen(
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onImageClick: (url: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
 ) {
     composable<TvRoute> {
         TvScreen(
             onBackClick = onBackClick,
             onLoginClick = onLoginClick,
-            onImageClick = onImageClick
+            onImageClick = onImageClick,
+            onUserClick = onUserClick
         )
     }
 }

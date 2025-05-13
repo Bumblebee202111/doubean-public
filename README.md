@@ -107,7 +107,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 - Profile/User
 
-  - Click avatar/name to view
   - IP
   - Dou lists
   - My subjects

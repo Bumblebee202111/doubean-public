@@ -84,7 +84,7 @@ fun GroupsHomeScreen(
         onSearchClick = onSearchClick,
         onNotificationsClick = onNotificationsClick,
         onGroupClick = onGroupClick,
-        onTopicClick = onTopicClick,
+        onTopicClick = onTopicClick
     )
 }
 
@@ -155,7 +155,10 @@ fun GroupsHomeScreen(
             }
 
             recentTopicsFeed?.let { topic ->
-                myTopics(topic, onTopicClick)
+                myTopics(
+                    topics = topic,
+                    onTopicClick = onTopicClick,
+                    onGroupClick = { groupId -> onGroupClick(groupId, null) })
             }
         }
     }
@@ -310,6 +313,7 @@ private fun LazyListScope.favorites(
 private fun LazyListScope.myTopics(
     topics: List<TopicItemWithGroup>,
     onTopicClick: (topicId: String) -> Unit,
+    onGroupClick: (groupId: String) -> Unit,
 ) {
     item(contentType = "myTopicsTitle") {
         Text(
@@ -330,7 +334,8 @@ private fun LazyListScope.myTopics(
         TopicItem(
             topicItemWithGroup = item,
             displayMode = TopicItemDisplayMode.SHOW_GROUP,
-            onTopicClick = onTopicClick
+            onTopicClick = onTopicClick,
+            onGroupClick = onGroupClick
         )
     }
 }

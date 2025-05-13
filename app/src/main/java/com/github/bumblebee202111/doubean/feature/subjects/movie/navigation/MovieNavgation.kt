@@ -13,12 +13,14 @@ fun NavGraphBuilder.movieScreen(
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onImageClick: (url: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
 ) {
     composable<MovieRoute> {
         MovieScreen(
             onBackClick = onBackClick,
             onLoginClick = onLoginClick,
-            onImageClick = onImageClick
+            onImageClick = onImageClick,
+            onUserClick = onUserClick
         )
     }
 }

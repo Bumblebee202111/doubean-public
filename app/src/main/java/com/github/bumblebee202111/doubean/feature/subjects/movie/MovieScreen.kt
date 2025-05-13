@@ -22,6 +22,7 @@ fun MovieScreen(
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onImageClick: (url: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
     viewModel: MovieViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -30,7 +31,8 @@ fun MovieScreen(
         onBackClick = onBackClick,
         onLoginClick = onLoginClick,
         onUpdateStatus = viewModel::onUpdateStatus,
-        onImageClick = onImageClick
+        onImageClick = onImageClick,
+        onUserClick = onUserClick
     )
 }
 
@@ -41,13 +43,15 @@ fun MovieScreen(
     onLoginClick: () -> Unit,
     onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
     onImageClick: (url: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
 ) {
     SubjectScaffold(
         reviewsSheetContent = {
             if (uiState is MovieUiState.Success) {
                 SubjectReviewsSheetContent(
                     subjectType = SubjectType.MOVIE,
-                    reviews = uiState.reviews
+                    reviews = uiState.reviews,
+                    onUserClick = onUserClick
                 )
             }
         },
@@ -72,7 +76,10 @@ fun MovieScreen(
                             )
                         }
                         subjectInfoIntroModuleItem(intro = movie.intro)
-                        subjectInfoInterestsModuleItem(interestList = interests)
+                        subjectInfoInterestsModuleItem(
+                            interestList = interests,
+                            onUserClick = onUserClick
+                        )
                         subjectInfoCelebritiesModuleItem(
                             directorNames = movie.directorNames,
                             actorNames = movie.actorNames

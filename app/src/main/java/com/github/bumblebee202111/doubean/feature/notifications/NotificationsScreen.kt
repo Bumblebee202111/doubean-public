@@ -37,6 +37,7 @@ import com.github.bumblebee202111.doubean.util.TOPIC_PATH
 fun NotificationsScreen(
     onBackClick: () -> Unit,
     onTopicClick: (topicId: String) -> Unit,
+    onGroupClick: (groupId: String) -> Unit,
     onSettingsClick: () -> Unit,
     viewModel: NotificationsViewModel = hiltViewModel(),
 ) {
@@ -44,6 +45,7 @@ fun NotificationsScreen(
     NotificationsScreen(
         notificationPagingItems = notificationPagingItems,
         onTopicClick = onTopicClick,
+        onGroupClick = onGroupClick,
         onBackClick = onBackClick,
         onSettingsClick = onSettingsClick
     )
@@ -55,6 +57,7 @@ fun NotificationsScreen(
     notificationPagingItems: LazyPagingItems<TopicItemWithGroup>,
     onBackClick: () -> Unit,
     onTopicClick: (topicId: String) -> Unit,
+    onGroupClick: (groupId: String) -> Unit,
     onSettingsClick: () -> Unit,
 ) {
     Scaffold(topBar = {
@@ -109,7 +112,8 @@ fun NotificationsScreen(
                 TopicItem(
                     topicItemWithGroup = notificationPagingItems[index],
                     displayMode = TopicItemDisplayMode.SHOW_GROUP,
-                    onTopicClick = onTopicClick
+                    onTopicClick = onTopicClick,
+                    onAuthorClick = onGroupClick
                 )
             }
         }

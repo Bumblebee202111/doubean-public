@@ -52,13 +52,16 @@ fun TopicItem(
     topicItemWithGroup: TopicItemWithGroup?,
     displayMode: TopicItemDisplayMode,
     onTopicClick: (id: String) -> Unit,
-
-    ) {
+    onAuthorClick: (id: String) -> Unit = {},
+    onGroupClick: (id: String) -> Unit = {},
+) {
     TopicItem(
         topic = topicItemWithGroup,
         group = topicItemWithGroup?.group,
         displayMode = displayMode,
-        onTopicClick = onTopicClick
+        onTopicClick = onTopicClick,
+        onAuthorClick = onAuthorClick,
+        onGroupClick = onGroupClick
     )
 }
 
@@ -68,6 +71,8 @@ fun TopicItem(
     group: SimpleGroup?,
     displayMode: TopicItemDisplayMode,
     onTopicClick: (id: String) -> Unit,
+    onAuthorClick: (id: String) -> Unit = {},
+    onGroupClick: (id: String) -> Unit = {},
 ) {
     val context = LocalContext.current
 
@@ -88,7 +93,10 @@ fun TopicItem(
                         TopicItemDisplayMode.SHOW_AUTHOR -> {
                             UserProfileImage(
                                 url = topic.author.avatar,
-                                size = dimensionResource(id = R.dimen.icon_size_extra_small)
+                                size = dimensionResource(id = R.dimen.icon_size_extra_small),
+                                onClick = {
+                                    onAuthorClick(topic.author.id)
+                                }
                             )
                         }
 
@@ -104,7 +112,17 @@ fun TopicItem(
                             TopicItemDisplayMode.SHOW_AUTHOR -> topic.author.name
                             TopicItemDisplayMode.SHOW_GROUP -> group?.name
                         } ?: "",
-                        modifier = Modifier.weight(weight = 1f, fill = false),
+                        modifier = Modifier
+                            .weight(weight = 1f, fill = false)
+                            .clickable {
+                                when (displayMode) {
+                                    TopicItemDisplayMode.SHOW_AUTHOR -> onAuthorClick(topic.author.id)
+                                    TopicItemDisplayMode.SHOW_GROUP -> if (group != null) {
+                                        onGroupClick(group.id)
+                                    }
+                                }
+
+                            },
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
                         style = MaterialTheme.typography.titleSmall
