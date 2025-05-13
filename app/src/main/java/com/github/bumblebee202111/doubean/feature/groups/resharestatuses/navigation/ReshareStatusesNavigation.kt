@@ -15,9 +15,13 @@ fun NavController.navigateToReshareStatuses(topicId: String) = navigate(
     route = ReshareStatusesRoute(topicId)
 )
 
-fun NavGraphBuilder.reshareStatusesScreen(onBackClick: () -> Unit) =
+fun NavGraphBuilder.reshareStatusesScreen(
+    onBackClick: () -> Unit,
+    onUserClick: (id: String) -> Unit,
+) =
     composable<ReshareStatusesRoute> {
         ReshareStatusesScreen(
             onBackClick = onBackClick,
+            onUserClick = onUserClick
         )
     }

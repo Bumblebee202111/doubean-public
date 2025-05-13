@@ -6,6 +6,10 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
 
 @Composable
-fun TopicActivityItemUserProfileImage(url: String?) {
-    UserProfileImage(url = url, size = dimensionResource(id = R.dimen.icon_size_small))
+fun TopicActivityItemUserProfileImage(url: String?, onClick: () -> Unit) {
+    UserProfileImage(
+        url = url,
+        size = dimensionResource(id = R.dimen.icon_size_small),
+        onClick = onClick
+    )
 }

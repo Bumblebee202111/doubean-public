@@ -1,6 +1,7 @@
 package com.github.bumblebee202111.doubean.feature.groups.topic
 
 import android.content.Context
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -54,6 +55,7 @@ import java.time.LocalDateTime
 fun TopicComment(
     comment: TopicComment,
     topic: TopicDetail,
+    onUserClick: (id: String) -> Unit,
     onImageClick: (url: String) -> Unit,
 ) {
 
@@ -70,7 +72,9 @@ fun TopicComment(
                 .padding(vertical = 12.dp)
                 .weight(1f)
         ) {
-            TopicActivityItemUserProfileImage(url = comment.author.avatar)
+            TopicActivityItemUserProfileImage(
+                url = comment.author.avatar,
+                onClick = { onUserClick(comment.author.id) })
             Spacer(modifier = Modifier.width(8.dp))
             Column(Modifier.fillMaxWidth()) {
                 
@@ -81,7 +85,7 @@ fun TopicComment(
                     createTime = comment.createTime,
                     ipLocation = comment.ipLocation,
                     showAuthorAvatar = false,
-
+                    onAuthorClick = onUserClick
                     )
                 comment.refComment?.let { refComment ->
                     Spacer(modifier = Modifier.height(4.dp))
@@ -89,6 +93,7 @@ fun TopicComment(
                         refComment = refComment,
                         topicAuthorId = topic.author.id,
                         groupColor = groupThemeColor,
+                        onAuthorClick = onUserClick,
                         onImageClick = onImageClick
                     )
                 }
@@ -142,7 +147,7 @@ private fun TopicCommentHeaderRow(
     createTime: LocalDateTime?,
     ipLocation: String?,
     showAuthorAvatar: Boolean,
-
+    onAuthorClick: (id: String) -> Unit,
     ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         if (showAuthorAvatar) {
@@ -151,7 +156,11 @@ private fun TopicCommentHeaderRow(
         }
         Text(
             text = author?.name ?: "",
-            modifier = Modifier.weight(weight = 1f, fill = false),
+            modifier = Modifier
+                .weight(weight = 1f, fill = false)
+                .clickable {
+                    author?.id?.let(onAuthorClick)
+                },
             fontWeight = FontWeight.Medium,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
@@ -200,6 +209,7 @@ private fun TopicRefCommentCard(
     refComment: TopicRefComment,
     topicAuthorId: String,
     groupColor: Color,
+    onAuthorClick: (id: String) -> Unit,
     onImageClick: (url: String) -> Unit,
 ) {
     OutlinedCard(modifier = Modifier.fillMaxWidth()) {
@@ -211,6 +221,7 @@ private fun TopicRefCommentCard(
                 createTime = refComment.createTime,
                 ipLocation = refComment.ipLocation,
                 showAuthorAvatar = true,
+                onAuthorClick = onAuthorClick,
             )
             refComment.text?.let {
                 Spacer(modifier = Modifier.height(4.dp))

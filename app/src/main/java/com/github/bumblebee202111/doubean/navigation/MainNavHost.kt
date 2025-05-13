@@ -39,6 +39,8 @@ import com.github.bumblebee202111.doubean.feature.subjects.search.navigation.nav
 import com.github.bumblebee202111.doubean.feature.subjects.search.navigation.searchSubjectsScreen
 import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.navigateToTv
 import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.tvScreen
+import com.github.bumblebee202111.doubean.feature.userprofile.navigation.navigateToUserProfile
+import com.github.bumblebee202111.doubean.feature.userprofile.navigation.userProfileScreen
 
 @Composable
 fun MainNavHost(
@@ -66,7 +68,8 @@ fun MainNavHost(
             navigateToRankList = navController::navigateToRankList,
             navigateToMovie = navController::navigateToMovie,
             navigateToTv = navController::navigateToTv,
-            navigateToBook = navController::navigateToBook
+            navigateToBook = navController::navigateToBook,
+            navigateToUserProfile = navController::navigateToUserProfile
         )
         groupsSearchScreen(
             onGroupClick = navController::navigateToGroup,
@@ -75,21 +78,29 @@ fun MainNavHost(
         notificationsScreen(
             onBackClick = navController::navigateUp,
             onTopicClick = navController::navigateToTopic,
+            onGroupClick = { groupId ->
+                navController.navigateToGroup(groupId)
+            },
             onSettingsClick = navController::navigateToSettings
         )
         groupDetailScreen(
             onBackClick = navController::navigateUp,
-            onTopicClick = navController::navigateToTopic
+            onTopicClick = navController::navigateToTopic,
+            onUserClick = navController::navigateToUserProfile
         )
         topicScreen(
             onBackClick = navController::navigateUp,
             onWebViewClick = navController::navigateToWebView,
             onGroupClick = navController::navigateToGroup,
             onReshareStatusesClick = navController::navigateToReshareStatuses,
+            onUserClick = navController::navigateToUserProfile,
             onImageClick = navController::navigateToImage,
             onOpenDeepLinkUrl = navController::navigateWithDeepLinkUrl
         )
-        reshareStatusesScreen(onBackClick = navController::navigateUp)
+        reshareStatusesScreen(
+            onBackClick = navController::navigateUp,
+            onUserClick = navController::navigateToUserProfile
+        )
         webViewScreen(onBackClick = navController::navigateUp)
         loginScreen(
             onSaveIsLoginSuccessSuccessfulChange = {
@@ -105,7 +116,7 @@ fun MainNavHost(
         settingsScreen(
             onBackClick = navController::navigateUp,
             onGroupDefaultNotificationsPreferencesSettingsClick =
-            navController::navigateToGroupDefaultNotificationsPreferencesSettings,
+                navController::navigateToGroupDefaultNotificationsPreferencesSettings,
             onLoginClick = navController::navigateToLogin
         )
         groupDefaultNotificationsPreferencesSettingsScreen(
@@ -114,6 +125,7 @@ fun MainNavHost(
         imageScreen(
             navigateUp = navController::navigateUp
         )
+        userProfileScreen()
         interestsScreen(
             onBackClick = navController::navigateUp,
             onMovieClick = navController::navigateToMovie,
@@ -129,17 +141,20 @@ fun MainNavHost(
         movieScreen(
             onBackClick = navController::navigateUp,
             onLoginClick = navController::navigateToLogin,
-            onImageClick = navController::navigateToImage
+            onImageClick = navController::navigateToImage,
+            onUserClick = navController::navigateToUserProfile
         )
         tvScreen(
             onBackClick = navController::navigateUp,
             onLoginClick = navController::navigateToLogin,
-            onImageClick = navController::navigateToImage
+            onImageClick = navController::navigateToImage,
+            onUserClick = navController::navigateToUserProfile
         )
         bookScreen(
             onBackClick = navController::navigateUp,
             onLoginClick = navController::navigateToLogin,
-            onImageClick = navController::navigateToImage
+            onImageClick = navController::navigateToImage,
+            onUserClick = navController::navigateToUserProfile
         )
         rankListScreen(
             onBackClick = navController::navigateUp,

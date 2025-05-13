@@ -21,6 +21,7 @@ fun TvScreen(
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onImageClick: (url: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
     viewModel: TvViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -29,7 +30,8 @@ fun TvScreen(
         onBackClick = onBackClick,
         onLoginClick = onLoginClick,
         onUpdateStatus = viewModel::onUpdateStatus,
-        onImageClick = onImageClick
+        onImageClick = onImageClick,
+        onUserClick = onUserClick
     )
 }
 
@@ -40,6 +42,7 @@ fun TvScreen(
     onLoginClick: () -> Unit,
     onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
     onImageClick: (url: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
 ) {
     SubjectScaffold(
         reviewsSheetContent = {
@@ -47,6 +50,7 @@ fun TvScreen(
                 SubjectReviewsSheetContent(
                     subjectType = SubjectType.TV,
                     reviews = uiState.reviews,
+                    onUserClick = onUserClick,
                 )
 
             }
@@ -69,7 +73,10 @@ fun TvScreen(
                             )
                         }
                         subjectInfoIntroModuleItem(intro = tv.intro)
-                        subjectInfoInterestsModuleItem(interestList = interests)
+                        subjectInfoInterestsModuleItem(
+                            interestList = interests,
+                            onUserClick = onUserClick
+                        )
                         subjectInfoCelebritiesModuleItem(
                             directorNames = tv.directorNames,
                             actorNames = tv.actorNames

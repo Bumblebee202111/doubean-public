@@ -5,9 +5,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.github.bumblebee202111.doubean.feature.groups.home.navigation.groupsHomeScreen
-import com.github.bumblebee202111.doubean.feature.profile.navigation.profileScreen
 import com.github.bumblebee202111.doubean.feature.statuses.navigation.statusesScreen
 import com.github.bumblebee202111.doubean.feature.subjects.navigation.subjectsScreen
+import com.github.bumblebee202111.doubean.feature.userprofile.navigation.userProfileScreen
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.ui.BottomNavDestination
 
@@ -27,6 +27,7 @@ fun BottomNavHost(
     navigateToMovie: (movieId: String) -> Unit,
     navigateToTv: (tvId: String) -> Unit,
     navigateToBook: (bookId: String) -> Unit,
+    navigateToUserProfile: (userId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -34,12 +35,12 @@ fun BottomNavHost(
         startDestination = startDestination,
         modifier = modifier
     ) {
-        val navigateToProfile =
+        val navigateToMyProfile =
             { navController.navigateToBottomNavDestination(BottomNavDestination.Profile) }
 
-        statusesScreen(onAvatarClick = navigateToProfile)
+        statusesScreen(onAvatarClick = navigateToMyProfile)
         subjectsScreen(
-            onAvatarClick = navigateToProfile,
+            onAvatarClick = navigateToMyProfile,
             onSubjectStatusClick = navigateToSubjectInterests,
             onLoginClick = navigateToLogin,
             onSearchClick = navigateToSearchSubjects,
@@ -49,12 +50,12 @@ fun BottomNavHost(
             onBookClick = navigateToBook
         )
         groupsHomeScreen(
-            onAvatarClick = navigateToProfile,
+            onAvatarClick = navigateToMyProfile,
             onSearchClick = navigateToSearch,
             onNotificationsClick = navigateToNotifications,
             onGroupClick = navigateToGroupDetail,
             onTopicClick = navigateToTopic
         )
-        profileScreen(onSettingsClick = navigateToSettings, onLoginClick = navigateToLogin)
+        userProfileScreen(onSettingsClick = navigateToSettings, onLoginClick = navigateToLogin)
     }
 }

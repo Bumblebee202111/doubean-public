@@ -20,6 +20,7 @@ fun NavController.navigateToGroup(groupId: String, defaultTabId: String? = null)
 fun NavGraphBuilder.groupDetailScreen(
     onBackClick: () -> Unit,
     onTopicClick: (topicId: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
 ) = composable<GroupDetailRoute>(
     deepLinks = listOf(
         navDeepLink {
@@ -32,6 +33,7 @@ fun NavGraphBuilder.groupDetailScreen(
 ) {
     GroupDetailScreen(
         onBackClick = onBackClick,
-        onTopicClick = onTopicClick
+        onTopicClick = onTopicClick,
+        onUserClick = onUserClick
     )
 }

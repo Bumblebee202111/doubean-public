@@ -57,6 +57,7 @@ fun GroupTab(
     tabId: String?,
     group: GroupDetail?,
     onTopicClick: (topicId: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
     viewModel: GroupTabViewModel = hiltViewModel<GroupTabViewModel, GroupTabViewModel.Factory>(
         creationCallback = { factory ->
             factory.create(groupId, tabId)
@@ -81,6 +82,7 @@ fun GroupTab(
         addFavorite = viewModel::addFavorite,
         saveNotificationsPreference = viewModel::saveNotificationPreferences,
         onTopicClick = onTopicClick,
+        onUserClick = onUserClick,
         contentPadding = contentPadding
     )
 }
@@ -98,6 +100,7 @@ fun GroupTab(
     addFavorite: () -> Unit,
     saveNotificationsPreference: (preferences: GroupNotificationPreferences) -> Unit,
     onTopicClick: (topicId: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
 
@@ -123,7 +126,12 @@ fun GroupTab(
             )
         }
 
-        topicItems(topicPagingItems = topicPagingItems, group = group, onTopicClick = onTopicClick)
+        topicItems(
+            topicPagingItems = topicPagingItems,
+            group = group,
+            onTopicClick = onTopicClick,
+            onUserClick = onUserClick
+        )
     }
 
     if (openAlertDialog) {
@@ -258,6 +266,7 @@ private fun LazyListScope.topicItems(
     topicPagingItems: LazyPagingItems<TopicItem>,
     group: GroupDetail?,
     onTopicClick: (topicId: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
 ) {
     items(
         count = topicPagingItems.itemCount,
@@ -269,7 +278,8 @@ private fun LazyListScope.topicItems(
             topic = topic,
             group = group?.toSimpleGroup(),
             displayMode = TopicItemDisplayMode.SHOW_AUTHOR,
-            onTopicClick = onTopicClick
+            onTopicClick = onTopicClick,
+            onAuthorClick = onUserClick
         )
         if (index != topicPagingItems.itemCount - 1) {
             HorizontalDivider()

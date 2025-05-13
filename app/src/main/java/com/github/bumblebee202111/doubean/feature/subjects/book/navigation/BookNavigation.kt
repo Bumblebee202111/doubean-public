@@ -13,12 +13,14 @@ fun NavGraphBuilder.bookScreen(
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onImageClick: (url: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
 ) {
     composable<BookRoute> {
         BookScreen(
             onBackClick = onBackClick,
             onLoginClick = onLoginClick,
-            onImageClick = onImageClick
+            onImageClick = onImageClick,
+            onUserClick = onUserClick
         )
     }
 }

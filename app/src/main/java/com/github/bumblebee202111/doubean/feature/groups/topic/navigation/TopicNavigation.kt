@@ -19,6 +19,7 @@ fun NavGraphBuilder.topicScreen(
     onWebViewClick: (url: String) -> Unit,
     onGroupClick: (groupId: String, tabId: String?) -> Unit,
     onReshareStatusesClick: (topicId: String) -> Unit,
+    onUserClick: (id: String) -> Unit,
     onImageClick: (url: String) -> Unit,
     onOpenDeepLinkUrl: (url: String) -> Unit,
 ) = composable<TopicRoute>(
@@ -33,6 +34,7 @@ fun NavGraphBuilder.topicScreen(
         onWebViewClick = onWebViewClick,
         onGroupClick = onGroupClick,
         onReshareStatusesClick = onReshareStatusesClick,
+        onUserClick = onUserClick,
         onImageClick = onImageClick,
         onOpenDeepLinkUrl = onOpenDeepLinkUrl
     )

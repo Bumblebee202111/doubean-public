@@ -89,7 +89,10 @@ fun LazyListScope.subjectInfoIntroModuleItem(intro: String) {
 
 private const val IntroMaxLines = 4
 
-fun LazyListScope.subjectInfoInterestsModuleItem(interestList: SubjectInterestWithUserList) {
+fun LazyListScope.subjectInfoInterestsModuleItem(
+    interestList: SubjectInterestWithUserList,
+    onUserClick: (userId: String) -> Unit,
+) {
     item {
         val context = LocalContext.current
         Surface(
@@ -111,14 +114,18 @@ fun LazyListScope.subjectInfoInterestsModuleItem(interestList: SubjectInterestWi
                                 Row {
                                     UserProfileImage(
                                         url = interest.user.avatar,
-                                        size = 40.dp
+                                        size = 40.dp,
+                                        onClick = { onUserClick(interest.user.id) }
                                     )
                                     Spacer(modifier = Modifier.size(8.dp))
                                     Column {
                                         Text(
                                             text = interest.user.name,
+                                            modifier = Modifier.clickable {
+                                                onUserClick(interest.user.id)
+                                            },
                                             style = MaterialTheme.typography.labelLarge,
-                                            fontWeight = FontWeight.Bold
+                                            fontWeight = FontWeight.Bold,
                                         )
                                         Spacer(modifier = Modifier.size(2.dp))
                                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -246,6 +253,7 @@ fun SubjectInfoReviewsModuleItemContent(
     subjectType: SubjectType,
     reviews: SubjectReviewList,
     modifier: Modifier = Modifier,
+    onUserClick: (userId: String) -> Unit,
 ) {
     val titleResId = when (subjectType) {
         SubjectType.MOVIE -> R.string.title_review_movie
@@ -261,7 +269,7 @@ fun SubjectInfoReviewsModuleItemContent(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(items = reviews.reviews, key = { it.id }) { review ->
-                    SubjectReviewCard(review = review)
+                    SubjectReviewCard(review = review, onUserClick = onUserClick)
                 }
             }
         },
@@ -271,7 +279,11 @@ fun SubjectInfoReviewsModuleItemContent(
 }
 
 @Composable
-private fun SubjectReviewCard(review: SubjectReview, modifier: Modifier = Modifier) {
+private fun SubjectReviewCard(
+    review: SubjectReview,
+    modifier: Modifier = Modifier,
+    onUserClick: (userId: String) -> Unit,
+) {
     val context = LocalContext.current
     Card(modifier = modifier, onClick = {
         OpenInUtils.openInDouban(context = context, uri = review.uri)
@@ -285,13 +297,19 @@ private fun SubjectReviewCard(review: SubjectReview, modifier: Modifier = Modifi
             ) {
                 UserProfileImage(
                     url = review.user.avatar,
-                    size = dimensionResource(R.dimen.icon_size_extra_small)
+                    size = dimensionResource(R.dimen.icon_size_extra_small),
+                    onClick = {
+                        onUserClick(review.user.id)
+                    }
                 )
                 Spacer(modifier = Modifier.size(4.dp))
                 Text(
                     text = review.user.name,
                     style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable {
+                        onUserClick(review.user.id)
+                    }
                 )
                 Row(
                     modifier = Modifier
@@ -437,6 +455,7 @@ private fun SubjectReviewCardPreview() {
             resharesCount = 1,
             id = "0",
             subjectType = SubjectType.MOVIE,
-        )
+        ),
+        onUserClick = {}
     )
 }

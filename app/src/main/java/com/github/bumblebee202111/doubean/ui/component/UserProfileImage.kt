@@ -1,5 +1,6 @@
 package com.github.bumblebee202111.doubean.ui.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
@@ -9,12 +10,13 @@ import androidx.compose.ui.unit.Dp
 import coil3.compose.AsyncImage
 
 @Composable
-fun UserProfileImage(url: String?, size: Dp) {
+fun UserProfileImage(url: String?, size: Dp, onClick: () -> Unit = {}) {
     AsyncImage(
         model = url,
         contentDescription = null,
         modifier = Modifier
             .size(size)
             .clip(CircleShape)
+            .clickable(onClick = onClick)
     )
 }

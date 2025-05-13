@@ -19,6 +19,7 @@ fun BookScreen(
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onImageClick: (url: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
     viewModel: BookViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -27,7 +28,8 @@ fun BookScreen(
         onBackClick = onBackClick,
         onLoginClick = onLoginClick,
         onUpdateStatus = viewModel::onUpdateStatus,
-        onImageClick = onImageClick
+        onImageClick = onImageClick,
+        onUserClick = onUserClick
     )
 }
 
@@ -38,13 +40,15 @@ fun BookScreen(
     onLoginClick: () -> Unit,
     onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
     onImageClick: (url: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
 ) {
     SubjectScaffold(
         reviewsSheetContent = {
             if (uiState is BookUiState.Success) {
                 SubjectReviewsSheetContent(
                     subjectType = SubjectType.BOOK,
-                    reviews = uiState.reviews
+                    reviews = uiState.reviews,
+                    onUserClick = onUserClick
                 )
 
             }
@@ -67,7 +71,7 @@ fun BookScreen(
                             )
                         }
                         subjectInfoIntroModuleItem(book.intro)
-                        subjectInfoInterestsModuleItem(interests)
+                        subjectInfoInterestsModuleItem(interests, onUserClick)
                     }
                 }
             }

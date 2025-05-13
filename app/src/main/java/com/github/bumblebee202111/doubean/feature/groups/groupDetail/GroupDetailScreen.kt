@@ -74,6 +74,7 @@ import kotlinx.coroutines.launch
 fun GroupDetailScreen(
     onBackClick: () -> Unit,
     onTopicClick: (topicId: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
     viewModel: GroupDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -90,7 +91,8 @@ fun GroupDetailScreen(
         removeFavorite = viewModel::removeFavorite,
         saveNotificationsPreference = viewModel::saveNotificationPreferences,
         onBackClick = onBackClick,
-        onTopicClick = onTopicClick
+        onTopicClick = onTopicClick,
+        onUserClick = onUserClick
     )
 }
 
@@ -108,6 +110,7 @@ fun GroupDetailScreen(
     saveNotificationsPreference: (preference: GroupNotificationPreferences) -> Unit,
     onBackClick: () -> Unit,
     onTopicClick: (topicId: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
 ) {
 
     var openNotificationsPreferenceDialog by remember { mutableStateOf(false) }
@@ -159,6 +162,7 @@ fun GroupDetailScreen(
                     groupId = groupId,
                     group = group,
                     onTopicClick = onTopicClick,
+                    onUserClick = onUserClick,
                     tabContentPadding = PaddingValues(
                         bottom = innerPadding.calculateBottomPadding()
                     )
@@ -451,6 +455,7 @@ fun GroupPager(
     groupId: String,
     group: GroupDetail?,
     onTopicClick: (topicId: String) -> Unit,
+    onUserClick: (userId: String) -> Unit,
     modifier: Modifier = Modifier,
     tabContentPadding: PaddingValues = PaddingValues(),
 ) {
@@ -472,6 +477,7 @@ fun GroupPager(
             tabId = tabId,
             group = group,
             onTopicClick = onTopicClick,
+            onUserClick = onUserClick,
             contentPadding = tabContentPadding
         )
     }

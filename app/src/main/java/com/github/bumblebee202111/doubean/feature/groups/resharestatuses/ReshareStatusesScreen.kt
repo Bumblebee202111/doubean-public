@@ -1,5 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.groups.resharestatuses
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,13 +38,15 @@ import com.github.bumblebee202111.doubean.util.intermediateDateTimeString
 @Composable
 fun ReshareStatusesScreen(
     onBackClick: () -> Unit,
+    onUserClick: (id: String) -> Unit,
     viewModel: ReshareStatusesViewModel = hiltViewModel(),
 ) {
     val reshareStatusLazyPagingItems =
         viewModel.reshareStatusesPagingData.collectAsLazyPagingItems()
     ReshareStatusesScreen(
         reshareStatusLazyPagingItems = reshareStatusLazyPagingItems,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onUserClick = onUserClick
     )
 }
 
@@ -52,6 +55,7 @@ fun ReshareStatusesScreen(
 fun ReshareStatusesScreen(
     reshareStatusLazyPagingItems: LazyPagingItems<GroupTopicCommentReshareItem>,
     onBackClick: () -> Unit,
+    onUserClick: (id: String) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -91,7 +95,13 @@ fun ReshareStatusesScreen(
                             vertical = 4.dp
                         ),
                 ) {
-                    TopicActivityItemUserProfileImage(url = reshareStatus?.author?.avatar)
+                    TopicActivityItemUserProfileImage(
+                        url = reshareStatus?.author?.avatar,
+                        onClick = {
+                            reshareStatus?.author?.let {
+                                onUserClick(it.id)
+                            }
+                        })
                     Column(
                         modifier = Modifier
                             .weight(1f)
@@ -99,7 +109,13 @@ fun ReshareStatusesScreen(
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            UserNameText(reshareStatus?.author?.name ?: "")
+                            UserNameText(
+                                reshareStatus?.author?.name ?: "",
+                                modifier = Modifier.clickable {
+                                    reshareStatus?.author?.let {
+                                        onUserClick(it.id)
+                                    }
+                                })
                             reshareStatus?.createTime?.let {
                                 DateTimeText(
                                     text = it.intermediateDateTimeString(),
