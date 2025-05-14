@@ -1,6 +1,6 @@
 package com.github.bumblebee202111.doubean.model.groups
 
-import com.github.bumblebee202111.doubean.model.User
+import com.github.bumblebee202111.doubean.model.fangorns.User
 import java.time.LocalDateTime
 
 sealed interface AbstractTopicItem {

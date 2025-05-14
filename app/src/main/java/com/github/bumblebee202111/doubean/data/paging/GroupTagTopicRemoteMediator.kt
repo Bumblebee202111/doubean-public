@@ -15,9 +15,10 @@ import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 import com.github.bumblebee202111.doubean.model.groups.getRequestParamString
 import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkTopicItem
-import com.github.bumblebee202111.doubean.network.model.asEntity
 import com.github.bumblebee202111.doubean.network.model.asPartialEntity
+import com.github.bumblebee202111.doubean.network.model.fangorns.asEntity
 import com.github.bumblebee202111.doubean.network.model.tagCrossRefs
+import com.github.bumblebee202111.doubean.network.model.toGroupTopicTagEntity
 
 @OptIn(ExperimentalPagingApi::class)
 class GroupTagTopicRemoteMediator(
@@ -98,7 +99,13 @@ class GroupTagTopicRemoteMediator(
                 val topicEntities = topics.map { it.asPartialEntity(groupId) }
 
                 val topicTagEntities =
-                    topics.flatMap { topic -> topic.topicTags.map { tag -> tag.asEntity(groupId) } }
+                    topics.flatMap { topic ->
+                        topic.topicTags.map { tag ->
+                            tag.toGroupTopicTagEntity(
+                                groupId
+                            )
+                        }
+                    }
                         .distinctBy { it.id }
 
                 val topicTagCrossRefs =

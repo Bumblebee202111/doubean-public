@@ -45,7 +45,7 @@ import com.github.bumblebee202111.doubean.model.ImageItem
 import com.github.bumblebee202111.doubean.model.PhotoList
 import com.github.bumblebee202111.doubean.model.SizedImage
 import com.github.bumblebee202111.doubean.model.SizedPhoto
-import com.github.bumblebee202111.doubean.model.User
+import com.github.bumblebee202111.doubean.model.fangorns.User
 import com.github.bumblebee202111.doubean.model.subjects.MovieTrailer
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUserList

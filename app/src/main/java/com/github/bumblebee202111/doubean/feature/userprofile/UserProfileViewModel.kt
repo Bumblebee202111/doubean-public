@@ -9,12 +9,15 @@ import com.github.bumblebee202111.doubean.data.repository.UserRepository
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.UserProfileRoute
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
+import com.github.bumblebee202111.doubean.ui.model.toUiMessage
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,44 +29,71 @@ class UserProfileViewModel @Inject constructor(
     private val snackbarManager: SnackbarManager,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    private val userIdArg = savedStateHandle.toRoute<UserProfileRoute>().userId
+    private val navigatedUserId = savedStateHandle.toRoute<UserProfileRoute>().userId
 
     private val _uiState = MutableStateFlow(UserProfileUiState(isLoading = true))
     val uiState: StateFlow<UserProfileUiState> = _uiState.asStateFlow()
 
-    init {
-        loadUserProfile()
-    }
 
-    fun loadUserProfile() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-            val currentUserId = authRepository.observeLoggedInUserId().first()
-            val loggedIn = currentUserId != null
-            val targetingCurrentUser = (userIdArg == null)
-            val idToFetch: String? = if (targetingCurrentUser) currentUserId else userIdArg
+    private val targetUserIdFlow: Flow<String?> =
+        authRepository.observeLoggedInUserId().map { loggedInUserId ->
+            val isTargetingCurrentUserProfile = (navigatedUserId == null)
             _uiState.update {
                 it.copy(
-                    isTargetingCurrentUser = targetingCurrentUser,
-                    isLoggedIn = loggedIn
+                    isTargetingCurrentUser = isTargetingCurrentUserProfile,
+                    isLoggedIn = (loggedInUserId != null)
                 )
             }
-            if (idToFetch == null) {
-                _uiState.update {
-                    it.copy(isLoading = false, user = null)
-                }
-                return@launch
-            }
+            if (isTargetingCurrentUserProfile) loggedInUserId else navigatedUserId
+        }.distinctUntilChanged()
 
-            when (val userResult = userRepository.getUserDetail(idToFetch)) {
-                is AppResult.Success -> {
-                    val user = userResult.data
+    init {
+        viewModelScope.launch {
+            targetUserIdFlow.collect { newTargetId ->
+                if (newTargetId != null) {
+                    executeLoadUserProfile(newTargetId)
+                } else {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            user = user,
+                            user = null,
+                            communityContribution = null,
                             errorMessage = null
                         )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun executeLoadUserProfile(userIdToFetch: String) {
+        viewModelScope.launch {
+            if (_uiState.value.user?.id != userIdToFetch) {
+                _uiState.update {
+                    it.copy(
+                        isLoading = true,
+                        user = null,
+                        communityContribution = null,
+                        errorMessage = null
+                    )
+                }
+            } else {
+                _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            }
+
+            when (val userResult = userRepository.getUserDetail(userIdToFetch)) {
+                is AppResult.Success -> {
+                    val fetchedUser = userResult.data
+                    _uiState.update {
+                        it.copy(
+                            user = fetchedUser,
+                            errorMessage = null
+                        )
+                    }
+                    if (fetchedUser.hasCommunityContribution) {
+                        fetchUserContributions(userIdToFetch)
+                    } else {
+                        _uiState.update { it.copy(isLoading = false, communityContribution = null) }
                     }
                 }
 
@@ -73,7 +103,8 @@ class UserProfileViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            user = null,
+                            user = if (_uiState.value.user?.id == userIdToFetch) _uiState.value.user else null,
+                            communityContribution = null,
                             errorMessage = errorMessage
                         )
                     }
@@ -82,4 +113,32 @@ class UserProfileViewModel @Inject constructor(
         }
     }
 
+    private fun fetchUserContributions(userId: String) {
+        viewModelScope.launch {
+            when (val contributionsResult = userRepository.getUserCommunityContributions(userId)) {
+                is AppResult.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            communityContribution = contributionsResult.data
+                        )
+                    }
+                }
+
+                is AppResult.Error -> {
+                    snackbarManager.showSnackBar(contributionsResult.error.asUiMessage())
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            communityContribution = null
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun showInfoMessage(message: String) {
+        snackbarManager.showSnackBar(message.toUiMessage())
+    }
 }
