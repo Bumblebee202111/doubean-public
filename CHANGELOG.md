@@ -1,7 +1,7 @@
 Change Log
 ==========
 
-## Version 0.9.0(900)
+## Version 0.9.0-beta1(90001)
 
 **Me / User Profile Screen Updates**
 
