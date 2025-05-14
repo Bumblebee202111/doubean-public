@@ -125,7 +125,7 @@ fun MainNavHost(
         imageScreen(
             navigateUp = navController::navigateUp
         )
-        userProfileScreen()
+        userProfileScreen(onBackClick = navController::navigateUp)
         interestsScreen(
             onBackClick = navController::navigateUp,
             onMovieClick = navController::navigateToMovie,

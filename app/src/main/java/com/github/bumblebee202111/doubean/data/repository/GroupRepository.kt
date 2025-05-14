@@ -15,10 +15,10 @@ import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
 import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 import com.github.bumblebee202111.doubean.network.ApiService
-import com.github.bumblebee202111.doubean.network.model.asEntity
 import com.github.bumblebee202111.doubean.network.model.toCachedGroupEntity
 import com.github.bumblebee202111.doubean.network.model.toGroupDetail
 import com.github.bumblebee202111.doubean.network.model.toGroupItemWithMemberInfo
+import com.github.bumblebee202111.doubean.network.model.toGroupTabEntity
 import com.github.bumblebee202111.doubean.network.model.toSimpleCachedGroupPartialEntity
 import com.github.bumblebee202111.doubean.network.util.loadCacheAndRefresh
 import com.github.bumblebee202111.doubean.network.util.makeApiCall
@@ -45,7 +45,7 @@ class GroupRepository @Inject constructor(
             },
             saveCache = {
                 groupDao.insertCachedGroup(it.toCachedGroupEntity())
-                groupDao.insertGroupTabs(it.tabs.map { it.asEntity(id) })
+                groupDao.insertGroupTabs(it.tabs.map { it.toGroupTabEntity(id) })
             },
             mapResponseToDomain = {
                 it.toGroupDetail()

@@ -1,8 +1,8 @@
 package com.github.bumblebee202111.doubean.model.groups
 
 import com.github.bumblebee202111.doubean.model.SizedImage
-import com.github.bumblebee202111.doubean.model.User
 import com.github.bumblebee202111.doubean.model.fangorns.ReactionType
+import com.github.bumblebee202111.doubean.model.fangorns.User
 import java.time.LocalDateTime
 
 data class TopicDetail(

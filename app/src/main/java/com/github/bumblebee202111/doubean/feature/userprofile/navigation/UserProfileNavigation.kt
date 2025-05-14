@@ -10,11 +10,16 @@ import kotlinx.serialization.Serializable
 data class UserProfileRoute(val userId: String? = null)
 
 fun NavGraphBuilder.userProfileScreen(
+    onBackClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
 ) =
     composable<UserProfileRoute> {
-        UserProfileScreen(onSettingsClick = onSettingsClick, onLoginClick = onLoginClick)
+        UserProfileScreen(
+            onBackClick = onBackClick,
+            onSettingsClick = onSettingsClick,
+            onLoginClick = onLoginClick
+        )
     }
 
 fun NavController.navigateToUserProfile(userId: String? = null) =

@@ -1,7 +1,7 @@
 package com.github.bumblebee202111.doubean.model.groups
 
 import com.github.bumblebee202111.doubean.model.SizedPhoto
-import com.github.bumblebee202111.doubean.model.User
+import com.github.bumblebee202111.doubean.model.fangorns.User
 import java.time.LocalDateTime
 
 data class TopicComment(

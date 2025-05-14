@@ -32,11 +32,12 @@ import com.github.bumblebee202111.doubean.network.model.NetworkGroupTopicTag
 import com.github.bumblebee202111.doubean.network.model.NetworkRecentTopicsFeedItem
 import com.github.bumblebee202111.doubean.network.model.NetworkTopicItem
 import com.github.bumblebee202111.doubean.network.model.NetworkTopicItemWithGroup
-import com.github.bumblebee202111.doubean.network.model.asEntity
 import com.github.bumblebee202111.doubean.network.model.asPartialEntity
+import com.github.bumblebee202111.doubean.network.model.fangorns.asEntity
 import com.github.bumblebee202111.doubean.network.model.toCachedGroupEntity
 import com.github.bumblebee202111.doubean.network.model.toEntity
 import com.github.bumblebee202111.doubean.network.model.toGroupItem
+import com.github.bumblebee202111.doubean.network.model.toGroupTopicTagEntity
 import com.github.bumblebee202111.doubean.network.model.toSimpleCachedGroupPartialEntity
 import com.github.bumblebee202111.doubean.network.model.toTopicPartialEntity
 import com.github.bumblebee202111.doubean.network.util.loadCacheAndRefresh
@@ -117,7 +118,13 @@ class UserGroupRepository @Inject constructor(
             val groups = networkTopics.map { it.group.toSimpleCachedGroupPartialEntity() }
             val userEntities = networkTopics.map { it.author.asEntity() }
             val topicTagEntities =
-                networkTopics.flatMap { topic -> topic.topicTags.map { it.asEntity(topic.group.id) } }
+                networkTopics.flatMap { topic ->
+                    topic.topicTags.map {
+                        it.toGroupTopicTagEntity(
+                            topic.group.id
+                        )
+                    }
+                }
                     .distinctBy { it.id }
 
             appDatabase.withTransaction {
@@ -259,7 +266,7 @@ class UserGroupRepository @Inject constructor(
             val finalTopicEntities = finalOrderedNetworkTopics.map { it.asPartialEntity(groupId) }
 
             val topicTags = finalOrderedNetworkTopics.flatMap(NetworkTopicItem::topicTags)
-                .distinctBy(NetworkGroupTopicTag::id).map { it.asEntity(groupId) }
+                .distinctBy(NetworkGroupTopicTag::id).map { it.toGroupTopicTagEntity(groupId) }
             val authors = finalOrderedNetworkTopics.map { it.author.asEntity() }
             appDatabase.withTransaction {
                 topicDao.upsertTopicItems(finalTopicEntities)

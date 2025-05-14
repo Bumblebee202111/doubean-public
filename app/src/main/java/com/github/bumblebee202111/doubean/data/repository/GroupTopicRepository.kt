@@ -17,10 +17,11 @@ import com.github.bumblebee202111.doubean.model.groups.TopicDetail
 import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkGroupTopicComment
 import com.github.bumblebee202111.doubean.network.model.NetworkReshareItem
-import com.github.bumblebee202111.doubean.network.model.asEntity
 import com.github.bumblebee202111.doubean.network.model.asExternalModel
+import com.github.bumblebee202111.doubean.network.model.fangorns.asEntity
 import com.github.bumblebee202111.doubean.network.model.tagCrossRefs
 import com.github.bumblebee202111.doubean.network.model.toCachedGroupEntity
+import com.github.bumblebee202111.doubean.network.model.toGroupTopicTagEntity
 import com.github.bumblebee202111.doubean.network.model.toNetworkReactionType
 import com.github.bumblebee202111.doubean.network.model.toTopicItemPartialEntity
 import com.github.bumblebee202111.doubean.network.model.toTopicReactionPartialEntity
@@ -51,7 +52,8 @@ class GroupTopicRepository @Inject constructor(
             fetchRemote = { apiService.getGroupTopic(id) },
             saveRemoteResponseToDb = { response ->
                 val topicDetail = response.toTopicItemPartialEntity()
-                val topicTags = response.topicTags.map { it.asEntity(response.group.id) }
+                val topicTags =
+                    response.topicTags.map { it.toGroupTopicTagEntity(response.group.id) }
                 val topicTagCrossRefs = response.tagCrossRefs()
                 val group = response.group.toCachedGroupEntity()
                 val author = response.author.asEntity()

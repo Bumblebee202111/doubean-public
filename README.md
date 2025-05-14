@@ -107,14 +107,14 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 - Profile/User
 
-  - IP
   - Dou lists
-  - My subjects
-
-  - My groups
 - Dou lists
 
 ### Next release \(0.9.1)
+
+- UserProfile:
+  - My subjects
+  - My groups
 
 
 ### Future plans
