@@ -105,12 +105,13 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.0)
 
-- Profile/User
-
-  - Dou lists
-- Dou lists
+- Owned doulists
 
 ### Next release \(0.9.1)
+
+- Collect subjects/topics
+
+### 0.9.2
 
 - UserProfile:
   - My subjects
@@ -150,7 +151,12 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Subject Detail: Ratings histogram
   - Color schemes
   - More
+- Doulists
+  - Following doulists
+  - Pagination
+
 - Sync more source files to public repo
+- Error messages: Show endpoint
 - Persist last-active tab
 - Complete deep linking support
 - Expand/collapse component: Hide action for short text
@@ -169,6 +175,8 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Language selection
 - NetworkManager
 - Widgets
+  - Calender today
+
 - QR
 - (Rooted users) Optionally sync more official app preferences for API request consistency
 - Consider use single NavHost
