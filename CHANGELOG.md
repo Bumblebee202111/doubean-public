@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+## Version 0.9.0-beta1(90001)
+
+**Me / User Profile Screen Updates**
+
+- Enhanced profiles: See more details with an updated profile header design. (Now includes Douban contributions!)
+- View others: Tap user names or avatars to visit their profiles.
+- "Me" tab: Your main profile tab is now called "Me."
+
 ## Version 0.8.5(805)
 
 - Improve & refactor snackbar message display
