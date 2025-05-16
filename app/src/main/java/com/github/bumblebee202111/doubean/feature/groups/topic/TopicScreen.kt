@@ -59,6 +59,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -310,7 +311,14 @@ fun TopicScreen(
             ) {
 
                 item(key = "TopicDetailHeader", contentType = "TopicDetailHeader") {
-                    LocalPinnableContainer.current?.pin()
+                    val pinnableContainer = LocalPinnableContainer.current
+                    DisposableEffect(pinnableContainer) {
+                        val pinnedHandle = pinnableContainer?.pin()
+                        onDispose {
+                            pinnedHandle?.release()
+                        }
+                    }
+
                     TopicHeader(
                         topic = topic,
                         shouldShowPhotoList = shouldShowPhotoList,
