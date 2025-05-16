@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.github.bumblebee202111.doubean.feature.doulists.createddoulists.navigation.createdDouListsScreen
 import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.groupDetailScreen
 import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.navigateToGroup
 import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.navigateToReshareStatuses
@@ -41,10 +42,12 @@ import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.navigat
 import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.tvScreen
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.navigateToUserProfile
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.userProfileScreen
+import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 
 @Composable
 fun MainNavHost(
     navController: NavHostController,
+    snackbarManager: SnackbarManager,
     startDestination: Any,
     startWithGroups: Boolean,
     modifier: Modifier = Modifier,
@@ -55,6 +58,11 @@ fun MainNavHost(
         startDestination = startDestination,
         modifier = modifier
     ) {
+
+        val navigateToUri = { uriString: String ->
+            navController.tryNavigateToUri(uriString, snackbarManager)
+        }
+
         bottomNavScreen(
             startWithGroups = startWithGroups,
             navigateToSearch = navController::navigateToSearch,
@@ -69,7 +77,8 @@ fun MainNavHost(
             navigateToMovie = navController::navigateToMovie,
             navigateToTv = navController::navigateToTv,
             navigateToBook = navController::navigateToBook,
-            navigateToUserProfile = navController::navigateToUserProfile
+            navigateToUserProfile = navController::navigateToUserProfile,
+            navigateToUri = navigateToUri
         )
         groupsSearchScreen(
             onGroupClick = navController::navigateToGroup,
@@ -95,7 +104,7 @@ fun MainNavHost(
             onReshareStatusesClick = navController::navigateToReshareStatuses,
             onUserClick = navController::navigateToUserProfile,
             onImageClick = navController::navigateToImage,
-            onOpenDeepLinkUrl = navController::navigateWithDeepLinkUrl
+            onOpenDeepLinkUrl = navigateToUri
         )
         reshareStatusesScreen(
             onBackClick = navController::navigateUp,
@@ -107,7 +116,7 @@ fun MainNavHost(
                 navController.previousBackStackEntry!!.savedStateHandle[LOGIN_SUCCESSFUL] = it
             },
             onPopBackStack = navController::popBackStack,
-            onOpenDeepLinkUrl = navController::navigateWithDeepLinkUrl
+            onOpenDeepLinkUrl = navigateToUri
         )
         verifyPhoneScreen(
             onBackClick = navController::navigateUp,
@@ -125,7 +134,10 @@ fun MainNavHost(
         imageScreen(
             navigateUp = navController::navigateUp
         )
-        userProfileScreen(onBackClick = navController::navigateUp)
+        userProfileScreen(
+            onBackClick = navController::navigateUp,
+            onStatItemUriClick = navigateToUri
+        )
         interestsScreen(
             onBackClick = navController::navigateUp,
             onMovieClick = navController::navigateToMovie,
@@ -161,6 +173,10 @@ fun MainNavHost(
             onMovieClick = navController::navigateToMovie,
             onTvClick = navController::navigateToTv,
             onBookClick = navController::navigateToBook
+        )
+        createdDouListsScreen(
+            onBackClick = navController::navigateUp,
+            onItemClick = {} // TODO
         )
     }
 }

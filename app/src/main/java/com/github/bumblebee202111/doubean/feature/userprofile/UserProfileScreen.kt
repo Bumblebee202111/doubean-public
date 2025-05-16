@@ -4,8 +4,6 @@ import android.app.Activity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -55,6 +53,7 @@ import com.github.bumblebee202111.doubean.model.fangorns.HiddenTypeInProfile
 import com.github.bumblebee202111.doubean.model.fangorns.UserDetail
 import com.github.bumblebee202111.doubean.model.profile.ProfileCommunityContribution
 import com.github.bumblebee202111.doubean.model.profile.ProfileStatItemTypes
+import com.github.bumblebee202111.doubean.ui.component.FullScreenCenteredContent
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
 import com.github.bumblebee202111.doubean.util.intermediateDateTimeString
 import com.github.bumblebee202111.doubean.util.toColorOrPrimary
@@ -62,6 +61,7 @@ import com.github.bumblebee202111.doubean.util.toColorOrPrimary
 // UserProfileFragment/NewUserProfileActivity/UserProfileBioActivity/UserInfoActivity
 @Composable
 fun UserProfileScreen(
+    onStatItemUriClick: (uri: String) -> Boolean,
     onBackClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
@@ -73,7 +73,8 @@ fun UserProfileScreen(
         onBackClick = onBackClick,
         onSettingsClick = onSettingsClick,
         onLoginClick = onLoginClick,
-        onHiddenTypeClick = viewModel::showInfoMessage
+        onHiddenTypeClick = viewModel::showInfoMessage,
+        onStatItemUriClick = onStatItemUriClick
     )
 }
 
@@ -85,6 +86,7 @@ fun UserProfileScreen(
     onSettingsClick: () -> Unit,
     onLoginClick: () -> Unit,
     onHiddenTypeClick: (String) -> Unit,
+    onStatItemUriClick: (uri: String) -> Boolean,
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -117,7 +119,8 @@ fun UserProfileScreen(
                 isConsideredCollapsed = isConsideredCollapsed,
                 onBackClick = onBackClick,
                 onSettingsClick = onSettingsClick,
-                onHiddenTypeClick = onHiddenTypeClick
+                onHiddenTypeClick = onHiddenTypeClick,
+                onStatItemUriClick = onStatItemUriClick
             )
         },
         content = { innerPadding ->
@@ -139,6 +142,7 @@ private fun UserProfileTopAppBar(
     onBackClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onHiddenTypeClick: (String) -> Unit,
+    onStatItemUriClick: (uri: String) -> Boolean,
 ) {
     val user = uiState.user
 
@@ -159,7 +163,8 @@ private fun UserProfileTopAppBar(
                     communityContribution = uiState.communityContribution,
                     expandedContentColor = expandedContentColor,
                     collapsedContentColor = collapsedContentColor,
-                    onHiddenTypeClick = onHiddenTypeClick
+                    onHiddenTypeClick = onHiddenTypeClick,
+                    onStatItemUriClick = onStatItemUriClick
                 )
             }
         },
@@ -199,6 +204,7 @@ private fun TopAppBarTitleContent(
     expandedContentColor: Color,
     collapsedContentColor: Color,
     onHiddenTypeClick: (String) -> Unit,
+    onStatItemUriClick: (uri: String) -> Boolean,
 ) {
     if (user == null) {
         return
@@ -209,7 +215,8 @@ private fun TopAppBarTitleContent(
             UserInfo(
                 user = user,
                 communityContribution = communityContribution,
-                onHiddenTypeClick = onHiddenTypeClick
+                onHiddenTypeClick = onHiddenTypeClick,
+                onStatItemUriClick = onStatItemUriClick
             )
         }
     } else {
@@ -267,20 +274,6 @@ private fun UserProfileContentArea(
 }
 
 @Composable
-private fun FullScreenCenteredContent(
-    paddingValues: PaddingValues,
-    content: @Composable BoxScope.() -> Unit,
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues),
-        contentAlignment = Alignment.Center,
-        content = content
-    )
-}
-
-@Composable
 private fun UserProfileMainContent(user: UserDetail, contentPadding: PaddingValues) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -296,6 +289,7 @@ private fun UserInfo(
     user: UserDetail,
     communityContribution: ProfileCommunityContribution?,
     onHiddenTypeClick: (String) -> Unit,
+    onStatItemUriClick: (uri: String) -> Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -351,7 +345,7 @@ private fun UserInfo(
                             .then(
                                 when {
                                     canNavigateDoulist -> Modifier.clickable {
-                                        // TODO: Handle click on statItem.uri (e.g., navigate to doulists)
+                                        onStatItemUriClick(statItem.uri)
                                     }
 
                                     showHidingReasonOnClick -> Modifier.clickable {

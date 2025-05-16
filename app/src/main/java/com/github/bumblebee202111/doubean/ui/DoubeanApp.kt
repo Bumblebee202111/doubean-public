@@ -87,6 +87,7 @@ fun DoubeanApp(
     ) {
         MainNavScreen(
             navController = navController,
+            snackbarManager = snackbarManager,
             startWithGroups = startWithGroups,
             modifier = Modifier.padding(it)
         )

@@ -24,6 +24,7 @@ fun NavGraphBuilder.bottomNavScreen(
     navigateToTv: (tvId: String) -> Unit,
     navigateToBook: (bookId: String) -> Unit,
     navigateToUserProfile: (userId: String) -> Unit,
+    navigateToUri: (String) -> Boolean,
 ): Unit = composable<BottomNavRoute> {
     BottomNavScreen(
         startWithGroups = startWithGroups,
@@ -39,6 +40,7 @@ fun NavGraphBuilder.bottomNavScreen(
         navigateToMovie = navigateToMovie,
         navigateToTv = navigateToTv,
         navigateToBook = navigateToBook,
-        navigateToUserProfile = navigateToUserProfile
+        navigateToUserProfile = navigateToUserProfile,
+        navigateToUri = navigateToUri
     )
 }

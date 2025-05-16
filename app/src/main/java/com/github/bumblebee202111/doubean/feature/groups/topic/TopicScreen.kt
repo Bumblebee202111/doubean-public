@@ -121,7 +121,7 @@ fun TopicScreen(
     onReshareStatusesClick: (topicId: String) -> Unit,
     onUserClick: (id: String) -> Unit,
     onImageClick: (url: String) -> Unit,
-    onOpenDeepLinkUrl: (url: String) -> Unit,
+    onOpenDeepLinkUrl: (url: String) -> Boolean,
     viewModel: TopicViewModel = hiltViewModel(),
 ) {
     val topic by viewModel.topic.collectAsStateWithLifecycle()
@@ -181,7 +181,7 @@ fun TopicScreen(
     onReshareStatusesClick: (topicId: String) -> Unit,
     onUserClick: (id: String) -> Unit,
     onImageClick: (url: String) -> Unit,
-    onOpenDeepLinkUrl: (url: String) -> Unit,
+    onOpenDeepLinkUrl: (url: String) -> Boolean,
     onReact: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current
@@ -482,7 +482,6 @@ fun JumpToCommentSliderPreview() {
     JumpToCommentOfIndexSlider(100, 1000) {}
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @SuppressLint("ClickableViewAccessibility")
 @Composable
 fun TopicHeader(
@@ -494,7 +493,7 @@ fun TopicHeader(
     onGroupClick: (groupId: String, tabId: String?) -> Unit,
     onUserClick: (id: String) -> Unit,
     onReshareStatusesClick: (topicId: String) -> Unit,
-    onOpenDeepLinkUrl: (url: String) -> Unit,
+    onOpenDeepLinkUrl: (url: String) -> Boolean,
     displayInvalidImageUrl: () -> Unit,
     onReact: (Boolean) -> Unit,
 ) {
@@ -694,7 +693,7 @@ private fun ContentWebView(
     html: String,
     onImageClick: (String) -> Unit,
     displayInvalidImageUrl: () -> Unit,
-    onOpenDeepLinkUrl: (String) -> Unit,
+    onOpenDeepLinkUrl: (String) -> Boolean,
 ) {
     val context = LocalContext.current
     val webViewState = rememberWebViewStateWithHTMLData(html)
@@ -755,22 +754,33 @@ private fun ContentWebView(
     )
 }
 
+private const val CONTENT_WEB_VIEW_TAG = "ContentWebView"
 private fun handleUrlLoading(
     context: Context,
     url: String,
-    onOpenDeepLinkUrl: (String) -> Unit,
+    onOpenDeepLinkUrl: (uriString: String) -> Boolean,
 ): Boolean {
-    Log.d("ContentWebView", "Link clicked: $url")
-    try {
-        onOpenDeepLinkUrl(url)
+    Log.d(CONTENT_WEB_VIEW_TAG, "Handling URL: $url")
+
+    if (onOpenDeepLinkUrl(url)) {
+        Log.i(CONTENT_WEB_VIEW_TAG, "Internal navigation initiated for: $url")
         return true
-    } catch (_: IllegalArgumentException) {
-        Log.i("ContentWebView", "Not a deep link, opening externally: $url")
-        OpenInUtils.viewInActivity(context, url)
-        return true
-    } catch (e: Exception) {
-        Log.e("ContentWebView", "Error handling URL click: $url", e)
-        return false
+    } else {
+        Log.i(
+            CONTENT_WEB_VIEW_TAG,
+            "Internal navigation failed (Snackbar shown), attempting to open externally: $url"
+        )
+        try {
+            OpenInUtils.viewInActivity(context, url)
+            return true
+        } catch (e: Exception) {
+            Log.e(
+                CONTENT_WEB_VIEW_TAG,
+                "Failed to open externally after internal navigation attempt failed for: $url",
+                e
+            )
+            return false
+        }
     }
 }
 

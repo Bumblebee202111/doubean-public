@@ -27,7 +27,7 @@ fun BottomNavHost(
     navigateToMovie: (movieId: String) -> Unit,
     navigateToTv: (tvId: String) -> Unit,
     navigateToBook: (bookId: String) -> Unit,
-    navigateToUserProfile: (userId: String) -> Unit,
+    navigateToUri: (String) -> Boolean,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -56,6 +56,10 @@ fun BottomNavHost(
             onGroupClick = navigateToGroupDetail,
             onTopicClick = navigateToTopic
         )
-        userProfileScreen(onSettingsClick = navigateToSettings, onLoginClick = navigateToLogin)
+        userProfileScreen(
+            onSettingsClick = navigateToSettings,
+            onLoginClick = navigateToLogin,
+            onStatItemUriClick = navigateToUri
+        )
     }
 }
