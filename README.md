@@ -142,7 +142,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Topic:
     - Fully load content via official script, no manual parsing
     - Fix content scroll position restoration
-    - Fix crash loading comments
   - Hide officially-flagged "unfriendly" content by default
   - Implement content blocking
   - Reddit-style item expand/collapse for lists
@@ -155,7 +154,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 - Doulists
   - Following doulists
   - Pagination
-
 - Sync more source files to public repo
 - Error messages: Show endpoint
 - Persist last-active tab
@@ -177,7 +175,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 - NetworkManager
 - Widgets
   - Calender today
-
 - QR
 - (Rooted users) Optionally sync more official app preferences for API request consistency
 - Consider use single NavHost
