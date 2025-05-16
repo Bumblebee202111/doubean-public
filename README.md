@@ -140,8 +140,9 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
     - Auto-collapse header on entry for subscribed/favorited groups/tabs
     - Fix group description action overflows
   - Topic:
-    - Fully content via official script, no manual parsing
+    - Fully load content via official script, no manual parsing
     - Fix content scroll position restoration
+    - Fix crash loading comments
   - Hide officially-flagged "unfriendly" content by default
   - Implement content blocking
   - Reddit-style item expand/collapse for lists

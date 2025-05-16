@@ -14,7 +14,7 @@ fun NavController.navigateToLogin() = navigate(route = LoginRoute)
 fun NavGraphBuilder.loginScreen(
     onSaveIsLoginSuccessSuccessfulChange: (Boolean) -> Unit,
     onPopBackStack: () -> Unit,
-    onOpenDeepLinkUrl: (url: String) -> Unit,
+    onOpenDeepLinkUrl: (url: String) -> Boolean,
 ) = composable<LoginRoute> {
     LoginScreen(
         onSaveIsLoginSuccessSuccessfulChange = onSaveIsLoginSuccessSuccessfulChange,

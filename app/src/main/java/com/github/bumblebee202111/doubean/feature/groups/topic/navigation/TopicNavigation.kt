@@ -21,7 +21,7 @@ fun NavGraphBuilder.topicScreen(
     onReshareStatusesClick: (topicId: String) -> Unit,
     onUserClick: (id: String) -> Unit,
     onImageClick: (url: String) -> Unit,
-    onOpenDeepLinkUrl: (url: String) -> Unit,
+    onOpenDeepLinkUrl: (url: String) -> Boolean,
 ) = composable<TopicRoute>(
     deepLinks = listOf(
         navDeepLink {

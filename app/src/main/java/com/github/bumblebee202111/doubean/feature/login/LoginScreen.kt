@@ -45,7 +45,7 @@ fun LoginScreen(
     onSaveIsLoginSuccessSuccessfulChange: (Boolean) -> Unit,
     onBackClick: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel(),
-    onOpenDeepLinkUrl: (url: String) -> Unit,
+    onOpenDeepLinkUrl: (url: String) -> Boolean,
 ) {
 
     val isFormValid by viewModel.isFormValid.collectAsStateWithLifecycle()
@@ -91,7 +91,7 @@ fun LoginScreen(
     clearSolutionUri: () -> Unit,
     onSaveIsLoginSuccessSuccessfulChange: (Boolean) -> Unit,
     onPopBackStack: () -> Unit,
-    onOpenDeepLinkUrl: (url: String) -> Unit,
+    onOpenDeepLinkUrl: (url: String) -> Boolean,
 ) {
 
     LaunchedEffect(loginResult) {
@@ -114,11 +114,8 @@ fun LoginScreen(
 
     if (solutionUri != null) {
         LaunchedEffect(solutionUri) {
-                try {
-                    onOpenDeepLinkUrl(solutionUri)
-                } catch (e: Exception) {
-                    Log.e("onOpenDeepLinkUrl", "Failed to open solutionUri", e)
-                }
+            Log.d("SolutionNavigationEffect", "Processing solution URI: $solutionUri")
+            onOpenDeepLinkUrl(solutionUri)
             clearSolutionUri()
         }
     }

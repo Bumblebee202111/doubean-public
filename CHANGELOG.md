@@ -3,6 +3,8 @@ Change Log
 
 ## Version 0.9.0-beta2(90002)
 
+- Support viewing *list* of a user's created Dou Lists
+
 ## Version 0.9.0-beta1(90001)
 
 **Me / User Profile Screen Updates**
