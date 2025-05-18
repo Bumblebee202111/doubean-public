@@ -48,14 +48,14 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 <img src="screenshots/phone_groups_home.png" alt="phone_groups" height="300" />
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
+
 ## Getting Started
 
 - Download the [Latest release][latest-release]
 - Install on Android: 8.1+
 - Feel free to [file issues](https://github.com/Bumblebee202111/doubean-public/issues)
-  - If data fails to load, please include titles and error messages if possible.
-- Keep Official App: It's recommended to keep the official Douban app installed for full functionality, to support Douban, and enable login session reuse (root).
-- Troubleshooting: If you experience crashes after updates, try clearing the app data.
+- Keep official app: It's recommended to keep the official Douban app installed for full functionality and to support Douban
+- Troubleshooting: If you experience crashes after updates, try clearing the app data
 
 [latest-release]: https://github.com/Bumblebee202111/doubean-public/releases/latest
 
@@ -105,11 +105,13 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.0)
 
-- Owned doulists
+- DouListScreen
 
 ### Next release \(0.9.1)
 
 - Collect subjects/topics
+- Tab/comments swipe refresh support like official app (#10)
+- Group tab/tag zh-cn → 分区
 
 ### 0.9.2
 
@@ -117,16 +119,16 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - My subjects
   - My groups
 
+### 0.9.3
+- Create/edit Doulists
 
 ### Future plans
 
 - Groups 
   - Subscribe/favorite/collect/react
-    - Collect topics
-    - Remove locally group favorites (use official subscribing)
+    - Remove local group favorites (use official subscribing)
     - Pin my groups
-    - Add corresponding item actions
-  - Tab/tag → 分区
+    - Add list item actions matching official app
   - Notifications: New interval option of 1h (current: 15m)
   - Search:
     - Search topics within a specific group/tab
@@ -152,7 +154,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Color schemes
   - More
 - Doulists
-  - Following doulists
+  - Following Doulists
   - Pagination
 - Sync more source files to public repo
 - Error messages: Show endpoint
