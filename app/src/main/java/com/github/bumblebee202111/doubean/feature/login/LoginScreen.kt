@@ -178,7 +178,7 @@ private fun LoginSection(
         color = MaterialTheme.colorScheme.error
     )
     Text(
-        text = "Need feedback on whether it works.",
+        text = "Need feedback on whether image captcha works (if triggered).",
         style = MaterialTheme.typography.bodySmall
     )
 
