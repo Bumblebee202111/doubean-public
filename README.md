@@ -108,7 +108,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.0)
 
-- Temporarily support viewing current user's private Doulists if navigated from profile
 - Clear useless string resources
 
 ### Next release \(0.9.1)

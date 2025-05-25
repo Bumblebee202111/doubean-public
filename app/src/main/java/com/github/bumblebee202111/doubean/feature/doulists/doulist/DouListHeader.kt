@@ -47,7 +47,7 @@ fun DouListHeader(douList: DouList, modifier: Modifier = Modifier) {
                     .data(douList.owner.avatar)
                     .crossfade(true)
                     .build(),
-                contentDescription = "${douList.owner.name} avatar",
+                contentDescription = null,
                 modifier = Modifier
                     .size(32.dp)
                     .clip(CircleShape),
@@ -78,7 +78,7 @@ fun DouListHeader(douList: DouList, modifier: Modifier = Modifier) {
                 Icon(
                     imageVector = Icons.Filled.Lock,
                     contentDescription = "Private",
-                    modifier = Modifier.size(14.dp),
+                    modifier = Modifier.size(16.dp),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
