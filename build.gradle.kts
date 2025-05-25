@@ -15,8 +15,3 @@ plugins {
 tasks.register("clean").configure{
     delete(rootProject.layout.buildDirectory)
 }
-
-buildscript {
-    dependencies {
-    }
-}

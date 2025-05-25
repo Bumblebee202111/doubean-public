@@ -24,40 +24,38 @@ fun ListItemImages(
     onImageClick: (imageUrl: SizedImage) -> Unit = {},
 ) {
     if (images.isEmpty()) return
+
+    val imageShape = RoundedCornerShape(8.dp)
+
     if (images.size == 1) {
-        BoxWithConstraints(
-            modifier = modifier
-                .clip(RoundedCornerShape(12.dp))
-        ) {
-            val normal = images[0].normal
+        BoxWithConstraints {
+            val image = images[0]
+            val normal = image.normal
             val density = LocalDensity.current
-            val originalWidth = with(density) {
+            val originalWidthDp = with(density) {
                 normal.width.toDp()
             }
-            val originalHeight = with(density) {
+            val originalHeightDp = with(density) {
                 normal.height.toDp()
             }
-            val goldenWidth = maxWidth * 0.618f
-            val scale = (goldenWidth / originalWidth).coerceAtMost(1f)
+            val goldenWidth = this.maxWidth * 0.618f
+            val scale = (goldenWidth / originalWidthDp).coerceAtMost(1f)
+            val displayWidth = originalWidthDp * scale
+            val displayHeight = originalHeightDp * scale
             AsyncImage(
                 model = normal.url,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .clickable { onImageClick(images[0]) }
-
-
-
-
-                    .width(originalWidth * scale)
-                    .height(originalHeight * scale)
+                    .width(displayWidth.coerceAtMost(this.maxWidth))
+                    .height(displayHeight.coerceAtMost(this.maxHeight))
+                    .clip(imageShape)
+                    .clickable { onImageClick(image) }
             )
         }
 
 
     } else {
-        
-        
         Row(
             modifier = modifier
                 .clip(RoundedCornerShape(12.dp)),

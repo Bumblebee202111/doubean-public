@@ -51,7 +51,7 @@ class InterestsViewModel @Inject constructor(
             }
 
             is AppResult.Error -> {
-                snackbarManager.showSnackBar(result.error.asUiMessage())
+                snackbarManager.showMessage(result.error.asUiMessage())
                 result
             }
         }
@@ -68,7 +68,7 @@ class InterestsViewModel @Inject constructor(
                 is AppResult.Success -> interests.value = result.data
                 is AppResult.Error -> {
                     interests.value = emptyList()
-                    snackbarManager.showSnackBar(result.error.asUiMessage())
+                    snackbarManager.showMessage(result.error.asUiMessage())
                 }
             }
         }.stateInUi()
@@ -168,7 +168,7 @@ class InterestsViewModel @Inject constructor(
                 }
 
                 is AppResult.Error -> {
-                    snackbarManager.showSnackBar(result.error.asUiMessage())
+                    snackbarManager.showMessage(result.error.asUiMessage())
                 }
             }
         }

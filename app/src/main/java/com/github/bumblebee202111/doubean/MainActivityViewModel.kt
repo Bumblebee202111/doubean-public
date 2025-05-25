@@ -41,7 +41,7 @@ class MainActivityViewModel @Inject constructor(
         viewModelScope.launch {
             val result = authRepository.checkAndRefreshToken()
             if (result is AppResult.Error && authRepository.isLoggedIn().first()) {
-                snackbarManager.showSnackBar(result.error.asUiMessage())
+                snackbarManager.showMessage(result.error.asUiMessage())
             }
         }
     }
@@ -54,7 +54,7 @@ class MainActivityViewModel @Inject constructor(
                         when (val result = userRepository.fetchUser(it)) {
                             is AppResult.Success -> Unit
                             is AppResult.Error -> {
-                                snackbarManager.showSnackBar(result.error.asUiMessage())
+                                snackbarManager.showMessage(result.error.asUiMessage())
                             }
                         }
                     }

@@ -80,7 +80,7 @@ class MovieViewModel @Inject constructor(
 
             val results = listOf(movieResult, interestResult, photosResult, reviewsResult)
             results.filterIsInstance<AppResult.Error>().forEach { errorResult ->
-                snackbarManager.showSnackBar(errorResult.error.asUiMessage())
+                snackbarManager.showMessage(errorResult.error.asUiMessage())
             }
 
             if (movieResult is AppResult.Success &&
@@ -147,7 +147,7 @@ class MovieViewModel @Inject constructor(
                 }
 
                 is AppResult.Error -> {
-                    snackbarManager.showSnackBar(result.error.asUiMessage())
+                    snackbarManager.showMessage(result.error.asUiMessage())
                 }
             }
         }

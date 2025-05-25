@@ -53,7 +53,7 @@ class GroupsHomeViewModel @Inject constructor(
                 userGroupRepository.getUserJoinedGroups(userId).map { result ->
                     when (result) {
                         is CachedAppResult.Error -> {
-                            snackbarManager.showSnackBar(result.error.asUiMessage())
+                            snackbarManager.showMessage(result.error.asUiMessage())
                             JoinedGroupsUiState(isLoading = false, groups = result.cache)
                         }
 
@@ -84,7 +84,7 @@ class GroupsHomeViewModel @Inject constructor(
                     false ->
                         when (val result = groupRepository.getDayRanking()) {
                             is AppResult.Error -> {
-                                snackbarManager.showSnackBar(result.error.asUiMessage())
+                                snackbarManager.showMessage(result.error.asUiMessage())
                                 _dayRankingUiState.value = DayRankingUiState.Error(result.error)
                             }
 
@@ -101,7 +101,7 @@ class GroupsHomeViewModel @Inject constructor(
     val recentTopicsFeed = authRepository.isLoggedIn().flatMapLatest { isLoggedIn ->
         when (isLoggedIn) {
             true -> userGroupRepository.getRecentTopicsFeed()
-                .onEach { if (it is CachedAppResult.Error) snackbarManager.showSnackBar(it.error.asUiMessage()) }
+                .onEach { if (it is CachedAppResult.Error) snackbarManager.showMessage(it.error.asUiMessage()) }
                 .map { result ->
                     result.data
                 }

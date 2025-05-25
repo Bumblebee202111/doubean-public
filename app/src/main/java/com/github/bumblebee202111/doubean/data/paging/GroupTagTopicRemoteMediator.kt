@@ -16,7 +16,7 @@ import com.github.bumblebee202111.doubean.model.groups.getRequestParamString
 import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkTopicItem
 import com.github.bumblebee202111.doubean.network.model.asPartialEntity
-import com.github.bumblebee202111.doubean.network.model.fangorns.asEntity
+import com.github.bumblebee202111.doubean.network.model.fangorns.toUserEntity
 import com.github.bumblebee202111.doubean.network.model.tagCrossRefs
 import com.github.bumblebee202111.doubean.network.model.toGroupTopicTagEntity
 
@@ -110,7 +110,7 @@ class GroupTagTopicRemoteMediator(
 
                 val topicTagCrossRefs =
                     topics.flatMap(NetworkTopicItem::tagCrossRefs)
-                val authors = topics.map { it.author.asEntity() }.distinctBy(UserEntity::id)
+                val authors = topics.map { it.author.toUserEntity() }.distinctBy(UserEntity::id)
 
                 groupDao.apply {
                     groupDao.insertGroupTopicItems(topicItems)

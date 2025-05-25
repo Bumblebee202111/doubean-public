@@ -3,14 +3,16 @@ package com.github.bumblebee202111.doubean.data
 import android.content.Context
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.Companion.dataStore
-import com.github.bumblebee202111.doubean.network.model.NetworkFeedContent
 import com.github.bumblebee202111.doubean.network.model.NetworkStatusCard
 import com.github.bumblebee202111.doubean.network.model.NetworkSubject
 import com.github.bumblebee202111.doubean.network.model.NetworkSubjectModule
+import com.github.bumblebee202111.doubean.network.model.NetworkSubjectStatusCard
 import com.github.bumblebee202111.doubean.network.model.NetworkSubjectWithRankAndInterest
 import com.github.bumblebee202111.doubean.network.model.NetworkUnknownStatusCard
 import com.github.bumblebee202111.doubean.network.model.NetworkUnknownSubject
 import com.github.bumblebee202111.doubean.network.model.NetworkUnknownSubjectWithRankAndInterest
+import com.github.bumblebee202111.doubean.network.model.NetworkUnsupportedSubjectStatusCard
+import com.github.bumblebee202111.doubean.network.model.common.NetworkFeedContent
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,6 +38,9 @@ internal object DataModule {
                     NetworkStatusCard::class
                 ) {
                     NetworkUnknownStatusCard.serializer()
+                }
+                polymorphicDefaultDeserializer(NetworkSubjectStatusCard::class) {
+                    NetworkUnsupportedSubjectStatusCard.serializer()
                 }
                 polymorphicDefaultDeserializer(
                     NetworkFeedContent::class

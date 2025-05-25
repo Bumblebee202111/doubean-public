@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.subjects.shared
+package com.github.bumblebee202111.doubean.feature.subjects.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +30,9 @@ import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.subjects.Subject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectCollectionItem
+import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItem
+import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemBasicContent
+import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemRank
 
 @Composable
 fun RankLists(

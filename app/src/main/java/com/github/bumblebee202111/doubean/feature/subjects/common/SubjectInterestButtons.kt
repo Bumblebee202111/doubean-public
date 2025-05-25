@@ -1,10 +1,9 @@
-package com.github.bumblebee202111.doubean.feature.subjects.shared
+package com.github.bumblebee202111.doubean.feature.subjects.common
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
@@ -20,9 +19,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.model.subjects.MarkableSubject
-import com.github.bumblebee202111.doubean.model.subjects.SubjectInterest
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.ui.common.subject.SubjectCurrentStatusIconVector
+import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusActionIconsMap
+import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusActionTextResIdsMap
+import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusTextResIdsMap
 
 @Composable
 fun SubjectInterestButtons(
@@ -107,35 +108,3 @@ fun SubjectSingleInterestButtonContent(iconVector: ImageVector, textResId: Int) 
     }
 }
 
-@Composable
-fun SubjectSimpleInterestButton(
-    subjectType: SubjectType,
-    interest: SubjectInterest,
-    modifier: Modifier = Modifier,
-    onMarkClick: () -> Unit,
-) {
-    when (val status = interest.status) {
-        SubjectInterestStatus.MARK_STATUS_UNMARK -> {
-            FilledTonalButton(onClick = onMarkClick, modifier = modifier) {
-                SubjectSingleInterestButtonContent(
-                    iconVector = SubjectStatusActionIconsMap.getValue(
-                        SubjectInterestStatus.MARK_STATUS_MARK
-                    ).asVector(),
-                    textResId = SubjectStatusActionTextResIdsMap.getValue(subjectType)
-                        .getValue(SubjectInterestStatus.MARK_STATUS_MARK)
-                )
-            }
-        }
-
-        else -> {
-            FilledTonalButton(onClick = { }, modifier = modifier, enabled = false) {
-                SubjectSingleInterestButtonContent(
-                    iconVector = SubjectCurrentStatusIconVector,
-                    textResId = SubjectStatusTextResIdsMap.getValue(subjectType)
-                        .getValue(status)
-                )
-            }
-        }
-    }
-
-}

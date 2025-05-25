@@ -78,7 +78,7 @@ class BookViewModel @Inject constructor(
 
             listOf(bookResult, interestResult, reviewsResult).forEach { result ->
                 if (result is AppResult.Error) {
-                    snackbarManager.showSnackBar(result.error.asUiMessage())
+                    snackbarManager.showMessage(result.error.asUiMessage())
                 }
             }
 
@@ -145,7 +145,7 @@ class BookViewModel @Inject constructor(
                 }
 
                 is AppResult.Error -> {
-                    snackbarManager.showSnackBar(result.error.asUiMessage())
+                    snackbarManager.showMessage(result.error.asUiMessage())
                 }
             }
         }

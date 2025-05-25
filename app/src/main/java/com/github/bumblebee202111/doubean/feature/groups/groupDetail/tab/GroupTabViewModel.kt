@@ -73,7 +73,7 @@ class GroupTabViewModel @AssistedInject constructor(
                 groupId = groupId,
                 tabId = tabId,
             )
-            snackbarManager.showSnackBar(R.string.favorited_tab.toUiMessage())
+            snackbarManager.showMessage(R.string.favorited_tab.toUiMessage())
         }
     }
 
@@ -81,7 +81,7 @@ class GroupTabViewModel @AssistedInject constructor(
         val tabId = tabId ?: return
         viewModelScope.launch {
             userGroupRepository.removeFavoriteTab(tabId)
-            snackbarManager.showSnackBar(R.string.unfavorited_tab.toUiMessage())
+            snackbarManager.showMessage(R.string.unfavorited_tab.toUiMessage())
         }
     }
 

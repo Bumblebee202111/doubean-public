@@ -51,14 +51,14 @@ class SearchSubjectsViewModel @Inject constructor(
             )
             _uiState.value = when (result) {
                 is AppResult.Error -> {
-                    snackbarManager.showSnackBar(result.error.asUiMessage())
+                    snackbarManager.showMessage(result.error.asUiMessage())
                     _uiState.value.copy(isLoading = false)
                 }
 
                 is AppResult.Success -> {
                     val (banned, items, types) = result.data
                     banned?.let {
-                        snackbarManager.showSnackBar(it.toUiMessage())
+                        snackbarManager.showMessage(it.toUiMessage())
                     }
 
                     _uiState.value.copy(
@@ -88,14 +88,14 @@ class SearchSubjectsViewModel @Inject constructor(
             )
             _uiState.value = when (result) {
                 is AppResult.Error -> {
-                    snackbarManager.showSnackBar(result.error.asUiMessage())
+                    snackbarManager.showMessage(result.error.asUiMessage())
                     _uiState.value.copy(isLoading = false)
                 }
 
                 is AppResult.Success -> {
                     val (banned, items) = result.data
                     banned?.let {
-                        snackbarManager.showSnackBar(it.toUiMessage())
+                        snackbarManager.showMessage(it.toUiMessage())
                     }
                     _uiState.value.copy(
                         items = items,

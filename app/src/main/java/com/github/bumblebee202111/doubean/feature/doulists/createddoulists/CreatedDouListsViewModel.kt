@@ -46,7 +46,7 @@ class CreatedDouListsViewModel @Inject constructor(
                 is AppResult.Error -> {
                     val uiMessage = result.error.asUiMessage()
 
-                    snackbarManager.showSnackBar(uiMessage)
+                    snackbarManager.showMessage(uiMessage)
                     _uiState.value = UserDouListsUiState.Error(uiMessage)
                 }
             }

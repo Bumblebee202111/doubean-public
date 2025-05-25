@@ -51,9 +51,7 @@ fun DoubeanApp(
         val window = (context as Activity).window
         val insetsController = WindowCompat.getInsetsController(window, view)
         val originalIconState = insetsController.isAppearanceLightStatusBars
-        if (forceLightIcons) {
-            insetsController.isAppearanceLightStatusBars = false
-        }
+        insetsController.isAppearanceLightStatusBars = !forceLightIcons
         onDispose {
             insetsController.isAppearanceLightStatusBars = originalIconState
         }

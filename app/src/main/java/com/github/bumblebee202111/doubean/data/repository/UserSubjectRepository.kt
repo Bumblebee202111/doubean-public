@@ -75,7 +75,8 @@ class UserSubjectRepository @Inject constructor(private val apiService: ApiServi
 
 
     suspend fun addSubjectToInterests(
-        type: SubjectType, id: String,
+        type: SubjectType,
+        id: String,
         newStatus: SubjectInterestStatus,
     ): AppResult<SubjectWithInterest<Subject>> = makeApiCall(
         apiCall = {
@@ -91,10 +92,10 @@ class UserSubjectRepository @Inject constructor(private val apiService: ApiServi
     suspend fun unmarkSubject(type: SubjectType, id: String): AppResult<SubjectInterest> =
         makeApiCall(
             apiCall = {
-            apiService.unmarkSubject(
-                type = type.toNetworkSubjectType().value,
-                id = id
-            )
+                apiService.unmarkSubject(
+                    type = type.toNetworkSubjectType().value,
+                    id = id
+                )
             },
             mapSuccess = NetworkSubjectInterest::toSubjectInterest
         )

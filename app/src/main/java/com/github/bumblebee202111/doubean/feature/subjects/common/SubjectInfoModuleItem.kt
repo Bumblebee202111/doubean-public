@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.subjects.shared
+package com.github.bumblebee202111.doubean.feature.subjects.common
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -52,6 +52,7 @@ import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUser
 import com.github.bumblebee202111.doubean.model.subjects.SubjectReview
 import com.github.bumblebee202111.doubean.model.subjects.SubjectReviewList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusActionTextResIdsMap
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.ExpandCollapseText
 import com.github.bumblebee202111.doubean.ui.component.ListItemCount
@@ -327,7 +328,6 @@ private fun SubjectReviewCard(
                         color = MaterialTheme.colorScheme.outline,
                         fontWeight = FontWeight.Light
                     )
-
                 }
                 review.rating?.let { rating ->
                     Spacer(modifier = Modifier.size(1.dp))
@@ -450,7 +450,7 @@ private fun SubjectReviewCardPreview() {
             ),
             reactionsCount = 123,
             commentsCount = 12312,
-            user = User("213", "etho", name = "Ethos", avatar = ""),
+            user = User("213", "etho", name = "Ethos", avatar = "", uri = "", alt = ""),
             createTime = LocalDateTime.now(),
             resharesCount = 1,
             id = "0",

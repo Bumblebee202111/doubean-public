@@ -40,7 +40,7 @@ class RankListViewModel @Inject constructor(
         emit(subjectCollectionRepository.getSubjectCollection(collectionId))
     }.onEach { result ->
         if (result is AppResult.Error) {
-            snackbarManager.showSnackBar(result.error.asUiMessage())
+            snackbarManager.showMessage(result.error.asUiMessage())
         }
     }
 
@@ -80,7 +80,8 @@ class RankListViewModel @Inject constructor(
     fun onMarkSubject(subject: SubjectWithRankAndInterest<*>) {
         viewModelScope.launch {
             val result = userSubjectRepository.addSubjectToInterests(
-                type = subject.type, id = subject.id,
+                type = subject.type,
+                id = subject.id,
                 newStatus = SubjectInterestStatus.MARK_STATUS_MARK
             )
             when (result) {
@@ -98,7 +99,7 @@ class RankListViewModel @Inject constructor(
                 }
 
                 is AppResult.Error -> {
-                    snackbarManager.showSnackBar(result.error.asUiMessage())
+                    snackbarManager.showMessage(result.error.asUiMessage())
                 }
             }
         }

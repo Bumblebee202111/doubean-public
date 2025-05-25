@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.subjects.shared
+package com.github.bumblebee202111.doubean.feature.subjects.common
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface

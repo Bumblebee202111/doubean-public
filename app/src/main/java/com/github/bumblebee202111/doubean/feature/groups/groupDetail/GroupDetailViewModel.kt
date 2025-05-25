@@ -62,7 +62,7 @@ class GroupDetailViewModel @Inject constructor(
                     notificationPreferences ?: defaultNotificationPreferences
                 when (groupDetailResult) {
                     is CachedAppResult.Error -> {
-                        snackBarManager.showSnackBar(groupDetailResult.error.asUiMessage())
+                        snackBarManager.showMessage(groupDetailResult.error.asUiMessage())
                         GroupDetailUiState(
                             isFavorited = isFavorited,
                             notificationPreferences = uiNotificationPreferences,
@@ -99,7 +99,7 @@ class GroupDetailViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = userGroupRepository.subscribeGroup(groupId)) {
                 is AppResult.Error -> {
-                    snackBarManager.showSnackBar(result.error.asUiMessage())
+                    snackBarManager.showMessage(result.error.asUiMessage())
                     _uiState.update { prevState ->
                         prevState.copy(isError = true)
                     }
@@ -122,7 +122,7 @@ class GroupDetailViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = userGroupRepository.unsubscribeGroup(groupId)) {
                 is AppResult.Error -> {
-                    snackBarManager.showSnackBar(result.error.asUiMessage())
+                    snackBarManager.showMessage(result.error.asUiMessage())
                     _uiState.update { prevState ->
                         prevState.copy(isError = true)
                     }
@@ -144,7 +144,7 @@ class GroupDetailViewModel @Inject constructor(
     fun addFavorite() {
         viewModelScope.launch {
             userGroupRepository.addFavoriteGroup(groupId = groupId)
-            snackBarManager.showSnackBar(R.string.favorited_group.toUiMessage())
+            snackBarManager.showMessage(R.string.favorited_group.toUiMessage())
         }
 
     }
@@ -152,7 +152,7 @@ class GroupDetailViewModel @Inject constructor(
     fun removeFavorite() {
         viewModelScope.launch {
             userGroupRepository.removeFavoriteGroup(groupId)
-            snackBarManager.showSnackBar(R.string.unfavorited_group.toUiMessage())
+            snackBarManager.showMessage(R.string.unfavorited_group.toUiMessage())
         }
     }
 

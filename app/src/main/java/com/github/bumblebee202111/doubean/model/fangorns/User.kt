@@ -5,4 +5,8 @@ data class User(
     val uid: String,
     val name: String,
     val avatar: String,
-)
+    val uri: String,
+    val alt: String,
+) {
+    val url get() = alt
+}

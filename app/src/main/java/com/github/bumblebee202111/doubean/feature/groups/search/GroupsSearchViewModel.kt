@@ -39,7 +39,7 @@ class GroupsSearchViewModel @Inject constructor(
 
             when (val result = groupRepository.getDayRanking()) {
                 is AppResult.Error -> {
-                    snackbarManager.showSnackBar(result.error.asUiMessage())
+                    snackbarManager.showMessage(result.error.asUiMessage())
                     _dayRankingUiState.value = DayRankingUiState.Error(result.error)
                 }
 

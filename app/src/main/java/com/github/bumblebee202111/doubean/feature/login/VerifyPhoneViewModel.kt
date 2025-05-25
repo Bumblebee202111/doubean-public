@@ -118,7 +118,7 @@ class VerifyPhoneViewModel @Inject constructor(
             )
 
             is RequestPhoneCodeResult.Failed -> {
-                snackbarManager.showSnackBar(result.description.toUiMessage())
+                snackbarManager.showMessage(result.description.toUiMessage())
                 _uiState.value = VerifyPhoneMainUiState.Active(
                     jCaptcha = result.jCaptcha,
                     message = result.description
@@ -128,7 +128,7 @@ class VerifyPhoneViewModel @Inject constructor(
     }
 
     private fun handleRequestError(error: AppError) {
-        snackbarManager.showSnackBar(error.asUiMessage())
+        snackbarManager.showMessage(error.asUiMessage())
         _uiState.value = VerifyPhoneMainUiState.Active(
             isRequestingCode = false,
             error = error
@@ -136,7 +136,7 @@ class VerifyPhoneViewModel @Inject constructor(
     }
 
     private fun handleVerificationSuccess(result: VerifyPhoneCodeResult) {
-        snackbarManager.showSnackBar(result.description.toUiMessage())
+        snackbarManager.showMessage(result.description.toUiMessage())
         _uiState.value = when (result) {
             is VerifyPhoneCodeResult.Success -> {
                 VerifyPhoneMainUiState.VerificationSuccess(
@@ -154,7 +154,7 @@ class VerifyPhoneViewModel @Inject constructor(
     }
 
     private fun handleVerificationError(error: AppError) {
-        snackbarManager.showSnackBar(error.asUiMessage())
+        snackbarManager.showMessage(error.asUiMessage())
         _uiState.value = VerifyPhoneMainUiState.Active(
             isVerifyingCode = false,
             error = error

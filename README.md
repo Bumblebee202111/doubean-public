@@ -14,7 +14,7 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 
 ## Features
 
-- Subjects (Books/Movies/TVs, WIP 🚧):
+- Subjects (Books/Movies/TVs):
   - Home feed with personal statuses, subject unions, and rank lists
   - Interests
   - Subject search
@@ -28,6 +28,9 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
     - Locally favorite tabs/groups
     - Sort topics by original order or create time within any page
     - Customizable topic notifications
+- Doulists (WIP 🚧):
+  - Topic, subject and review items supported
+
 - General:
 
   - Ad-free and lightweight (~3MB)
@@ -105,7 +108,9 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.0)
 
-- DouListScreen
+- Add showMessage to URI navigate
+- Temporarily support viewing current user's private Doulists if navigated from profile
+- Clear useless string resources
 
 ### Next release \(0.9.1)
 
@@ -154,8 +159,10 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Color schemes
   - More
 - Doulists
-  - Following Doulists
-  - Pagination
+  - `MyCollectItems`
+  - Edit/remove posts
+  - Follow Doulists
+  - List/post pagination
 - Sync more source files to public repo
 - Error messages: Show endpoint
 - Persist last-active tab
