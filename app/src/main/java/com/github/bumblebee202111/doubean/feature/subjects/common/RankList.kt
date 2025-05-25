@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.subjects.shared
+package com.github.bumblebee202111.doubean.feature.subjects.common
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -18,6 +18,10 @@ import com.github.bumblebee202111.doubean.model.subjects.Subject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectCollection
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithRankAndInterest
 import com.github.bumblebee202111.doubean.model.subjects.Tv
+import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItem
+import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemBasicContent
+import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemRank
+import com.github.bumblebee202111.doubean.ui.common.subject.SubjectSimpleInterestButton
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 
 fun LazyListScope.rankList(

@@ -17,7 +17,7 @@ fun NavController.navigateToCreatedDouLists(
     userId: String,
     navOptions: NavOptions? = null,
 ) {
-    this.navigate(CreatedDouListsRoute(userId = userId), navOptions)
+    this.navigate(route = CreatedDouListsRoute(userId = userId), navOptions = navOptions)
 }
 
 fun NavGraphBuilder.createdDouListsScreen(

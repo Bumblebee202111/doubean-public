@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.subjects.shared
+package com.github.bumblebee202111.doubean.ui.common.subject
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add

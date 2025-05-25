@@ -37,16 +37,16 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.subjects.shared.MySubjectItem
-import com.github.bumblebee202111.doubean.feature.subjects.shared.MySubjectItemMore
-import com.github.bumblebee202111.doubean.feature.subjects.shared.SubjectItemImage
-import com.github.bumblebee202111.doubean.feature.subjects.shared.SubjectStatusActionTextResIdsMap
+import com.github.bumblebee202111.doubean.feature.subjects.common.MySubjectItem
+import com.github.bumblebee202111.doubean.feature.subjects.common.MySubjectItemMore
 import com.github.bumblebee202111.doubean.model.subjects.Book
 import com.github.bumblebee202111.doubean.model.subjects.Movie
 import com.github.bumblebee202111.doubean.model.subjects.Subject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
 import com.github.bumblebee202111.doubean.model.subjects.Tv
+import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemImage
+import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusActionTextResIdsMap
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import kotlinx.coroutines.launch
 

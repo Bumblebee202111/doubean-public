@@ -66,7 +66,7 @@ class TopicViewModel @Inject constructor(
 
     val topic = topicResult.onEach { result ->
         if (result is CachedAppResult.Error) {
-            snackbarManager.showSnackBar(result.error.asUiMessage())
+            snackbarManager.showMessage(result.error.asUiMessage())
         }
     }.map {
         it?.data
@@ -108,7 +108,7 @@ class TopicViewModel @Inject constructor(
         flowOf(pollRepository.getPollsAndQuestions(ids)).map { entitiesResult ->
             when (entitiesResult) {
                 is AppResult.Error -> {
-                    snackbarManager.showSnackBar(entitiesResult.error.asUiMessage())
+                    snackbarManager.showMessage(entitiesResult.error.asUiMessage())
                     formatHtmlContent(content)
                 }
 
@@ -146,7 +146,7 @@ class TopicViewModel @Inject constructor(
             )
             when (result) {
                 is AppResult.Error -> {
-                    snackbarManager.showSnackBar(result.error.asUiMessage())
+                    snackbarManager.showMessage(result.error.asUiMessage())
                 }
 
                 is AppResult.Success -> Unit
@@ -167,7 +167,7 @@ class TopicViewModel @Inject constructor(
     }
 
     fun displayInvalidImageUrl() {
-        snackbarManager.showSnackBar("Invalid image Url".toUiMessage())
+        snackbarManager.showMessage("Invalid image Url".toUiMessage())
     }
 
     private fun buildPollHtml(entity: Poll): String {

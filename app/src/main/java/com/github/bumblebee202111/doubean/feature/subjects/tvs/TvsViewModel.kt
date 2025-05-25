@@ -37,7 +37,7 @@ class TvsViewModel @Inject constructor(
         emit(subjectCommonRepository.getSubjectModules(SubjectType.TV))
     }.onEach { result ->
         if (result is AppResult.Error) {
-            snackbarManager.showSnackBar(result.error.asUiMessage())
+            snackbarManager.showMessage(result.error.asUiMessage())
         }
     }
 
@@ -82,7 +82,7 @@ class TvsViewModel @Inject constructor(
                             }
 
                             is AppResult.Error -> {
-                                snackbarManager.showSnackBar(result.error.asUiMessage())
+                                snackbarManager.showMessage(result.error.asUiMessage())
                                 MySubjectUiState.Error
                             }
                         }

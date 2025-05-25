@@ -33,7 +33,7 @@ import com.github.bumblebee202111.doubean.network.model.NetworkRecentTopicsFeedI
 import com.github.bumblebee202111.doubean.network.model.NetworkTopicItem
 import com.github.bumblebee202111.doubean.network.model.NetworkTopicItemWithGroup
 import com.github.bumblebee202111.doubean.network.model.asPartialEntity
-import com.github.bumblebee202111.doubean.network.model.fangorns.asEntity
+import com.github.bumblebee202111.doubean.network.model.fangorns.toUserEntity
 import com.github.bumblebee202111.doubean.network.model.toCachedGroupEntity
 import com.github.bumblebee202111.doubean.network.model.toEntity
 import com.github.bumblebee202111.doubean.network.model.toGroupItem
@@ -116,7 +116,7 @@ class UserGroupRepository @Inject constructor(
 
             val topicPartialEntities = networkTopics.map { it.toTopicPartialEntity() }
             val groups = networkTopics.map { it.group.toSimpleCachedGroupPartialEntity() }
-            val userEntities = networkTopics.map { it.author.asEntity() }
+            val userEntities = networkTopics.map { it.author.toUserEntity() }
             val topicTagEntities =
                 networkTopics.flatMap { topic ->
                     topic.topicTags.map {
@@ -267,7 +267,7 @@ class UserGroupRepository @Inject constructor(
 
             val topicTags = finalOrderedNetworkTopics.flatMap(NetworkTopicItem::topicTags)
                 .distinctBy(NetworkGroupTopicTag::id).map { it.toGroupTopicTagEntity(groupId) }
-            val authors = finalOrderedNetworkTopics.map { it.author.asEntity() }
+            val authors = finalOrderedNetworkTopics.map { it.author.toUserEntity() }
             appDatabase.withTransaction {
                 topicDao.upsertTopicItems(finalTopicEntities)
                 groupDao.insertTopicTags(topicTags)

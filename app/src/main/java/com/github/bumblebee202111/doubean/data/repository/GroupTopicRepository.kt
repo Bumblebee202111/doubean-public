@@ -18,7 +18,7 @@ import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkGroupTopicComment
 import com.github.bumblebee202111.doubean.network.model.NetworkReshareItem
 import com.github.bumblebee202111.doubean.network.model.asExternalModel
-import com.github.bumblebee202111.doubean.network.model.fangorns.asEntity
+import com.github.bumblebee202111.doubean.network.model.fangorns.toUserEntity
 import com.github.bumblebee202111.doubean.network.model.tagCrossRefs
 import com.github.bumblebee202111.doubean.network.model.toCachedGroupEntity
 import com.github.bumblebee202111.doubean.network.model.toGroupTopicTagEntity
@@ -56,7 +56,7 @@ class GroupTopicRepository @Inject constructor(
                     response.topicTags.map { it.toGroupTopicTagEntity(response.group.id) }
                 val topicTagCrossRefs = response.tagCrossRefs()
                 val group = response.group.toCachedGroupEntity()
-                val author = response.author.asEntity()
+                val author = response.author.toUserEntity()
             appDatabase.withTransaction {
                 groupDao.insertTopicTags(topicTags)
                 groupTopicDao.insertTopicDetail(topicDetail)

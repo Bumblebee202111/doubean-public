@@ -128,6 +128,8 @@ dependencies {
 
 }
 
+//kotlin.compilerOptions.freeCompilerArgs.add("-Xwhen-guards")
+
 fun getDoubanAccess(): String? {
     return project.findProperty("douban_access_key") as? String
 }

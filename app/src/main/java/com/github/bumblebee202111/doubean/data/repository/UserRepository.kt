@@ -6,8 +6,8 @@ import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.fangorns.UserDetail
 import com.github.bumblebee202111.doubean.model.profile.ProfileCommunityContribution
 import com.github.bumblebee202111.doubean.network.ApiService
-import com.github.bumblebee202111.doubean.network.model.fangorns.asEntity
 import com.github.bumblebee202111.doubean.network.model.fangorns.toUserDetail
+import com.github.bumblebee202111.doubean.network.model.fangorns.toUserEntity
 import com.github.bumblebee202111.doubean.network.model.profile.toProfileCommunityContribution
 import com.github.bumblebee202111.doubean.network.util.makeApiCall
 import kotlinx.coroutines.flow.map
@@ -26,7 +26,7 @@ class UserRepository @Inject constructor(
                 service.getUserBasicOnly(userId)
             },
             mapSuccess = {
-                userDao.insertUser(it.asEntity())
+                userDao.insertUser(it.toUserEntity())
             }
         )
     }

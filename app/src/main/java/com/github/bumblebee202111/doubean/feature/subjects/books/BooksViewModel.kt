@@ -38,7 +38,7 @@ class BooksViewModel @Inject constructor(
         emit(subjectCommonRepository.getSubjectModules(SubjectType.BOOK))
     }.onEach { result ->
         if (result is AppResult.Error) {
-            snackbarManager.showSnackBar(result.error.asUiMessage())
+            snackbarManager.showMessage(result.error.asUiMessage())
         }
     }
 
@@ -80,7 +80,7 @@ class BooksViewModel @Inject constructor(
                                 )
 
                             is AppResult.Error -> {
-                                snackbarManager.showSnackBar(result.error.asUiMessage())
+                                snackbarManager.showMessage(result.error.asUiMessage())
                                 MySubjectUiState.Error
                             }
                         }

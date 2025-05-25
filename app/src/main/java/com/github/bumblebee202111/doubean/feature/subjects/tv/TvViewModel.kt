@@ -77,7 +77,7 @@ class TvViewModel @Inject constructor(
 
             val results = listOf(tvResult, interestResult, photosResult, reviewsResult)
             results.filterIsInstance<AppResult.Error>().forEach { errorResult ->
-                snackbarManager.showSnackBar(errorResult.error.asUiMessage())
+                snackbarManager.showMessage(errorResult.error.asUiMessage())
             }
 
             if (tvResult is AppResult.Success &&
@@ -144,7 +144,7 @@ class TvViewModel @Inject constructor(
                 }
 
                 is AppResult.Error -> {
-                    snackbarManager.showSnackBar(result.error.asUiMessage())
+                    snackbarManager.showMessage(result.error.asUiMessage())
                 }
             }
         }

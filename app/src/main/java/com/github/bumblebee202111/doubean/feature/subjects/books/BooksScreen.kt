@@ -10,8 +10,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.feature.subjects.MySubjectUiState
 import com.github.bumblebee202111.doubean.feature.subjects.SubjectModulesUiState
-import com.github.bumblebee202111.doubean.feature.subjects.shared.MySubject
-import com.github.bumblebee202111.doubean.feature.subjects.shared.RankLists
+import com.github.bumblebee202111.doubean.feature.subjects.common.MySubject
+import com.github.bumblebee202111.doubean.feature.subjects.common.RankLists
 import com.github.bumblebee202111.doubean.model.subjects.SubjectModule
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 

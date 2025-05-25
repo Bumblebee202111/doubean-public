@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.subjects.shared
+package com.github.bumblebee202111.doubean.ui.common.subject
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +20,10 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectRatingBar
+import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectRatingBarSize
+import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectRoundedCornerShape
+import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectTypeLabel
 import com.github.bumblebee202111.doubean.model.subjects.Book
 import com.github.bumblebee202111.doubean.model.subjects.Rating
 import com.github.bumblebee202111.doubean.model.subjects.Subject
@@ -29,14 +33,18 @@ import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 fun SubjectItem(
     basicContent: @Composable RowScope.() -> Unit,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {},
+    onClick: (() -> Unit)? = null,
     rankContent: (@Composable () -> Unit)? = null,
     interestButton: @Composable (() -> Unit)? = null,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .then(
+                onClick?.let {
+                    Modifier.clickable(onClick = onClick)
+                } ?: Modifier
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (rankContent != null) {

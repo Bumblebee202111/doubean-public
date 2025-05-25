@@ -16,7 +16,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.subjects.shared.rankList
+import com.github.bumblebee202111.doubean.feature.subjects.common.rankList
 import com.github.bumblebee202111.doubean.model.subjects.Subject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithRankAndInterest
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar

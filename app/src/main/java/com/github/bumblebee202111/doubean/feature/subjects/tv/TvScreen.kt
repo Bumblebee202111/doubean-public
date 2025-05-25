@@ -5,14 +5,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.bumblebee202111.doubean.feature.subjects.shared.SubjectDetailHeader
-import com.github.bumblebee202111.doubean.feature.subjects.shared.SubjectReviewsSheetContent
-import com.github.bumblebee202111.doubean.feature.subjects.shared.SubjectScaffold
-import com.github.bumblebee202111.doubean.feature.subjects.shared.SubjectTopBar
-import com.github.bumblebee202111.doubean.feature.subjects.shared.subjectInfoCelebritiesModuleItem
-import com.github.bumblebee202111.doubean.feature.subjects.shared.subjectInfoInterestsModuleItem
-import com.github.bumblebee202111.doubean.feature.subjects.shared.subjectInfoIntroModuleItem
-import com.github.bumblebee202111.doubean.feature.subjects.shared.subjectInfoTrailersModuleItem
+import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectDetailHeader
+import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectReviewsSheetContent
+import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectScaffold
+import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectTopBar
+import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoCelebritiesModuleItem
+import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoInterestsModuleItem
+import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoIntroModuleItem
+import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoTrailersModuleItem
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 

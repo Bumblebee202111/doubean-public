@@ -5,6 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.github.bumblebee202111.doubean.feature.doulists.createddoulists.navigation.createdDouListsScreen
+import com.github.bumblebee202111.doubean.feature.doulists.doulist.navigation.douListScreen
+import com.github.bumblebee202111.doubean.feature.doulists.doulist.navigation.navigateToDouList
 import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.groupDetailScreen
 import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.navigateToGroup
 import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.navigateToReshareStatuses
@@ -176,7 +178,16 @@ fun MainNavHost(
         )
         createdDouListsScreen(
             onBackClick = navController::navigateUp,
-            onItemClick = {} // TODO
+            onItemClick = navController::navigateToDouList
+        )
+        douListScreen(
+            onBackClick = navController::navigateUp,
+            onTopicClick = navController::navigateToTopic,
+            onBookClick = navController::navigateToBook,
+            onMovieClick = navController::navigateToMovie,
+            onTvClick = navController::navigateToTv,
+            onUserClick = navController::navigateToUserProfile,
+            onImageClick = navController::navigateToImage
         )
     }
 }

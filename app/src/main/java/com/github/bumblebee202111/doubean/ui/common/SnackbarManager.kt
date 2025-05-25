@@ -11,7 +11,7 @@ class SnackbarManager @Inject constructor() {
     private val _currentMessage = MutableStateFlow<UiMessage?>(null)
     val currentMessage: StateFlow<UiMessage?> = _currentMessage
 
-    fun showSnackBar(message: UiMessage) {
+    fun showMessage(message: UiMessage) {
         _currentMessage.value = message
     }
 

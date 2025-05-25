@@ -24,7 +24,7 @@ fun NavController.tryNavigateToUri(
         return true
     } catch (e: Exception) {
         Log.e(TAG, "Error navigating to URI: $uriString", e)
-        snackbarManager.showSnackBar(
+        snackbarManager.showMessage(
             R.string.error_navigation_failed_with_uri.toUiMessage(uriString)
         )
         return false

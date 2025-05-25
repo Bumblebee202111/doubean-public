@@ -11,8 +11,10 @@ data class UserEntity(
     val uid: String,
     val name: String,
     val avatar: String,
+    val uri: String,
+    val url: String,
 )
 
 fun UserEntity.asExternalModel() = User(
-    id = id, uid = uid, name = name, avatar = avatar
+    id = id, uid = uid, name = name, avatar = avatar, uri = uri, alt = url
 )

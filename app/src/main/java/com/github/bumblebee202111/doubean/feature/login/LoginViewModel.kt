@@ -54,7 +54,7 @@ class LoginViewModel @Inject constructor(
         val loginResult = authRepository.loginWithDoubanSessionPref(sessionPref)
         sessionLoginResult.value = loginResult
         if (!loginResult) {
-            snackbarManager.showSnackBar("Import failed. Check your input.".toUiMessage())
+            snackbarManager.showMessage("Import failed. Check your input.".toUiMessage())
         }
     }
 
@@ -73,7 +73,7 @@ class LoginViewModel @Inject constructor(
             if (sessionResult is AppResult.Error) {
                 val error = sessionResult.error
                 _solutionUri.value = (sessionResult.error as? ApiError)?.solutionUri
-                snackbarManager.showSnackBar(error.asUiMessage())
+                snackbarManager.showMessage(error.asUiMessage())
             }
         }
     }

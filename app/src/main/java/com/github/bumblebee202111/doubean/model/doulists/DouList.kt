@@ -3,6 +3,7 @@ package com.github.bumblebee202111.doubean.model.doulists
 import com.github.bumblebee202111.doubean.model.fangorns.BaseFeedableItem
 import com.github.bumblebee202111.doubean.model.fangorns.ColorScheme
 import com.github.bumblebee202111.doubean.model.fangorns.User
+import java.time.LocalDateTime
 
 data class DouList(
     override val id: String,
@@ -21,7 +22,7 @@ data class DouList(
     val isMergedCover: Boolean,
     val followersCount: Int,
     val isPrivate: Boolean,
-    val updateTime: String,
+    val updateTime: LocalDateTime,
     val tags: List<String>,
     // Currently always null
     //val syncNote: SimpleNote?,
