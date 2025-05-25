@@ -108,8 +108,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.0)
 
-- Clear useless string resources
-
 ### Next release \(0.9.1)
 
 - Collect subjects/topics
