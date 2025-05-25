@@ -15,6 +15,7 @@ private const val TAG = "NavControllerExt"
 fun NavController.tryNavigateToUri(
     uriString: String,
     snackbarManager: SnackbarManager,
+    showSnackbarOnFailure: Boolean = true,
 ): Boolean {
     try {
         val request = NavDeepLinkRequest.Builder
@@ -24,9 +25,11 @@ fun NavController.tryNavigateToUri(
         return true
     } catch (e: Exception) {
         Log.e(TAG, "Error navigating to URI: $uriString", e)
-        snackbarManager.showMessage(
-            R.string.error_navigation_failed_with_uri.toUiMessage(uriString)
-        )
+        if (showSnackbarOnFailure) {
+            snackbarManager.showMessage(
+                R.string.error_navigation_failed_with_uri.toUiMessage(uriString)
+            )
+        }
         return false
     }
 }

@@ -117,12 +117,12 @@ import java.time.LocalDateTime
 @Composable
 fun TopicScreen(
     onBackClick: () -> Unit,
-    onWebViewClick: (url: String) -> Unit,
-    onGroupClick: (groupId: String, tabId: String?) -> Unit,
-    onReshareStatusesClick: (topicId: String) -> Unit,
-    onUserClick: (id: String) -> Unit,
-    onImageClick: (url: String) -> Unit,
-    onOpenDeepLinkUrl: (url: String) -> Boolean,
+    onWebViewClick: (String) -> Unit,
+    onGroupClick: (String, String?) -> Unit,
+    onReshareStatusesClick: (String) -> Unit,
+    onUserClick: (String) -> Unit,
+    onImageClick: (String) -> Unit,
+    onOpenDeepLinkUrl: (String, Boolean) -> Boolean,
     viewModel: TopicViewModel = hiltViewModel(),
 ) {
     val topic by viewModel.topic.collectAsStateWithLifecycle()
@@ -177,12 +177,12 @@ fun TopicScreen(
     updateCommentSortBy: (TopicCommentSortBy) -> Unit,
     displayInvalidImageUrl: () -> Unit,
     onBackClick: () -> Unit,
-    onWebViewClick: (url: String) -> Unit,
-    onGroupClick: (groupId: String, tabId: String?) -> Unit,
-    onReshareStatusesClick: (topicId: String) -> Unit,
-    onUserClick: (id: String) -> Unit,
-    onImageClick: (url: String) -> Unit,
-    onOpenDeepLinkUrl: (url: String) -> Boolean,
+    onWebViewClick: (String) -> Unit,
+    onGroupClick: (String, String?) -> Unit,
+    onReshareStatusesClick: (String) -> Unit,
+    onUserClick: (String) -> Unit,
+    onImageClick: (String) -> Unit,
+    onOpenDeepLinkUrl: (String, Boolean) -> Boolean,
     onReact: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current
@@ -497,11 +497,11 @@ fun TopicHeader(
     shouldShowPhotoList: Boolean?,
     contentHtml: String?,
     isLoggedIn: Boolean,
-    onImageClick: (url: String) -> Unit,
-    onGroupClick: (groupId: String, tabId: String?) -> Unit,
-    onUserClick: (id: String) -> Unit,
-    onReshareStatusesClick: (topicId: String) -> Unit,
-    onOpenDeepLinkUrl: (url: String) -> Boolean,
+    onImageClick: (String) -> Unit,
+    onGroupClick: (String, String?) -> Unit,
+    onUserClick: (String) -> Unit,
+    onReshareStatusesClick: (String) -> Unit,
+    onOpenDeepLinkUrl: (String, Boolean) -> Boolean,
     displayInvalidImageUrl: () -> Unit,
     onReact: (Boolean) -> Unit,
 ) {
@@ -701,7 +701,7 @@ private fun ContentWebView(
     html: String,
     onImageClick: (String) -> Unit,
     displayInvalidImageUrl: () -> Unit,
-    onOpenDeepLinkUrl: (String) -> Boolean,
+    onOpenDeepLinkUrl: (String, Boolean) -> Boolean,
 ) {
     val context = LocalContext.current
     val webViewState = rememberWebViewStateWithHTMLData(html)
@@ -755,7 +755,7 @@ private fun ContentWebView(
                     view: WebView?,
                     url: String?,
                 ): Boolean {
-                    return url?.let { handleUrlLoading(context, it, onOpenDeepLinkUrl) } ?: false
+                    return url?.let { handleUrlLoading(context, it, onOpenDeepLinkUrl) } == true
                 }
             }
         },
@@ -766,11 +766,11 @@ private const val CONTENT_WEB_VIEW_TAG = "ContentWebView"
 private fun handleUrlLoading(
     context: Context,
     url: String,
-    onOpenDeepLinkUrl: (uriString: String) -> Boolean,
+    onOpenDeepLinkUrl: (String, Boolean) -> Boolean,
 ): Boolean {
     Log.d(CONTENT_WEB_VIEW_TAG, "Handling URL: $url")
 
-    if (onOpenDeepLinkUrl(url)) {
+    if (onOpenDeepLinkUrl(url, false)) {
         Log.i(CONTENT_WEB_VIEW_TAG, "Internal navigation initiated for: $url")
         return true
     } else {
