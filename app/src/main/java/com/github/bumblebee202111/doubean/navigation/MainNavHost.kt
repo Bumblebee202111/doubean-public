@@ -61,7 +61,7 @@ fun MainNavHost(
         modifier = modifier
     ) {
 
-        val navigateToUri = { uriString: String ->
+        val navigateToUriBasic = { uriString: String ->
             navController.tryNavigateToUri(uriString, snackbarManager)
         }
 
@@ -80,7 +80,7 @@ fun MainNavHost(
             navigateToTv = navController::navigateToTv,
             navigateToBook = navController::navigateToBook,
             navigateToUserProfile = navController::navigateToUserProfile,
-            navigateToUri = navigateToUri
+            navigateToUri = navigateToUriBasic
         )
         groupsSearchScreen(
             onGroupClick = navController::navigateToGroup,
@@ -106,7 +106,13 @@ fun MainNavHost(
             onReshareStatusesClick = navController::navigateToReshareStatuses,
             onUserClick = navController::navigateToUserProfile,
             onImageClick = navController::navigateToImage,
-            onOpenDeepLinkUrl = navigateToUri
+            onOpenDeepLinkUrl = { uriString: String, showSnackbarOnFailure: Boolean ->
+                navController.tryNavigateToUri(
+                    uriString = uriString,
+                    snackbarManager = snackbarManager,
+                    showSnackbarOnFailure = showSnackbarOnFailure
+                )
+            }
         )
         reshareStatusesScreen(
             onBackClick = navController::navigateUp,
@@ -118,7 +124,7 @@ fun MainNavHost(
                 navController.previousBackStackEntry!!.savedStateHandle[LOGIN_SUCCESSFUL] = it
             },
             onPopBackStack = navController::popBackStack,
-            onOpenDeepLinkUrl = navigateToUri
+            onOpenDeepLinkUrl = navigateToUriBasic
         )
         verifyPhoneScreen(
             onBackClick = navController::navigateUp,
@@ -138,7 +144,7 @@ fun MainNavHost(
         )
         userProfileScreen(
             onBackClick = navController::navigateUp,
-            onStatItemUriClick = navigateToUri
+            onStatItemUriClick = navigateToUriBasic
         )
         interestsScreen(
             onBackClick = navController::navigateUp,
