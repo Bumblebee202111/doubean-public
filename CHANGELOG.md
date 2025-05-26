@@ -3,6 +3,11 @@ Change Log
 
 ## Version 0.9.0-beta3(90003)
 
+- Add basic Doulist support
+  - Support viewing topics, subjects & reviews
+  - Item clicks will open the existing screen or fallback to Douban app/Web
+- Minor bug fixes and optimizations
+
 ## Version 0.9.0-beta2(90002)
 
 - Supported viewing a *list* of a user's created DouLists.
