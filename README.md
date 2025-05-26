@@ -8,6 +8,8 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 
 **Known Issue:** 
 - Login image captcha requires further testing.
+  - [**Need your feedback when triggered**](https://github.com/Bumblebee202111/doubean-public/issues/11)
+
 
 [douban]: https://www.douban.com/
 [douban-groups]: https://www.douban.com/group/
@@ -121,6 +123,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 <details>
 <summary>Future plans (Click to expand)</summary>
+
 - Groups 
   - Interactions: Subscribe/favorite/collect/react
     - Remove local group favorites (use official subscribing)
@@ -181,11 +184,9 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 - Statuses (maintenance mode)
   - Additional card types
   - Pagination
-* Test
-
+- Test
 
 </details>
-
 
 ## References
 
