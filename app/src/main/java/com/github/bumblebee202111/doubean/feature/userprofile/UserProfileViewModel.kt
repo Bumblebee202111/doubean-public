@@ -99,7 +99,7 @@ class UserProfileViewModel @Inject constructor(
 
                 is AppResult.Error -> {
                     val errorMessage = userResult.error.asUiMessage()
-                    snackbarManager.showSnackBar(errorMessage)
+                    snackbarManager.showMessage(errorMessage)
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -126,7 +126,7 @@ class UserProfileViewModel @Inject constructor(
                 }
 
                 is AppResult.Error -> {
-                    snackbarManager.showSnackBar(contributionsResult.error.asUiMessage())
+                    snackbarManager.showMessage(contributionsResult.error.asUiMessage())
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -139,6 +139,6 @@ class UserProfileViewModel @Inject constructor(
     }
 
     fun showInfoMessage(message: String) {
-        snackbarManager.showSnackBar(message.toUiMessage())
+        snackbarManager.showMessage(message.toUiMessage())
     }
 }

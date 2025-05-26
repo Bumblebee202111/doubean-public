@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.UserDouListRepository
 import com.github.bumblebee202111.doubean.feature.doulists.common.UserDouListsUiState
 import com.github.bumblebee202111.doubean.feature.doulists.createddoulists.navigation.CreatedDouListsRoute
@@ -14,12 +15,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CreatedDouListsViewModel @Inject constructor(
     private val userDouListRepository: UserDouListRepository,
+    private val authRepository: AuthRepository,
     private val snackbarManager: SnackbarManager,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -37,8 +40,13 @@ class CreatedDouListsViewModel @Inject constructor(
     private fun fetchCreatedDouLists() {
         viewModelScope.launch {
             _uiState.value = UserDouListsUiState.Loading
+            val loggedInUserId: String? = authRepository.observeLoggedInUserId().first()
+            val isViewingOwnLists = (loggedInUserId != null && loggedInUserId == userId)
             when (val result =
-                userDouListRepository.getUserDouLists(userId = userId, publicOnly = true)) {
+                userDouListRepository.getUserDouLists(
+                    userId = userId,
+                    publicOnly = !isViewingOwnLists
+                )) {
                 is AppResult.Success -> {
                     _uiState.value = UserDouListsUiState.Success(result.data)
                 }
@@ -46,7 +54,7 @@ class CreatedDouListsViewModel @Inject constructor(
                 is AppResult.Error -> {
                     val uiMessage = result.error.asUiMessage()
 
-                    snackbarManager.showSnackBar(uiMessage)
+                    snackbarManager.showMessage(uiMessage)
                     _uiState.value = UserDouListsUiState.Error(uiMessage)
                 }
             }
