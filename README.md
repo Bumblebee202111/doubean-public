@@ -2,12 +2,12 @@ doubean
 =======
 
 An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and exploring Subjects (books/movies/TVs)
-\([豆瓣][douban]非官方app，支持[小组][douban-groups]浏览和书影~~音~~探索\)
+\([豆瓣][douban]非官方app，支持[小组][douban-groups]浏览和书影探索\)
 
 **Disclaimer:** This is an experimental project focused on core features using Jetpack Compose. Expect potential crashes, incomplete UI, or missing features. 
 
 **Known Issue:** 
-- Login image captcha needs more testing.
+- Login image captcha requires further testing.
 
 [douban]: https://www.douban.com/
 [douban-groups]: https://www.douban.com/group/
@@ -15,33 +15,33 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 ## Features
 
 - Subjects (Books/Movies/TVs):
-  - Home feed with personal statuses, subject unions, and rank lists
+  - Home feed with personal statuses, subject unions, rank lists
   - Interests
   - Subject search
   - View subject details (metadata, intro, interactions)
-  - Browse rank lists
+  - Rank list browsing
 - Groups:
   - Browse my groups and topics
   - Explore group details, topics, and comments
-  - Search for groups
+  - Group search
   - Enhancements:
-    - Locally favorite tabs/groups
+    - Local favorites for tabs/groups
     - Sort topics by original order or create time within any page
     - Customizable topic notifications
 - Doulists (WIP 🚧):
-  - Topic, subject and review items supported
+  - Topic, subject, and review items supported
 
 - General:
 
   - Ad-free and lightweight (~3MB)
   - Login support (beta) & session reuse (root required)
-  - Partial deep linking support
+  - Partial deep linking
   - Direct official API calls
   - Basic Material Design 3 (MD3) theming
   - Image viewer
   - Profile & login screens
   - View statuses feed (legacy)
-  - Mobile-optimized pure Web screens (deprecated)
+  - Mobile-optimized pure Web screens (legacy)
 
 ## Screenshots
 
@@ -52,13 +52,14 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
 <img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
 
+
 ## Getting Started
 
 - Download the [Latest release][latest-release]
 - Install on Android: 8.1+
 - Feel free to [file issues](https://github.com/Bumblebee202111/doubean-public/issues)
-- Keep official app: It's recommended to keep the official Douban app installed for full functionality and to support Douban
-- Troubleshooting: If you experience crashes after updates, try clearing the app data
+- Keep official app: Recommended to have the official Douban app installed for full platform functionality.
+- Troubleshooting: If crashes occur after updates, try clearing app data.
 
 [latest-release]: https://github.com/Bumblebee202111/doubean-public/releases/latest
 
@@ -66,12 +67,12 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 
 ### Source Code Status
 
-Only selected source code from the private project is shared here to mitigate potential issues. More code may be synced later (WIP).
+Only selected source code from a private project is shared here to mitigate potential issues. More code may be synced later (WIP).
 
 ### Guidelines
 
-- Use for personal learning.
-- Avoid promoting widely without permission.
+- For personal learning & exploration.
+- Please avoid wide promotion.
 
 ## Tech Stack
 
@@ -80,12 +81,7 @@ Only selected source code from the private project is shared here to mitigate po
 - [UI][ui]: Jetpack Compose
 - Behavior: [Notifications][notifications]
 - Third-party libraries
-  - [Kotlin Coroutines][kotlin-coroutines]
-  - Kotlinx Serialization
-  - Ktor
-  - Coil
-  - libsu
-  - Accompanist Permissions/WebView
+  - [Kotlin Coroutines][kotlin-coroutines], Kotlinx Serialization, Ktor, Coil, libsu, Accompanist Permissions/WebView
 
 [foundation]: https://developer.android.com/jetpack/components
 [appcompat]: https://developer.android.com/topic/libraries/support-library/packages#v7-appcompat
@@ -111,43 +107,41 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 ### Next release \(0.9.1)
 
 - Collect subjects/topics
-- Tab/comments swipe refresh support like official app (#10)
-- Group tab/tag zh-cn → 分区
+- Swipe-to-refresh for tabs/comments (like official app, #10)
+- Group tab/tag zh-cn → "分区"
 
 ### 0.9.2
 
-- UserProfile:
-  - My subjects
-  - My groups
+- UserProfile: My subjects, My groups
 
 ### 0.9.3
 - Create/edit Doulists
 
-### Future plans
-
+<details>
+<summary>Future plans (Click to expand)</summary>
 - Groups 
-  - Subscribe/favorite/collect/react
+  - Interactions: Subscribe/favorite/collect/react
     - Remove local group favorites (use official subscribing)
     - Pin my groups
-    - Add list item actions matching official app
-  - Notifications: New interval option of 1h (current: 15m)
+    - Official app-style list item actions
+  - Notifications: Add 1h interval option (current: 15m)
   - Search:
-    - Search topics within a specific group/tab
-    - Global topic search across all groups
+    - Topics within a group/tab
+    - Global topic search
     - Tabbed search results
   - Dynamic topic sorting options
   - Simplify topic caching
   - Group Home: Potential pagination for recommended topics
   - Group tab: Track topic read status
   - Group Detail
-    - Auto-collapse header on entry for subscribed/favorited groups/tabs
-    - Fix group description action overflows
+    - Auto-collapse header for subscribed/favorited groups/tabs
+    - Fix description action overflows
   - Topic:
-    - Fully load content via official script, no manual parsing
-    - Fix content scroll position restoration
-  - Hide officially-flagged "unfriendly" content by default
+    - Fully load content via official script (no manual parsing)
+    - Fix content scroll restoration
+  - Default hide officially-flagged "unfriendly" content
   - Implement content blocking
-  - Reddit-style item expand/collapse for lists
+  - Reddit-style list item expand/collapse
   - Investigate API for *all* followed topics like desktop Web app (currently seems unlikely)
     - Use as home/notifications data source
 - Subjects
@@ -159,15 +153,15 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Edit/remove posts
   - Follow Doulists
   - List/post pagination
-- Sync more source files to public repo
+- Sync more source to public repo
 - Error messages: Show endpoint
 - Persist last-active tab
-- Complete deep linking support
+- Full deep linking support
 - Expand/collapse component: Hide action for short text
 - Search suggestions
 - Login: Code-based (w/o pw)
 - Shortcuts
-- Improve display of login prompts and standard tooltips/info messages
+- Improve login prompts & tooltips
 - Restore load state visualization (removed during Compose migration)
   - Paging 3 refresh, loading status ...
 - Restore dark mode & landscape support
@@ -178,16 +172,18 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Translations
   - Language selection
 - NetworkManager
-- Widgets
-  - Calender today
+- Widgets: Calender today
 - QR
-- (Rooted users) Optionally sync more official app preferences for API request consistency
+- (Rooted users) Optional sync of more official app preferences for API request consistency
 - Consider use single NavHost
 - Statuses (maintenance mode)
   - Additional card types
   - Pagination
-
 * Test
+
+
+</details>
+
 
 ## References
 
@@ -208,7 +204,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 ## Utilities
 
 - [HTTPCanary][http-canary] for analyzing API
-- [jadx][jadx]-gui for understanding models
+- [jadx][jadx]-gui for model understanding
 - [Google Chrome][google-chrome] for debugging CSS
 
 [http-canary]:https://github.com/MegatronKing/HttpCanary/
@@ -219,7 +215,11 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ## Stars :star: & Donation :coffee:
 
-Your ⭐ **stars** motivate continued development! While not actively seeking donations, if you wish to support development, please open an issue to discuss.
+Your ⭐ **stars** motivate continued development!  If you find this project helpful and wish to support its development, you can treat me to a coffee via WeChat Pay: 
+
+<p align="center">  <img src="assets/wechat_donate_qr.png" alt="WeChat Donate QR Code" width="200"/> </p> 
+
+Thank you for your support!
 
 ## License
 
