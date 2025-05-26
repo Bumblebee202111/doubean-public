@@ -45,12 +45,14 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 
 ## Screenshots
 
-<p> <img src="screenshots/tablet_movie.png" alt="tablet_movie" height="450" />
-    <img src="screenshots/phone_subjects.png" alt="phone_subjects" height="300" />
-<img src="screenshots/tablet_interests.png" alt="tablet_interests" height="450" />
+<p> <img src="screenshots/phone_subjects.png" alt="phone_subjects" height="300" />
 <img src="screenshots/phone_groups_home.png" alt="phone_groups" height="300" />
 <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
-<img src="screenshots/phone_post_detail.png" alt="phone_post_detail" height="300" /></p>
+<img src="screenshots/phone_topic.png" alt="phone_topic" height="300" />
+<img src="screenshots/phone_doulist.png" alt="phone_doulist" height="300" />
+<img src="screenshots/tablet_movie.png" alt="tablet_movie" height="450" />
+<img src="screenshots/tablet_interests.png" alt="tablet_interests" height="450" /> </p>
+
 
 
 ## Getting Started
