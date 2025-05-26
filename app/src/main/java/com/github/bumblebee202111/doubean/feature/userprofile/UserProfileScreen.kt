@@ -1,6 +1,5 @@
 package com.github.bumblebee202111.doubean.feature.userprofile
 
-import android.app.Activity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -34,18 +33,15 @@ import androidx.compose.material3.TwoRowsTopAppBar
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
@@ -53,6 +49,7 @@ import com.github.bumblebee202111.doubean.model.fangorns.HiddenTypeInProfile
 import com.github.bumblebee202111.doubean.model.fangorns.UserDetail
 import com.github.bumblebee202111.doubean.model.profile.ProfileCommunityContribution
 import com.github.bumblebee202111.doubean.model.profile.ProfileStatItemTypes
+import com.github.bumblebee202111.doubean.ui.common.StatusBarIconsEffect
 import com.github.bumblebee202111.doubean.ui.component.FullScreenCenteredContent
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
 import com.github.bumblebee202111.doubean.util.intermediateDateTimeString
@@ -93,20 +90,15 @@ fun UserProfileScreen(
 
     val isConsideredCollapsed = scrollBehavior.state.collapsedFraction > 0.5f
 
-    val view = LocalView.current
-    val window = (view.context as? Activity)?.window
-    val isDarkTheme = isSystemInDarkTheme()
+    val isAppInDarkTheme = isSystemInDarkTheme()
 
-    LaunchedEffect(isConsideredCollapsed, isDarkTheme, window) {
-        window?.let { win ->
-            val controller = WindowInsetsControllerCompat(win, view)
-            if (isDarkTheme) {
-                controller.isAppearanceLightStatusBars = false
-            } else {
-                controller.isAppearanceLightStatusBars = isConsideredCollapsed
-            }
-        }
+    val useDarkIcons: Boolean = if (isAppInDarkTheme) {
+        false
+    } else {
+        isConsideredCollapsed
     }
+
+    StatusBarIconsEffect(useDarkIcons = useDarkIcons)
 
     Scaffold(
         modifier = Modifier

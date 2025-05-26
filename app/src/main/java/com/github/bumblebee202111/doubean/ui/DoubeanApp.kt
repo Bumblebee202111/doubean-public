@@ -1,6 +1,5 @@
 package com.github.bumblebee202111.doubean.ui
 
-import android.app.Activity
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -9,14 +8,10 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -28,6 +23,7 @@ import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.
 import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.ReshareStatusesRoute
 import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.TopicRoute
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
+import com.github.bumblebee202111.doubean.ui.common.StatusBarIconsEffect
 
 @Composable
 fun DoubeanApp(
@@ -38,24 +34,15 @@ fun DoubeanApp(
     val snackbarHostState = remember { SnackbarHostState() }
     val currentDestination = navController
         .currentBackStackEntryAsState().value?.destination
-    val view = LocalView.current
-    val context = LocalContext.current
 
-    val forceLightIcons = setOf(
-        GroupDetailRoute::class, TopicRoute::class, ReshareStatusesRoute::class
-    ).any {
-        currentDestination?.hasRoute(it) == true
+    val forceLightIconsForRoute = remember(currentDestination) {
+        setOf(
+            GroupDetailRoute::class, TopicRoute::class, ReshareStatusesRoute::class
+        ).any { currentDestination?.hasRoute(it) == true }
     }
+    val defaultDarkIconsForRoute = !forceLightIconsForRoute
 
-    DisposableEffect(view, forceLightIcons) {
-        val window = (context as Activity).window
-        val insetsController = WindowCompat.getInsetsController(window, view)
-        val originalIconState = insetsController.isAppearanceLightStatusBars
-        insetsController.isAppearanceLightStatusBars = !forceLightIcons
-        onDispose {
-            insetsController.isAppearanceLightStatusBars = originalIconState
-        }
-    }
+    StatusBarIconsEffect(useDarkIcons = defaultDarkIconsForRoute)
 
     val currentMessage by snackbarManager.currentMessage.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
