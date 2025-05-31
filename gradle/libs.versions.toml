@@ -2,12 +2,12 @@
 #noinspection GradleDependency
 accompanist = "0.36.0"
 activityCompose = "1.10.1"
-androidGradlePlugin = "8.9.2"
-coil = "3.0.4"
-composeBom = "2025.04.01"
+androidGradlePlugin = "8.9.3"
+coil = "3.1.0"
+composeBom = "2025.05.01"
 compileSdk = "35"
 coreTesting = "2.1.0"
-datastorePreferences = "1.1.4"
+datastorePreferences = "1.1.7"
 espresso = "3.6.1"
 hiltAndroid = "2.56.2"
 hiltExt = "1.2.0"
@@ -20,7 +20,7 @@ ksp = "2.1.10-1.0.31"
 ktor = "3.1.1"
 ktx = "1.15.0"
 lifecycle = "2.8.7"
-material3 = "1.4.0-alpha13"
+material3 = "1.4.0-alpha15"
 minSdk = "27"
 navigation = "2.8.9"
 okhttp = "4.12.0"
@@ -64,7 +64,6 @@ androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "ro
 androidx-paging = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
 androidx-test-espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
-coil = { module = "io.coil-kt.coil3:coil" }
 coil-bom = { module = "io.coil-kt.coil3:coil-bom", version.ref = "coil" }
 coil-core = { module = "io.coil-kt.coil3:coil" }
 coil-gif = { module = "io.coil-kt.coil3:coil-gif" }
