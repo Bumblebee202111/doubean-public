@@ -8,6 +8,8 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 
 **Known Issue:** 
 - Login image captcha requires further testing.
+  - [**Need your feedback when triggered**](https://github.com/Bumblebee202111/doubean-public/issues/11)
+
 
 [douban]: https://www.douban.com/
 [douban-groups]: https://www.douban.com/group/
@@ -69,7 +71,7 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 
 ### Source Code Status
 
-Only selected source code from a private project is shared here to mitigate potential issues. More code may be synced later (WIP).
+Only selected source code from a private project is shared here to mitigate potential issues. More may be synced later (WIP).
 
 ### Guidelines
 
@@ -106,33 +108,40 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.0)
 
+- UserProfile error text
+- Group tab/tag zh-cn → "分区"
+
 ### Next release \(0.9.1)
 
 - Collect subjects/topics
 - Swipe-to-refresh for tabs/comments (like official app, #10)
-- Group tab/tag zh-cn → "分区"
 
 ### 0.9.2
 
-- UserProfile: My subjects, My groups
+- Doulist
+  - `MyCollectItems`
+    - Drawer
+    - Importance: UserProfile does not show entry of current user's Doulists if all private
+
 
 ### 0.9.3
 - Create/edit Doulists
 
 <details>
 <summary>Future plans (Click to expand)</summary>
+
 - Groups 
   - Interactions: Subscribe/favorite/collect/react
-    - Remove local group favorites (use official subscribing)
+    - Remove local group favorites when login is stable (use official subscribing)
     - Pin my groups
     - Official app-style list item actions
-  - Notifications: Add 1h interval option (current: 15m)
+  - Simplify topic caching
   - Search:
     - Topics within a group/tab
     - Global topic search
     - Tabbed search results
+  - Notifications: Add 1h interval option (current: 15m)
   - Dynamic topic sorting options
-  - Simplify topic caching
   - Group Home: Potential pagination for recommended topics
   - Group tab: Track topic read status
   - Group Detail
@@ -150,8 +159,8 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Subject Detail: Ratings histogram
   - Color schemes
   - More
+- UserProfile: My subjects, My groups
 - Doulists
-  - `MyCollectItems`
   - Edit/remove posts
   - Follow Doulists
   - List/post pagination
@@ -181,11 +190,9 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 - Statuses (maintenance mode)
   - Additional card types
   - Pagination
-* Test
-
+- Test
 
 </details>
-
 
 ## References
 
