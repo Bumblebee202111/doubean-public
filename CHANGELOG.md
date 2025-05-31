@@ -3,6 +3,8 @@ Change Log
 
 ## Version 0.9.0(90004)
 
+- Fix group tab/tag localization: "标签" -> "分区"
+
 ## Version 0.9.0-beta3(90003)
 
 - Add basic Doulist support

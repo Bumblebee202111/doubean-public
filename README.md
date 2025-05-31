@@ -108,8 +108,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.0)
 
-- Group tab/tag zh-cn → "分区"
-
 ### Next release \(0.9.1)
 
 - Collect subjects/topics
