@@ -239,7 +239,7 @@ private fun UserProfileContentArea(
         uiState.errorMessage != null -> {
             FullScreenCenteredContent(innerPadding) {
                 Text(
-                    text = "Error: ${uiState.errorMessage.getString()}",
+                    text = uiState.errorMessage.getString(),
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(16.dp)
                 )
