@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.9.0(90004)
+
 ## Version 0.9.0-beta3(90003)
 
 - Add basic Doulist support
