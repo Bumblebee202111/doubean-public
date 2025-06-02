@@ -49,7 +49,7 @@ import com.github.bumblebee202111.doubean.model.fangorns.HiddenTypeInProfile
 import com.github.bumblebee202111.doubean.model.fangorns.UserDetail
 import com.github.bumblebee202111.doubean.model.profile.ProfileCommunityContribution
 import com.github.bumblebee202111.doubean.model.profile.ProfileStatItemTypes
-import com.github.bumblebee202111.doubean.ui.common.StatusBarIconsEffect
+import com.github.bumblebee202111.doubean.ui.common.ApplyStatusBarIconAppearance
 import com.github.bumblebee202111.doubean.ui.component.FullScreenCenteredContent
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
 import com.github.bumblebee202111.doubean.util.intermediateDateTimeString
@@ -92,13 +92,13 @@ fun UserProfileScreen(
 
     val isAppInDarkTheme = isSystemInDarkTheme()
 
-    val useDarkIcons: Boolean = if (isAppInDarkTheme) {
-        false
+    val useLightIcons: Boolean = if (isAppInDarkTheme) {
+        true
     } else {
-        isConsideredCollapsed
+        !isConsideredCollapsed
     }
 
-    StatusBarIconsEffect(useDarkIcons = useDarkIcons)
+    ApplyStatusBarIconAppearance(useLightIcons = useLightIcons)
 
     Scaffold(
         modifier = Modifier

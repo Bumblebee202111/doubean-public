@@ -22,8 +22,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.GroupDetailRoute
 import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.ReshareStatusesRoute
 import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.TopicRoute
+import com.github.bumblebee202111.doubean.feature.userprofile.navigation.UserProfileRoute
+import com.github.bumblebee202111.doubean.ui.common.ApplyStatusBarIconAppearance
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
-import com.github.bumblebee202111.doubean.ui.common.StatusBarIconsEffect
 
 @Composable
 fun DoubeanApp(
@@ -35,14 +36,14 @@ fun DoubeanApp(
     val currentDestination = navController
         .currentBackStackEntryAsState().value?.destination
 
-    val forceLightIconsForRoute = remember(currentDestination) {
+    val useLightIconsForCurrentRoute = remember(currentDestination) {
         setOf(
-            GroupDetailRoute::class, TopicRoute::class, ReshareStatusesRoute::class
+            GroupDetailRoute::class, TopicRoute::class, ReshareStatusesRoute::class,
+            UserProfileRoute::class
         ).any { currentDestination?.hasRoute(it) == true }
     }
-    val defaultDarkIconsForRoute = !forceLightIconsForRoute
 
-    StatusBarIconsEffect(useDarkIcons = defaultDarkIconsForRoute)
+    ApplyStatusBarIconAppearance(useLightIcons = useLightIconsForCurrentRoute)
 
     val currentMessage by snackbarManager.currentMessage.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
