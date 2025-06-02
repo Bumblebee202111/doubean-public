@@ -37,10 +37,15 @@ fun DoubeanApp(
         .currentBackStackEntryAsState().value?.destination
 
     val useLightIconsForCurrentRoute = remember(currentDestination) {
-        setOf(
-            GroupDetailRoute::class, TopicRoute::class, ReshareStatusesRoute::class,
-            UserProfileRoute::class
-        ).any { currentDestination?.hasRoute(it) == true }
+        if (setOf(
+                GroupDetailRoute::class, TopicRoute::class, ReshareStatusesRoute::class,
+                UserProfileRoute::class
+            ).any { currentDestination?.hasRoute(it) == true }
+        ) {
+            true
+        } else {
+            null
+        }
     }
 
     ApplyStatusBarIconAppearance(useLightIcons = useLightIconsForCurrentRoute)
