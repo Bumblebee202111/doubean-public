@@ -108,6 +108,8 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.0)
 
+Bottom nav status
+
 ### Next release \(0.9.1)
 
 - Collect subjects/topics
@@ -193,18 +195,12 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ## References
 
-- Jetpack Compose samples
-- [Android Sunflower][sunflower]
+- Official and unofficial sample apps
 - [Developer Guides][guides]
-- [Github Browser Sample with Android Architecture Components][github-browser-sample]
-- [Android Architecture Blueprints v1 (todo-mvvm-live)][todo-mvvm-live]
 - [Material Design][material]
 - Various social apps (UI/UX inspiration)
 
-[sunflower]: https://github.com/android/sunflower
 [guides]: https://developer.android.google.cn/guide
-[github-browser-sample]: https://github.com/android/architecture-components-samples/tree/master/GithubBrowserSample
-[todo-mvvm-live]: https://github.com/android/architecture-samples/tree/todo-mvvm-live
 [material]:https://material.io/
 
 ## Utilities
@@ -221,7 +217,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ## Stars :star: & Donation :coffee:
 
-Your ⭐ **stars** motivate continued development!  If you find this project helpful and wish to support its development, you can treat me to a coffee via WeChat Pay: 
+Your ⭐ **stars** motivate continued development! If you find this project helpful and wish to support its development, you can treat me to a coffee via WeChat Pay: 
 
 <p align="center">  <img src="assets/wechat_donate_qr.png" alt="WeChat Donate QR Code" width="200"/> </p> 
 
