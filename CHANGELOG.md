@@ -1,6 +1,21 @@
 Change Log
 ==========
 
+## Version 0.9.0(90004)
+
+- Fix: Group tab/tag localization: "标签" -> "分区"
+- Fix: Status bar icons on navigation from dynamic (e.g., UserProfile) screens
+
+**Important changes since 0.8.x**
+
+- Enhance UserProfile 
+  - More details (including the currently only entry of your created Doulists, if you have any public Doulist contribution)
+  - View others
+  - "Profile" tab renamed to "me"
+-  Add basic Doulist support
+  - Only display item content of supported types
+  - Item clicks
+
 ## Version 0.9.0-beta3(90003)
 
 - Add basic Doulist support

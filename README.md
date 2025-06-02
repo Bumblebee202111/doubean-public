@@ -71,7 +71,7 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 
 ### Source Code Status
 
-Only selected source code from a private project is shared here to mitigate potential issues. More code may be synced later (WIP).
+Only selected source code from a private project is shared here to mitigate potential issues. More may be synced later (WIP).
 
 ### Guidelines
 
@@ -112,11 +112,14 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 - Collect subjects/topics
 - Swipe-to-refresh for tabs/comments (like official app, #10)
-- Group tab/tag zh-cn → "分区"
 
 ### 0.9.2
 
-- UserProfile: My subjects, My groups
+- Doulist
+  - `MyCollectItems`
+    - Drawer
+    - Importance: UserProfile does not show entry of current user's Doulists if all private
+
 
 ### 0.9.3
 - Create/edit Doulists
@@ -126,16 +129,16 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 - Groups 
   - Interactions: Subscribe/favorite/collect/react
-    - Remove local group favorites (use official subscribing)
+    - Remove local group favorites when login is stable (use official subscribing)
     - Pin my groups
     - Official app-style list item actions
-  - Notifications: Add 1h interval option (current: 15m)
+  - Simplify topic caching
   - Search:
     - Topics within a group/tab
     - Global topic search
     - Tabbed search results
+  - Notifications: Add 1h interval option (current: 15m)
   - Dynamic topic sorting options
-  - Simplify topic caching
   - Group Home: Potential pagination for recommended topics
   - Group tab: Track topic read status
   - Group Detail
@@ -153,8 +156,8 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Subject Detail: Ratings histogram
   - Color schemes
   - More
+- UserProfile: My subjects, My groups
 - Doulists
-  - `MyCollectItems`
   - Edit/remove posts
   - Follow Doulists
   - List/post pagination
@@ -190,18 +193,12 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ## References
 
-- Jetpack Compose samples
-- [Android Sunflower][sunflower]
+- Official and unofficial sample apps
 - [Developer Guides][guides]
-- [Github Browser Sample with Android Architecture Components][github-browser-sample]
-- [Android Architecture Blueprints v1 (todo-mvvm-live)][todo-mvvm-live]
 - [Material Design][material]
 - Various social apps (UI/UX inspiration)
 
-[sunflower]: https://github.com/android/sunflower
 [guides]: https://developer.android.google.cn/guide
-[github-browser-sample]: https://github.com/android/architecture-components-samples/tree/master/GithubBrowserSample
-[todo-mvvm-live]: https://github.com/android/architecture-samples/tree/todo-mvvm-live
 [material]:https://material.io/
 
 ## Utilities
@@ -218,7 +215,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ## Stars :star: & Donation :coffee:
 
-Your ⭐ **stars** motivate continued development!  If you find this project helpful and wish to support its development, you can treat me to a coffee via WeChat Pay: 
+Your ⭐ **stars** motivate continued development! If you find this project helpful and wish to support its development, you can treat me to a coffee via WeChat Pay: 
 
 <p align="center">  <img src="assets/wechat_donate_qr.png" alt="WeChat Donate QR Code" width="200"/> </p> 
 
