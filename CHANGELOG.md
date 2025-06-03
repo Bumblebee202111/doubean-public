@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.9.1(90100)
+
 ## Version 0.9.0(90004)
 
 - Fix: Group tab/tag localization: "标签" -> "分区"

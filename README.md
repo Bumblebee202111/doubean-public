@@ -40,8 +40,8 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
   - Partial deep linking
   - Direct official API calls
   - Basic Material Design 3 (MD3) theming
-  - Image viewer
-  - Profile & login screens
+  - Basic image viewer
+  - User profile screen
   - View statuses feed (legacy)
   - Mobile-optimized pure Web screens (legacy)
 
@@ -106,14 +106,12 @@ Only selected source code from a private project is shared here to mitigate pote
 
 Upcoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for personal tracking.
 
-### Current release \(0.9.0)
-
-### Next release \(0.9.1)
+### Current release \(0.9.1)
 
 - Collect subjects/topics
 - Swipe-to-refresh for tabs/comments (like official app, #10)
 
-### 0.9.2
+### Next release \(0.9.2)
 
 - Doulist
   - `MyCollectItems`
@@ -138,9 +136,10 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
     - Global topic search
     - Tabbed search results
   - Notifications: Add 1h interval option (current: 15m)
-  - Dynamic topic sorting options
-  - Group Home: Potential pagination for recommended topics
-  - Group tab: Track topic read status
+  - Home: Potential pagination for recommended topics
+  - Tab
+    - Track topic read status
+    - Dynamic topic sorting options
   - Group Detail
     - Auto-collapse header for subscribed/favorited groups/tabs
     - Fix description action overflows
