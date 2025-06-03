@@ -10,7 +10,9 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -23,6 +25,7 @@ import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.
 import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.ReshareStatusesRoute
 import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.TopicRoute
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.UserProfileRoute
+import com.github.bumblebee202111.doubean.navigation.BottomNavRoute
 import com.github.bumblebee202111.doubean.ui.common.ApplyStatusBarIconAppearance
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 
@@ -36,19 +39,22 @@ fun DoubeanApp(
     val currentDestination = navController
         .currentBackStackEntryAsState().value?.destination
 
-    val useLightIconsForCurrentRoute = remember(currentDestination) {
-        if (setOf(
+    var bottomNavTabWantsLightIcons by remember { mutableStateOf<Boolean?>(null) }
+    val useLightIcons = remember(currentDestination, bottomNavTabWantsLightIcons) {
+        when {
+            setOf(
                 GroupDetailRoute::class, TopicRoute::class, ReshareStatusesRoute::class,
                 UserProfileRoute::class
-            ).any { currentDestination?.hasRoute(it) == true }
-        ) {
-            true
-        } else {
-            null
+            ).any { currentDestination?.hasRoute(it) == true } -> true
+
+            currentDestination?.hasRoute(BottomNavRoute::class) == true ->
+                bottomNavTabWantsLightIcons
+
+            else -> null
         }
     }
 
-    ApplyStatusBarIconAppearance(useLightIcons = useLightIconsForCurrentRoute)
+    ApplyStatusBarIconAppearance(useLightIcons = useLightIcons)
 
     val currentMessage by snackbarManager.currentMessage.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -80,6 +86,9 @@ fun DoubeanApp(
             navController = navController,
             snackbarManager = snackbarManager,
             startWithGroups = startWithGroups,
+            onActiveTabAppearanceNeeded = { useLight ->
+                bottomNavTabWantsLightIcons = useLight
+            },
             modifier = Modifier.padding(it)
         )
     }
