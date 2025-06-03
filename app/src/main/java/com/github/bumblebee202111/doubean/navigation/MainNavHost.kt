@@ -52,6 +52,7 @@ fun MainNavHost(
     snackbarManager: SnackbarManager,
     startDestination: Any,
     startWithGroups: Boolean,
+    onActiveTabAppearanceNeeded: (useLightIcons: Boolean?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -67,6 +68,7 @@ fun MainNavHost(
 
         bottomNavScreen(
             startWithGroups = startWithGroups,
+            onActiveTabAppearanceNeeded = onActiveTabAppearanceNeeded,
             navigateToSearch = navController::navigateToSearch,
             navigateToNotifications = navController::navigateToNotifications,
             navigateToSettings = navController::navigateToSettings,

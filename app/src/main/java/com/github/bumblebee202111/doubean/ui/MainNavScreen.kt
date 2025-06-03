@@ -13,12 +13,14 @@ fun MainNavScreen(
     snackbarManager: SnackbarManager,
     startWithGroups: Boolean,
     modifier: Modifier = Modifier,
+    onActiveTabAppearanceNeeded: (useLightIcons: Boolean?) -> Unit,
 ) {
     MainNavHost(
         navController = navController,
         snackbarManager = snackbarManager,
         startDestination = BottomNavRoute,
         startWithGroups = startWithGroups,
+        onActiveTabAppearanceNeeded = onActiveTabAppearanceNeeded,
         modifier = modifier
     )
 }

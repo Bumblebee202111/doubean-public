@@ -11,6 +11,7 @@ data object BottomNavRoute
 
 fun NavGraphBuilder.bottomNavScreen(
     startWithGroups: Boolean,
+    onActiveTabAppearanceNeeded: (useLightIcons: Boolean?) -> Unit,
     navigateToSearch: () -> Unit,
     navigateToNotifications: () -> Unit,
     navigateToSettings: () -> Unit,
@@ -27,6 +28,7 @@ fun NavGraphBuilder.bottomNavScreen(
     navigateToUri: (String) -> Boolean,
 ): Unit = composable<BottomNavRoute> {
     BottomNavScreen(
+        onActiveTabAppearanceNeeded = onActiveTabAppearanceNeeded,
         startWithGroups = startWithGroups,
         navigateToSearch = navigateToSearch,
         navigateToNotifications = navigateToNotifications,
