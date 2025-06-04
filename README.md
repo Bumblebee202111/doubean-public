@@ -108,18 +108,18 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.1)
 
-- Collect subjects/topics
-- Swipe-to-refresh for tabs/comments (like official app, #10)
-
 ### Next release \(0.9.2)
 
-- Doulist
-  - `MyCollectItems`
-    - Drawer
-    - Importance: UserProfile does not show entry of current user's Doulists if all private
-
+- Collect subjects/topics
 
 ### 0.9.3
+
+- `MyCollectItems`
+  - Drawer
+  - Importance: UserProfile does not show entry of current user's Doulists if all private
+
+
+### 0.9.4
 - Create/edit Doulists
 
 <details>
