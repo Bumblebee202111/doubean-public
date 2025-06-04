@@ -1,10 +1,12 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupdetail.tab
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,13 +18,16 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
@@ -87,6 +93,7 @@ fun GroupTab(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupTab(
     tabId: String?,
@@ -106,47 +113,83 @@ fun GroupTab(
 
     var openAlertDialog by remember { mutableStateOf(false) }
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentPadding = contentPadding
+    val isRefreshing = topicPagingItems.loadState.refresh is LoadState.Loading
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = { topicPagingItems.refresh() },
+        modifier = Modifier.fillMaxSize()
     ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentPadding = contentPadding
+        ) {
 
-        if (group != null) {
-            tabActionsItem(
-                tabId = tabId,
-                isFavorited = isFavorited,
-                topicNotificationPreferences = topicNotificationPreferences,
+            if (group != null) {
+                tabActionsItem(
+                    tabId = tabId,
+                    isFavorited = isFavorited,
+                    topicNotificationPreferences = topicNotificationPreferences,
+                    group = group,
+                    sortBy = sortBy,
+                    onOpenAlertDialog = { openAlertDialog = true },
+                    onSortByClick = updateSortBy,
+                    removeFavorite = removeFavorite,
+                    addFavorite = addFavorite
+                )
+            }
+
+            topicItems(
+                topicPagingItems = topicPagingItems,
                 group = group,
-                sortBy = sortBy,
-                onOpenAlertDialog = { openAlertDialog = true },
-                onSortByClick = updateSortBy,
-                removeFavorite = removeFavorite,
-                addFavorite = addFavorite
+                onTopicClick = onTopicClick,
+                onUserClick = onUserClick
             )
+
+
+            topicPagingItems.apply {
+                when (val append = loadState.append) {
+                    is LoadState.Loading -> {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                    }
+
+                    is LoadState.Error -> {
+                        item {
+                            Text(
+                                append.error.message.toString(),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+
+                    else -> {}
+                }
+            }
         }
 
-        topicItems(
-            topicPagingItems = topicPagingItems,
-            group = group,
-            onTopicClick = onTopicClick,
-            onUserClick = onUserClick
-        )
-    }
-
-    if (openAlertDialog) {
-        group?.tabs?.find { it.id == tabId }?.let { tab ->
-            if (topicNotificationPreferences != null) {
-                GroupNotificationPreferencesDialog(
-                    titleTextResId = R.string.tab_notification_preferences,
-                    initialPreference = topicNotificationPreferences,
-                    onDismissRequest = {
+        if (openAlertDialog) {
+            group?.tabs?.find { it.id == tabId }?.let { tab ->
+                if (topicNotificationPreferences != null) {
+                    GroupNotificationPreferencesDialog(
+                        titleTextResId = R.string.tab_notification_preferences,
+                        initialPreference = topicNotificationPreferences,
+                        onDismissRequest = {
+                            openAlertDialog = false
+                        }) { preferencesToSave ->
+                        saveNotificationsPreference(
+                            preferencesToSave
+                        )
                         openAlertDialog = false
-                    }) { preferencesToSave ->
-                    saveNotificationsPreference(
-                        preferencesToSave
-                    )
-                    openAlertDialog = false
+                    }
                 }
             }
         }

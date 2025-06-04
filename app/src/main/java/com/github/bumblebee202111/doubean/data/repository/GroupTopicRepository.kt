@@ -48,7 +48,7 @@ class GroupTopicRepository @Inject constructor(
         networkBoundResource(
             queryDb = {
                 groupTopicDao.loadTopic(id)
-        },
+            },
             fetchRemote = { apiService.getGroupTopic(id) },
             saveRemoteResponseToDb = { response ->
                 val topicDetail = response.toTopicItemPartialEntity()
@@ -57,19 +57,19 @@ class GroupTopicRepository @Inject constructor(
                 val topicTagCrossRefs = response.tagCrossRefs()
                 val group = response.group.toCachedGroupEntity()
                 val author = response.author.toUserEntity()
-            appDatabase.withTransaction {
-                groupDao.insertTopicTags(topicTags)
-                groupTopicDao.insertTopicDetail(topicDetail)
-                groupTopicDao.deleteTopicTagCrossRefsByTopicId(id)
-                groupTopicDao.insertTopicTagCrossRefs(topicTagCrossRefs)
-                groupDao.insertCachedGroup(group)
-                userDao.insertUser(author)
-            }
+                appDatabase.withTransaction {
+                    groupDao.insertTopicTags(topicTags)
+                    groupTopicDao.insertTopicDetail(topicDetail)
+                    groupTopicDao.deleteTopicTagCrossRefsByTopicId(id)
+                    groupTopicDao.insertTopicTagCrossRefs(topicTagCrossRefs)
+                    groupDao.insertCachedGroup(group)
+                    userDao.insertUser(author)
+                }
             },
             mapDbEntityToDomain = { entity ->
                 entity.toTopicDetail()
-        }
-    )
+            }
+        )
 
     fun getTopicCommentsData(topicId: String): Pair<StateFlow<List<TopicComment>>, Flow<PagingData<TopicComment>>> {
         val popularComments = MutableStateFlow<List<TopicComment>>(emptyList())
@@ -81,9 +81,12 @@ class GroupTopicRepository @Inject constructor(
                 initialLoadSize = RESULT_COMMENTS_PAGE_SIZE
             ),
             pagingSourceFactory = {
-                GroupTopicCommentPagingSource(apiService, topicId) {
-                    popularComments.value = it.map(NetworkGroupTopicComment::asExternalModel)
-                }
+                GroupTopicCommentPagingSource(
+                    apiService = apiService,
+                    topicId = topicId,
+                    onPopularCommentsFetched = { it ->
+                        popularComments.value = it.map(NetworkGroupTopicComment::asExternalModel)
+                    })
             }
         ).flow.map { it.map(NetworkGroupTopicComment::asExternalModel) }
         return Pair(first = popularComments, second = allCommentsPagingData)

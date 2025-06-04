@@ -20,6 +20,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.with
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -46,6 +47,7 @@ import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,6 +60,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -86,6 +89,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.awaitNotLoading
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -215,6 +219,8 @@ fun TopicScreen(
         }
     }
 
+    val isRefreshingComments = allCommentLazyPagingItems.loadState.refresh is LoadState.Loading
+
     Scaffold(
         topBar = {
             var appBarMenuExpanded by rememberSaveable { mutableStateOf(false) }
@@ -302,117 +308,151 @@ fun TopicScreen(
             )
         },
         modifier = Modifier.fillMaxSize()
-    ) { paddingValues ->
+    ) { innerPadding ->
         if (contentHtml != null && topic != null) {
-            LazyColumn(
-                contentPadding = paddingValues,
-                state = listState,
+            PullToRefreshBox(
+                isRefreshing = isRefreshingComments,
+                onRefresh = { allCommentLazyPagingItems.refresh() },
                 modifier = Modifier.fillMaxSize()
             ) {
+                LazyColumn(
+                    contentPadding = innerPadding,
+                    state = listState,
+                    modifier = Modifier.fillMaxSize()
+                ) {
 
-                item(key = "TopicDetailHeader", contentType = "TopicDetailHeader") {
-                    val pinnableContainer = LocalPinnableContainer.current
-                    DisposableEffect(pinnableContainer) {
-                        val pinnedHandle = pinnableContainer?.pin()
-                        onDispose {
-                            pinnedHandle?.release()
+                    item(key = "TopicDetailHeader", contentType = "TopicDetailHeader") {
+                        val pinnableContainer = LocalPinnableContainer.current
+                        DisposableEffect(pinnableContainer) {
+                            val pinnedHandle = pinnableContainer?.pin()
+                            onDispose {
+                                pinnedHandle?.release()
+                            }
                         }
-                    }
 
-                    TopicHeader(
-                        topic = topic,
-                        shouldShowPhotoList = shouldShowPhotoList,
-                        contentHtml = contentHtml,
-                        isLoggedIn = isLoggedIn,
-                        onImageClick = onImageClick,
-                        onGroupClick = onGroupClick,
-                        onUserClick = onUserClick,
-                        onReshareStatusesClick = onReshareStatusesClick,
-                        onOpenDeepLinkUrl = onOpenDeepLinkUrl,
-                        displayInvalidImageUrl = displayInvalidImageUrl,
-                        onReact = onReact,
-                    )
-                }
-
-                if (shouldShowSpinner) {
-                    item(key = "TopicCommentSortBy", contentType = "TopicCommentSortBy") {
-                        TopicCommentSortByDropDownMenu(
-                            commentSortBy = commentSortBy,
-                            updateCommentSortBy = updateCommentSortBy,
-                            modifier = Modifier.padding(
-                                horizontal = dimensionResource(id = R.dimen.margin_normal),
-                                vertical = dimensionResource(id = R.dimen.margin_small)
-                            )
+                        TopicHeader(
+                            topic = topic,
+                            shouldShowPhotoList = shouldShowPhotoList,
+                            contentHtml = contentHtml,
+                            isLoggedIn = isLoggedIn,
+                            onImageClick = onImageClick,
+                            onGroupClick = onGroupClick,
+                            onUserClick = onUserClick,
+                            onReshareStatusesClick = onReshareStatusesClick,
+                            onOpenDeepLinkUrl = onOpenDeepLinkUrl,
+                            displayInvalidImageUrl = displayInvalidImageUrl,
+                            onReact = onReact,
                         )
                     }
-                } else {
-                    item {
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
 
-                }
-                when (commentSortBy) {
-                    TopicCommentSortBy.TOP -> {
-                        items(
-                            count = popularCommentsLazyPagingItems.size,
-                            key = { popularCommentsLazyPagingItems[it].id },
-                            contentType = { "TopicComment" }) { index ->
-                            TopicComment(
-                                comment = popularCommentsLazyPagingItems[index],
-                                topic = topic,
-                                onUserClick = onUserClick,
-                                onImageClick = onImageClick
+                    if (shouldShowSpinner) {
+                        item(key = "TopicCommentSortBy", contentType = "TopicCommentSortBy") {
+                            TopicCommentSortByDropDownMenu(
+                                commentSortBy = commentSortBy,
+                                updateCommentSortBy = updateCommentSortBy,
+                                modifier = Modifier.padding(
+                                    horizontal = dimensionResource(id = R.dimen.margin_normal),
+                                    vertical = dimensionResource(id = R.dimen.margin_small)
+                                )
                             )
-                            if (index < popularCommentsLazyPagingItems.size - 1)
-                                HorizontalDivider(thickness = 1.dp)
                         }
-                    }
+                    } else {
+                        item {
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
 
-                    TopicCommentSortBy.ALL -> {
-                        items(
-                            count = allCommentLazyPagingItems.itemCount,
-                            key = allCommentLazyPagingItems.itemKey { it.id },
-                            contentType = allCommentLazyPagingItems.itemContentType { "TopicComment" }) { index ->
-                            allCommentLazyPagingItems[index]?.let {
+                    }
+                    when (commentSortBy) {
+                        TopicCommentSortBy.TOP -> {
+                            items(
+                                count = popularCommentsLazyPagingItems.size,
+                                key = { popularCommentsLazyPagingItems[it].id },
+                                contentType = { "TopicComment" }) { index ->
                                 TopicComment(
-                                    comment = it,
+                                    comment = popularCommentsLazyPagingItems[index],
                                     topic = topic,
                                     onUserClick = onUserClick,
                                     onImageClick = onImageClick
                                 )
-                                if (index < allCommentLazyPagingItems.itemCount - 1)
+                                if (index < popularCommentsLazyPagingItems.size - 1)
                                     HorizontalDivider(thickness = 1.dp)
+                            }
+                        }
+
+                        TopicCommentSortBy.ALL -> {
+                            items(
+                                count = allCommentLazyPagingItems.itemCount,
+                                key = allCommentLazyPagingItems.itemKey { it.id },
+                                contentType = allCommentLazyPagingItems.itemContentType { "TopicComment" }) { index ->
+                                allCommentLazyPagingItems[index]?.let {
+                                    TopicComment(
+                                        comment = it,
+                                        topic = topic,
+                                        onUserClick = onUserClick,
+                                        onImageClick = onImageClick
+                                    )
+                                    if (index < allCommentLazyPagingItems.itemCount - 1)
+                                        HorizontalDivider(thickness = 1.dp)
+                                }
+                            }
+
+                            allCommentLazyPagingItems.apply {
+                                when (val append = loadState.append) {
+                                    is LoadState.Loading -> {
+                                        item {
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(16.dp),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                CircularProgressIndicator()
+                                            }
+                                        }
+                                    }
+
+                                    is LoadState.Error -> {
+                                        item {
+                                            Text(
+                                                append.error.message.toString(),
+                                                color = MaterialTheme.colorScheme.error
+                                            )
+                                        }
+                                    }
+
+                                    else -> {}
+                                }
                             }
 
                         }
                     }
-                }
 
+                }
+            }
+
+        }
+        val commentCount = remember(
+            commentSortBy,
+            popularCommentsLazyPagingItems,
+            allCommentLazyPagingItems.itemCount
+        ) {
+            when (commentSortBy) {
+                TopicCommentSortBy.TOP -> popularCommentsLazyPagingItems.size
+                TopicCommentSortBy.ALL -> allCommentLazyPagingItems.itemCount
             }
         }
-
-    }
-    val commentCount = remember(
-        commentSortBy,
-        popularCommentsLazyPagingItems,
-        allCommentLazyPagingItems.itemCount
-    ) {
-        when (commentSortBy) {
-            TopicCommentSortBy.TOP -> popularCommentsLazyPagingItems.size
-            TopicCommentSortBy.ALL -> allCommentLazyPagingItems.itemCount
-        }
-    }
-    if (shouldShowDialog && commentCount > 0) {
-        val firstVisibleItemIndex by remember { derivedStateOf { listState.firstVisibleItemIndex } }
-        JumpToCommentOfIndexDialog(
-            currentCommentIndex = (firstVisibleItemIndex - itemCountBeforeComments).coerceAtLeast(
-                0
-            ),
-            commentCount = commentCount,
-            onDismissRequest = {
-                shouldShowDialog = false
-            }) { index ->
-            scrollToCommentItemIndex = index
+        if (shouldShowDialog && commentCount > 0) {
+            val firstVisibleItemIndex by remember { derivedStateOf { listState.firstVisibleItemIndex } }
+            JumpToCommentOfIndexDialog(
+                currentCommentIndex = (firstVisibleItemIndex - itemCountBeforeComments).coerceAtLeast(
+                    0
+                ),
+                commentCount = commentCount,
+                onDismissRequest = {
+                    shouldShowDialog = false
+                }) { index ->
+                scrollToCommentItemIndex = index
+            }
         }
     }
 }

@@ -45,7 +45,8 @@ class GroupTabViewModel @AssistedInject constructor(
     val topicsPagingData =
         _sortBy.flatMapLatest { sortBy ->
             groupRepository.getTopicsPagingData(
-                groupId = groupId, tagId = tabId,
+                groupId = groupId,
+                tagId = tabId,
                 sortBy = sortBy
             ).cachedIn(viewModelScope)
         }.cachedIn(viewModelScope)
