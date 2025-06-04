@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+## Version 0.9.1(90100)
+
+- New: Add pull-to-refresh support for group topics and topic comments (#10)
+- Fix: Status bar icons on navigating from Me tab to Login
+
 ## Version 0.9.0(90004)
 
 - Fix: Group tab/tag localization: "标签" -> "分区"
