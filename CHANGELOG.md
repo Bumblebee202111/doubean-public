@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.9.2(90200)
+
 ## Version 0.9.1(90100)
 
 - New: Add pull-to-refresh support for group topics and topic comments (#10)
