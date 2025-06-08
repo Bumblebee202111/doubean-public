@@ -3,7 +3,6 @@ package com.github.bumblebee202111.doubean.feature.subjects.movie
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectDetailHeader
@@ -14,8 +13,11 @@ import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoCel
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoInterestsModuleItem
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoIntroModuleItem
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoTrailersModuleItem
+import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.ui.common.CollectDialogUiState
+import com.github.bumblebee202111.doubean.ui.common.DouListDialog
 
 @Composable
 fun MovieScreen(
@@ -26,25 +28,43 @@ fun MovieScreen(
     viewModel: MovieViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val collectDialogUiState by viewModel.collectDialogUiState.collectAsStateWithLifecycle()
+
     MovieScreen(
         uiState = uiState,
+        collectDialogUiState = collectDialogUiState,
         onBackClick = onBackClick,
         onLoginClick = onLoginClick,
         onUpdateStatus = viewModel::onUpdateStatus,
         onImageClick = onImageClick,
-        onUserClick = onUserClick
+        onUserClick = onUserClick,
+        onCollectClick = viewModel::onCollectClick,
+        dismissCollectDialog = viewModel::dismissCollectDialog,
+        toggleCollectionInDouList = viewModel::toggleCollectionInDouList
     )
 }
 
 @Composable
 fun MovieScreen(
     uiState: MovieUiState,
+    collectDialogUiState: CollectDialogUiState?,
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
     onImageClick: (url: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
+    onCollectClick: () -> Unit,
+    toggleCollectionInDouList: (douList: ItemDouList) -> Unit,
+    dismissCollectDialog: () -> Unit,
 ) {
+    collectDialogUiState?.let { state ->
+        DouListDialog(
+            uiState = state,
+            onDismissRequest = dismissCollectDialog,
+            onDouListClick = toggleCollectionInDouList
+        )
+    }
+
     SubjectScaffold(
         reviewsSheetContent = {
             if (uiState is MovieUiState.Success) {
@@ -56,7 +76,11 @@ fun MovieScreen(
             }
         },
         topBar = {
-            MovieTopBar(uiState = uiState, onBackClick = onBackClick)
+            MovieTopBar(
+                uiState = uiState,
+                onBackClick = onBackClick,
+                onCollectClick = onCollectClick
+            )
         }
     ) { innerPadding ->
 
@@ -105,14 +129,13 @@ fun MovieScreen(
 
 @Composable
 private fun MovieTopBar(
-    uiState: MovieUiState,
-    onBackClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    uiState: MovieUiState, onBackClick: () -> Unit, onCollectClick: () -> Unit,
 ) {
     SubjectTopBar(
         subjectType = SubjectType.MOVIE,
         subject = (uiState as? MovieUiState.Success)?.movie,
+        isLoggedIn = (uiState as? MovieUiState.Success)?.isLoggedIn == true,
         onBackClick = onBackClick,
-        modifier = modifier
+        onCollectClick = onCollectClick
     )
 }

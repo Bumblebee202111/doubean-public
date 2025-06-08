@@ -8,5 +8,4 @@ interface BaseFeedableItem {
     val type: String
     val sharingUrl: String
     val coverUrl: String
-    val intro: String
 }

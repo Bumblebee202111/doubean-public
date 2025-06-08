@@ -57,4 +57,7 @@ interface GroupTopicDao {
 
     @Query("DELETE FROM topics_tags WHERE topic_id IN (:topicIds)")
     suspend fun deleteTopicTagCrossRefsByTopicIds(topicIds: List<String>)
+
+    @Query("UPDATE topics SET is_collected = :isCollected WHERE id = :topicId")
+    suspend fun updateIsCollected(topicId: String, isCollected: Boolean)
 }

@@ -13,8 +13,11 @@ import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoCel
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoInterestsModuleItem
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoIntroModuleItem
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoTrailersModuleItem
+import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.ui.common.CollectDialogUiState
+import com.github.bumblebee202111.doubean.ui.common.DouListDialog
 
 @Composable
 fun TvScreen(
@@ -25,25 +28,43 @@ fun TvScreen(
     viewModel: TvViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val collectDialogUiState by viewModel.collectDialogUiState.collectAsStateWithLifecycle()
+
     TvScreen(
         uiState = uiState,
+        collectDialogUiState = collectDialogUiState,
         onBackClick = onBackClick,
         onLoginClick = onLoginClick,
         onUpdateStatus = viewModel::onUpdateStatus,
         onImageClick = onImageClick,
-        onUserClick = onUserClick
+        onUserClick = onUserClick,
+        onCollectClick = viewModel::onCollectClick,
+        dismissCollectDialog = viewModel::dismissCollectDialog,
+        toggleCollectionInDouList = viewModel::toggleCollectionInDouList
     )
 }
 
 @Composable
 fun TvScreen(
     uiState: TvUiState,
+    collectDialogUiState: CollectDialogUiState?,
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
     onImageClick: (url: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
+    onCollectClick: () -> Unit,
+    toggleCollectionInDouList: (douList: ItemDouList) -> Unit,
+    dismissCollectDialog: () -> Unit,
 ) {
+    collectDialogUiState?.let { state ->
+        DouListDialog(
+            uiState = state,
+            onDismissRequest = dismissCollectDialog,
+            onDouListClick = toggleCollectionInDouList
+        )
+    }
+
     SubjectScaffold(
         reviewsSheetContent = {
             if (uiState is TvUiState.Success) {
@@ -56,7 +77,7 @@ fun TvScreen(
             }
         },
         topBar = {
-            TvTopBar(uiState = uiState, onBackClick = onBackClick)
+            TvTopBar(uiState = uiState, onBackClick = onBackClick, onCollectClick = onCollectClick)
         }
     ) { innerPadding ->
         when (uiState) {
@@ -98,10 +119,12 @@ fun TvScreen(
 }
 
 @Composable
-private fun TvTopBar(uiState: TvUiState, onBackClick: () -> Unit) {
+private fun TvTopBar(uiState: TvUiState, onBackClick: () -> Unit, onCollectClick: () -> Unit) {
     SubjectTopBar(
         subjectType = SubjectType.TV,
         subject = (uiState as? TvUiState.Success)?.tv,
-        onBackClick = onBackClick
+        isLoggedIn = (uiState as? TvUiState.Success)?.isLoggedIn == true,
+        onBackClick = onBackClick,
+        onCollectClick = onCollectClick
     )
 }

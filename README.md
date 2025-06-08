@@ -32,7 +32,7 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
     - Customizable topic notifications
 - Doulists (WIP 🚧):
   - Topic, subject, and review items supported
-
+  - Collect topics/subjects
 - General:
 
   - Ad-free and lightweight (~3MB)
@@ -108,7 +108,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.2)
 
-- Collect subjects/topics
+- Fix tab pull-to-refresh: Should be prevented until fully expanded
 
 ### Next release \(0.9.3)
 
@@ -124,7 +124,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 <summary>Future plans (Click to expand)</summary>
 
 - Groups 
-  - Interactions: Subscribe/favorite/collect/react
+  - Interactions
     - Remove local group favorites when login is stable (use official subscribing)
     - Pin my groups
     - Official app-style list item actions

@@ -1,21 +1,16 @@
 package com.github.bumblebee202111.doubean.feature.settings
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -27,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
@@ -38,6 +32,7 @@ import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.component.ClickablePreferenceItem
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.RadioButtonItem
+import com.github.bumblebee202111.doubean.ui.component.SelectionDialog
 import com.github.bumblebee202111.doubean.ui.component.SwitchPreferenceItem
 
 @Composable
@@ -119,7 +114,7 @@ fun GroupDefaultNotificationsPreferencesSettingsScreen(
             if (showSortByDialog) {
                 SortByDialog(
                     selected = preferences.sortBy,
-                    onDismiss = { showSortByDialog = false },
+                    onDismissRequest = { showSortByDialog = false },
                     onSelect = { setSortBy(it) }
                 )
             }
@@ -140,40 +135,27 @@ fun GroupDefaultNotificationsPreferencesSettingsScreen(
 @Composable
 private fun SortByDialog(
     selected: TopicSortBy?,
-    onDismiss: () -> Unit,
+    onDismissRequest: () -> Unit,
     onSelect: (TopicSortBy) -> Unit,
 ) {
     val options = SortTopicsByOption.entries
 
-    BasicAlertDialog(
-        onDismissRequest = onDismiss,
+    SelectionDialog(
+        onDismissRequest = onDismissRequest,
+        title = stringResource(R.string.sort_by_title),
         content = {
-            Surface(
-                shape = RoundedCornerShape(28.0.dp),
-                color = MaterialTheme.colorScheme.surfaceContainerHigh
-            ) {
-                Column(Modifier.padding(24.dp)) {
-                    Text(
-                        text = stringResource(R.string.sort_by_title),
-                        modifier = Modifier.padding(bottom = 16.dp),
-                        style = MaterialTheme.typography.headlineSmall,
-                    )
-                    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant) {
-                        options.forEach { option ->
-                            RadioButtonItem(
-                                label = stringResource(option.textRes),
-                                selected = selected == option.sortBy,
-                                onSelect = {
-                                    onSelect(option.sortBy)
-                                    onDismiss()
-                                }
-                            )
+            CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant) {
+                options.forEach { option ->
+                    RadioButtonItem(
+                        label = stringResource(option.textRes),
+                        selected = selected == option.sortBy,
+                        onSelect = {
+                            onSelect(option.sortBy)
+                            onDismissRequest()
                         }
-                    }
-
+                    )
                 }
             }
-
         }
     )
 }

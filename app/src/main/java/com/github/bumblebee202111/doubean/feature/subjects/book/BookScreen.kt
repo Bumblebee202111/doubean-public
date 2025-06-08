@@ -11,8 +11,11 @@ import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectScaffol
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectTopBar
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoInterestsModuleItem
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoIntroModuleItem
+import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.ui.common.CollectDialogUiState
+import com.github.bumblebee202111.doubean.ui.common.DouListDialog
 
 @Composable
 fun BookScreen(
@@ -23,25 +26,43 @@ fun BookScreen(
     viewModel: BookViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val collectDialogUiState by viewModel.collectDialogUiState.collectAsStateWithLifecycle()
+
     BookScreen(
         uiState = uiState,
+        collectDialogUiState = collectDialogUiState,
         onBackClick = onBackClick,
         onLoginClick = onLoginClick,
         onUpdateStatus = viewModel::onUpdateStatus,
         onImageClick = onImageClick,
-        onUserClick = onUserClick
+        onUserClick = onUserClick,
+        onCollectClick = viewModel::onCollectClick,
+        dismissCollectDialog = viewModel::dismissCollectDialog,
+        toggleCollectionInDouList = viewModel::toggleCollectionInDouList
     )
 }
 
 @Composable
 fun BookScreen(
     uiState: BookUiState,
+    collectDialogUiState: CollectDialogUiState?,
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
     onImageClick: (url: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
+    onCollectClick: () -> Unit,
+    toggleCollectionInDouList: (douList: ItemDouList) -> Unit,
+    dismissCollectDialog: () -> Unit,
 ) {
+    collectDialogUiState?.let { state ->
+        DouListDialog(
+            uiState = state,
+            onDismissRequest = dismissCollectDialog,
+            onDouListClick = toggleCollectionInDouList
+        )
+    }
+
     SubjectScaffold(
         reviewsSheetContent = {
             if (uiState is BookUiState.Success) {
@@ -54,7 +75,11 @@ fun BookScreen(
             }
         },
         topBar = {
-            BookTopBar(uiState = uiState, onBackClick = onBackClick)
+            BookTopBar(
+                uiState = uiState,
+                onBackClick = onBackClick,
+                onCollectClick = onCollectClick
+            )
         }
     ) { innerPadding ->
         when (uiState) {
@@ -84,10 +109,12 @@ fun BookScreen(
 }
 
 @Composable
-private fun BookTopBar(uiState: BookUiState, onBackClick: () -> Unit) {
+private fun BookTopBar(uiState: BookUiState, onBackClick: () -> Unit, onCollectClick: () -> Unit) {
     SubjectTopBar(
         subjectType = SubjectType.BOOK,
         subject = (uiState as? BookUiState.Success)?.book,
-        onBackClick = onBackClick
+        isLoggedIn = (uiState as? BookUiState.Success)?.isLoggedIn == true,
+        onBackClick = onBackClick,
+        onCollectClick = onCollectClick
     )
 }
