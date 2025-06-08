@@ -108,8 +108,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.2)
 
-- Fix tab pull-to-refresh: Should be prevented until fully expanded
-
 ### Next release \(0.9.3)
 
 - `MyCollectItems`

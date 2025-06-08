@@ -3,6 +3,10 @@ Change Log
 
 ## Version 0.9.2(90200)
 
+- New: Collect topics/subjects
+- Fix: Disabled the pull-to-refresh gesture on group topic tabs unless the main screen's top bar is fully expanded
+- Fix: Properly set padding for the PullToRefreshBox on the TopicScreen
+
 ## Version 0.9.1(90100)
 
 - New: Add pull-to-refresh support for group topics and topic comments (#10)
