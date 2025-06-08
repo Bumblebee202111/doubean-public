@@ -27,7 +27,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,6 +64,7 @@ fun GroupTab(
     groupId: String,
     tabId: String?,
     group: GroupDetail?,
+    isPullToRefreshEnabled: Boolean,
     onTopicClick: (topicId: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
     viewModel: GroupTabViewModel = hiltViewModel<GroupTabViewModel, GroupTabViewModel.Factory>(
@@ -83,6 +86,7 @@ fun GroupTab(
         topicPagingItems = topicPagingItems,
         sortBy = sortBy,
         group = group,
+        isPullToRefreshEnabled = isPullToRefreshEnabled,
         updateSortBy = viewModel::updateSortBy,
         removeFavorite = viewModel::removeFavorite,
         addFavorite = viewModel::addFavorite,
@@ -102,6 +106,7 @@ fun GroupTab(
     topicPagingItems: LazyPagingItems<TopicItem>,
     sortBy: TopicSortBy?,
     group: GroupDetail?,
+    isPullToRefreshEnabled: Boolean,
     updateSortBy: (topicSortBy: TopicSortBy) -> Unit,
     removeFavorite: () -> Unit,
     addFavorite: () -> Unit,
@@ -114,10 +119,18 @@ fun GroupTab(
     var openAlertDialog by remember { mutableStateOf(false) }
 
     val isRefreshing = topicPagingItems.loadState.refresh is LoadState.Loading
-    PullToRefreshBox(
-        isRefreshing = isRefreshing,
-        onRefresh = { topicPagingItems.refresh() },
-        modifier = Modifier.fillMaxSize()
+
+    val pullToRefreshState = rememberPullToRefreshState()
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .pullToRefresh(
+                isRefreshing = isRefreshing,
+                state = pullToRefreshState,
+                onRefresh = { topicPagingItems.refresh() },
+                enabled = isPullToRefreshEnabled,
+            )
     ) {
         LazyColumn(
             modifier = Modifier
@@ -175,6 +188,12 @@ fun GroupTab(
                 }
             }
         }
+
+        PullToRefreshDefaults.Indicator(
+            modifier = Modifier.align(Alignment.TopCenter),
+            isRefreshing = isRefreshing,
+            state = pullToRefreshState
+        )
 
         if (openAlertDialog) {
             group?.tabs?.find { it.id == tabId }?.let { tab ->

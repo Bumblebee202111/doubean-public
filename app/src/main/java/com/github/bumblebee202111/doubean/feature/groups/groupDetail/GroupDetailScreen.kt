@@ -150,6 +150,8 @@ fun GroupDetailScreen(
                 initialPage = taggedTabs.indexOfFirst { it.id == initialTabId } + 1,
                 pageCount = { taggedTabs.size + 1 }
             )
+            val isPullToRefreshEnabled = scrollBehavior.state.heightOffset == 0f
+
             Column(
                 modifier = Modifier.padding(top = innerPadding.calculateTopPadding())
             ) {
@@ -163,6 +165,7 @@ fun GroupDetailScreen(
                     taggedTabs = taggedTabs,
                     groupId = groupId,
                     group = group,
+                    isPullToRefreshEnabled = isPullToRefreshEnabled,
                     onTopicClick = onTopicClick,
                     onUserClick = onUserClick,
                     tabContentPadding = PaddingValues(
@@ -456,6 +459,7 @@ fun GroupPager(
     taggedTabs: List<GroupTab>,
     groupId: String,
     group: GroupDetail?,
+    isPullToRefreshEnabled: Boolean,
     onTopicClick: (topicId: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
     modifier: Modifier = Modifier,
@@ -478,6 +482,7 @@ fun GroupPager(
             groupId = groupId,
             tabId = tabId,
             group = group,
+            isPullToRefreshEnabled = isPullToRefreshEnabled,
             onTopicClick = onTopicClick,
             onUserClick = onUserClick,
             contentPadding = tabContentPadding
