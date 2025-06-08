@@ -1,8 +1,8 @@
 package com.github.bumblebee202111.doubean.data.repository
 
+import com.github.bumblebee202111.doubean.model.common.CollectType
+import com.github.bumblebee202111.doubean.model.common.toRequestPath
 import com.github.bumblebee202111.doubean.network.ApiService
-import com.github.bumblebee202111.doubean.network.model.common.CollectType
-import com.github.bumblebee202111.doubean.network.model.common.toRequestPath
 import com.github.bumblebee202111.doubean.network.model.doulists.toDouListItem
 import com.github.bumblebee202111.doubean.network.model.doulists.toItemDouLists
 import com.github.bumblebee202111.doubean.network.model.structure.toCollectionItem
