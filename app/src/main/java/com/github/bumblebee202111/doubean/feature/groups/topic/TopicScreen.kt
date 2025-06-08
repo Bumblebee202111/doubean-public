@@ -25,6 +25,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -79,6 +81,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LocalPinnableContainer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -99,10 +102,13 @@ import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.shared.SmallGroupAvatar
 import com.github.bumblebee202111.doubean.feature.groups.shared.groupTopAppBarColor
+import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
 import com.github.bumblebee202111.doubean.model.fangorns.ReactionType
 import com.github.bumblebee202111.doubean.model.groups.TopicComment
 import com.github.bumblebee202111.doubean.model.groups.TopicCommentSortBy
 import com.github.bumblebee202111.doubean.model.groups.TopicDetail
+import com.github.bumblebee202111.doubean.ui.common.CollectDialogUiState
+import com.github.bumblebee202111.doubean.ui.common.DouListDialog
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.DoubeanWebView
@@ -138,6 +144,7 @@ fun TopicScreen(
     val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
     val groupColor = topic?.group?.color
     val shouldShowSpinner by viewModel.shouldShowSpinner.collectAsStateWithLifecycle()
+    val collectDialogUiState by viewModel.collectDialogUiState.collectAsStateWithLifecycle()
 
     TopicScreen(
         topic = topic,
@@ -151,6 +158,7 @@ fun TopicScreen(
         shouldShowSpinner = shouldShowSpinner,
         updateCommentSortBy = viewModel::updateCommentsSortBy,
         displayInvalidImageUrl = viewModel::displayInvalidImageUrl,
+        collectDialogUiState = collectDialogUiState,
         onBackClick = onBackClick,
         onWebViewClick = onWebViewClick,
         onGroupClick = onGroupClick,
@@ -161,7 +169,10 @@ fun TopicScreen(
         // shared element
         onImageClick = onImageClick,
         onOpenDeepLinkUrl = onOpenDeepLinkUrl,
-        onReact = viewModel::react
+        onReact = viewModel::react,
+        onCollectClick = viewModel::onCollectClick,
+        toggleCollectionInDouList = viewModel::toggleCollectionInDouList,
+        dismissCollectDialog = viewModel::dismissCollectDialog,
     )
 }
 
@@ -178,6 +189,7 @@ fun TopicScreen(
     isLoggedIn: Boolean,
     groupColorString: String?,
     shouldShowSpinner: Boolean,
+    collectDialogUiState: CollectDialogUiState?,
     updateCommentSortBy: (TopicCommentSortBy) -> Unit,
     displayInvalidImageUrl: () -> Unit,
     onBackClick: () -> Unit,
@@ -188,6 +200,9 @@ fun TopicScreen(
     onImageClick: (String) -> Unit,
     onOpenDeepLinkUrl: (String, Boolean) -> Boolean,
     onReact: (Boolean) -> Unit,
+    onCollectClick: () -> Unit,
+    toggleCollectionInDouList: (douList: ItemDouList) -> Unit,
+    dismissCollectDialog: () -> Unit,
 ) {
     val context = LocalContext.current
     var shouldShowDialog by rememberSaveable { mutableStateOf(false) }
@@ -313,10 +328,16 @@ fun TopicScreen(
             PullToRefreshBox(
                 isRefreshing = isRefreshingComments,
                 onRefresh = { allCommentLazyPagingItems.refresh() },
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .padding(
+                        top = innerPadding.calculateTopPadding(),
+                        start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
+                        end = innerPadding.calculateEndPadding(LocalLayoutDirection.current)
+                    )
+                    .fillMaxSize()
             ) {
                 LazyColumn(
-                    contentPadding = innerPadding,
+                    contentPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding()),
                     state = listState,
                     modifier = Modifier.fillMaxSize()
                 ) {
@@ -342,6 +363,7 @@ fun TopicScreen(
                             onOpenDeepLinkUrl = onOpenDeepLinkUrl,
                             displayInvalidImageUrl = displayInvalidImageUrl,
                             onReact = onReact,
+                            onCollectActionInitiated = onCollectClick
                         )
                     }
 
@@ -429,38 +451,46 @@ fun TopicScreen(
 
                 }
             }
+        }
+    }
+    val commentCount = remember(
+        commentSortBy,
+        popularCommentsLazyPagingItems,
+        allCommentLazyPagingItems.itemCount
+    ) {
+        when (commentSortBy) {
+            TopicCommentSortBy.TOP -> popularCommentsLazyPagingItems.size
+            TopicCommentSortBy.ALL -> allCommentLazyPagingItems.itemCount
+        }
+    }
+    if (shouldShowDialog && commentCount > 0) {
+        val firstVisibleItemIndex by remember { derivedStateOf { listState.firstVisibleItemIndex } }
+        JumpToCommentOfIndexDialog(
+            currentCommentIndex = (firstVisibleItemIndex - itemCountBeforeComments).coerceAtLeast(
+                0
+            ),
+            commentCount = commentCount,
+            onDismissRequest = {
+                shouldShowDialog = false
+            }) { index ->
+            scrollToCommentItemIndex = index
+        }
+    }
 
-        }
-        val commentCount = remember(
-            commentSortBy,
-            popularCommentsLazyPagingItems,
-            allCommentLazyPagingItems.itemCount
-        ) {
-            when (commentSortBy) {
-                TopicCommentSortBy.TOP -> popularCommentsLazyPagingItems.size
-                TopicCommentSortBy.ALL -> allCommentLazyPagingItems.itemCount
-            }
-        }
-        if (shouldShowDialog && commentCount > 0) {
-            val firstVisibleItemIndex by remember { derivedStateOf { listState.firstVisibleItemIndex } }
-            JumpToCommentOfIndexDialog(
-                currentCommentIndex = (firstVisibleItemIndex - itemCountBeforeComments).coerceAtLeast(
-                    0
-                ),
-                commentCount = commentCount,
-                onDismissRequest = {
-                    shouldShowDialog = false
-                }) { index ->
-                scrollToCommentItemIndex = index
-            }
-        }
+    collectDialogUiState?.let { state ->
+        DouListDialog(
+            uiState = state,
+            onDismissRequest = dismissCollectDialog,
+            onDouListClick = toggleCollectionInDouList
+        )
     }
 }
 
-
 @Composable
 fun JumpToCommentOfIndexDialog(
-    currentCommentIndex: Int, commentCount: Int, onDismissRequest: () -> Unit,
+    currentCommentIndex: Int,
+    commentCount: Int,
+    onDismissRequest: () -> Unit,
     jumpToCommentOfIndex: (newCommentIndex: Int) -> Unit,
 ) {
     if (commentCount <= 1) {
@@ -544,6 +574,7 @@ fun TopicHeader(
     onOpenDeepLinkUrl: (String, Boolean) -> Boolean,
     displayInvalidImageUrl: () -> Unit,
     onReact: (Boolean) -> Unit,
+    onCollectActionInitiated: () -> Unit,
 ) {
     Surface(modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.fillMaxWidth()) {
@@ -686,7 +717,12 @@ fun TopicHeader(
                     )
                 }
             }
-            TopicSocialActions(topic = topic, isLoggedIn = isLoggedIn, onReact = onReact)
+            TopicSocialActions(
+                topic = topic,
+                isLoggedIn = isLoggedIn,
+                onReact = onReact,
+                onCollectClick = onCollectActionInitiated
+            )
         }
     }
 }
@@ -862,6 +898,7 @@ private fun TopicSocialActions(
     topic: TopicDetail? = null,
     isLoggedIn: Boolean = false,
     onReact: (Boolean) -> Unit = {},
+    onCollectClick: () -> Unit = {},
 ) {
     val context = LocalContext.current
     Row(
@@ -887,8 +924,7 @@ private fun TopicSocialActions(
 
             topic.isCollected?.let { isCollected ->
                 IconButton(
-                    onClick = {/* TODO: Implement Save/Unsave action */ },
-                    enabled = false //// Disabled for now
+                    onClick = onCollectClick,
                 ) {
                     Icon(
                         imageVector = if (isCollected) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,

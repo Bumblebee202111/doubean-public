@@ -30,7 +30,9 @@ import com.github.bumblebee202111.doubean.util.OpenInUtils
 fun SubjectTopBar(
     subjectType: SubjectType,
     subject: SubjectDetail?,
+    isLoggedIn: Boolean,
     onBackClick: () -> Unit,
+    onCollectClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -68,6 +70,15 @@ fun SubjectTopBar(
                             OpenInUtils.openInDouban(context, subject.uri)
                             expanded = false
                         })
+                    if (isLoggedIn) {
+                        DropdownMenuItem(
+                            text = { Text(text = stringResource(id = R.string.title_collect_to_doulist)) },
+                            onClick = {
+                                onCollectClick()
+                                expanded = false
+                            }
+                        )
+                    }
                 }
             }
         }

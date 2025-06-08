@@ -118,6 +118,10 @@ class GroupTopicRepository @Inject constructor(
         }
     )
 
+    suspend fun updateTopicIsCollected(topicId: String, isCollected: Boolean) {
+        groupTopicDao.updateIsCollected(topicId, isCollected)
+    }
+
     companion object {
         const val RESULT_COMMENTS_PAGE_SIZE = 40
         const val RESULT_RESHARE_STATUSES_PAGE_SIZE = 20

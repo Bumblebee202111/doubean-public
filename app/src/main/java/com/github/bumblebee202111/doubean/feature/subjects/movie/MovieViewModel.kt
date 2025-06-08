@@ -5,15 +5,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
+import com.github.bumblebee202111.doubean.data.repository.ItemDouListRepository
 import com.github.bumblebee202111.doubean.data.repository.MovieRepository
 import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
+import com.github.bumblebee202111.doubean.feature.common.CollectionHandler
 import com.github.bumblebee202111.doubean.feature.subjects.movie.navigation.MovieRoute
 import com.github.bumblebee202111.doubean.model.AppResult
+import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterest
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
+import com.github.bumblebee202111.doubean.network.model.common.CollectType
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,6 +37,7 @@ class MovieViewModel @Inject constructor(
     private val userSubjectRepository: UserSubjectRepository,
     private val subjectCommonRepository: SubjectCommonRepository,
     private val authRepository: AuthRepository,
+    private val itemDouListRepository: ItemDouListRepository,
     savedStateHandle: SavedStateHandle,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
@@ -42,6 +47,14 @@ class MovieViewModel @Inject constructor(
     val uiState: StateFlow<MovieUiState> = _uiState.asStateFlow()
 
     private var loadDataJob: Job? = null
+
+    private val collectionHandler = CollectionHandler(
+        scope = viewModelScope,
+        itemDouListRepository = itemDouListRepository,
+        snackbarManager = snackbarManager
+    )
+
+    val collectDialogUiState = collectionHandler.collectDialogUiState
 
     init {
         viewModelScope.launch {
@@ -150,6 +163,22 @@ class MovieViewModel @Inject constructor(
                     snackbarManager.showMessage(result.error.asUiMessage())
                 }
             }
+        }
+    }
+
+    fun onCollectClick() {
+        collectionHandler.onCollectClick(CollectType.MOVIE, movieId)
+    }
+
+    fun dismissCollectDialog() = collectionHandler.dismissCollectDialog()
+
+    fun toggleCollectionInDouList(douList: ItemDouList) {
+        viewModelScope.launch {
+            collectionHandler.toggleCollectionInDouList(
+                type = CollectType.MOVIE,
+                id = movieId,
+                douList = douList
+            )
         }
     }
 }
