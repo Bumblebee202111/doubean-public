@@ -108,13 +108,12 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.2)
 
+`MyCollectItems`
+
+- Drawer
+- Importance: UserProfile does not show entry of current user's Doulists if all private
+
 ### Next release \(0.9.3)
-
-- `MyCollectItems`
-  - Drawer
-  - Importance: UserProfile does not show entry of current user's Doulists if all private
-
-### 0.9.4
 
 - Create/edit Doulists
 

@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.9.3(90300)
+
 ## Version 0.9.2(90200)
 
 - New: Collect topics/subjects
