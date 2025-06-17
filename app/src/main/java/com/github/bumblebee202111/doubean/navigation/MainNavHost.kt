@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.github.bumblebee202111.doubean.feature.app.navigation.bottomNavScreen
 import com.github.bumblebee202111.doubean.feature.doulists.createddoulists.navigation.createdDouListsScreen
 import com.github.bumblebee202111.doubean.feature.doulists.doulist.navigation.douListScreen
 import com.github.bumblebee202111.doubean.feature.doulists.doulist.navigation.navigateToDouList
@@ -24,6 +25,8 @@ import com.github.bumblebee202111.doubean.feature.login.navigation.LoginRoute
 import com.github.bumblebee202111.doubean.feature.login.navigation.loginScreen
 import com.github.bumblebee202111.doubean.feature.login.navigation.navigateToLogin
 import com.github.bumblebee202111.doubean.feature.login.navigation.verifyPhoneScreen
+import com.github.bumblebee202111.doubean.feature.mydoulists.navigation.myDouListsScreen
+import com.github.bumblebee202111.doubean.feature.mydoulists.navigation.navigateToMyDouLists
 import com.github.bumblebee202111.doubean.feature.notifications.navigation.navigateToNotifications
 import com.github.bumblebee202111.doubean.feature.notifications.navigation.notificationsScreen
 import com.github.bumblebee202111.doubean.feature.settings.navigation.groupDefaultNotificationsPreferencesSettingsScreen
@@ -82,6 +85,7 @@ fun MainNavHost(
             navigateToTv = navController::navigateToTv,
             navigateToBook = navController::navigateToBook,
             navigateToUserProfile = navController::navigateToUserProfile,
+            navigateToMyDouLists = navController::navigateToMyDouLists,
             navigateToUri = navigateToUriBasic
         )
         groupsSearchScreen(
@@ -186,7 +190,7 @@ fun MainNavHost(
         )
         createdDouListsScreen(
             onBackClick = navController::navigateUp,
-            onItemClick = navController::navigateToDouList
+            onDouListClick = navController::navigateToDouList
         )
         douListScreen(
             onBackClick = navController::navigateUp,
@@ -196,6 +200,16 @@ fun MainNavHost(
             onTvClick = navController::navigateToTv,
             onUserClick = navController::navigateToUserProfile,
             onImageClick = navController::navigateToImage
+        )
+        myDouListsScreen(
+            onBackClick = navController::navigateUp,
+            onTopicClick = navController::navigateToTopic,
+            onBookClick = navController::navigateToBook,
+            onMovieClick = navController::navigateToMovie,
+            onTvClick = navController::navigateToTv,
+            onUserClick = navController::navigateToUserProfile,
+            onImageClick = navController::navigateToImage,
+            onDouListClick = navController::navigateToDouList
         )
     }
 }

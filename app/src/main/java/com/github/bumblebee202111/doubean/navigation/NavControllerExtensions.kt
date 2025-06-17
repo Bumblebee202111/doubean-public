@@ -6,7 +6,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.ui.BottomNavDestination
+import com.github.bumblebee202111.doubean.feature.app.BottomNavDestination
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.model.toUiMessage
 

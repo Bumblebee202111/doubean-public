@@ -21,7 +21,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Tab
 import androidx.compose.material3.Card
@@ -57,6 +56,7 @@ import com.github.bumblebee202111.doubean.model.fangorns.User
 import com.github.bumblebee202111.doubean.model.groups.GroupFavoriteItem
 import com.github.bumblebee202111.doubean.model.groups.SimpleGroup
 import com.github.bumblebee202111.doubean.model.groups.TopicItemWithGroup
+import com.github.bumblebee202111.doubean.ui.common.AppBarNavigationAvatar
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import java.util.Calendar
 
@@ -106,16 +106,10 @@ fun GroupsHomeScreen(
         topBar = {
             DoubeanTopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = onAvatarClick) {
-                        if (currentUser == null) {
-                            Icon(imageVector = Icons.Default.Person, contentDescription = null)
-                        } else {
-                            AsyncImage(
-                                model = currentUser.avatar,
-                                contentDescription = null
-                            )
-                        }
-                    }
+                    AppBarNavigationAvatar(
+                        currentUser = currentUser,
+                        onAvatarClick = onAvatarClick
+                    )
                 },
                 title = {},
                 actions = {
