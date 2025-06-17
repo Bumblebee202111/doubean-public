@@ -1,13 +1,10 @@
-package com.github.bumblebee202111.doubean.feature.doulists.createddoulists
+package com.github.bumblebee202111.doubean.feature.mydoulists
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.UserDouListRepository
-import com.github.bumblebee202111.doubean.feature.doulists.createddoulists.navigation.CreatedDouListsRoute
 import com.github.bumblebee202111.doubean.feature.doulists.userdoulists.UserDouListsUiState
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
@@ -22,31 +19,33 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CreatedDouListsViewModel @Inject constructor(
+class UserDouListsViewModel @Inject constructor(
     private val userDouListRepository: UserDouListRepository,
     private val authRepository: AuthRepository,
     private val snackbarManager: SnackbarManager,
-    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    val routeArgs: CreatedDouListsRoute = savedStateHandle.toRoute()
-    val userId = routeArgs.userId
 
     private val _uiState = MutableStateFlow<UserDouListsUiState>(UserDouListsUiState.Loading)
     val uiState: StateFlow<UserDouListsUiState> = _uiState.asStateFlow()
-
+    var currentUserId: String?=null
     init {
-        fetchCreatedDouLists()
+        viewModelScope.launch {
+            val userId=authRepository.observeLoggedInUserId().first()
+            currentUserId=userId
+            if(userId==null){
+                _uiState.value = UserDouListsUiState.Error(R.string.title_unlogin.toUiMessage())
+                return@launch
+            }
+            fetchCreatedDouLists(userId=userId)
+        }
     }
 
-    private fun fetchCreatedDouLists() {
+    private fun fetchCreatedDouLists(userId: String) {
         viewModelScope.launch {
             _uiState.value = UserDouListsUiState.Loading
-            val loggedInUserId: String? = authRepository.observeLoggedInUserId().first()
-            val isViewingOwnLists = (loggedInUserId != null && loggedInUserId == userId)
             when (val result =
                 userDouListRepository.getUserOwnedDouLists(
-                    userId = userId,
-                    publicOnly = !isViewingOwnLists
+                    userId = userId, publicOnly = false
                 )) {
                 is AppResult.Success -> {
                     _uiState.value = UserDouListsUiState.Success(result.data)
@@ -63,6 +62,8 @@ class CreatedDouListsViewModel @Inject constructor(
     }
 
     fun onRetry() {
-        fetchCreatedDouLists()
+        currentUserId?.let {
+            fetchCreatedDouLists(it)
+        }
     }
 }

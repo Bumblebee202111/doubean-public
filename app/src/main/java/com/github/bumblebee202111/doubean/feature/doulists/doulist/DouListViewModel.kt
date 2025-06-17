@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.DouListRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
+import com.github.bumblebee202111.doubean.feature.doulists.common.DouListStateHelper
 import com.github.bumblebee202111.doubean.feature.doulists.doulist.navigation.DouListRoute
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.common.DouListPostItem
@@ -100,22 +101,13 @@ class DouListViewModel @Inject constructor(
             )) {
                 is AppResult.Success -> {
                     val updatedSubjectWithInterest = result.data
-                    _uiState.update { currentState ->
-                        val newItems = currentState.items.map { douListPostItem ->
-                            val feedItem = douListPostItem.feedItem
-                            val feedContent = feedItem.content
-                            if (feedContent is SubjectFeedContent && feedContent.subject.subject.id == updatedSubjectWithInterest.subject.id) {
-                                @Suppress("UNCHECKED_CAST")
-                                douListPostItem.copy(
-                                    feedItem = (feedItem as FeedItem<SubjectFeedContent>).copy(
-                                        content = feedContent.copy(subject = updatedSubjectWithInterest)
-                                    )
-                                )
-                            } else {
-                                douListPostItem
-                            }
-                        }
-                        currentState.copy(items = newItems)
+                    _uiState.update { currentUiState ->
+                        currentUiState.copy(
+                            items = DouListStateHelper.getUpdatedListWithNewInterest(
+                                currentItems = currentUiState.items,
+                                updatedSubjectWithInterest = updatedSubjectWithInterest
+                            )
+                        )
                     }
                 }
 

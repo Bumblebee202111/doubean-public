@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+## Version 0.9.3(90300)
+
+- **New:** Added a navigation drawer, accessible from the main screens.
+- **New:** Added a "My Doulists" screen with two tabs: one for your collected items and one for your created doulists.
+- **Fix:** Avatars now use a crossfade animation for a smoother loading transition.
+
 ## Version 0.9.2(90200)
 
 - New: Collect topics/subjects
