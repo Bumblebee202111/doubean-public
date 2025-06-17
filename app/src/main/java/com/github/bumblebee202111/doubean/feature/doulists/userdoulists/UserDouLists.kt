@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.doulists.common
+package com.github.bumblebee202111.doubean.feature.doulists.userdoulists
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.github.bumblebee202111.doubean.feature.doulists.common.DouListItem
 import com.github.bumblebee202111.doubean.model.doulists.DouList
 
 @Composable

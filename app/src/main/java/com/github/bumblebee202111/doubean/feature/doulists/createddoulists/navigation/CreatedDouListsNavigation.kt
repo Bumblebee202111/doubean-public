@@ -22,7 +22,7 @@ fun NavController.navigateToCreatedDouLists(
 
 fun NavGraphBuilder.createdDouListsScreen(
     onBackClick: () -> Unit,
-    onItemClick: (doulistId: String) -> Unit,
+    onDouListClick: (douListId: String) -> Unit,
 ) {
     composable<CreatedDouListsRoute>(
         deepLinks = listOf(
@@ -33,7 +33,7 @@ fun NavGraphBuilder.createdDouListsScreen(
     ) {
         CreatedDouListsScreen(
             onBackClick = onBackClick,
-            onItemClick = onItemClick
+            onDouListClick = onDouListClick
         )
     }
 }

@@ -21,11 +21,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.github.bumblebee202111.doubean.feature.app.navigation.BottomNavRoute
 import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.GroupDetailRoute
 import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.ReshareStatusesRoute
 import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.TopicRoute
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.UserProfileRoute
-import com.github.bumblebee202111.doubean.navigation.BottomNavRoute
 import com.github.bumblebee202111.doubean.ui.common.ApplyStatusBarIconAppearance
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 

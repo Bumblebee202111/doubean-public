@@ -1,10 +1,7 @@
 package com.github.bumblebee202111.doubean.feature.doulists.createddoulists
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -12,9 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,22 +32,23 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.doulists.common.UserDouLists
-import com.github.bumblebee202111.doubean.feature.doulists.common.UserDouListsUiState
-import com.github.bumblebee202111.doubean.ui.component.FullScreenCenteredContent
+import com.github.bumblebee202111.doubean.feature.doulists.userdoulists.UserDouListsContent
+import com.github.bumblebee202111.doubean.feature.doulists.userdoulists.UserDouListsUiState
 import com.github.bumblebee202111.doubean.ui.component.doubeanTopAppBarHeight
 
+// CreatedDouListActivity/UserDouListsFragment
+// Can be reused if following Doulists is to be supported
 @Composable
 fun CreatedDouListsScreen(
-    viewModel: CreatedDouListsViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
-    onItemClick: (doulistId: String) -> Unit,
+    onDouListClick: (douListId: String) -> Unit,
+    viewModel: CreatedDouListsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     CreatedDouListsScreen(
         uiState = uiState,
         onBackClick = onBackClick,
-        onItemClick = onItemClick,
+        onDouListClick = onDouListClick,
         onRetryClick = { viewModel.onRetry() }
     )
 }
@@ -62,7 +58,7 @@ fun CreatedDouListsScreen(
 fun CreatedDouListsScreen(
     uiState: UserDouListsUiState,
     onBackClick: () -> Unit,
-    onItemClick: (doulistId: String) -> Unit,
+    onDouListClick: (douListId: String) -> Unit,
     onRetryClick: () -> Unit,
 ) {
     Scaffold(
@@ -111,49 +107,12 @@ fun CreatedDouListsScreen(
             )
         }
     ) { innerPadding ->
-
-        when (uiState) {
-            is UserDouListsUiState.Loading -> {
-                FullScreenCenteredContent(innerPadding) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
-            }
-
-            is UserDouListsUiState.Error -> {
-                FullScreenCenteredContent(innerPadding) {
-                    Column(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(horizontal = 16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(text = uiState.message.getString())
-                        Button(onClick = onRetryClick, modifier = Modifier.padding(top = 8.dp)) {
-                            Text(stringResource(R.string.retry))
-                        }
-                    }
-                }
-            }
-
-            is UserDouListsUiState.Success -> {
-                if (uiState.douLists.douLists.isEmpty()) {
-                    FullScreenCenteredContent(innerPadding) {
-                        Text(
-                            text = stringResource(R.string.empty_content_title),
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .padding(horizontal = 16.dp)
-                        )
-                    }
-                } else {
-                    UserDouLists(
-                        douLists = uiState.douLists.douLists,
-                        onItemClick = onItemClick,
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = innerPadding
-                    )
-                }
-            }
-        }
+        UserDouListsContent(
+            uiState = uiState,
+            onItemClick = onDouListClick,
+            onRetryClick = onRetryClick,
+            contentPadding = innerPadding
+        )
     }
 }
+

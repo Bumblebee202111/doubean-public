@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.doulists.common
+package com.github.bumblebee202111.doubean.feature.doulists.userdoulists
 
 import com.github.bumblebee202111.doubean.model.doulists.DouLists
 import com.github.bumblebee202111.doubean.ui.model.UiMessage

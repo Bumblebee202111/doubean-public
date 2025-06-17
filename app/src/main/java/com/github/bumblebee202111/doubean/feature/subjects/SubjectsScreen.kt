@@ -11,7 +11,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Movie
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,13 +29,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.books.BooksScreen
 import com.github.bumblebee202111.doubean.feature.subjects.movies.MoviesScreen
 import com.github.bumblebee202111.doubean.feature.subjects.tvs.TvsScreen
 import com.github.bumblebee202111.doubean.model.fangorns.User
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.ui.common.AppBarNavigationAvatar
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import kotlinx.coroutines.launch
 
@@ -120,16 +119,10 @@ private fun SubjectsAppBar(
 ) {
     DoubeanTopAppBar(
         navigationIcon = {
-            IconButton(onClick = onAvatarClick) {
-                if (currentUser == null) {
-                    Icon(imageVector = Icons.Default.Person, contentDescription = null)
-                } else {
-                    AsyncImage(
-                        model = currentUser.avatar,
-                        contentDescription = null
-                    )
-                }
-            }
+            AppBarNavigationAvatar(
+                currentUser = currentUser,
+                onAvatarClick = onAvatarClick
+            )
         },
         title = {},
         actions = {
