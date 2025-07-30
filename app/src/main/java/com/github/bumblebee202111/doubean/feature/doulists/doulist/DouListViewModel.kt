@@ -11,8 +11,6 @@ import com.github.bumblebee202111.doubean.feature.doulists.common.DouListStateHe
 import com.github.bumblebee202111.doubean.feature.doulists.doulist.navigation.DouListRoute
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.common.DouListPostItem
-import com.github.bumblebee202111.doubean.model.common.FeedItem
-import com.github.bumblebee202111.doubean.model.common.SubjectFeedContent
 import com.github.bumblebee202111.doubean.model.doulists.DouList
 import com.github.bumblebee202111.doubean.model.subjects.MarkableSubject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus

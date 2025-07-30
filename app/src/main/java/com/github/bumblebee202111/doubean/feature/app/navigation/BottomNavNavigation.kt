@@ -2,8 +2,8 @@ package com.github.bumblebee202111.doubean.feature.app.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.feature.app.BottomNavScreen
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import kotlinx.serialization.Serializable
 
 @Serializable

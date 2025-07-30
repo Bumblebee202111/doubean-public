@@ -27,16 +27,17 @@ class UserDouListsViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<UserDouListsUiState>(UserDouListsUiState.Loading)
     val uiState: StateFlow<UserDouListsUiState> = _uiState.asStateFlow()
-    var currentUserId: String?=null
+    var currentUserId: String? = null
+
     init {
         viewModelScope.launch {
-            val userId=authRepository.observeLoggedInUserId().first()
-            currentUserId=userId
-            if(userId==null){
+            val userId = authRepository.observeLoggedInUserId().first()
+            currentUserId = userId
+            if (userId == null) {
                 _uiState.value = UserDouListsUiState.Error(R.string.title_unlogin.toUiMessage())
                 return@launch
             }
-            fetchCreatedDouLists(userId=userId)
+            fetchCreatedDouLists(userId = userId)
         }
     }
 

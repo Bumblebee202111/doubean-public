@@ -41,7 +41,8 @@ import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItem
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemBasicContent
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectSimpleInterestButton
 import com.github.bumblebee202111.doubean.ui.component.ListItemImages
-import com.github.bumblebee202111.doubean.util.abbreviatedDateTimeString
+import com.github.bumblebee202111.doubean.util.DateTimeStyle
+import com.github.bumblebee202111.doubean.util.toRelativeString
 import java.time.LocalDateTime
 
 
@@ -156,7 +157,7 @@ private fun FeedItemHeader(
                 .clickable { onUserClick(owner.id) }
         )
         Text(
-            text = createTime.abbreviatedDateTimeString(LocalContext.current),
+            text = createTime.toRelativeString(style = DateTimeStyle.ABBREVIATED),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,

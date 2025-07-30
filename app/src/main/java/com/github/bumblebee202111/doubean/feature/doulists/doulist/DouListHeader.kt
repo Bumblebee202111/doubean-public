@@ -29,7 +29,8 @@ import coil3.request.crossfade
 import com.github.bumblebee202111.doubean.feature.doulists.common.getDouListSubtitle
 import com.github.bumblebee202111.doubean.feature.doulists.common.getSystemPrivateAnnotatedText
 import com.github.bumblebee202111.doubean.model.doulists.DouList
-import com.github.bumblebee202111.doubean.util.intermediateDateTimeString
+import com.github.bumblebee202111.doubean.util.DateTimeStyle
+import com.github.bumblebee202111.doubean.util.toRelativeString
 
 @Composable
 fun DouListHeader(douList: DouList, modifier: Modifier = Modifier) {
@@ -64,7 +65,7 @@ fun DouListHeader(douList: DouList, modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = douList.updateTime.intermediateDateTimeString() + " 更新",
+                text = douList.updateTime.toRelativeString(style = DateTimeStyle.INTERMEDIATE) + " 更新",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,

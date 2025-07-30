@@ -19,11 +19,12 @@ class BottomNavViewModel @Inject constructor(
 ) : ViewModel() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val currentUser: StateFlow<User?> = authRepository.observeLoggedInUserId().flatMapLatest { userId ->
-        if (userId == null) {
-            flowOf(null)
-        } else {
-            userRepository.getCachedUser(userId)
-        }
-    }.stateInUi()
+    val currentUser: StateFlow<User?> =
+        authRepository.observeLoggedInUserId().flatMapLatest { userId ->
+            if (userId == null) {
+                flowOf(null)
+            } else {
+                userRepository.getCachedUser(userId)
+            }
+        }.stateInUi()
 }

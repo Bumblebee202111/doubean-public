@@ -12,7 +12,7 @@ import com.github.bumblebee202111.doubean.feature.doulists.userdoulists.UserDouL
 fun UserDouListsScreen(
     contentPadding: PaddingValues = PaddingValues(),
     onDouListClick: (douListId: String) -> Unit,
-    viewModel: UserDouListsViewModel = hiltViewModel()
+    viewModel: UserDouListsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

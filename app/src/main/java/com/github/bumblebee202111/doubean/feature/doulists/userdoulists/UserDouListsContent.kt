@@ -20,8 +20,8 @@ fun UserDouListsContent(
     uiState: UserDouListsUiState,
     onItemClick: (douListId: String) -> Unit,
     onRetryClick: () -> Unit,
-    contentPadding: PaddingValues = PaddingValues()
-){
+    contentPadding: PaddingValues = PaddingValues(),
+) {
     when (uiState) {
         is UserDouListsUiState.Loading -> {
             FullScreenCenteredContent(contentPadding) {

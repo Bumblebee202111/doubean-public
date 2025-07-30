@@ -54,7 +54,8 @@ fun MyCollectedItemsScreen(
     onImageClick: (String) -> Unit,
     onMarkSubject: (MarkableSubject) -> Unit,
     onDouListClick: (String) -> Unit,
-    contentPadding: PaddingValues = PaddingValues()){
+    contentPadding: PaddingValues = PaddingValues(),
+) {
     val onItemClick = rememberFeedItemClickHandler(
         onTopicClick = onTopicClick,
         onBookClick = onBookClick,

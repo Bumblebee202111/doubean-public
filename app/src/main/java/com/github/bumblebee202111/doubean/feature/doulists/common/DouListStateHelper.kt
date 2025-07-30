@@ -8,7 +8,7 @@ import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
 object DouListStateHelper {
     fun getUpdatedListWithNewInterest(
         currentItems: List<DouListPostItem>,
-        updatedSubjectWithInterest: SubjectWithInterest<*>
+        updatedSubjectWithInterest: SubjectWithInterest<*>,
     ): List<DouListPostItem> {
         return currentItems.map { douListPostItem ->
             val feedItem = douListPostItem.feedItem

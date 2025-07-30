@@ -231,8 +231,8 @@ private fun NavigationDrawerSheet(
     currentUser: User?,
     onHeaderClick: () -> Unit,
     onCollectClick: () -> Unit,
-    onSettingsClick: () -> Unit
-){
+    onSettingsClick: () -> Unit,
+) {
     ModalDrawerSheet {
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState())

@@ -27,7 +27,7 @@ fun LazyListScope.douListPostItems(
     onUserClick: (String) -> Unit,
     onImageClick: (String) -> Unit,
     onMarkSubject: (MarkableSubject) -> Unit,
-    onDouListClick: ((douListId: String) -> Unit)? = null
+    onDouListClick: ((douListId: String) -> Unit)? = null,
 ) {
     if (items.isEmpty() && !isLoadingMore) {
         item {

@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+## Version 0.9.4(90400)
+
+**Bug Fixes** 
+
+* Fixed an issue where some topics failed to load due to an unexpected date format.
+
 ## Version 0.9.3(90300)
 
 - **New:** Added a navigation drawer, accessible from the main screens.

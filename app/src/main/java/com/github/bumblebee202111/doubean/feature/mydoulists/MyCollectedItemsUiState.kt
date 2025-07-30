@@ -6,5 +6,5 @@ import com.github.bumblebee202111.doubean.ui.model.UiMessage
 data class MyCollectedItemsUiState(
     val isLoading: Boolean = false,
     val items: List<DouListPostItem> = emptyList(),
-    val errorMessage: UiMessage? = null
+    val errorMessage: UiMessage? = null,
 )
