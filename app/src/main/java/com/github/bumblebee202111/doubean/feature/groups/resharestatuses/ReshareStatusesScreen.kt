@@ -33,7 +33,8 @@ import com.github.bumblebee202111.doubean.feature.statuses.UserNameText
 import com.github.bumblebee202111.doubean.model.groups.GroupTopicCommentReshareItem
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
-import com.github.bumblebee202111.doubean.util.intermediateDateTimeString
+import com.github.bumblebee202111.doubean.util.DateTimeStyle
+import com.github.bumblebee202111.doubean.util.toRelativeString
 
 @Composable
 fun ReshareStatusesScreen(
@@ -118,7 +119,7 @@ fun ReshareStatusesScreen(
                                 })
                             reshareStatus?.createTime?.let {
                                 DateTimeText(
-                                    text = it.intermediateDateTimeString(),
+                                    text = it.toRelativeString(style = DateTimeStyle.INTERMEDIATE),
                                     modifier = Modifier.padding(start = 4.dp)
                                 )
                             }

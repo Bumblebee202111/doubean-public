@@ -45,9 +45,10 @@ import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.ListItemCount
 import com.github.bumblebee202111.doubean.ui.component.ListItemImages
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
+import com.github.bumblebee202111.doubean.util.DateTimeStyle
 import com.github.bumblebee202111.doubean.util.ShareUtil
-import com.github.bumblebee202111.doubean.util.intermediateDateTimeString
 import com.github.bumblebee202111.doubean.util.toColorOrPrimary
+import com.github.bumblebee202111.doubean.util.toRelativeString
 import java.time.LocalDateTime
 
 
@@ -183,7 +184,7 @@ private fun TopicCommentHeaderRow(
                 style = MaterialTheme.typography.labelLarge
             )
             DateTimeText(
-                text = it.intermediateDateTimeString(),
+                text = it.toRelativeString(style = DateTimeStyle.INTERMEDIATE),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

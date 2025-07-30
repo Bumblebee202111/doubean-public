@@ -52,8 +52,9 @@ import com.github.bumblebee202111.doubean.model.profile.ProfileStatItemTypes
 import com.github.bumblebee202111.doubean.ui.common.ApplyStatusBarIconAppearance
 import com.github.bumblebee202111.doubean.ui.component.FullScreenCenteredContent
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
-import com.github.bumblebee202111.doubean.util.intermediateDateTimeString
+import com.github.bumblebee202111.doubean.util.DateTimeStyle
 import com.github.bumblebee202111.doubean.util.toColorOrPrimary
+import com.github.bumblebee202111.doubean.util.toRelativeString
 
 
 @Composable
@@ -303,7 +304,7 @@ private fun UserInfo(
         UserInfoText(
             text = stringResource(
                 R.string.user_info_register_time,
-                user.registerTime.intermediateDateTimeString()
+                user.registerTime.toRelativeString(style = DateTimeStyle.INTERMEDIATE)
             )
         )
         user.location?.takeIf { it.isNotBlank() }?.let {
