@@ -107,9 +107,9 @@ Only selected source code from a private project is shared here to mitigate pote
 
 Upcoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for personal tracking.
 
-### Current release \(0.9.2)
+### Current release \(0.9.3)
 
-### Next release \(0.9.3)
+### Next release \(0.9.4)
 
 - Create/edit Doulists
 

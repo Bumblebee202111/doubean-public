@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.9.4(90400)
+
 ## Version 0.9.3(90300)
 
 - **New:** Added a navigation drawer, accessible from the main screens.
