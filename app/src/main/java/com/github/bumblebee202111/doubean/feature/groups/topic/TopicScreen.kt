@@ -115,11 +115,12 @@ import com.github.bumblebee202111.doubean.ui.component.DoubeanWebView
 import com.github.bumblebee202111.doubean.ui.component.DoubeanWebViewClient
 import com.github.bumblebee202111.doubean.ui.component.SortByDropDownMenu
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
+import com.github.bumblebee202111.doubean.util.DateTimeStyle
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.TOPIC_CSS_FILENAME
-import com.github.bumblebee202111.doubean.util.fullDateTimeString
 import com.github.bumblebee202111.doubean.util.toColorOrPrimary
+import com.github.bumblebee202111.doubean.util.toRelativeString
 import com.google.accompanist.web.rememberWebViewStateWithHTMLData
 import kotlinx.coroutines.delay
 import java.time.LocalDateTime
@@ -751,9 +752,12 @@ private fun TopicTimeDisplay(createTime: LocalDateTime, editTime: LocalDateTime?
         ) { targetStateIsCreateTime ->
             val timeToShow = if (targetStateIsCreateTime) createTime else editTime
             val text = if (targetStateIsCreateTime) {
-                timeToShow.fullDateTimeString()
+                timeToShow.toRelativeString(style = DateTimeStyle.FULL)
             } else {
-                stringResource(R.string.content_edited, timeToShow.fullDateTimeString())
+                stringResource(
+                    R.string.content_edited,
+                    timeToShow.toRelativeString(style = DateTimeStyle.FULL)
+                )
             }
             DateTimeText(
                 text = text,
@@ -763,7 +767,7 @@ private fun TopicTimeDisplay(createTime: LocalDateTime, editTime: LocalDateTime?
         }
     } else {
         DateTimeText(
-            text = createTime.fullDateTimeString(),
+            text = createTime.toRelativeString(style = DateTimeStyle.FULL),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

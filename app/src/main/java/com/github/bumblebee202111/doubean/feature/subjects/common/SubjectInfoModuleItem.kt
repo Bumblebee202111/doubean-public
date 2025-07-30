@@ -58,8 +58,9 @@ import com.github.bumblebee202111.doubean.ui.component.ExpandCollapseText
 import com.github.bumblebee202111.doubean.ui.component.ListItemCount
 import com.github.bumblebee202111.doubean.ui.component.ListItemImages
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
+import com.github.bumblebee202111.doubean.util.DateTimeStyle
 import com.github.bumblebee202111.doubean.util.OpenInUtils
-import com.github.bumblebee202111.doubean.util.abbreviatedDateTimeString
+import com.github.bumblebee202111.doubean.util.toRelativeString
 import java.time.LocalDateTime
 
 fun LazyListScope.subjectInfoNormalModuleItem(
@@ -95,7 +96,6 @@ fun LazyListScope.subjectInfoInterestsModuleItem(
     onUserClick: (userId: String) -> Unit,
 ) {
     item {
-        val context = LocalContext.current
         Surface(
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 16.dp)
@@ -138,9 +138,7 @@ fun LazyListScope.subjectInfoInterestsModuleItem(
                                                 Spacer(modifier = Modifier.size(4.dp))
                                             }
                                             DateTimeText(
-                                                text = interest.createTime.abbreviatedDateTimeString(
-                                                    context
-                                                )
+                                                text = interest.createTime.toRelativeString(style = DateTimeStyle.ABBREVIATED)
                                             )
                                         }
                                     }
@@ -338,7 +336,7 @@ private fun SubjectReviewCard(
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 DateTimeText(
-                    text = review.createTime.abbreviatedDateTimeString(context),
+                    text = review.createTime.toRelativeString(style = DateTimeStyle.ABBREVIATED),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

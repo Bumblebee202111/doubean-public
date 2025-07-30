@@ -1,6 +1,5 @@
 package com.github.bumblebee202111.doubean.feature.doulists.common
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.LinkInteractionListener
@@ -28,7 +26,8 @@ import com.github.bumblebee202111.doubean.model.common.DouListPostItem
 import com.github.bumblebee202111.doubean.model.common.FeedItem
 import com.github.bumblebee202111.doubean.model.subjects.MarkableSubject
 import com.github.bumblebee202111.doubean.ui.common.feed.FeedItem
-import com.github.bumblebee202111.doubean.util.abbreviatedDateTimeString
+import com.github.bumblebee202111.doubean.util.DateTimeStyle
+import com.github.bumblebee202111.doubean.util.toRelativeString
 
 @Composable
 fun DouListPostItem(
@@ -75,8 +74,8 @@ private fun RecommendText(postItem: DouListPostItem, onDouListClick: ((String) -
     ) {
         val collectTimeAndDouListText = buildAnnotatedString {
             append(
-                stringResource(R.string.collect_time_new) + postItem.collectionTime.abbreviatedDateTimeString(
-                    LocalContext.current
+                stringResource(R.string.collect_time_new) + postItem.collectionTime.toRelativeString(
+                    style = DateTimeStyle.ABBREVIATED
                 )
             )
 

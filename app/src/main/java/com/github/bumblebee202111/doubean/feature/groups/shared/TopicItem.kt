@@ -43,9 +43,10 @@ import com.github.bumblebee202111.doubean.model.groups.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.ListItemCount
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
+import com.github.bumblebee202111.doubean.util.DateTimeStyle
 import com.github.bumblebee202111.doubean.util.ShareUtil
-import com.github.bumblebee202111.doubean.util.abbreviatedDateTimeString
 import com.github.bumblebee202111.doubean.util.buildGroupTopicAndTagText
+import com.github.bumblebee202111.doubean.util.toRelativeString
 
 @Composable
 fun TopicItem(
@@ -132,7 +133,7 @@ fun TopicItem(
                         modifier = Modifier.padding(horizontal = 4.dp)
                     )
                     DateTimeText(
-                        text = topic.createTime.abbreviatedDateTimeString(LocalContext.current)
+                        text = topic.createTime.toRelativeString(style = DateTimeStyle.ABBREVIATED)
                     )
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.margin_small)))
@@ -152,7 +153,7 @@ fun TopicItem(
                             modifier = Modifier.padding(horizontal = 4.dp)
                         )
                         DateTimeText(
-                            text = topic.updateTime.abbreviatedDateTimeString(LocalContext.current)
+                            text = topic.updateTime.toRelativeString(style = DateTimeStyle.ABBREVIATED)
                         )
                     }
                 }
