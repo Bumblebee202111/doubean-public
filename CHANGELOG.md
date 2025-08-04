@@ -1,11 +1,13 @@
 Change Log
 ==========
 
+## Version 0.9.5(90500)
+
 ## Version 0.9.4(90400)
 
 **Bug Fixes** 
 
-* Fixed an issue where some topics failed to load due to an unexpected date format.
+* Fixed an issue where some topics failed to load due to an unexpected date format. (fix #12 #13)
 
 ## Version 0.9.3(90300)
 
