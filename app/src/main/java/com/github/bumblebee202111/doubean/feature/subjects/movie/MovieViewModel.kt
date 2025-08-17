@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
+import com.github.bumblebee202111.doubean.data.repository.DouListRepository
 import com.github.bumblebee202111.doubean.data.repository.ItemDouListRepository
 import com.github.bumblebee202111.doubean.data.repository.MovieRepository
 import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
@@ -37,7 +38,8 @@ class MovieViewModel @Inject constructor(
     private val userSubjectRepository: UserSubjectRepository,
     private val subjectCommonRepository: SubjectCommonRepository,
     private val authRepository: AuthRepository,
-    private val itemDouListRepository: ItemDouListRepository,
+    itemDouListRepository: ItemDouListRepository,
+    douListRepository: DouListRepository,
     savedStateHandle: SavedStateHandle,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
@@ -51,10 +53,12 @@ class MovieViewModel @Inject constructor(
     private val collectionHandler = CollectionHandler(
         scope = viewModelScope,
         itemDouListRepository = itemDouListRepository,
+        douListRepository = douListRepository,
         snackbarManager = snackbarManager
     )
 
     val collectDialogUiState = collectionHandler.collectDialogUiState
+    val showCreateDouListDialog = collectionHandler.showCreateDialogEvent
 
     init {
         viewModelScope.launch {
@@ -119,7 +123,7 @@ class MovieViewModel @Inject constructor(
         triggerDataLoad(currentLoginStatus)
     }
 
-    fun onUpdateStatus(newStatus: SubjectInterestStatus) {
+    fun updateStatus(newStatus: SubjectInterestStatus) {
         val currentSuccessState = _uiState.value as? MovieUiState.Success ?: return
 
         if (!currentSuccessState.isLoggedIn) {
@@ -143,7 +147,7 @@ class MovieViewModel @Inject constructor(
 
             when (result) {
                 is AppResult.Success -> {
-                    val confirmedInterest: SubjectInterest? = when (val data = result.data) {
+                    val confirmedInterest = when (val data = result.data) {
                         is SubjectInterest -> data
                         is SubjectWithInterest<*> -> data.interest
                         else -> {
@@ -151,12 +155,9 @@ class MovieViewModel @Inject constructor(
                             originalMovie.interest
                         }
                     }
-                    val confirmedMovie = originalMovie.copy(interest = confirmedInterest)
-
-                    (_uiState.value as? MovieUiState.Success)?.takeIf { it.movie.id == originalMovie.id }
-                        ?.let { latestSuccessState ->
-                            _uiState.value = latestSuccessState.copy(movie = confirmedMovie)
-                        }
+                    _uiState.value = currentSuccessState.copy(
+                        movie = originalMovie.copy(interest = confirmedInterest)
+                    )
                 }
 
                 is AppResult.Error -> {
@@ -166,15 +167,29 @@ class MovieViewModel @Inject constructor(
         }
     }
 
-    fun onCollectClick() {
-        collectionHandler.onCollectClick(CollectType.MOVIE, movieId)
+    fun collect() {
+        collectionHandler.showCollectDialog(CollectType.MOVIE, movieId)
     }
 
     fun dismissCollectDialog() = collectionHandler.dismissCollectDialog()
 
-    fun toggleCollectionInDouList(douList: ItemDouList) {
+    fun showCreateDialog() = collectionHandler.showCreateDialog()
+
+    fun dismissCreateDialog() = collectionHandler.dismissCreateDialog()
+
+    fun createAndCollect(title: String) {
         viewModelScope.launch {
-            collectionHandler.toggleCollectionInDouList(
+            collectionHandler.createAndCollect(
+                title = title,
+                type = CollectType.MOVIE,
+                id = movieId
+            )
+        }
+    }
+
+    fun toggleCollection(douList: ItemDouList) {
+        viewModelScope.launch {
+            collectionHandler.toggleCollection(
                 type = CollectType.MOVIE,
                 id = movieId,
                 douList = douList

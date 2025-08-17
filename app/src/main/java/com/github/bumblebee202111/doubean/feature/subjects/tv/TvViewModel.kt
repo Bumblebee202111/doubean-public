@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
+import com.github.bumblebee202111.doubean.data.repository.DouListRepository
 import com.github.bumblebee202111.doubean.data.repository.ItemDouListRepository
 import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.data.repository.TvRepository
@@ -37,7 +38,8 @@ class TvViewModel @Inject constructor(
     private val userSubjectRepository: UserSubjectRepository,
     private val subjectCommonRepository: SubjectCommonRepository,
     private val authRepository: AuthRepository,
-    private val itemDouListRepository: ItemDouListRepository,
+    itemDouListRepository: ItemDouListRepository,
+    douListRepository: DouListRepository,
     savedStateHandle: SavedStateHandle,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
@@ -51,10 +53,12 @@ class TvViewModel @Inject constructor(
     private val collectionHandler = CollectionHandler(
         scope = viewModelScope,
         itemDouListRepository = itemDouListRepository,
+        douListRepository = douListRepository,
         snackbarManager = snackbarManager
     )
 
     val collectDialogUiState = collectionHandler.collectDialogUiState
+    val showCreateDouListDialog = collectionHandler.showCreateDialogEvent
 
     init {
         viewModelScope.launch {
@@ -116,7 +120,7 @@ class TvViewModel @Inject constructor(
         triggerDataLoad(currentLoginStatus)
     }
 
-    fun onUpdateStatus(newStatus: SubjectInterestStatus) {
+    fun updateStatus(newStatus: SubjectInterestStatus) {
         val currentSuccessState = _uiState.value as? TvUiState.Success ?: return
 
         if (!currentSuccessState.isLoggedIn) {
@@ -163,15 +167,29 @@ class TvViewModel @Inject constructor(
         }
     }
 
-    fun onCollectClick() {
-        collectionHandler.onCollectClick(CollectType.TV, tvId)
+    fun collect() {
+        collectionHandler.showCollectDialog(CollectType.TV, tvId)
     }
 
     fun dismissCollectDialog() = collectionHandler.dismissCollectDialog()
 
-    fun toggleCollectionInDouList(douList: ItemDouList) {
+    fun showCreateDialog() = collectionHandler.showCreateDialog()
+
+    fun dismissCreateDialog() = collectionHandler.dismissCreateDialog()
+
+    fun createAndCollect(title: String) {
         viewModelScope.launch {
-            collectionHandler.toggleCollectionInDouList(
+            collectionHandler.createAndCollect(
+                title = title,
+                type = CollectType.TV,
+                id = tvId
+            )
+        }
+    }
+
+    fun toggleCollection(douList: ItemDouList) {
+        viewModelScope.launch {
+            collectionHandler.toggleCollection(
                 type = CollectType.TV,
                 id = tvId,
                 douList = douList

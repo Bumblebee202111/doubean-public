@@ -3,6 +3,10 @@ Change Log
 
 ## Version 0.9.5(90500)
 
+**New Features**
+
+*   You can now create a new doulist directly when collecting an item.
+
 ## Version 0.9.4(90400)
 
 **Bug Fixes** 

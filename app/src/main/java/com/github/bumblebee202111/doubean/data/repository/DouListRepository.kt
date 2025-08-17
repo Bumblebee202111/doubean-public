@@ -21,6 +21,15 @@ class DouListRepository @Inject constructor(private val apiService: ApiService) 
         }
     )
 
+    suspend fun createDouList(title: String): AppResult<DouList> = makeApiCall(
+        apiCall = {
+            apiService.createDouList(title)
+        },
+        mapSuccess = {
+            it.toDouList()
+        }
+    )
+
     suspend fun getDouListPosts(douListId: String): AppResult<List<DouListPostItem>> = makeApiCall(
         apiCall = {
             apiService.getDouListPosts(douListId)
