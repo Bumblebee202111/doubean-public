@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.BookRepository
+import com.github.bumblebee202111.doubean.data.repository.DouListRepository
 import com.github.bumblebee202111.doubean.data.repository.ItemDouListRepository
 import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
@@ -37,7 +38,8 @@ class BookViewModel @Inject constructor(
     private val userSubjectRepository: UserSubjectRepository,
     private val subjectCommonRepository: SubjectCommonRepository,
     private val authRepository: AuthRepository,
-    private val itemDouListRepository: ItemDouListRepository,
+    itemDouListRepository: ItemDouListRepository,
+    douListRepository: DouListRepository,
     savedStateHandle: SavedStateHandle,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
@@ -51,10 +53,12 @@ class BookViewModel @Inject constructor(
     private val collectionHandler = CollectionHandler(
         scope = viewModelScope,
         itemDouListRepository = itemDouListRepository,
+        douListRepository = douListRepository,
         snackbarManager = snackbarManager
     )
 
     val collectDialogUiState = collectionHandler.collectDialogUiState
+    val showCreateDouListDialog = collectionHandler.showCreateDialogEvent
 
     init {
         viewModelScope.launch {
@@ -117,7 +121,7 @@ class BookViewModel @Inject constructor(
         triggerDataLoad(currentLoginStatus)
     }
 
-    fun onUpdateStatus(newStatus: SubjectInterestStatus) {
+    fun updateStatus(newStatus: SubjectInterestStatus) {
         val currentSuccessState = _uiState.value as? BookUiState.Success ?: return
 
         if (!currentSuccessState.isLoggedIn) {
@@ -164,15 +168,30 @@ class BookViewModel @Inject constructor(
             }
         }
     }
-    fun onCollectClick() {
-        collectionHandler.onCollectClick(CollectType.BOOK, bookId)
+
+    fun collect() {
+        collectionHandler.showCollectDialog(CollectType.BOOK, bookId)
     }
 
     fun dismissCollectDialog() = collectionHandler.dismissCollectDialog()
 
-    fun toggleCollectionInDouList(douList: ItemDouList) {
+    fun showCreateDialog() = collectionHandler.showCreateDialog()
+
+    fun dismissCreateDialog() = collectionHandler.dismissCreateDialog()
+
+    fun createAndCollect(title: String) {
         viewModelScope.launch {
-            collectionHandler.toggleCollectionInDouList(
+            collectionHandler.createAndCollect(
+                title = title,
+                type = CollectType.BOOK,
+                id = bookId
+            )
+        }
+    }
+
+    fun toggleCollection(douList: ItemDouList) {
+        viewModelScope.launch {
+            collectionHandler.toggleCollection(
                 type = CollectType.BOOK,
                 id = bookId,
                 douList = douList

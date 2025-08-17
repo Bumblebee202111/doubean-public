@@ -109,7 +109,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.5)
 
-- Create/edit Doulists
+- Edit Doulists
 
 ### Next release \(0.9.6)
 

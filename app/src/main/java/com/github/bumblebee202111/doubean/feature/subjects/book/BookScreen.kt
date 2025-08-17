@@ -15,6 +15,7 @@ import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.ui.common.CollectDialogUiState
+import com.github.bumblebee202111.doubean.ui.common.CreateDouListDialog
 import com.github.bumblebee202111.doubean.ui.common.DouListDialog
 
 @Composable
@@ -27,18 +28,23 @@ fun BookScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val collectDialogUiState by viewModel.collectDialogUiState.collectAsStateWithLifecycle()
+    val showCreateDouListDialog by viewModel.showCreateDouListDialog.collectAsStateWithLifecycle()
 
     BookScreen(
         uiState = uiState,
         collectDialogUiState = collectDialogUiState,
+        showCreateDouListDialog = showCreateDouListDialog,
         onBackClick = onBackClick,
         onLoginClick = onLoginClick,
-        onUpdateStatus = viewModel::onUpdateStatus,
+        onUpdateStatus = viewModel::updateStatus,
         onImageClick = onImageClick,
         onUserClick = onUserClick,
-        onCollectClick = viewModel::onCollectClick,
-        dismissCollectDialog = viewModel::dismissCollectDialog,
-        toggleCollectionInDouList = viewModel::toggleCollectionInDouList
+        onCollectClick = viewModel::collect,
+        onDismissCollectDialog = viewModel::dismissCollectDialog,
+        onToggleCollection = viewModel::toggleCollection,
+        onCreateDouList = viewModel::showCreateDialog,
+        onDismissCreateDialog = viewModel::dismissCreateDialog,
+        onCreateAndCollect = viewModel::createAndCollect,
     )
 }
 
@@ -46,20 +52,32 @@ fun BookScreen(
 fun BookScreen(
     uiState: BookUiState,
     collectDialogUiState: CollectDialogUiState?,
+    showCreateDouListDialog: Boolean,
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
     onImageClick: (url: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
     onCollectClick: () -> Unit,
-    toggleCollectionInDouList: (douList: ItemDouList) -> Unit,
-    dismissCollectDialog: () -> Unit,
+    onDismissCollectDialog: () -> Unit,
+    onToggleCollection: (douList: ItemDouList) -> Unit,
+    onCreateDouList: () -> Unit,
+    onDismissCreateDialog: () -> Unit,
+    onCreateAndCollect: (title: String) -> Unit,
 ) {
     collectDialogUiState?.let { state ->
         DouListDialog(
             uiState = state,
-            onDismissRequest = dismissCollectDialog,
-            onDouListClick = toggleCollectionInDouList
+            onDismissRequest = onDismissCollectDialog,
+            onDouListClick = onToggleCollection,
+            onCreateClick = onCreateDouList
+        )
+    }
+
+    if (showCreateDouListDialog) {
+        CreateDouListDialog(
+            onDismissRequest = onDismissCreateDialog,
+            onConfirm = onCreateAndCollect
         )
     }
 

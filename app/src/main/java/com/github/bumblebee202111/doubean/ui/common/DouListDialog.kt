@@ -20,6 +20,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,11 +47,17 @@ fun DouListDialog(
     uiState: CollectDialogUiState,
     onDismissRequest: () -> Unit,
     onDouListClick: (douList: ItemDouList) -> Unit,
+    onCreateClick: () -> Unit,
 ) {
     SelectionDialog(
         onDismissRequest = onDismissRequest,
         title = stringResource(id = R.string.title_collect_to_doulist),
-        modifier = Modifier.heightIn(min = 200.dp, max = 500.dp)
+        modifier = Modifier.heightIn(min = 200.dp, max = 500.dp),
+        titleAction = {
+            TextButton(onClick = onCreateClick) {
+                Text(text = stringResource(id = R.string.create_doulist))
+            }
+        }
     ) {
         Box(
             modifier = Modifier

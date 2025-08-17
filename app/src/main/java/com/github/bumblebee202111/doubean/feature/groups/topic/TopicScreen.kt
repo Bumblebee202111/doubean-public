@@ -108,6 +108,7 @@ import com.github.bumblebee202111.doubean.model.groups.TopicComment
 import com.github.bumblebee202111.doubean.model.groups.TopicCommentSortBy
 import com.github.bumblebee202111.doubean.model.groups.TopicDetail
 import com.github.bumblebee202111.doubean.ui.common.CollectDialogUiState
+import com.github.bumblebee202111.doubean.ui.common.CreateDouListDialog
 import com.github.bumblebee202111.doubean.ui.common.DouListDialog
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
@@ -146,6 +147,7 @@ fun TopicScreen(
     val groupColor = topic?.group?.color
     val shouldShowSpinner by viewModel.shouldShowSpinner.collectAsStateWithLifecycle()
     val collectDialogUiState by viewModel.collectDialogUiState.collectAsStateWithLifecycle()
+    val showCreateDouListDialog by viewModel.showCreateDouListDialog.collectAsStateWithLifecycle()
 
     TopicScreen(
         topic = topic,
@@ -160,6 +162,7 @@ fun TopicScreen(
         updateCommentSortBy = viewModel::updateCommentsSortBy,
         displayInvalidImageUrl = viewModel::displayInvalidImageUrl,
         collectDialogUiState = collectDialogUiState,
+        showCreateDouListDialog = showCreateDouListDialog,
         onBackClick = onBackClick,
         onWebViewClick = onWebViewClick,
         onGroupClick = onGroupClick,
@@ -171,9 +174,12 @@ fun TopicScreen(
         onImageClick = onImageClick,
         onOpenDeepLinkUrl = onOpenDeepLinkUrl,
         onReact = viewModel::react,
-        onCollectClick = viewModel::onCollectClick,
-        toggleCollectionInDouList = viewModel::toggleCollectionInDouList,
-        dismissCollectDialog = viewModel::dismissCollectDialog,
+        onCollectClick = viewModel::collect,
+        onDismissCollectDialog = viewModel::dismissCollectDialog,
+        onToggleCollection = viewModel::toggleCollection,
+        onCreateDouList = viewModel::showCreateDialog,
+        onDismissCreateDialog = viewModel::dismissCreateDialog,
+        onCreateAndCollect = viewModel::createAndCollect,
     )
 }
 
@@ -191,6 +197,7 @@ fun TopicScreen(
     groupColorString: String?,
     shouldShowSpinner: Boolean,
     collectDialogUiState: CollectDialogUiState?,
+    showCreateDouListDialog: Boolean,
     updateCommentSortBy: (TopicCommentSortBy) -> Unit,
     displayInvalidImageUrl: () -> Unit,
     onBackClick: () -> Unit,
@@ -202,8 +209,11 @@ fun TopicScreen(
     onOpenDeepLinkUrl: (String, Boolean) -> Boolean,
     onReact: (Boolean) -> Unit,
     onCollectClick: () -> Unit,
-    toggleCollectionInDouList: (douList: ItemDouList) -> Unit,
-    dismissCollectDialog: () -> Unit,
+    onDismissCollectDialog: () -> Unit,
+    onToggleCollection: (douList: ItemDouList) -> Unit,
+    onCreateDouList: () -> Unit,
+    onDismissCreateDialog: () -> Unit,
+    onCreateAndCollect: (title: String) -> Unit,
 ) {
     val context = LocalContext.current
     var shouldShowDialog by rememberSaveable { mutableStateOf(false) }
@@ -481,8 +491,16 @@ fun TopicScreen(
     collectDialogUiState?.let { state ->
         DouListDialog(
             uiState = state,
-            onDismissRequest = dismissCollectDialog,
-            onDouListClick = toggleCollectionInDouList
+            onDismissRequest = onDismissCollectDialog,
+            onDouListClick = onToggleCollection,
+            onCreateClick = onCreateDouList
+        )
+    }
+
+    if (showCreateDouListDialog) {
+        CreateDouListDialog(
+            onDismissRequest = onDismissCreateDialog,
+            onConfirm = onCreateAndCollect
         )
     }
 }

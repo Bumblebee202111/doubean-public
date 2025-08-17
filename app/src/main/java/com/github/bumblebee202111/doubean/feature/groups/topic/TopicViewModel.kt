@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
+import com.github.bumblebee202111.doubean.data.repository.DouListRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupTopicRepository
 import com.github.bumblebee202111.doubean.data.repository.ItemDouListRepository
 import com.github.bumblebee202111.doubean.data.repository.PollRepository
@@ -48,7 +49,8 @@ class TopicViewModel @Inject constructor(
     private val pollRepository: PollRepository,
     val authRepository: AuthRepository,
     private val topicRepository: GroupTopicRepository,
-    private val itemDouListRepository: ItemDouListRepository,
+    itemDouListRepository: ItemDouListRepository,
+    douListRepository: DouListRepository,
     savedStateHandle: SavedStateHandle,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
@@ -146,15 +148,35 @@ class TopicViewModel @Inject constructor(
     private val collectionHandler = CollectionHandler(
         scope = viewModelScope,
         itemDouListRepository = itemDouListRepository,
+        douListRepository = douListRepository,
         snackbarManager = snackbarManager
     )
     val collectDialogUiState = collectionHandler.collectDialogUiState
-    fun onCollectClick() = collectionHandler.onCollectClick(CollectType.GROUP_TOPIC, topicId)
+    val showCreateDouListDialog = collectionHandler.showCreateDialogEvent
+
+    fun collect() {
+        collectionHandler.showCollectDialog(CollectType.GROUP_TOPIC, topicId)
+    }
+
     fun dismissCollectDialog() = collectionHandler.dismissCollectDialog()
 
-    fun toggleCollectionInDouList(douList: ItemDouList) {
+    fun showCreateDialog() = collectionHandler.showCreateDialog()
+
+    fun dismissCreateDialog() = collectionHandler.dismissCreateDialog()
+
+    fun createAndCollect(title: String) {
         viewModelScope.launch {
-            val newIsCollected = collectionHandler.toggleCollectionInDouList(
+            collectionHandler.createAndCollect(
+                title = title,
+                type = CollectType.GROUP_TOPIC,
+                id = topicId
+            )
+        }
+    }
+
+    fun toggleCollection(douList: ItemDouList) {
+        viewModelScope.launch {
+            val newIsCollected = collectionHandler.toggleCollection(
                 type = CollectType.GROUP_TOPIC,
                 id = topicId,
                 douList = douList
@@ -262,6 +284,7 @@ class TopicViewModel @Inject constructor(
 </div>
 """.trimIndent()
     }
+
 
     private fun formatHtmlContent(content: String): String {
         return """
