@@ -5,7 +5,12 @@ Change Log
 
 **New Features**
 
-*   You can now create a new doulist directly when collecting an item.
+*   Create a new doulist directly when collecting an item.
+*   Edit the title of your doulists from the "More" menu.
+
+**Bug Fixes**
+
+*   Fixed an issue where some lists of doulists could fail to load.
 
 ## Version 0.9.4(90400)
 

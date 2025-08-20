@@ -9,4 +9,5 @@ data class DouListUiState(
     val items: List<DouListPostItem> = emptyList(),
     val isLoading: Boolean = true,
     val errorMessage: UiMessage? = null,
+    val isOwner: Boolean = false,
 )

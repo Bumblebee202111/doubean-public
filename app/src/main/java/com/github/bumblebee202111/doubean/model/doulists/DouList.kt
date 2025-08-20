@@ -14,7 +14,7 @@ data class DouList(
     override val coverUrl: String,
     val intro: String,
     val isFollowed: Boolean,
-    val playableCount: Int,
+    val playableCount: Int?,
     val createTime: String,
     val owner: User,
     val category: String,
@@ -23,10 +23,10 @@ data class DouList(
     val isPrivate: Boolean,
     // Kept as String for simplicity in data conversion.
     val updateTime: String,
-    val tags: List<String>,
+    val tags: List<String>?,
     // Currently always null
     //val syncNote: SimpleNote?,
-    val headerBgImage: String,
+    val headerBgImage: String?,
     val doulistType: String,
     val doneCount: Int,
     val colorScheme: ColorScheme?,

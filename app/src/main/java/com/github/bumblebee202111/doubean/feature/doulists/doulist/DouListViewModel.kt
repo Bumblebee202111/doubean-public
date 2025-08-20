@@ -22,6 +22,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,7 +31,7 @@ import javax.inject.Inject
 class DouListViewModel @Inject constructor(
     private val douListRepository: DouListRepository,
     private val userSubjectRepository: UserSubjectRepository,
-    authRepository: AuthRepository,
+    private val authRepository: AuthRepository,
     savedStateHandle: SavedStateHandle,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
@@ -40,13 +41,18 @@ class DouListViewModel @Inject constructor(
 
     val isLoggedIn = authRepository.isLoggedIn().stateInUi(false)
 
+    private val _showEditDialog = MutableStateFlow(false)
+    val showEditDialog = _showEditDialog.asStateFlow()
+
     init {
         fetchDouListDetails()
     }
 
     fun fetchDouListDetails() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            _uiState.update { it.copy() }
+
+            val loggedInUserId = authRepository.observeLoggedInUserId().first()
 
             var listDetail: DouList? = null
             var listItems: List<DouListPostItem> = emptyList()
@@ -80,11 +86,13 @@ class DouListViewModel @Inject constructor(
             }
 
             _uiState.update {
+                val isOwner = (listDetail?.owner?.id == loggedInUserId) && (loggedInUserId != null)
                 it.copy(
                     douList = listDetail ?: it.douList,
                     items = if (!errorOccurred) listItems else it.items,
                     isLoading = false,
-                    errorMessage = if (errorOccurred) finalErrorMessage else null
+                    errorMessage = if (errorOccurred) finalErrorMessage else null,
+                    isOwner = isOwner
                 )
             }
         }
@@ -104,9 +112,40 @@ class DouListViewModel @Inject constructor(
                             items = DouListStateHelper.getUpdatedListWithNewInterest(
                                 currentItems = currentUiState.items,
                                 updatedSubjectWithInterest = updatedSubjectWithInterest
-                            )
+                            ),
                         )
                     }
+                }
+
+                is AppResult.Error -> {
+                    snackbarManager.showMessage(result.error.asUiMessage())
+                }
+            }
+        }
+    }
+
+
+    fun onShowEditDialog() {
+        _showEditDialog.value = true
+    }
+
+    fun onDismissEditDialog() {
+        _showEditDialog.value = false
+    }
+
+    fun updateTitle(newTitle: String) {
+        val originalDouList = (_uiState.value.douList) ?: return
+        viewModelScope.launch {
+            val result = douListRepository.updateDouList(
+                douListId = originalDouList.id,
+                title = newTitle,
+                desc = originalDouList.intro,
+                isPrivate = originalDouList.isPrivate
+            )
+            when (result) {
+                is AppResult.Success -> {
+                    _uiState.update { it.copy(douList = result.data) }
+                    onDismissEditDialog()
                 }
 
                 is AppResult.Error -> {
