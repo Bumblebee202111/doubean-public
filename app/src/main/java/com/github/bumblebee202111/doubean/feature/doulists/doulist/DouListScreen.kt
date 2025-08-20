@@ -9,15 +9,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -26,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.doulists.common.douListPostItems
+import com.github.bumblebee202111.doubean.feature.doulists.common.getDouListLabel
 import com.github.bumblebee202111.doubean.feature.doulists.common.getDouListSubtitle
 import com.github.bumblebee202111.doubean.feature.doulists.common.rememberFeedItemClickHandler
 import com.github.bumblebee202111.doubean.model.common.DouListPostItem
@@ -47,17 +57,22 @@ fun DouListScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
+    val showEditDialog by viewModel.showEditDialog.collectAsStateWithLifecycle()
     DouListScreen(
         uiState = uiState,
         isLoggedIn = isLoggedIn,
+        showEditDialog = showEditDialog,
         onBackClick = onBackClick,
+        onShowEditDialog = viewModel::onShowEditDialog,
+        onDismissEditDialog = viewModel::onDismissEditDialog,
+        onUpdateTitle = viewModel::updateTitle,
         onTopicClick = onTopicClick,
         onBookClick = onBookClick,
         onMovieClick = onMovieClick,
         onTvClick = onTvClick,
         onUserClick = onUserClick,
         onImageClick = onImageClick,
-        onMarkSubject = viewModel::markSubject
+        onMarkSubject = viewModel::markSubject,
     )
 }
 
@@ -65,7 +80,11 @@ fun DouListScreen(
 fun DouListScreen(
     uiState: DouListUiState,
     isLoggedIn: Boolean,
+    showEditDialog: Boolean,
     onBackClick: () -> Unit,
+    onShowEditDialog: () -> Unit,
+    onDismissEditDialog: () -> Unit,
+    onUpdateTitle: (String) -> Unit,
     onTopicClick: (String) -> Unit,
     onBookClick: (String) -> Unit,
     onMovieClick: (String) -> Unit,
@@ -74,15 +93,28 @@ fun DouListScreen(
     onImageClick: (String) -> Unit,
     onMarkSubject: (MarkableSubject) -> Unit,
 ) {
+
+    if (showEditDialog && uiState.douList != null) {
+        val douListLabel = getDouListLabel(category = uiState.douList.category)
+
+        EditDouListDialog(
+            initialTitle = uiState.douList.title,
+            douListLabel = douListLabel,
+            onDismiss = onDismissEditDialog,
+            onConfirm = onUpdateTitle
+        )
+    }
+
     Scaffold(
         topBar = {
             DouListTopAppBar(
                 douList = uiState.douList,
-                onBackClick = onBackClick
+                isOwner = uiState.isOwner,
+                onBackClick = onBackClick,
+                onShowEditDialog = onShowEditDialog
             )
         }
     ) { innerPadding ->
-
 
         when {
             uiState.douList != null -> {
@@ -136,8 +168,12 @@ fun DouListScreen(
 @Composable
 fun DouListTopAppBar(
     douList: DouList?,
+    isOwner: Boolean,
     onBackClick: () -> Unit,
+    onShowEditDialog: () -> Unit,
 ) {
+    var menuExpanded by remember { mutableStateOf(false) }
+
     DoubeanTopAppBar(
         title = {
             Column {
@@ -163,9 +199,23 @@ fun DouListTopAppBar(
             
             
             
-            
-            
-            
+            if (isOwner) {
+                IconButton(onClick = { menuExpanded = true }) {
+                    Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.more))
+                }
+                DropdownMenu(
+                    expanded = menuExpanded,
+                    onDismissRequest = { menuExpanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.edit)) },
+                        onClick = {
+                            menuExpanded = false
+                            onShowEditDialog()
+                        }
+                    )
+                }
+            }
         }
     )
 }
@@ -215,3 +265,61 @@ fun DouListContent(
     }
 }
 
+@Composable
+private fun EditDouListDialog(
+    initialTitle: String,
+    douListLabel: String,
+    onDismiss: () -> Unit,
+    onConfirm: (newTitle: String) -> Unit,
+) {
+    var title by remember { mutableStateOf(initialTitle) }
+
+    val titleError = remember(title) {
+        when {
+            title.isBlank() -> R.string.doulist_name_cannot_empty
+            title.length > 60 -> R.string.doulist_name_cannot_more
+            else -> null 
+        }
+    }
+    val isError = titleError != null
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.activity_edit_doulist_title, douListLabel)) },
+        text = {
+            OutlinedTextField(
+                value = title,
+                onValueChange = { title = it },
+                placeholder = { Text(stringResource(R.string.doulist_name_hint)) },
+                singleLine = true,
+                isError = isError,
+                supportingText = {
+                    if (isError) {
+                        val errorMessage = if (titleError == R.string.doulist_name_cannot_more) {
+                            stringResource(titleError, douListLabel, 60)
+                        } else {
+                            stringResource(titleError, douListLabel)
+                        }
+                        Text(
+                            text = errorMessage,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
+            )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = { onConfirm(title) },
+                enabled = !isError && title != initialTitle
+            ) {
+                Text(stringResource(R.string.save))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
+}
