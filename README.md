@@ -4,11 +4,7 @@ doubean
 An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and exploring Subjects (books/movies/TVs)
 \([豆瓣][douban]非官方app，支持[小组][douban-groups]浏览和书影探索\)
 
-**Disclaimer:** This is an experimental project focused on core features using Jetpack Compose. Expect potential crashes, incomplete UI, or missing features. 
-
-**Known Issue:** 
-- Login image captcha requires further testing.
-  - [**Need your feedback when triggered**](https://github.com/Bumblebee202111/doubean-public/issues/11)
+**Disclaimer:** This is a continuously evolving project focused on core features using Jetpack Compose. Some features are a work-in-progress (WIP), and you may encounter bugs.
 
 
 [douban]: https://www.douban.com/
@@ -17,27 +13,27 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 ## Features
 
 - Subjects (Books/Movies/TVs):
-  - Home feed with personal statuses, subject unions, rank lists
-  - Interests
-  - Subject search
-  - View subject details (metadata, intro, interactions)
-  - Rank list browsing
+  - Home feed with personal statuses, subject unions, and rank lists
+  - View subject interests
+  - Search for subjects
+  - View subject details, including metadata, intros, and user interactions
+  - Browse rank lists
 - Groups:
   - Browse my groups and topics
   - Explore group details, topics, and comments
-  - Group search
+  - Search for groups
   - Enhancements:
-    - Local favorites for tabs/groups
-    - Sort topics by original order or create time within any page
+    - Save local favorites for group tabs for quick access
+    - Sort topics within each page by create time or default order
     - Customizable topic notifications
-- Doulists (WIP 🚧):
-  - Topic, subject, and review items supported
-  - Collect topics/subjects
+- Doulists:
+  - View doulists and their items (topics, subjects, reviews)
+  - Collect subjects and topics into doulists
   - My Doulists: Collected items + doulists
 - General:
 
   - Ad-free and lightweight (~3MB)
-  - Login support (beta) & session reuse (root required)
+  - Login support & session reuse (advanced, root required)
   - Partial deep linking
   - Direct official API calls
   - Basic Material Design 3 (MD3) theming
@@ -63,8 +59,8 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 - Download the [Latest release][latest-release]
 - Install on Android: 8.1+
 - Feel free to [file issues](https://github.com/Bumblebee202111/doubean-public/issues)
-- Keep official app: Recommended to have the official Douban app installed for full platform functionality.
-- Troubleshooting: If crashes occur after updates, try clearing app data.
+- Keep official app: Recommended for full platform functionality
+- Troubleshooting: If crashes occur after updates, try clearing app data
 
 [latest-release]: https://github.com/Bumblebee202111/doubean-public/releases/latest
 
@@ -72,12 +68,12 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 
 ### Source Code Status
 
-Only selected source code from a private project is shared here to mitigate potential issues. More may be synced later (WIP).
+Only selected source code from a private project is shared here to avoid potential issues. More may be synced later.
 
 ### Guidelines
 
-- For personal learning & exploration.
-- Please avoid wide promotion.
+- For personal learning & exploration
+- Please avoid wide promotion
 
 ## Tech Stack
 
@@ -111,12 +107,22 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Next release \(0.9.6)
 
+- Update dependencies
+- Remove local group favorites to simplify management
+- Translate login UI to Chinese
+- Reuse BackButton/MoreButton
+
 <details>
 <summary>Future plans (Click to expand)</summary>
 
+#### High Priority
+- Search: Add search history
+- Subjects: Add related recommendations
+- UI: Allow customizing bottom navigation
+
+#### Backlog
 - Groups 
   - Interactions
-    - Remove local group favorites when login is stable (use official subscribing)
     - Pin my groups
     - Official app-style list item actions
   - Simplify topic caching
@@ -124,7 +130,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
     - Topics within a group/tab
     - Global topic search
     - Tabbed search results
-  - Notifications: Add 1h interval option (current: 15m)
+  - Notifications: Add 1h interval option
   - Home: Potential pagination for recommended topics
   - Tab
     - Track topic read status
@@ -150,7 +156,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Follow Doulists
   - List/post pagination
 - Sync more source to public repo
-- Error messages: Show endpoint
 - Persist last-active tab
 - Full deep linking support
 - Expand/collapse component: Hide action for short text
