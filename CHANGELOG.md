@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.9.6(90600)
+
 ## Version 0.9.5(90500)
 
 **New Features**

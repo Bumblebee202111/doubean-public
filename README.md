@@ -103,14 +103,14 @@ Only selected source code from a private project is shared here to avoid potenti
 
 Upcoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for personal tracking.
 
-### Current release \(0.9.5)
-
-### Next release \(0.9.6)
+### Current release \(0.9.6)
 
 - Update dependencies
 - Remove local group favorites to simplify management
 - Translate login UI to Chinese
 - Reuse BackButton/MoreButton
+
+### Next release \(0.9.7)
 
 <details>
 <summary>Future plans (Click to expand)</summary>
