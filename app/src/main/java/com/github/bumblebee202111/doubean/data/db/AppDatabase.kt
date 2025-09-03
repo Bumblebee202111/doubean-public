@@ -87,7 +87,7 @@ abstract class AppDatabase : RoomDatabase() {
 
         fun buildDatabase(context: Context, json: Json): AppDatabase {
             return databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
-                .fallbackToDestructiveMigration()
+                .fallbackToDestructiveMigration(false)
                 .addCallback(sRoomDatabaseCallback)
                 .addTypeConverter(Converters(json))
                 .build()
