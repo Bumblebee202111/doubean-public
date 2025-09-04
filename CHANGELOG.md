@@ -3,6 +3,10 @@ Change Log
 
 ## Version 0.9.6(90600)
 
+**Improvements**
+
+- The phone/password login feature is now stable, and the entire login UI is fully translated into Chinese.
+
 ## Version 0.9.5(90500)
 
 **New Features**

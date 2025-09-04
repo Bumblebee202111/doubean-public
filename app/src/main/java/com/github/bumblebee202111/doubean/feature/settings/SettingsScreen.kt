@@ -151,7 +151,7 @@ fun SettingsScreen(
             if (autoImportSessionAtStartup != null) {
                 item {
                     SwitchPreferenceItem(
-                        title = "(Root required) Auto-import session from Douban app at startup",
+                        title = stringResource(R.string.settings_auto_import_title),
                         checked = autoImportSessionAtStartup,
                         onCheckedChange = { toggleAutoImportSessionAtStartup() }
                     )
@@ -159,9 +159,9 @@ fun SettingsScreen(
             }
             item {
                 ClickablePreferenceItem(
-                    title = "(Root required) Run auto-import now",
+                    title = stringResource(R.string.settings_manual_import_title),
                     onClick = triggerAutoImport,
-                    summary = "Manually trigger auto-import",
+                    summary = stringResource(R.string.settings_manual_import_summary),
                     trailingContent = {
                         Icon(
                             imageVector = Icons.Default.Sync,
@@ -172,7 +172,7 @@ fun SettingsScreen(
             if (isLoggedIn == false) {
                 item {
                     ClickablePreferenceItem(
-                        title = "Open Login screen",
+                        title = stringResource(R.string.settings_open_login_screen),
                         onClick = onLoginClick
                     )
                 }
@@ -222,13 +222,15 @@ fun SettingsScreen(
                 )
             }
 
-
             if (isLoggedIn == true) {
                 item {
                     PreferenceDivider()
                 }
                 item {
-                    DangerButtonPreferenceItem(title = "Log Out", onClick = logout)
+                    DangerButtonPreferenceItem(
+                        title = stringResource(R.string.settings_logout_button),
+                        onClick = logout
+                    )
                 }
 
             }
