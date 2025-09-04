@@ -106,7 +106,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 ### Current release \(0.9.6)
 
 - Remove local group favorites to simplify management
-- Translate login UI to Chinese
 - Reuse BackButton/MoreButton
 
 ### Next release \(0.9.7)

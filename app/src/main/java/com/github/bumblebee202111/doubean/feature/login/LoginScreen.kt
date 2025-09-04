@@ -1,5 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.login
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -30,11 +31,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.auth.LoginResult
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 
@@ -173,21 +176,16 @@ private fun LoginSection(
     login: () -> Unit,
 ) {
     Text(
-        text = "Phone/Password Login (BETA)",
+        text = stringResource(R.string.login_phone_password_title),
         style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.error
-    )
-    Text(
-        text = "Need feedback on whether image captcha works (if triggered).",
-        style = MaterialTheme.typography.bodySmall
+        color = MaterialTheme.colorScheme.primary
     )
 
     OutlinedTextField(
         value = phoneNumber,
         onValueChange = updatePhoneNumber,
         modifier = Modifier.fillMaxWidth(),
-        enabled = SHOULD_ENABLE_PHONE_PASSWORD_LOGIN,
-        label = { Text("Phone") },
+        label = { Text(stringResource(R.string.login_phone_label)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
     )
 
@@ -195,20 +193,20 @@ private fun LoginSection(
         value = password,
         onValueChange = updatePassword,
         modifier = Modifier.fillMaxWidth(),
-        enabled = SHOULD_ENABLE_PHONE_PASSWORD_LOGIN,
-        label = { Text("Password") },
+        label = { Text(stringResource(R.string.login_password_label)) },
         visualTransformation = PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
     )
     Button(
         onClick = login,
         modifier = Modifier.fillMaxWidth(),
-        enabled = isFormValid && SHOULD_ENABLE_PHONE_PASSWORD_LOGIN
+        enabled = isFormValid
     ) {
-        Text(text = "Login")
+        Text(text = stringResource(R.string.login_button))
     }
 }
 
+@SuppressLint("SdCardPath")
 @Composable
 private fun SessionImportSection(
     triggerAutoImport: () -> Unit,
@@ -216,23 +214,18 @@ private fun SessionImportSection(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     Text(
-        text = "Douban app Session Import (Advanced)",
+        text = stringResource(R.string.login_session_import_title),
         style = MaterialTheme.typography.titleMedium
     )
     Text(
-        text = "Note: This method typically requires root access. " +
-                "Automatic sync should happen at app startup if it is enabled in Settings and root access is granted.",
+        text = stringResource(R.string.login_session_import_note),
         style = MaterialTheme.typography.bodyMedium
     )
     TextButton(onClick = triggerAutoImport, modifier = Modifier.fillMaxWidth()) {
-        Text("Auto-Import Session Now")
+        Text(stringResource(R.string.login_session_import_auto_button))
     }
     Text(
-        text = "For non-rooted phones:\n" +
-                "Copy from a rooted device and paste here\n" +
-                "⚠️ Manual entry not recommended because:\n" +
-                "• Complicated process\n" +
-                "• Session expiration\n",
+        text = stringResource(R.string.login_session_import_manual_note),
         style = MaterialTheme.typography.bodyMedium
     )
     var pref by remember { mutableStateOf("") }
@@ -241,12 +234,15 @@ private fun SessionImportSection(
         onValueChange = { pref = it },
         modifier = Modifier
             .fillMaxWidth(),
-        label = { Text("key_current_account_info preference line") },
+        label = { Text(stringResource(R.string.login_session_import_textfield_label)) },
         supportingText = {
-            Text(
-                "Path: /data/data/com.douban.frodo/shared_prefs/com.douban.frodo_preferences.xml\n" +
-                        "Format:    <string name=\"key_current_account_info\">...</string>"
-            )
+            Column {
+                val path =
+                    "/data/data/com.douban.frodo/shared_prefs/com.douban.frodo_preferences.xml"
+                val format = "<string name=\"key_current_account_info\">...</string>"
+                Text(stringResource(R.string.label_path, path))
+                Text(stringResource(R.string.label_format, format))
+            }
         },
         maxLines = 5,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -263,15 +259,14 @@ private fun SessionImportSection(
         },
         modifier = Modifier.fillMaxWidth(),
     ) {
-        Text(text = "Import Session")
+        Text(text = stringResource(R.string.login_session_import_manual_button))
     }
 }
 
 @Composable
 private fun FinalReminderText() {
     Text(
-        text = "While we mimic official login behavior without third-party services, use login-related features at your own risk. This minimal UI is intentional - prioritizing functional access\n"
+        text = stringResource(R.string.login_final_reminder),
+        style = MaterialTheme.typography.bodySmall
     )
 }
-
-private const val SHOULD_ENABLE_PHONE_PASSWORD_LOGIN = true

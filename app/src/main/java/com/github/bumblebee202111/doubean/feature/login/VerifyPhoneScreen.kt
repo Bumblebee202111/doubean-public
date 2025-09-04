@@ -17,10 +17,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.auth.CaptchaSolution
 import com.github.bumblebee202111.doubean.model.auth.JCaptcha
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
@@ -111,7 +113,7 @@ private fun ActiveContent(
             value = activeUiState.phoneCode,
             onValueChange = { onPhoneCodeChanged(it) },
             enabled = activeUiState.isCodeSent,
-            label = { Text("Verification Code") },
+            label = { Text(stringResource(R.string.verify_phone_code_label)) },
             isError = !activeUiState.isPhoneCodeValid,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
@@ -123,7 +125,7 @@ private fun ActiveContent(
             if (activeUiState.isRequestingCode) {
                 CircularProgressIndicator()
             } else {
-                Text("Request Code")
+                Text(stringResource(R.string.verify_phone_request_code_button))
             }
         }
 
@@ -135,7 +137,7 @@ private fun ActiveContent(
                 if (activeUiState.isVerifyingCode) {
                     CircularProgressIndicator()
                 } else {
-                    Text("Verify")
+                    Text(stringResource(R.string.verify_phone_verify_button))
                 }
             }
         }
