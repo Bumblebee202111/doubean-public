@@ -6,6 +6,7 @@ Change Log
 **Improvements**
 
 - The phone/password login feature is now stable, and the entire login UI is fully translated into Chinese.
+- Simplified the local favorites feature. It is now called "Pinned Tabs" and applies only to individual group tabs.
 
 ## Version 0.9.5(90500)
 

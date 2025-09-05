@@ -6,22 +6,22 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import androidx.room.withTransaction
 import com.github.bumblebee202111.doubean.data.db.AppDatabase
-import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupEntity
-import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupTabEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupGroupNotificationTargetEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTabNotificationTargetEntity
-import com.github.bumblebee202111.doubean.data.db.model.PopulatedGroupFavoriteItem
+import com.github.bumblebee202111.doubean.data.db.model.PinnedGroupTabEntity
+import com.github.bumblebee202111.doubean.data.db.model.PopulatedPinnedTabItem
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItemWithGroup
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicNotificationItem
 import com.github.bumblebee202111.doubean.data.db.model.TopicNotificationEntity
 import com.github.bumblebee202111.doubean.data.db.model.UserJoinedGroupIdEntity
 import com.github.bumblebee202111.doubean.data.db.model.asExternalModel
 import com.github.bumblebee202111.doubean.data.db.model.toGroupNotificationPreferences
+import com.github.bumblebee202111.doubean.data.db.model.toPinnedTabItem
 import com.github.bumblebee202111.doubean.data.db.model.toSimpleGroup
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository.Companion.RESULT_TOPICS_PAGE_SIZE
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.model.groups.GroupFavoriteItem
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
+import com.github.bumblebee202111.doubean.model.groups.PinnedTabItem
 import com.github.bumblebee202111.doubean.model.groups.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 import com.github.bumblebee202111.doubean.model.groups.getRequestParamString
@@ -145,41 +145,27 @@ class UserGroupRepository @Inject constructor(
         }
     )
 
-    fun getGroupFavorite(groupId: String): Flow<Boolean> {
-        return userGroupDao.loadGroupFavorite(groupId)
+    fun isTabPinned(tabId: String): Flow<Boolean> {
+        return userGroupDao.isTabPinned(tabId)
     }
 
-    fun getTabFavorite(tabId: String): Flow<Boolean> {
-        return userGroupDao.loadTabFavorite(tabId)
+    suspend fun unpinTab(tabId: String) {
+        userGroupDao.unpinTab(tabId)
     }
 
-    suspend fun removeFavoriteGroup(groupId: String) {
-        userGroupDao.deleteFavoriteGroup(groupId)
-    }
-
-    suspend fun addFavoriteGroup(groupId: String) {
-        userGroupDao.insertFavoriteGroup(
-            FavoriteGroupEntity(groupId = groupId)
-        )
-    }
-
-    suspend fun removeFavoriteTab(tabId: String) {
-        userGroupDao.deleteFavoriteTab(tabId)
-    }
-
-    suspend fun addFavoriteTab(
+    suspend fun pinTab(
         groupId: String,
         tabId: String,
 
         ) {
-        userGroupDao.insertFavoriteTab(
-            FavoriteGroupTabEntity(groupId = groupId, tabId = tabId)
+        userGroupDao.pinTab(
+            PinnedGroupTabEntity(groupId = groupId, tabId = tabId)
         )
     }
 
-    fun getAllGroupFavorites(): Flow<List<GroupFavoriteItem>> =
-        userGroupDao.loadAllFavorites().map {
-            it.map(PopulatedGroupFavoriteItem::asExternalModel)
+    fun getPinnedTabs(): Flow<List<PinnedTabItem>> =
+        userGroupDao.getPinnedTabsWithGroupInfo().map {
+            it.map(PopulatedPinnedTabItem::toPinnedTabItem)
         }
 
     fun getGroupNotificationPreferences(groupId: String): Flow<GroupNotificationPreferences?> {

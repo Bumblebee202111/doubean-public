@@ -36,7 +36,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -53,11 +52,12 @@ import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItem
 import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItemDisplayMode
 import com.github.bumblebee202111.doubean.feature.groups.shared.dayRanking
 import com.github.bumblebee202111.doubean.model.fangorns.User
-import com.github.bumblebee202111.doubean.model.groups.GroupFavoriteItem
+import com.github.bumblebee202111.doubean.model.groups.PinnedTabItem
 import com.github.bumblebee202111.doubean.model.groups.SimpleGroup
 import com.github.bumblebee202111.doubean.model.groups.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.ui.common.AppBarNavigationAvatar
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
+import com.github.bumblebee202111.doubean.ui.theme.DoubeanTheme
 import java.util.Calendar
 
 @Composable
@@ -71,13 +71,13 @@ fun GroupsHomeScreen(
 ) {
     val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
     val joinedGroupsUiState by viewModel.joinedGroupsUiState.collectAsStateWithLifecycle()
-    val favorites by viewModel.favorites.collectAsStateWithLifecycle()
+    val pinnedTabs by viewModel.pinnedTabs.collectAsStateWithLifecycle()
     val dayRankingUiState by viewModel.dayRankingUiState.collectAsStateWithLifecycle()
     val recentTopicsFeed by viewModel.recentTopicsFeed.collectAsStateWithLifecycle()
     GroupsHomeScreen(
         currentUser = currentUser,
         joinedGroupsUiState = joinedGroupsUiState,
-        favorites = favorites,
+        pinnedTabs = pinnedTabs,
         dayRankingUiState = dayRankingUiState,
         recentTopicsFeed = recentTopicsFeed,
         onAvatarClick = onAvatarClick,
@@ -93,7 +93,7 @@ fun GroupsHomeScreen(
 fun GroupsHomeScreen(
     currentUser: User?,
     joinedGroupsUiState: JoinedGroupsUiState,
-    favorites: List<GroupFavoriteItem>?,
+    pinnedTabs: List<PinnedTabItem>?,
     dayRankingUiState: DayRankingUiState,
     recentTopicsFeed: List<TopicItemWithGroup>?,
     onAvatarClick: () -> Unit,
@@ -141,8 +141,8 @@ fun GroupsHomeScreen(
             joinedGroupsUiState.groups?.let { groups ->
                 myGroups(groups) { onGroupClick(it, null) }
             }
-            favorites?.takeIf(List<GroupFavoriteItem>::isNotEmpty)?.let { groups ->
-                favorites(groups, onGroupClick)
+            pinnedTabs?.takeIf(List<PinnedTabItem>::isNotEmpty)?.let { pinnedTabs ->
+                pinnedTabs(pinnedTabs = pinnedTabs, onItemClick = onGroupClick)
             }
             if (dayRankingUiState is DayRankingUiState.Success) {
                 this.dayRanking(dayRankingUiState.items) { onGroupClick(it, null) }
@@ -179,7 +179,8 @@ private fun LazyListScope.myGroups(
                 Card(
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface,
-                    ), border = BorderStroke(1.dp, Color.Black),
+                    ),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                     onClick = { onGroupItemClick(group.id) },
                     modifier = Modifier
                         .padding(4.dp)
@@ -215,28 +216,31 @@ private fun LazyListScope.myGroups(
 
 }
 
-private fun LazyListScope.favorites(
-    follows: List<GroupFavoriteItem>,
-    onGroupItemClick: (groupId: String, tabId: String?) -> Unit,
+private fun LazyListScope.pinnedTabs(
+    pinnedTabs: List<PinnedTabItem>,
+    onItemClick: (groupId: String, tabId: String) -> Unit,
 ) {
-    item(contentType = "favorites") {
+    item(contentType = "pinned_tabs") {
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = stringResource(id = R.string.title_favorites_local_feature),
+            text = stringResource(id = R.string.title_pinned_items),
             style = MaterialTheme.typography.titleMedium
         )
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            items(items = follows, key = { group -> listOf(group.groupId, group.tabId) }) { group ->
-                if (follows.first() == group) {
+            items(
+                items = pinnedTabs,
+                key = { group -> listOf(group.groupId, group.tabId) }) { group ->
+                if (pinnedTabs.first() == group) {
                     Spacer(modifier = Modifier.size(16.dp))
                 }
                 Card(
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface,
-                    ), border = BorderStroke(1.dp, Color.Black),
-                    onClick = { onGroupItemClick(group.groupId, group.tabId) },
+                    ),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                    onClick = { onItemClick(group.groupId, group.tabId) },
                     modifier = Modifier
                         .padding(4.dp)
                         .width(80.dp)
@@ -269,32 +273,30 @@ private fun LazyListScope.favorites(
                             )
                         }
 
-                        group.tabId?.let {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(start = 4.dp, end = 4.dp, bottom = 4.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Tab,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size_extra_small)),
-                                )
-                                Text(
-                                    text = group.groupTabName ?: "",
-                                    overflow = TextOverflow.Ellipsis,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(4.dp),
-                                    style = MaterialTheme.typography.labelMedium,
-                                    textAlign = TextAlign.Left,
-                                    maxLines = 1,
-                                )
-                            }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(start = 4.dp, end = 4.dp, bottom = 4.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Tab,
+                                contentDescription = null,
+                                modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size_extra_small)),
+                            )
+                            Text(
+                                text = group.tabName,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(4.dp),
+                                style = MaterialTheme.typography.labelMedium,
+                                textAlign = TextAlign.Left,
+                                maxLines = 1,
+                            )
                         }
                     }
                 }
 
-                if (follows.last() == group) {
+                if (pinnedTabs.last() == group) {
                     Spacer(modifier = Modifier.size(16.dp))
                 }
             }
@@ -335,19 +337,51 @@ private fun LazyListScope.myTopics(
 }
 
 @Composable
-@Preview(showBackground = true)
-fun MyGroupsPreview(
-) {
+@Preview(name = "Pinned Tabs Row", showBackground = true)
+fun PinnedTabsPreview() {
     val mockData = listOf(
-        GroupFavoriteItem(Calendar.getInstance(), "1", "123", "wwww"),
-        GroupFavoriteItem(Calendar.getInstance(), "12", "455234544444", "wwww"),
-        GroupFavoriteItem(Calendar.getInstance(), "123", "6666", "wwww"),
-        GroupFavoriteItem(Calendar.getInstance(), "1124", "", "wwww", "", "12345"),
+        PinnedTabItem(
+            pinnedDate = Calendar.getInstance(),
+            groupId = "1",
+            groupName = "Sci-Fi Movie Geeks",
+            groupAvatar = null,
+            tabId = "tab1",
+            tabName = "Spoiler Zone"
+        ),
+        PinnedTabItem(
+            pinnedDate = Calendar.getInstance(),
+            groupId = "2",
+            groupName = "The International Society for Long Group Names",
+            groupAvatar = null,
+            tabId = "tab2",
+            tabName = "Announcements & Very Long Tab Titles Go Here"
+        ),
+        PinnedTabItem(
+            pinnedDate = Calendar.getInstance(),
+            groupId = "3",
+            groupName = "Book Club",
+            groupAvatar = null,
+            tabId = "tab3",
+            tabName = "Chapter 5 Discussion"
+        ),
+        PinnedTabItem(
+            pinnedDate = Calendar.getInstance(),
+            groupId = "4",
+            groupName = null,
+            groupAvatar = null,
+            tabId = "tab4",
+            tabName = "Orphaned Tab"
+        ),
     )
-    LazyColumn {
-        favorites(mockData) { _, _ -> }
-    }
 
+    DoubeanTheme {
+        LazyColumn {
+            pinnedTabs(
+                pinnedTabs = mockData,
+                onItemClick = { _, _ -> }
+            )
+        }
+    }
 }
 
 @Composable

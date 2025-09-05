@@ -16,8 +16,6 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.NotificationAdd
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -87,8 +85,6 @@ fun GroupDetailScreen(
         groupId = groupId,
         subscribeGroup = viewModel::subscribe,
         unsubscribeGroup = viewModel::unsubscribe,
-        addFavorite = viewModel::addFavorite,
-        removeFavorite = viewModel::removeFavorite,
         saveNotificationsPreference = viewModel::saveNotificationPreferences,
         onBackClick = onBackClick,
         onTopicClick = onTopicClick,
@@ -105,8 +101,6 @@ fun GroupDetailScreen(
     groupId: String,
     subscribeGroup: () -> Unit,
     unsubscribeGroup: () -> Unit,
-    addFavorite: () -> Unit,
-    removeFavorite: () -> Unit,
     saveNotificationsPreference: (preference: GroupNotificationPreferences) -> Unit,
     onBackClick: () -> Unit,
     onTopicClick: (topicId: String) -> Unit,
@@ -127,7 +121,6 @@ fun GroupDetailScreen(
                 showNotificationsPrefDialog = {
                     openNotificationsPreferenceDialog = true
                 },
-                addFavorite = addFavorite, removeFavorite = removeFavorite,
                 subscribeGroup = subscribeGroup,
                 unsubscribeGroup = unsubscribeGroup,
                 onShareGroup = {
@@ -197,8 +190,6 @@ fun GroupDetailTopBar(
     uiState: GroupDetailUiState,
     scrollBehavior: TopAppBarScrollBehavior,
     showNotificationsPrefDialog: () -> Unit,
-    addFavorite: () -> Unit,
-    removeFavorite: () -> Unit,
     subscribeGroup: () -> Unit,
     unsubscribeGroup: () -> Unit,
     onShareGroup: (GroupDetail) -> Unit,
@@ -208,7 +199,6 @@ fun GroupDetailTopBar(
 ) {
     val group = uiState.groupDetail
     val cachedGroup = uiState.cachedGroup
-    val isFavorited = uiState.isFavorited
     val notificationPreferences = uiState.notificationPreferences
     val groupColor = (group?.color ?: cachedGroup?.color).toColorOrPrimary()
     TwoRowsTopAppBar(
@@ -236,7 +226,7 @@ fun GroupDetailTopBar(
                                 val memberRole = memberRole
                                 val isSubscribed = isSubscribed
 
-                                if (notificationPreferences?.notificationsEnabled == true || isFavorited || isSubscribed == true || memberRole in setOf(
+                                if (notificationPreferences?.notificationsEnabled == true || isSubscribed == true || memberRole in setOf(
                                         GroupMemberRole.MEMBER,
                                         GroupMemberRole.MEMBER_ADMIN,
                                     )
@@ -327,16 +317,6 @@ fun GroupDetailTopBar(
             }
         },
         actions = {
-            if (group != null) {
-                IconButton(
-                    onClick = if (uiState.isFavorited) removeFavorite else addFavorite
-                ) {
-                    Icon(
-                        imageVector = if (uiState.isFavorited) Icons.Default.Star else Icons.Default.StarBorder,
-                        contentDescription = null
-                    )
-                }
-            }
             var moreExpanded by remember { mutableStateOf(false) }
             var viewInExpanded by remember { mutableStateOf(false) }
             IconButton(onClick = { moreExpanded = !moreExpanded }) {

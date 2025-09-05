@@ -55,8 +55,8 @@ class GroupTabViewModel @AssistedInject constructor(
         _sortBy.value = topicSortBy
     }
 
-    val isFavorited =
-        (tabId?.let { userGroupRepository.getTabFavorite(it) } ?: emptyFlow()).stateInUi()
+    val isPinned =
+        (tabId?.let { userGroupRepository.isTabPinned(it) } ?: emptyFlow()).stateInUi()
 
     val topicNotificationPreferences = (tabId?.let {
         combine(
@@ -67,22 +67,22 @@ class GroupTabViewModel @AssistedInject constructor(
         }
     } ?: emptyFlow()).stateInUi()
 
-    fun addFavorite() {
+    fun pinTab() {
         val tabId = tabId ?: return
         viewModelScope.launch {
-            userGroupRepository.addFavoriteTab(
+            userGroupRepository.pinTab(
                 groupId = groupId,
                 tabId = tabId,
             )
-            snackbarManager.showMessage(R.string.favorited_tab.toUiMessage())
+            snackbarManager.showMessage(R.string.tab_pinned.toUiMessage())
         }
     }
 
-    fun removeFavorite() {
+    fun unpinTab() {
         val tabId = tabId ?: return
         viewModelScope.launch {
-            userGroupRepository.removeFavoriteTab(tabId)
-            snackbarManager.showMessage(R.string.unfavorited_tab.toUiMessage())
+            userGroupRepository.unpinTab(tabId)
+            snackbarManager.showMessage(R.string.tab_unpinned.toUiMessage())
         }
     }
 

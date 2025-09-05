@@ -23,7 +23,7 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
   - Explore group details, topics, and comments
   - Search for groups
   - Enhancements:
-    - Save local favorites for group tabs for quick access
+    - Pin group tabs locally for quick access
     - Sort topics within each page by create time or default order
     - Customizable topic notifications
 - Doulists:
@@ -105,7 +105,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.6)
 
-- Remove local group favorites to simplify management
 - Reuse BackButton/MoreButton
 
 ### Next release \(0.9.7)
@@ -134,7 +133,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
     - Track topic read status
     - Dynamic topic sorting options
   - Group Detail
-    - Auto-collapse header for subscribed/favorited groups/tabs
+    - Auto-collapse header for subscribed/pinned groups/tabs
     - Fix description action overflows
   - Topic:
     - Fully load content via official script (no manual parsing)
