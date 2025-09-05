@@ -123,7 +123,7 @@ fun LoginScreen(
     Scaffold(
         topBar = {
             DoubeanTopAppBar(
-                titleText = "Login",
+                titleResId = R.string.title_login,
                 navigationIcon = {
                     BackButton(onClick = onPopBackStack)
                 }
