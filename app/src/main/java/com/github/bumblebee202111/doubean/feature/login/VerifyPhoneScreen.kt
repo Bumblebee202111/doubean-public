@@ -3,13 +3,9 @@ package com.github.bumblebee202111.doubean.feature.login
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,6 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.auth.CaptchaSolution
 import com.github.bumblebee202111.doubean.model.auth.JCaptcha
+import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.RexxarWebView
 
@@ -68,9 +65,7 @@ fun VerifyPhoneScreen(
         topBar = {
             DoubeanTopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Default.ArrowBack, null)
-                    }
+                    BackButton(onClick = onBackClick)
                 },
                 titleText = "Verify Phone"
             )

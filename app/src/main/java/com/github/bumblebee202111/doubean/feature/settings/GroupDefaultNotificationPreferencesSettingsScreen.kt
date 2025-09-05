@@ -2,12 +2,8 @@ package com.github.bumblebee202111.doubean.feature.settings
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,6 +25,7 @@ import com.github.bumblebee202111.doubean.feature.groups.shared.MaxTopicNotifica
 import com.github.bumblebee202111.doubean.feature.groups.shared.SortTopicsByOption
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
+import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.ClickablePreferenceItem
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.RadioButtonItem
@@ -70,12 +67,7 @@ fun GroupDefaultNotificationsPreferencesSettingsScreen(
             DoubeanTopAppBar(
                 titleResId = R.string.group_default_notification_preferences_settings_title,
                 navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                        )
-                    }
+                    BackButton(onClick = onBackClick)
                 })
         }
     ) { innerPadding ->

@@ -1,14 +1,9 @@
 package com.github.bumblebee202111.doubean.feature.subjects.common
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,7 +17,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.subjects.SubjectDetail
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
+import com.github.bumblebee202111.doubean.ui.component.MoreButton
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,17 +48,13 @@ fun SubjectTopBar(
         },
         modifier = modifier,
         navigationIcon = {
-            IconButton(onClick = onBackClick) {
-                Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
-            }
+            BackButton(onClick = onBackClick)
         },
         actions = {
             var expanded by remember {
                 mutableStateOf(false)
             }
-            IconButton(onClick = { expanded = !expanded }) {
-                Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
-            }
+            MoreButton(onClick = { expanded = !expanded })
             DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                 subject?.let {
                     DropdownMenuItem(

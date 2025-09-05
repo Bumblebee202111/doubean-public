@@ -8,11 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,6 +24,7 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.shared.SearchResultGroupItem
 import com.github.bumblebee202111.doubean.feature.groups.shared.dayRanking
 import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
+import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.SearchTextField
 
@@ -63,18 +60,19 @@ fun GroupsSearchScreen(
     onBackClick: () -> Unit,
 ) {
     Scaffold(topBar = {
-        DoubeanTopAppBar(navigationIcon = {
-            IconButton(onClick = onBackClick) {
-                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+        DoubeanTopAppBar(
+            navigationIcon = {
+                BackButton(onClick = onBackClick)
+            },
+            title = {
+                SearchTextField(
+                    labelTextResId = R.string.search_groups_hint,
+                    modifier = Modifier.fillMaxWidth(),
+                    onQueryChange = onQueryChange,
+                    onSearchTriggered = onSearchTriggered
+                )
             }
-        }, title = {
-            SearchTextField(
-                labelTextResId = R.string.search_groups_hint,
-                modifier = Modifier.fillMaxWidth(),
-                onQueryChange = onQueryChange,
-                onSearchTriggered = onSearchTriggered
-            )
-        })
+        )
     }) {
 
         if (query.isBlank()) {

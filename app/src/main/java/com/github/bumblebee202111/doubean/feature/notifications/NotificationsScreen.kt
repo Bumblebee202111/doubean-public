@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +27,7 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItem
 import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItemDisplayMode
 import com.github.bumblebee202111.doubean.model.groups.TopicItemWithGroup
+import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.util.DEEP_LINK_SCHEME_AND_HOST
 import com.github.bumblebee202111.doubean.util.GROUP_PATH
@@ -64,12 +64,7 @@ fun NotificationsScreen(
         DoubeanTopAppBar(
             title = {},
             navigationIcon = {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = null
-                    )
-                }
+                BackButton(onClick = onBackClick)
             },
             actions = {
                 IconButton(onClick = onSettingsClick) {

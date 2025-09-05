@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -34,6 +33,7 @@ import coil3.request.crossfade
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.doulists.userdoulists.UserDouListsContent
 import com.github.bumblebee202111.doubean.feature.doulists.userdoulists.UserDouListsUiState
+import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.doubeanTopAppBarHeight
 
 // CreatedDouListActivity/UserDouListsFragment
@@ -92,9 +92,7 @@ fun CreatedDouListsScreen(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-                    }
+                    BackButton(onClick = onBackClick)
                 },
                 actions = {
                     if (uiState is UserDouListsUiState.Error) {
