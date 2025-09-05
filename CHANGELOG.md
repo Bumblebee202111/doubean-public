@@ -1,11 +1,29 @@
 Change Log
 ==========
 
+## Version 0.9.6(90600)
+
+**Improvements**
+
+- The phone/password login feature is now stable, and the entire login UI is fully translated into Chinese.
+- Simplified the local favorites feature. It is now called "Pinned Tabs" and applies only to individual group tabs.
+
+## Version 0.9.5(90500)
+
+**New Features**
+
+*   Create a new doulist directly when collecting an item.
+*   Edit the title of your doulists from the "More" menu.
+
+**Bug Fixes**
+
+*   Fixed an issue where some lists of doulists could fail to load.
+
 ## Version 0.9.4(90400)
 
 **Bug Fixes** 
 
-* Fixed an issue where some topics failed to load due to an unexpected date format.
+* Fixed an issue where some topics failed to load due to an unexpected date format. (fix #12 #13)
 
 ## Version 0.9.3(90300)
 

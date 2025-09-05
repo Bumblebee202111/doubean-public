@@ -58,3 +58,14 @@ fun getDouListSubtitle(itemCount: Int, category: String?, followersCount: Int): 
 
     return "$itemsPart$followersPart"
 }
+
+@Composable
+fun getDouListLabel(category: String?): String {
+
+    return when (category?.lowercase()) {
+        "movie", "tv" -> stringResource(R.string.doulist_movie_label)
+        "book" -> stringResource(R.string.doulist_book_label)
+        "podcast_episode" -> stringResource(R.string.doulist_podcast_label)
+        else -> stringResource(R.string.title_dou_list)
+    }
+}
