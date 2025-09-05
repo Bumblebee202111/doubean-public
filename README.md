@@ -105,8 +105,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.6)
 
-- Reuse BackButton/MoreButton
-
 ### Next release \(0.9.7)
 
 <details>

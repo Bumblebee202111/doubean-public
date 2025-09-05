@@ -39,11 +39,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.ThumbUp
@@ -110,10 +108,12 @@ import com.github.bumblebee202111.doubean.model.groups.TopicDetail
 import com.github.bumblebee202111.doubean.ui.common.CollectDialogUiState
 import com.github.bumblebee202111.doubean.ui.common.CreateDouListDialog
 import com.github.bumblebee202111.doubean.ui.common.DouListDialog
+import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.DoubeanWebView
 import com.github.bumblebee202111.doubean.ui.component.DoubeanWebViewClient
+import com.github.bumblebee202111.doubean.ui.component.MoreButton
 import com.github.bumblebee202111.doubean.ui.component.SortByDropDownMenu
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
 import com.github.bumblebee202111.doubean.util.DateTimeStyle
@@ -263,20 +263,10 @@ fun TopicScreen(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                        )
-                    }
+                    BackButton(onClick = onBackClick)
                 },
                 actions = {
-                    IconButton(onClick = { appBarMenuExpanded = !appBarMenuExpanded }) {
-                        Icon(
-                            Icons.Filled.MoreVert,
-                            contentDescription = null
-                        )
-                    }
+                    MoreButton(onClick = { appBarMenuExpanded = !appBarMenuExpanded })
 
                     DropdownMenu(
                         expanded = appBarMenuExpanded,

@@ -11,9 +11,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.NotificationAdd
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Button
@@ -23,7 +21,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -60,7 +57,9 @@ import com.github.bumblebee202111.doubean.model.groups.GroupDetail
 import com.github.bumblebee202111.doubean.model.groups.GroupMemberRole
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.groups.GroupTab
+import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.ExpandCollapseText
+import com.github.bumblebee202111.doubean.ui.component.MoreButton
 import com.github.bumblebee202111.doubean.ui.component.doubeanTopAppBarHeight
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.ShareUtil
@@ -309,22 +308,12 @@ fun GroupDetailTopBar(
             }
         },
         navigationIcon = {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = null
-                )
-            }
+            BackButton(onClick = onBackClick)
         },
         actions = {
             var moreExpanded by remember { mutableStateOf(false) }
             var viewInExpanded by remember { mutableStateOf(false) }
-            IconButton(onClick = { moreExpanded = !moreExpanded }) {
-                Icon(
-                    imageVector = Icons.Filled.MoreVert,
-                    contentDescription = null
-                )
-            }
+            MoreButton(onClick = { moreExpanded = !moreExpanded })
             DropdownMenu(expanded = moreExpanded, onDismissRequest = { moreExpanded = false }) {
                 if (group != null) {
                     DropdownMenuItem(
