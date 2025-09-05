@@ -14,8 +14,6 @@ import com.github.bumblebee202111.doubean.data.db.dao.GroupTopicRemoteKeyDao
 import com.github.bumblebee202111.doubean.data.db.dao.UserDao
 import com.github.bumblebee202111.doubean.data.db.dao.UserGroupDao
 import com.github.bumblebee202111.doubean.data.db.model.CachedGroupEntity
-import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupEntity
-import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupTabEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupGroupNotificationTargetEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTabEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTabNotificationTargetEntity
@@ -23,6 +21,7 @@ import com.github.bumblebee202111.doubean.data.db.model.GroupTabTopicRemoteKey
 import com.github.bumblebee202111.doubean.data.db.model.GroupTagTopicItemEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTopicTagEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupUserTopicFeedItemEntity
+import com.github.bumblebee202111.doubean.data.db.model.PinnedGroupTabEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicNotificationEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicTagCrossRef
@@ -49,14 +48,13 @@ import kotlinx.serialization.json.Json
         GroupUserTopicFeedItemEntity::class,
         TopicTagCrossRef::class,
         UserJoinedGroupIdEntity::class,
-        FavoriteGroupEntity::class,
-        FavoriteGroupTabEntity::class,
+        PinnedGroupTabEntity::class,
         GroupGroupNotificationTargetEntity::class,
         GroupTabNotificationTargetEntity::class,
         TopicNotificationEntity::class,
         UserEntity::class,
     ],
-    version = 16,
+    version = 17,
     exportSchema = false
 )
 @TypeConverters(

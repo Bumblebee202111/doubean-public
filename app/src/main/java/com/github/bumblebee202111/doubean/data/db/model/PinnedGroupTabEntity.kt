@@ -6,13 +6,15 @@ import androidx.room.PrimaryKey
 import java.util.Calendar
 
 @Entity(
-    tableName = "favorite_groups",
+    tableName = "pinned_group_tabs",
 )
-data class FavoriteGroupEntity(
+data class PinnedGroupTabEntity(
     @PrimaryKey
+    @ColumnInfo("tab_id")
+    val tabId: String,
     @ColumnInfo("group_id")
-    override val groupId: String,
+    val groupId: String,
+    @ColumnInfo("pinned_date")
+    val pinnedDate: Calendar = Calendar.getInstance(),
+)
 
-    @ColumnInfo("favorite_date")
-    override val favoriteDate: Calendar = Calendar.getInstance(),
-) : FavoriteEntity

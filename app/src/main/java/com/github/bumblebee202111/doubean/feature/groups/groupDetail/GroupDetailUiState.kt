@@ -7,7 +7,6 @@ import com.github.bumblebee202111.doubean.model.groups.SimpleGroupWithColor
 data class GroupDetailUiState(
     val cachedGroup: SimpleGroupWithColor? = null,
     val groupDetail: GroupDetail? = null,
-    val isFavorited: Boolean = false,
     val notificationPreferences: GroupNotificationPreferences? = null,
     val isLoading: Boolean = false,
     val isError: Boolean = false,

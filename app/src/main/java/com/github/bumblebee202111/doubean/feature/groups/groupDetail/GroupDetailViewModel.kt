@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
@@ -13,7 +12,6 @@ import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
-import com.github.bumblebee202111.doubean.ui.model.toUiMessage
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,7 +37,6 @@ class GroupDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(GroupDetailUiState())
     val uiState = _uiState.asStateFlow()
     private val groupDetailResult = groupRepository.getGroup(groupId)
-    private val isFavorited = userGroupRepository.getGroupFavorite(groupId)
     private val notificationPreferences =
         userGroupRepository.getGroupNotificationPreferences(groupId)
     private val defaultNotificationPreferences =
@@ -53,10 +50,9 @@ class GroupDetailViewModel @Inject constructor(
         viewModelScope.launch {
             combine(
                 groupDetailResult,
-                isFavorited,
                 notificationPreferences,
                 defaultNotificationPreferences
-            ) { groupDetailResult, isFavorited, notificationPreferences, defaultNotificationPreferences ->
+            ) { groupDetailResult, notificationPreferences, defaultNotificationPreferences ->
 
                 val uiNotificationPreferences =
                     notificationPreferences ?: defaultNotificationPreferences
@@ -64,7 +60,6 @@ class GroupDetailViewModel @Inject constructor(
                     is CachedAppResult.Error -> {
                         snackBarManager.showMessage(groupDetailResult.error.asUiMessage())
                         GroupDetailUiState(
-                            isFavorited = isFavorited,
                             notificationPreferences = uiNotificationPreferences,
                             isError = true,
                             cachedGroup = groupDetailResult.cache
@@ -73,7 +68,6 @@ class GroupDetailViewModel @Inject constructor(
 
                     is CachedAppResult.Loading -> {
                         GroupDetailUiState(
-                            isFavorited = isFavorited,
                             notificationPreferences = uiNotificationPreferences,
                             isLoading = true,
                             cachedGroup = groupDetailResult.cache
@@ -82,7 +76,6 @@ class GroupDetailViewModel @Inject constructor(
 
                     is CachedAppResult.Success -> {
                         GroupDetailUiState(
-                            isFavorited = isFavorited,
                             notificationPreferences = uiNotificationPreferences,
                             groupDetail = groupDetailResult.data
                         )
@@ -140,22 +133,6 @@ class GroupDetailViewModel @Inject constructor(
             }
         }
     }
-
-    fun addFavorite() {
-        viewModelScope.launch {
-            userGroupRepository.addFavoriteGroup(groupId = groupId)
-            snackBarManager.showMessage(R.string.favorited_group.toUiMessage())
-        }
-
-    }
-
-    fun removeFavorite() {
-        viewModelScope.launch {
-            userGroupRepository.removeFavoriteGroup(groupId)
-            snackBarManager.showMessage(R.string.unfavorited_group.toUiMessage())
-        }
-    }
-
 
     fun saveNotificationPreferences(
         preference: GroupNotificationPreferences,

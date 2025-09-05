@@ -7,17 +7,16 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
-import com.github.bumblebee202111.doubean.data.db.model.SimpleCachedGroupPartialEntity
-import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupEntity
-import com.github.bumblebee202111.doubean.data.db.model.FavoriteGroupTabEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupGroupNotificationTargetEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupGroupNotificationTargetPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTabNotificationTargetEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTabNotificationTargetPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupUserTopicFeedItemEntity
-import com.github.bumblebee202111.doubean.data.db.model.PopulatedGroupFavoriteItem
+import com.github.bumblebee202111.doubean.data.db.model.PinnedGroupTabEntity
+import com.github.bumblebee202111.doubean.data.db.model.PopulatedPinnedTabItem
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItemWithGroup
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicNotificationItem
+import com.github.bumblebee202111.doubean.data.db.model.SimpleCachedGroupPartialEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicNotificationEntity
 import com.github.bumblebee202111.doubean.data.db.model.UserJoinedGroupIdEntity
 import kotlinx.coroutines.flow.Flow
@@ -41,53 +40,33 @@ ON user_joined_group_ids.group_id = cached_groups.id WHERE user_id=:userId ORDER
     fun deleteAllUserJoinedGroupIds()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFavoriteGroup(favoriteGroup: FavoriteGroupEntity)
+    suspend fun pinTab(pinnedTab: PinnedGroupTabEntity)
 
-    @Query("DELETE FROM favorite_groups WHERE group_id=:groupId")
-    suspend fun deleteFavoriteGroup(groupId: String)
+    @Query("DELETE FROM pinned_group_tabs WHERE tab_id=:tabId")
+    suspend fun unpinTab(tabId: String)
 
-    @Query("SELECT EXISTS(SELECT * FROM favorite_groups WHERE group_id= :groupId)")
-    fun loadGroupFavorite(groupId: String): Flow<Boolean>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFavoriteTab(favoriteGroupTab: FavoriteGroupTabEntity)
-
-    @Query("DELETE FROM favorite_group_tabs WHERE tab_id=:tabId")
-    suspend fun deleteFavoriteTab(tabId: String)
-
-    @Query("SELECT EXISTS(SELECT * FROM favorite_group_tabs WHERE tab_id=:tabId)")
-    fun loadTabFavorite(tabId: String): Flow<Boolean>
+    @Query("SELECT EXISTS(SELECT * FROM pinned_group_tabs WHERE tab_id=:tabId)")
+    fun isTabPinned(tabId: String): Flow<Boolean>
 
     @Transaction
     @Query(
         """
         SELECT 
-        favorite_groups.favorite_date AS favorite_date, 
-        favorite_groups.group_id AS group_id, 
-        cached_groups.name AS group_name, 
-        cached_groups.avatar AS group_avatar, 
-        NULL AS tab_id, 
-        NULL AS tab_name 
-        FROM favorite_groups 
-        LEFT OUTER JOIN cached_groups 
-        ON favorite_groups.group_id = cached_groups.id 
-        UNION ALL 
-        SELECT 
-        favorite_group_tabs.favorite_date AS favorite_date, 
+        pinned_group_tabs.pinned_date AS pinned_date, 
         cached_groups.id AS group_id,
         cached_groups.name AS group_name, 
         cached_groups.avatar AS group_avatar, 
-        favorite_group_tabs.tab_id AS tab_id, 
+        pinned_group_tabs.tab_id AS tab_id, 
         group_tabs.name AS tab_name 
-        FROM favorite_group_tabs 
+        FROM pinned_group_tabs 
         LEFT OUTER JOIN group_tabs 
-        ON favorite_group_tabs.tab_id = group_tabs.id 
+        ON pinned_group_tabs.tab_id = group_tabs.id 
         LEFT OUTER JOIN cached_groups 
         ON cached_groups.id = group_tabs.group_id 
-        ORDER BY favorite_date
+        ORDER BY pinned_date
         """
     )
-    fun loadAllFavorites(): Flow<List<PopulatedGroupFavoriteItem>>
+    fun getPinnedTabsWithGroupInfo(): Flow<List<PopulatedPinnedTabItem>>
 
     @Query("SELECT * FROM group_notification_group_targets WHERE group_id = :groupId")
     fun loadGroupNotificationTarget(groupId: String): Flow<GroupGroupNotificationTargetEntity?>

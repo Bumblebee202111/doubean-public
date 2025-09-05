@@ -76,20 +76,20 @@ fun GroupTab(
     contentPadding: PaddingValues = PaddingValues(),
 ) {
     val topicPagingItems = viewModel.topicsPagingData.collectAsLazyPagingItems()
-    val isFavorited by viewModel.isFavorited.collectAsStateWithLifecycle()
+    val isPinned by viewModel.isPinned.collectAsStateWithLifecycle()
     val topicNotificationPreferences by viewModel.topicNotificationPreferences.collectAsStateWithLifecycle()
     val sortBy by viewModel.sortBy.collectAsStateWithLifecycle()
     GroupTab(
         tabId = tabId,
-        isFavorited = isFavorited,
+        isPinned = isPinned,
         topicNotificationPreferences = topicNotificationPreferences,
         topicPagingItems = topicPagingItems,
         sortBy = sortBy,
         group = group,
         isPullToRefreshEnabled = isPullToRefreshEnabled,
         updateSortBy = viewModel::updateSortBy,
-        removeFavorite = viewModel::removeFavorite,
-        addFavorite = viewModel::addFavorite,
+        unpinTab = viewModel::unpinTab,
+        pinTab = viewModel::pinTab,
         saveNotificationsPreference = viewModel::saveNotificationPreferences,
         onTopicClick = onTopicClick,
         onUserClick = onUserClick,
@@ -101,15 +101,15 @@ fun GroupTab(
 @Composable
 fun GroupTab(
     tabId: String?,
-    isFavorited: Boolean?,
+    isPinned: Boolean?,
     topicNotificationPreferences: GroupNotificationPreferences?,
     topicPagingItems: LazyPagingItems<TopicItem>,
     sortBy: TopicSortBy?,
     group: GroupDetail?,
     isPullToRefreshEnabled: Boolean,
     updateSortBy: (topicSortBy: TopicSortBy) -> Unit,
-    removeFavorite: () -> Unit,
-    addFavorite: () -> Unit,
+    unpinTab: () -> Unit,
+    pinTab: () -> Unit,
     saveNotificationsPreference: (preferences: GroupNotificationPreferences) -> Unit,
     onTopicClick: (topicId: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
@@ -141,14 +141,14 @@ fun GroupTab(
             if (group != null) {
                 tabActionsItem(
                     tabId = tabId,
-                    isFavorited = isFavorited,
+                    isPinned = isPinned,
                     topicNotificationPreferences = topicNotificationPreferences,
                     group = group,
                     sortBy = sortBy,
                     onOpenAlertDialog = { openAlertDialog = true },
                     onSortByClick = updateSortBy,
-                    removeFavorite = removeFavorite,
-                    addFavorite = addFavorite
+                    unpinTab = unpinTab,
+                    pinTab = pinTab
                 )
             }
 
@@ -217,14 +217,14 @@ fun GroupTab(
 
 private fun LazyListScope.tabActionsItem(
     tabId: String?,
-    isFavorited: Boolean?,
+    isPinned: Boolean?,
     topicNotificationPreferences: GroupNotificationPreferences?,
     group: GroupDetail,
     sortBy: TopicSortBy?,
     onOpenAlertDialog: () -> Unit,
     onSortByClick: (topicSortBy: TopicSortBy) -> Unit,
-    removeFavorite: () -> Unit,
-    addFavorite: () -> Unit,
+    unpinTab: () -> Unit,
+    pinTab: () -> Unit,
 ) {
 
     item(
@@ -242,27 +242,27 @@ private fun LazyListScope.tabActionsItem(
             )
             Spacer(Modifier.weight(1f))
             val tab = group.tabs.firstOrNull { it.id == tabId }
-            if (tab != null && isFavorited != null && topicNotificationPreferences != null) {
+            if (tab != null && isPinned != null && topicNotificationPreferences != null) {
                 group.findTab(tabId)?.let { tab ->
                     //actions
                     Row {
                         // Only displayed when either condition meets:
-                        // 1. Favorited
+                        // 1. Pinned
                         // 2. Record exists and enabled
-                        if (isFavorited || topicNotificationPreferences.notificationsEnabled == true) {
+                        if (isPinned || topicNotificationPreferences.notificationsEnabled) {
                             TabNotificationsButton(
-                                notificationsEnabled = topicNotificationPreferences.notificationsEnabled == true,
+                                notificationsEnabled = topicNotificationPreferences.notificationsEnabled,
                                 onOpenPreferencesDialog = onOpenAlertDialog
                             )
                         }
                         IconButton(
-                            onClick = if (isFavorited) removeFavorite else addFavorite,
+                            onClick = if (isPinned) unpinTab else pinTab,
                             modifier = Modifier.size(32.dp)
                         ) {
                             Icon(
-                                imageVector = if (isFavorited) Icons.Filled.Star else Icons.Default.StarBorder,
+                                imageVector = if (isPinned) Icons.Filled.Star else Icons.Default.StarBorder,
                                 contentDescription = null,
-                                tint = if (isFavorited) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                                tint = if (isPinned) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
 

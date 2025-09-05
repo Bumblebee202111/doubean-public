@@ -69,8 +69,8 @@ class GroupsHomeViewModel @Inject constructor(
         }
     }.stateInUi(JoinedGroupsUiState(isLoading = true))
 
-    val favorites =
-        userGroupRepository.getAllGroupFavorites().flowOn(Dispatchers.IO).stateInUi()
+    val pinnedTabs =
+        userGroupRepository.getPinnedTabs().flowOn(Dispatchers.IO).stateInUi()
 
     private val _dayRankingUiState =
         MutableStateFlow<DayRankingUiState>(DayRankingUiState.Loading)
