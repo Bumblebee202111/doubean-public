@@ -3,7 +3,6 @@ package com.github.bumblebee202111.doubean.feature.groups.search
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -13,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -24,9 +24,7 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.shared.SearchResultGroupItem
 import com.github.bumblebee202111.doubean.feature.groups.shared.dayRanking
 import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
-import com.github.bumblebee202111.doubean.ui.component.BackButton
-import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
-import com.github.bumblebee202111.doubean.ui.component.SearchTextField
+import com.github.bumblebee202111.doubean.ui.component.DoubeanAppBarWithSearch
 
 @Composable
 fun GroupsSearchScreen(
@@ -59,22 +57,16 @@ fun GroupsSearchScreen(
     onGroupClick: (String) -> Unit,
     onBackClick: () -> Unit,
 ) {
-    Scaffold(topBar = {
-        DoubeanTopAppBar(
-            navigationIcon = {
-                BackButton(onClick = onBackClick)
-            },
-            title = {
-                SearchTextField(
-                    labelTextResId = R.string.search_groups_hint,
-                    modifier = Modifier.fillMaxWidth(),
-                    onQueryChange = onQueryChange,
-                    onSearchTriggered = onSearchTriggered
-                )
-            }
-        )
-    }) {
-
+    Scaffold(
+        topBar = {
+            DoubeanAppBarWithSearch(
+                query = query,
+                onQueryChange = onQueryChange,
+                onSearch = onSearchTriggered,
+                onBackClick = onBackClick,
+                placeholderText = stringResource(R.string.search_groups_hint)
+            )
+        }) {
         if (query.isBlank()) {
             when (dayRankingUiState) {
                 is DayRankingUiState.Success -> {
