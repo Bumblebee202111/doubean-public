@@ -103,15 +103,18 @@ Only selected source code from a private project is shared here to avoid potenti
 
 Upcoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for personal tracking.
 
-### Current release \(0.9.6)
+### Current release \(0.9.7)
 
-### Next release \(0.9.7)
+- Search
+  - `AppBarWithSearch`
+  - Add search history
+
+### Next release \(0.9.8)
 
 <details>
 <summary>Future plans (Click to expand)</summary>
 
 #### High Priority
-- Search: Add search history
 - Subjects: Add related recommendations
 - UI: Allow customizing bottom navigation
 
