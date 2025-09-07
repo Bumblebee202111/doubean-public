@@ -106,7 +106,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 ### Current release \(0.9.7)
 
 - Search
-  - `AppBarWithSearch`
   - Add search history
 
 ### Next release \(0.9.8)

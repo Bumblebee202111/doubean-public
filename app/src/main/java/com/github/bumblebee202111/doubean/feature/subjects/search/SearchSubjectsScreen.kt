@@ -17,7 +17,6 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -33,8 +32,7 @@ import com.github.bumblebee202111.doubean.model.subjects.SubjectSubTag
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectsSearchType
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItem
-import com.github.bumblebee202111.doubean.ui.component.BackButton
-import com.github.bumblebee202111.doubean.ui.component.SearchTextField
+import com.github.bumblebee202111.doubean.ui.component.DoubeanAppBarWithSearch
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 
 @Composable
@@ -72,22 +70,15 @@ fun SearchSubjectsScreen(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(title = {
-                SearchTextField(
-                    labelTextResId = R.string.search_subjects_hint,
-                    modifier = Modifier.fillMaxWidth(),
-                    onQueryChange = onQueryChanged,
-                    onSearchTriggered = { onSearchTriggered() }
-                )
-            },
-                navigationIcon = {
-                    BackButton(onClick = onBackClick)
-                })
-
-
+            DoubeanAppBarWithSearch(
+                query = uiState.query,
+                onQueryChange = onQueryChanged,
+                onSearch = { onSearchTriggered() },
+                onBackClick = onBackClick,
+                placeholderText = stringResource(R.string.search_subjects_hint)
+            )
         }
     ) { innerPadding ->
-
         Column(
             Modifier
                 .fillMaxSize()
