@@ -1,11 +1,13 @@
 Change Log
 ==========
 
+## Version 0.9.8(90800)
+
 ## Version 0.9.7(90700)
 
 **New Features**
 
-- Your recent searches are now saved for quick access.
+- Your recent searches are now saved for quick access. ([#15](https://github.com/Bumblebee202111/doubean-public/issues/15))
 
 **Improvements**
 

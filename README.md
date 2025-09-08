@@ -103,18 +103,24 @@ Only selected source code from a private project is shared here to avoid potenti
 
 Upcoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for personal tracking.
 
-### Current release \(0.9.7)
+### Current release \(0.9.8)
 
-### Next release \(0.9.8)
+- Subjects: Add related recommendations ([#15](https://github.com/Bumblebee202111/doubean-public/issues/15))
+- GroupSearch: Fix missing Day Ranking 
+
+### Next release \(0.9.9)
+
+- i18n: Language selection
 
 <details>
 <summary>Future plans (Click to expand)</summary>
 
 #### High Priority
-- Subjects: Add related recommendations
-- UI: Allow customizing bottom navigation
-
 #### Backlog
+- Navigation
+  - Navigation 3 when beta
+  - Allow customizing bottom navigation
+  - Shared element transitions for images
 - Groups 
   - Interactions
     - Pin my groups
@@ -156,11 +162,8 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 - Shortcuts
 - Improve login prompts & tooltips
 - Use bottom sheets for list item menus
-- Shared element transitions for images
 - Improve model layering
-- i18n
-  - Translations
-  - Language selection
+- i18n: Translations
 - NetworkManager
 - Widgets: Calender today
 - QR
