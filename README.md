@@ -105,8 +105,10 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.7)
 
-- Search
-  - Add search history
+- Pin
+  - Update icon
+  - Rethink what it should do
+- Add "advanced" in root-required Settings items
 
 ### Next release \(0.9.8)
 

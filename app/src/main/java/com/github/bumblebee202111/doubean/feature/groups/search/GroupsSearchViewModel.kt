@@ -7,10 +7,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
+import com.github.bumblebee202111.doubean.data.repository.SearchHistoryRepository
 import com.github.bumblebee202111.doubean.model.AppError
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
+import com.github.bumblebee202111.doubean.model.search.SearchType
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
+import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,24 +22,29 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class GroupsSearchViewModel @Inject constructor(
     private val groupRepository: GroupRepository,
+    private val searchHistoryRepository: SearchHistoryRepository,
     private val snackbarManager: SnackbarManager,
 ) :
     ViewModel() {
+    /**
+     * Represents the LAST SUBMITTED query, not the live text in the search bar.
+     * This is used to trigger the PagingData flow.
+     */
     private val _query = MutableStateFlow("")
-
     val query = _query.asStateFlow()
+
+    val searchHistory = searchHistoryRepository.getHistory(SearchType.GROUPS).stateInUi(emptyList())
+
     private val _dayRankingUiState = MutableStateFlow<DayRankingUiState>(DayRankingUiState.Loading)
     val dayRankingUiState = _dayRankingUiState.asStateFlow()
 
     init {
         viewModelScope.launch {
-
             when (val result = groupRepository.getDayRanking()) {
                 is AppResult.Error -> {
                     snackbarManager.showMessage(result.error.asUiMessage())
@@ -62,15 +70,40 @@ class GroupsSearchViewModel @Inject constructor(
 
         }.cachedIn(viewModelScope)
 
+    /**
+     * This is called on every key press, but we only update the submitted query
+     * if the user has cleared the text field. This allows the UI to return
+     * to showing the Day Ranking.
+     */
     fun onQueryChange(query: String) {
         if (query.isBlank()) {
             this._query.value = query
         }
     }
 
+    /**
+     * Commits the user's input as the new search query, which triggers the
+     * results Flow to fetch new paged data and adds the term to history.
+     */
     fun onSearchTriggered(originalInput: String) {
-        val input = originalInput.lowercase(Locale.getDefault()).trim()
+        val input = originalInput.trim()
         _query.value = input
+
+        viewModelScope.launch {
+            searchHistoryRepository.addSearchTerm(SearchType.GROUPS, input)
+        }
+    }
+
+    fun onDeleteHistoryItem(query: String) {
+        viewModelScope.launch {
+            searchHistoryRepository.deleteSearchTerm(SearchType.GROUPS, query)
+        }
+    }
+
+    fun onClearHistory() {
+        viewModelScope.launch {
+            searchHistoryRepository.clearHistory(SearchType.GROUPS)
+        }
     }
 }
 

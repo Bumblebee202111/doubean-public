@@ -4,11 +4,14 @@ package com.github.bumblebee202111.doubean.feature.subjects.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.bumblebee202111.doubean.data.repository.SearchHistoryRepository
 import com.github.bumblebee202111.doubean.data.repository.SearchSubjectsRepository
 import com.github.bumblebee202111.doubean.model.AppResult
+import com.github.bumblebee202111.doubean.model.search.SearchType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectsSearchType
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.model.toUiMessage
+import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchSubjectsViewModel @Inject constructor(
     private val repository: SearchSubjectsRepository,
+    private val searchHistoryRepository: SearchHistoryRepository,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SearchResultUiState())
@@ -28,10 +32,21 @@ class SearchSubjectsViewModel @Inject constructor(
 
     private var currentJob: Job? = null
 
+    val searchHistory =
+        searchHistoryRepository.getHistory(SearchType.SUBJECTS).stateInUi(emptyList())
+
+    /**
+     * Updates the query in the UI state in real-time as the user types.
+     * This allows the UI to decide whether to show history or results.
+     */
     fun onQueryChanged(newQuery: String) {
         _uiState.value = _uiState.value.copy(query = newQuery)
+
     }
 
+    /**
+     * Finalizes the search, adds the query to history, and fetches results.
+     */
     fun onSearchTriggered() {
         val query = _uiState.value.query
 
@@ -39,6 +54,11 @@ class SearchSubjectsViewModel @Inject constructor(
             _uiState.value = SearchResultUiState()
             return
         }
+
+        viewModelScope.launch {
+            searchHistoryRepository.addSearchTerm(SearchType.SUBJECTS, query)
+        }
+
         _uiState.value = _uiState.value.copy(
             types = null,
             isLoading = true,
@@ -70,6 +90,23 @@ class SearchSubjectsViewModel @Inject constructor(
                 }
             }
 
+        }
+    }
+
+    fun onHistoryItemSelected(query: String) {
+        onQueryChanged(query)
+        onSearchTriggered()
+    }
+
+    fun onDeleteHistoryItem(query: String) {
+        viewModelScope.launch {
+            searchHistoryRepository.deleteSearchTerm(SearchType.SUBJECTS, query)
+        }
+    }
+
+    fun onClearHistory() {
+        viewModelScope.launch {
+            searchHistoryRepository.clearHistory(SearchType.SUBJECTS)
         }
     }
 

@@ -11,6 +11,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.github.bumblebee202111.doubean.data.db.dao.GroupDao
 import com.github.bumblebee202111.doubean.data.db.dao.GroupTopicDao
 import com.github.bumblebee202111.doubean.data.db.dao.GroupTopicRemoteKeyDao
+import com.github.bumblebee202111.doubean.data.db.dao.SearchHistoryDao
 import com.github.bumblebee202111.doubean.data.db.dao.UserDao
 import com.github.bumblebee202111.doubean.data.db.dao.UserGroupDao
 import com.github.bumblebee202111.doubean.data.db.model.CachedGroupEntity
@@ -22,6 +23,7 @@ import com.github.bumblebee202111.doubean.data.db.model.GroupTagTopicItemEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTopicTagEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupUserTopicFeedItemEntity
 import com.github.bumblebee202111.doubean.data.db.model.PinnedGroupTabEntity
+import com.github.bumblebee202111.doubean.data.db.model.SearchHistoryEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicNotificationEntity
 import com.github.bumblebee202111.doubean.data.db.model.TopicTagCrossRef
@@ -53,8 +55,9 @@ import kotlinx.serialization.json.Json
         GroupTabNotificationTargetEntity::class,
         TopicNotificationEntity::class,
         UserEntity::class,
+        SearchHistoryEntity::class
     ],
-    version = 17,
+    version = 18,
     exportSchema = false
 )
 @TypeConverters(
@@ -67,6 +70,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun userGroupDao(): UserGroupDao
     abstract fun groupTopicDao(): GroupTopicDao
     abstract fun groupTopicRemoteKeyDao(): GroupTopicRemoteKeyDao
+    abstract fun searchHistoryDao(): SearchHistoryDao
 
     companion object {
         @Volatile

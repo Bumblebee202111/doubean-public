@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import com.github.bumblebee202111.doubean.R
@@ -31,6 +32,7 @@ import kotlinx.coroutines.delay
  * @param onQueryChange The callback to notify the ViewModel of text changes.
  * @param onSearch The callback to notify the ViewModel that a search has been triggered.
  * @param onBackClick The callback for the navigation back button.
+ * @param onFocusChanged Callback to notify the parent of focus state changes.
  * @param placeholderText The hint text to display in the search bar.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,6 +42,7 @@ fun DoubeanAppBarWithSearch(
     onQueryChange: (String) -> Unit,
     onSearch: (String) -> Unit,
     onBackClick: () -> Unit,
+    onFocusChanged: (isFocused: Boolean) -> Unit,
     placeholderText: String,
 ) {
     val searchBarState = rememberSearchBarState()
@@ -69,7 +72,11 @@ fun DoubeanAppBarWithSearch(
 
     val inputField = @Composable {
         SearchBarDefaults.InputField(
-            modifier = Modifier.focusRequester(focusRequester),
+            modifier = Modifier
+                .focusRequester(focusRequester)
+                .onFocusChanged { focusState ->
+                    onFocusChanged(focusState.isFocused)
+                },
             searchBarState = searchBarState,
             textFieldState = textFieldState,
             onSearch = {
