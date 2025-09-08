@@ -10,6 +10,7 @@ Change Log
 **Improvements**
 
 - Updated the search bar on all search screens to a new, modern design.
+- Updated the icon for pinning tabs to be a pushpin for better clarity.
 
 ## Version 0.9.6(90600)
 
