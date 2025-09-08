@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+## Version 0.9.7(90700)
+
+**New Features**
+
+- Your recent searches are now saved for quick access.
+
+**Improvements**
+
+- Updated the search bar on all search screens to a new, modern design.
+- Updated the icon for pinning tabs to be a pushpin for better clarity.
+- Cleaned up the Settings screen by centralizing all session import actions on the Login screen.
+
 ## Version 0.9.6(90600)
 
 **Improvements**
