@@ -4,11 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,6 +17,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -26,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.feature.search.common.SearchHistory
+import com.github.bumblebee202111.doubean.feature.search.common.SearchHistoryList
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectItemBasicContent
 import com.github.bumblebee202111.doubean.model.subjects.SearchResultSubjectItem
 import com.github.bumblebee202111.doubean.model.subjects.SubjectSubTag
@@ -44,11 +47,17 @@ fun SearchSubjectsScreen(
     viewModel: SearchSubjectsViewModel = hiltViewModel(),
 ) {
     val searchResultUiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val history by viewModel.searchHistory.collectAsStateWithLifecycle()
+
     SearchSubjectsScreen(
         uiState = searchResultUiState,
+        history = history,
         onSearchTriggered = viewModel::onSearchTriggered,
         onBackClick = onBackClick,
         onQueryChanged = viewModel::onQueryChanged,
+        onHistoryClick = viewModel::onHistoryItemSelected,
+        onDeleteHistoryItem = viewModel::onDeleteHistoryItem,
+        onClearHistory = viewModel::onClearHistory,
         onTypeSelected = viewModel::onTypeSelected,
         onMovieClick = onMovieClick,
         onTvClick = onTvClick,
@@ -60,14 +69,19 @@ fun SearchSubjectsScreen(
 @Composable
 fun SearchSubjectsScreen(
     uiState: SearchResultUiState,
+    history: List<SearchHistory>,
     onBackClick: () -> Unit,
     onQueryChanged: (query: String) -> Unit,
     onSearchTriggered: () -> Unit,
+    onHistoryClick: (String) -> Unit,
+    onDeleteHistoryItem: (String) -> Unit,
+    onClearHistory: () -> Unit,
     onTypeSelected: (SubjectsSearchType) -> Unit,
     onMovieClick: (movieId: String) -> Unit,
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
 ) {
+    var isSearchFocused by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
             DoubeanAppBarWithSearch(
@@ -75,6 +89,7 @@ fun SearchSubjectsScreen(
                 onQueryChange = onQueryChanged,
                 onSearch = { onSearchTriggered() },
                 onBackClick = onBackClick,
+                onFocusChanged = { isSearchFocused = it },
                 placeholderText = stringResource(R.string.search_subjects_hint)
             )
         }
@@ -84,34 +99,44 @@ fun SearchSubjectsScreen(
                 .fillMaxSize()
                 .padding(top = innerPadding.calculateTopPadding())
         ) {
-            val items = uiState.items
-            uiState.types?.let { types ->
-                TypeFilter(
-                    types = types,
-                    selectedType = uiState.selectedType,
-                    onTypeSelected = onTypeSelected
-                )
-            }
 
-            when {
-                uiState.isLoading -> LinearProgressIndicator(Modifier.fillMaxWidth())
-                items == null -> Unit
-                items.isEmpty() -> Text(
-                    stringResource(R.string.empty_search_result),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = innerPadding.calculateBottomPadding())
-                        .wrapContentSize()
+            if (uiState.query.isBlank() && isSearchFocused) {
+                SearchHistoryList(
+                    history = history,
+                    onHistoryClick = onHistoryClick,
+                    onDeleteClick = onDeleteHistoryItem,
+                    onClearAllClick = onClearHistory
                 )
+            } else {
+                val items = uiState.items
+                uiState.types?.let { types ->
+                    TypeFilter(
+                        types = types,
+                        selectedType = uiState.selectedType,
+                        onTypeSelected = onTypeSelected
+                    )
+                }
 
-                else -> SearchResultBody(
-                    type = uiState.selectedType,
-                    searchResultSubjects = items,
-                    contentPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding()),
-                    onMovieClick = onMovieClick,
-                    onTvClick = onTvClick,
-                    onBookClick = onBookClick
-                )
+                when {
+                    uiState.isLoading -> LinearProgressIndicator(Modifier.fillMaxWidth())
+                    items == null -> Unit
+                    items.isEmpty() -> Text(
+                        stringResource(R.string.empty_search_result),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = innerPadding.calculateBottomPadding())
+                            .wrapContentSize()
+                    )
+
+                    else -> SearchResultBody(
+                        type = uiState.selectedType,
+                        searchResultSubjects = items,
+                        contentPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding()),
+                        onMovieClick = onMovieClick,
+                        onTvClick = onTvClick,
+                        onBookClick = onBookClick
+                    )
+                }
             }
         }
     }
@@ -149,6 +174,7 @@ private fun SearchResultBody(
 ) {
     LazyColumn(
         modifier = Modifier.padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = contentPadding
     ) {
         items(items = searchResultSubjects, key = { it.id }) { subject ->
@@ -181,9 +207,6 @@ private fun SearchResultBody(
                 },
 
                 )
-            if (subject != searchResultSubjects.last()) {
-                Spacer(modifier = Modifier.size(8.dp))
-            }
         }
     }
 }

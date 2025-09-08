@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import com.github.bumblebee202111.doubean.R
@@ -31,6 +32,7 @@ fun DoubeanAppBarWithSearch(
     onQueryChange: (String) -> Unit,
     onSearch: (String) -> Unit,
     onBackClick: () -> Unit,
+    onFocusChanged: (isFocused: Boolean) -> Unit,
     placeholderText: String,
 ) {
     val searchBarState = rememberSearchBarState()
@@ -60,7 +62,11 @@ fun DoubeanAppBarWithSearch(
 
     val inputField = @Composable {
         SearchBarDefaults.InputField(
-            modifier = Modifier.focusRequester(focusRequester),
+            modifier = Modifier
+                .focusRequester(focusRequester)
+                .onFocusChanged { focusState ->
+                    onFocusChanged(focusState.isFocused)
+                },
             searchBarState = searchBarState,
             textFieldState = textFieldState,
             onSearch = {
