@@ -3,10 +3,7 @@ package com.github.bumblebee202111.doubean.feature.settings
 import android.content.Context
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,7 +44,6 @@ fun SettingsScreen(
         toggleSetGroupsAsStartDestination = viewModel::toggleSetGroupsAsStartDestination,
         toggleEnableNotifications = viewModel::toggleEnableNotifications,
         toggleAutoImportSessionAtStartup = viewModel::toggleAutoImportSessionAtStartup,
-        triggerAutoImport = viewModel::triggerAutoImport,
         logout = viewModel::logout,
         onGroupDefaultNotificationsPreferencesSettingsClick = onGroupDefaultNotificationsPreferencesSettingsClick,
         onLoginClick = onLoginClick
@@ -65,7 +61,6 @@ fun SettingsScreen(
     toggleSetGroupsAsStartDestination: () -> Unit,
     toggleEnableNotifications: () -> Unit,
     toggleAutoImportSessionAtStartup: () -> Unit,
-    triggerAutoImport: () -> Unit,
     logout: () -> Unit,
     onGroupDefaultNotificationsPreferencesSettingsClick: () -> Unit,
     onLoginClick: () -> Unit,
@@ -146,23 +141,13 @@ fun SettingsScreen(
                 item {
                     SwitchPreferenceItem(
                         title = stringResource(R.string.settings_auto_import_title),
+                        summary = stringResource(R.string.settings_auto_import_summary),
                         checked = autoImportSessionAtStartup,
                         onCheckedChange = { toggleAutoImportSessionAtStartup() }
                     )
                 }
             }
-            item {
-                ClickablePreferenceItem(
-                    title = stringResource(R.string.settings_manual_import_title),
-                    onClick = triggerAutoImport,
-                    summary = stringResource(R.string.settings_manual_import_summary),
-                    trailingContent = {
-                        Icon(
-                            imageVector = Icons.Default.Sync,
-                            contentDescription = null
-                        )
-                    })
-            }
+
             if (isLoggedIn == false) {
                 item {
                     ClickablePreferenceItem(

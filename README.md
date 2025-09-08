@@ -105,8 +105,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.7)
 
-- Add "advanced" in root-required Settings items
-
 ### Next release \(0.9.8)
 
 <details>
@@ -120,7 +118,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 - Groups 
   - Interactions
     - Pin my groups
-    - Official app-style list item actions
+    - Official-style list item actions
   - Simplify topic caching
   - Search:
     - Topics within a group/tab
@@ -151,19 +149,14 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Edit/remove posts
   - Follow Doulists
   - List/post pagination
-- Sync more source to public repo
 - Persist last-active tab
-- Full deep linking support
 - Expand/collapse component: Hide action for short text
 - Search suggestions
 - Login: Code-based (w/o pw)
 - Shortcuts
 - Improve login prompts & tooltips
-- Restore load state visualization (removed during Compose migration)
-  - Paging 3 refresh, loading status ...
-- Restore dark mode & landscape support
-- ImageScreen → Shared element transitions
-- List item menus → Bottom dialog sheets
+- Use bottom sheets for list item menus
+- Shared element transitions for images
 - Improve model layering
 - i18n
   - Translations
@@ -176,6 +169,13 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 - Statuses (maintenance mode)
   - Additional card types
   - Pagination
+
+#### Ongoing Improvements
+
+- Improve list loading states (e.g., retry buttons)
+- Ensure basic dark mode, landscape & tablet support
+- Sync more source to public repo
+- Full deep linking support
 - Test
 
 </details>

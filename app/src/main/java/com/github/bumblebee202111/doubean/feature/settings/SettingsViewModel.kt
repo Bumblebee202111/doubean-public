@@ -45,12 +45,6 @@ class SettingsViewModel @Inject constructor(
 
     }
 
-    fun triggerAutoImport() {
-        viewModelScope.launch {
-            authRepository.syncSessionFromDoubanPrefs()
-        }
-    }
-
     fun logout() {
         viewModelScope.launch {
             authRepository.unregisterDevice()
