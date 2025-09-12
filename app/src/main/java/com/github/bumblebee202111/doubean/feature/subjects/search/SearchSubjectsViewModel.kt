@@ -35,39 +35,34 @@ class SearchSubjectsViewModel @Inject constructor(
     val searchHistory =
         searchHistoryRepository.getHistory(SearchType.SUBJECTS).stateInUi(emptyList())
 
-    /**
-     * Updates the query in the UI state in real-time as the user types.
-     * This allows the UI to decide whether to show history or results.
-     */
     fun onQueryChanged(newQuery: String) {
         _uiState.value = _uiState.value.copy(query = newQuery)
 
     }
 
-    /**
-     * Finalizes the search, adds the query to history, and fetches results.
-     */
-    fun onSearchTriggered() {
-        val query = _uiState.value.query
+    fun onSearchTriggered(searchInput: String) {
+        val trimmedQuery = searchInput.trim()
 
-        if (query.isBlank()) {
-            _uiState.value = SearchResultUiState()
+        if (trimmedQuery.isBlank()) {
+            _uiState.value = SearchResultUiState(query = "")
             return
         }
 
-        viewModelScope.launch {
-            searchHistoryRepository.addSearchTerm(SearchType.SUBJECTS, query)
-        }
-
         _uiState.value = _uiState.value.copy(
+            query = trimmedQuery,
             types = null,
             isLoading = true,
             selectedType = null
         )
+
+        viewModelScope.launch {
+            searchHistoryRepository.addSearchTerm(SearchType.SUBJECTS, trimmedQuery)
+        }
+
         currentJob?.cancel()
         currentJob = viewModelScope.launch {
             val result = repository.searchSubjects(
-                query = query
+                query = trimmedQuery
             )
             _uiState.value = when (result) {
                 is AppResult.Error -> {
@@ -91,11 +86,6 @@ class SearchSubjectsViewModel @Inject constructor(
             }
 
         }
-    }
-
-    fun onHistoryItemSelected(query: String) {
-        onQueryChanged(query)
-        onSearchTriggered()
     }
 
     fun onDeleteHistoryItem(query: String) {

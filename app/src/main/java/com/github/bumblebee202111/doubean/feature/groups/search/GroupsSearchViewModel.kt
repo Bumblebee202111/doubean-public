@@ -70,28 +70,20 @@ class GroupsSearchViewModel @Inject constructor(
 
         }.cachedIn(viewModelScope)
 
-    /**
-     * This is called on every key press, but we only update the submitted query
-     * if the user has cleared the text field. This allows the UI to return
-     * to showing the Day Ranking.
-     */
-    fun onQueryChange(query: String) {
-        if (query.isBlank()) {
-            this._query.value = query
+    fun onQueryChange(currentInput: String) {
+        if (currentInput.isBlank()) {
+            this._query.value = currentInput
         }
     }
 
-    /**
-     * Commits the user's input as the new search query, which triggers the
-     * results Flow to fetch new paged data and adds the term to history.
-     */
-    fun onSearchTriggered(originalInput: String) {
-        val input = originalInput.trim()
-        _query.value = input
-
-        viewModelScope.launch {
-            searchHistoryRepository.addSearchTerm(SearchType.GROUPS, input)
+    fun onSearchTriggered(searchInput: String) {
+        val trimmedQuery = searchInput.trim()
+        if (trimmedQuery.isNotBlank()) {
+            viewModelScope.launch {
+                searchHistoryRepository.addSearchTerm(SearchType.GROUPS, trimmedQuery)
+            }
         }
+        _query.value = trimmedQuery
     }
 
     fun onDeleteHistoryItem(query: String) {

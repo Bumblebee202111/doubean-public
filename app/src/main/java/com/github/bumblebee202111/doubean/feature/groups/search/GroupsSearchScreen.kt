@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,9 +27,9 @@ import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.shared.SearchResultGroupItem
 import com.github.bumblebee202111.doubean.feature.groups.shared.dayRanking
-import com.github.bumblebee202111.doubean.feature.search.common.SearchHistory
-import com.github.bumblebee202111.doubean.feature.search.common.SearchHistoryList
+import com.github.bumblebee202111.doubean.feature.search.common.searchHistory
 import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
+import com.github.bumblebee202111.doubean.model.search.SearchHistory
 import com.github.bumblebee202111.doubean.ui.component.DoubeanAppBarWithSearch
 
 @Composable
@@ -48,7 +49,6 @@ fun GroupsSearchScreen(
         dayRankingUiState = dayRankingUiState,
         onQueryChange = viewModel::onQueryChange,
         onSearchTriggered = viewModel::onSearchTriggered,
-        onHistoryClick = viewModel::onQueryChange,
         onDeleteHistoryItem = viewModel::onDeleteHistoryItem,
         onClearHistory = viewModel::onClearHistory,
         onGroupClick = onGroupClick,
@@ -65,20 +65,25 @@ fun GroupsSearchScreen(
     dayRankingUiState: DayRankingUiState,
     onQueryChange: (String) -> Unit,
     onSearchTriggered: (String) -> Unit,
-    onHistoryClick: (String) -> Unit,
     onDeleteHistoryItem: (String) -> Unit,
     onClearHistory: () -> Unit,
     onGroupClick: (String) -> Unit,
     onBackClick: () -> Unit,
 ) {
     var isSearchFocused by remember { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    val onSearchAndHideKeyboard = { searchInput: String ->
+        keyboardController?.hide()
+        onSearchTriggered(searchInput)
+    }
 
     Scaffold(
         topBar = {
             DoubeanAppBarWithSearch(
                 query = query,
                 onQueryChange = onQueryChange,
-                onSearch = onSearchTriggered,
+                onSearch = onSearchAndHideKeyboard,
                 onBackClick = onBackClick,
                 onFocusChanged = { isSearchFocused = it },
                 placeholderText = stringResource(R.string.search_groups_hint)
@@ -86,25 +91,18 @@ fun GroupsSearchScreen(
         }) { innerPadding ->
         when {
             query.isBlank() && isSearchFocused -> {
-                SearchHistoryList(
-                    modifier = Modifier.padding(innerPadding),
-                    history = history,
-                    onHistoryClick = onHistoryClick,
-                    onDeleteClick = onDeleteHistoryItem,
-                    onClearAllClick = onClearHistory
-                )
-            }
-
-            query.isBlank() -> {
-                if (dayRankingUiState is DayRankingUiState.Success) {
-                    LazyColumn(
-                        contentPadding = innerPadding
-                    ) {
+                LazyColumn(contentPadding = innerPadding) {
+                    searchHistory(
+                        history = history,
+                        onHistoryClick = onSearchAndHideKeyboard,
+                        onDeleteClick = onDeleteHistoryItem,
+                        onClearAllClick = onClearHistory
+                    )
+                    if (dayRankingUiState is DayRankingUiState.Success) {
                         dayRanking(dayRankingUiState.items, onGroupClick)
                     }
                 }
             }
-
             else -> {
                 GroupList(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
