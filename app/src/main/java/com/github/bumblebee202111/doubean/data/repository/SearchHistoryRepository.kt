@@ -4,7 +4,7 @@ import com.github.bumblebee202111.doubean.data.db.AppDatabase
 import com.github.bumblebee202111.doubean.data.db.dao.SearchHistoryDao
 import com.github.bumblebee202111.doubean.data.db.model.SearchHistoryEntity
 import com.github.bumblebee202111.doubean.data.db.model.toSearchHistory
-import com.github.bumblebee202111.doubean.feature.search.common.SearchHistory
+import com.github.bumblebee202111.doubean.model.search.SearchHistory
 import com.github.bumblebee202111.doubean.model.search.SearchType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

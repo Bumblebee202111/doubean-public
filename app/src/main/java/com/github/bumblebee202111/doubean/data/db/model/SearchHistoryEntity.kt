@@ -2,7 +2,7 @@ package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.github.bumblebee202111.doubean.feature.search.common.SearchHistory
+import com.github.bumblebee202111.doubean.model.search.SearchHistory
 import java.time.LocalDateTime
 
 @Entity(tableName = "search_history")
