@@ -22,14 +22,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.search.common.SearchHistory
-import com.github.bumblebee202111.doubean.feature.search.common.SearchHistoryList
+import com.github.bumblebee202111.doubean.feature.search.common.searchHistory
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectItemBasicContent
+import com.github.bumblebee202111.doubean.model.search.SearchHistory
 import com.github.bumblebee202111.doubean.model.subjects.SearchResultSubjectItem
 import com.github.bumblebee202111.doubean.model.subjects.SubjectSubTag
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
@@ -55,7 +56,6 @@ fun SearchSubjectsScreen(
         onSearchTriggered = viewModel::onSearchTriggered,
         onBackClick = onBackClick,
         onQueryChanged = viewModel::onQueryChanged,
-        onHistoryClick = viewModel::onHistoryItemSelected,
         onDeleteHistoryItem = viewModel::onDeleteHistoryItem,
         onClearHistory = viewModel::onClearHistory,
         onTypeSelected = viewModel::onTypeSelected,
@@ -72,8 +72,7 @@ fun SearchSubjectsScreen(
     history: List<SearchHistory>,
     onBackClick: () -> Unit,
     onQueryChanged: (query: String) -> Unit,
-    onSearchTriggered: () -> Unit,
-    onHistoryClick: (String) -> Unit,
+    onSearchTriggered: (query: String) -> Unit,
     onDeleteHistoryItem: (String) -> Unit,
     onClearHistory: () -> Unit,
     onTypeSelected: (SubjectsSearchType) -> Unit,
@@ -82,32 +81,41 @@ fun SearchSubjectsScreen(
     onBookClick: (bookId: String) -> Unit,
 ) {
     var isSearchFocused by remember { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    val onSearchAndHideKeyboard = { query: String ->
+        keyboardController?.hide()
+        onSearchTriggered(query)
+    }
+
     Scaffold(
         topBar = {
             DoubeanAppBarWithSearch(
                 query = uiState.query,
                 onQueryChange = onQueryChanged,
-                onSearch = { onSearchTriggered() },
+                onSearch = onSearchAndHideKeyboard,
                 onBackClick = onBackClick,
                 onFocusChanged = { isSearchFocused = it },
                 placeholderText = stringResource(R.string.search_subjects_hint)
             )
         }
     ) { innerPadding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(top = innerPadding.calculateTopPadding())
-        ) {
 
-            if (uiState.query.isBlank() && isSearchFocused) {
-                SearchHistoryList(
+        if (uiState.query.isBlank() && isSearchFocused) {
+            LazyColumn(contentPadding = innerPadding) {
+                searchHistory(
                     history = history,
-                    onHistoryClick = onHistoryClick,
+                    onHistoryClick = onSearchAndHideKeyboard,
                     onDeleteClick = onDeleteHistoryItem,
                     onClearAllClick = onClearHistory
                 )
-            } else {
+            }
+        } else {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(top = innerPadding.calculateTopPadding())
+            ) {
                 val items = uiState.items
                 uiState.types?.let { types ->
                     TypeFilter(

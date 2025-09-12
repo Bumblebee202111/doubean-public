@@ -105,21 +105,22 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.8)
 
-- Subjects: Add related recommendations ([#15](https://github.com/Bumblebee202111/doubean-public/issues/15))
 - GroupSearch: Fix missing Day Ranking 
 
 ### Next release \(0.9.9)
 
-- i18n: Language selection
+- Subjects: Add related recommendations ([#15](https://github.com/Bumblebee202111/doubean-public/issues/15))
 
 <details>
 <summary>Future plans (Click to expand)</summary>
-
 #### High Priority
+
+- i18n: Language selection
+
 #### Backlog
 - Navigation
   - Navigation 3 when beta
-  - Allow customizing bottom navigation
+  - Allow customizing bottom navigation ([#16](https://github.com/Bumblebee202111/doubean-public/issues/16))
   - Shared element transitions for images
 - Groups 
   - Interactions
@@ -147,6 +148,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Investigate API for *all* followed topics like desktop Web app (currently seems unlikely)
     - Use as home/notifications data source
 - Subjects
+  - Search: Fix filter auto-selecting the wrong tag when the first option is hidden
   - Subject Detail: Ratings histogram
   - Color schemes
   - More
