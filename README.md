@@ -103,19 +103,18 @@ Only selected source code from a private project is shared here to avoid potenti
 
 Upcoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for personal tracking.
 
-### Current release \(0.9.8)
-
-- GroupSearch: Fix missing Day Ranking 
-
-### Next release \(0.9.9)
+### Current release \(0.9.9)
 
 - Subjects: Add related recommendations ([#15](https://github.com/Bumblebee202111/doubean-public/issues/15))
 
-<details>
-<summary>Future plans (Click to expand)</summary>
-#### High Priority
+### Next release \(0.9.10)
 
 - i18n: Language selection
+
+<details>
+<summary>Future plans (Click to expand)</summary>
+
+#### High Priority
 
 #### Backlog
 - Navigation
