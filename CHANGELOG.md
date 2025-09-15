@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+## Version 0.9.9(90900)
+
+**New Features** 
+
+- Added recommendations for related items on subject detail pages.  ([#15](https://github.com/Bumblebee202111/doubean-public/issues/15))
+
+**Bug Fixes** 
+
+- Fixed content scrolling over the status bar on search screens.
+- Fixed incorrect filter selection and misleading "No results" message for searches with unsupported types (e.g., "林俊杰").
+
 ## Version 0.9.8(90800)
 
 **Bug Fixes**
@@ -30,18 +41,18 @@ Change Log
 
 **New Features**
 
-*   Create a new doulist directly when collecting an item.
-*   Edit the title of your doulists from the "More" menu.
+- Create a new doulist directly when collecting an item.
+- Edit the title of your doulists from the "More" menu.
 
 **Bug Fixes**
 
-*   Fixed an issue where some lists of doulists could fail to load.
+- Fixed an issue where some lists of doulists could fail to load.
 
 ## Version 0.9.4(90400)
 
 **Bug Fixes** 
 
-* Fixed an issue where some topics failed to load due to an unexpected date format. (fix #12 #13)
+- Fixed an issue where some topics failed to load due to an unexpected date format. (fix #12 #13)
 
 ## Version 0.9.3(90300)
 
@@ -254,8 +265,8 @@ Change Log
   - Also apply rounded corners to all subject covers
 - 'Null' ratings are correctly shown with the reasons
 - Groups: (Quickly) fix comment like icon and image area sometimes disappearing when entering from bottom
-  * This fix might make the list laggy
-  * The comment item layout needs full Compose migration
+  - This fix might make the list laggy
+  - The comment item layout needs full Compose migration
 - Fix crash caused by duplicate keys in celebrity list
 - Fix nullability of rating of subject interests
 
