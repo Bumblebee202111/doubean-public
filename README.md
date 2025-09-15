@@ -105,8 +105,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.9)
 
-- Fix contentPadding of Group Searches
-
 ### Next release \(0.9.10)
 
 - i18n: Language selection
