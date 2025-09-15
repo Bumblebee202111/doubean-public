@@ -168,19 +168,28 @@ fun MainNavHost(
             onBackClick = navController::navigateUp,
             onLoginClick = navController::navigateToLogin,
             onImageClick = navController::navigateToImage,
-            onUserClick = navController::navigateToUserProfile
+            onUserClick = navController::navigateToUserProfile,
+            onMovieClick = navController::navigateToMovie,
+            onTvClick = navController::navigateToTv,
+            onBookClick = navController::navigateToBook
         )
         tvScreen(
             onBackClick = navController::navigateUp,
             onLoginClick = navController::navigateToLogin,
             onImageClick = navController::navigateToImage,
-            onUserClick = navController::navigateToUserProfile
+            onUserClick = navController::navigateToUserProfile,
+            onMovieClick = navController::navigateToMovie,
+            onTvClick = navController::navigateToTv,
+            onBookClick = navController::navigateToBook
         )
         bookScreen(
             onBackClick = navController::navigateUp,
             onLoginClick = navController::navigateToLogin,
             onImageClick = navController::navigateToImage,
-            onUserClick = navController::navigateToUserProfile
+            onUserClick = navController::navigateToUserProfile,
+            onMovieClick = navController::navigateToMovie,
+            onTvClick = navController::navigateToTv,
+            onBookClick = navController::navigateToBook
         )
         rankListScreen(
             onBackClick = navController::navigateUp,

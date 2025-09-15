@@ -13,13 +13,24 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.github.bumblebee202111.doubean.model.subjects.Rating
 import com.github.bumblebee202111.doubean.model.subjects.Subject
 
 @Composable
 fun SimpleSubjectRowItemContent(subject: Subject) {
+    
+    SimpleSubjectRowItemContent(
+        imageUrl = subject.imageUrl,
+        title = subject.title,
+        rating = subject.rating
+    )
+}
+
+@Composable
+fun SimpleSubjectRowItemContent(imageUrl: String, title: String, rating: Rating) {
     Column(modifier = Modifier.width(100.dp)) {
         AsyncImage(
-            model = subject.imageUrl,
+            model = imageUrl,
             contentDescription = null,
             modifier = Modifier
                 .size(width = 100.dp, height = 140.dp)
@@ -27,7 +38,7 @@ fun SimpleSubjectRowItemContent(subject: Subject) {
             contentScale = ContentScale.FillBounds
         )
         Text(
-            text = subject.title,
+            text = title,
             modifier = Modifier
                 .padding(top = 4.dp),
             style = MaterialTheme.typography.titleMedium,
@@ -35,7 +46,7 @@ fun SimpleSubjectRowItemContent(subject: Subject) {
             maxLines = 1
         )
         SubjectRatingBar(
-            rating = subject.rating,
+            rating = rating,
             modifier = Modifier.padding(top = 4.dp),
             size = SubjectRatingBarSize.Compact,
         )

@@ -83,6 +83,9 @@ class MovieViewModel @Inject constructor(
                 )
             }
             val photosResultDeferred = async { movieRepository.getPhotos(movieId) }
+            val recommendationsDeferred = async {
+                subjectCommonRepository.getSubjectRelatedItems(SubjectType.MOVIE, movieId)
+            }
             val reviewsResultDeferred = async {
                 subjectCommonRepository.getSubjectReviews(
                     subjectType = SubjectType.MOVIE,
@@ -93,9 +96,16 @@ class MovieViewModel @Inject constructor(
             val movieResult = movieResultDeferred.await()
             val interestResult = interestsResultDeferred.await()
             val photosResult = photosResultDeferred.await()
+            val recommendationsResult = recommendationsDeferred.await()
             val reviewsResult = reviewsResultDeferred.await()
 
-            val results = listOf(movieResult, interestResult, photosResult, reviewsResult)
+            val results = listOf(
+                movieResult,
+                interestResult,
+                recommendationsResult,
+                photosResult,
+                reviewsResult
+            )
             results.filterIsInstance<AppResult.Error>().forEach { errorResult ->
                 snackbarManager.showMessage(errorResult.error.asUiMessage())
             }
@@ -103,12 +113,14 @@ class MovieViewModel @Inject constructor(
             if (movieResult is AppResult.Success &&
                 interestResult is AppResult.Success &&
                 photosResult is AppResult.Success &&
+                recommendationsResult is AppResult.Success &&
                 reviewsResult is AppResult.Success
             ) {
                 _uiState.value = MovieUiState.Success(
                     movie = movieResult.data,
                     interests = interestResult.data,
                     photos = photosResult.data,
+                    recommendations = recommendationsResult.data,
                     reviews = reviewsResult.data,
                     isLoggedIn = isLoggedIn
                 )
