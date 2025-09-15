@@ -9,11 +9,14 @@ import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectDetailH
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectReviewsSheetContent
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectScaffold
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectTopBar
+import com.github.bumblebee202111.doubean.feature.subjects.common.rememberRecommendSubjectClickHandler
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoCelebritiesModuleItem
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoInterestsModuleItem
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoIntroModuleItem
+import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoRecommendModuleItem
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoTrailersModuleItem
 import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
+import com.github.bumblebee202111.doubean.model.subjects.RecommendSubject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.ui.common.CollectDialogUiState
@@ -26,6 +29,9 @@ fun TvScreen(
     onLoginClick: () -> Unit,
     onImageClick: (url: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
+    onMovieClick: (movieId: String) -> Unit,
+    onTvClick: (tvId: String) -> Unit,
+    onBookClick: (bookId: String) -> Unit,
     viewModel: TvViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -41,6 +47,11 @@ fun TvScreen(
         onUpdateStatus = viewModel::updateStatus,
         onImageClick = onImageClick,
         onUserClick = onUserClick,
+        onRecommendSubjectClick = rememberRecommendSubjectClickHandler(
+            onMovieClick = onMovieClick,
+            onTvClick = onTvClick,
+            onBookClick = onBookClick
+        ),
         onCollectClick = viewModel::collect,
         onDismissCollectDialog = viewModel::dismissCollectDialog,
         onToggleCollection = viewModel::toggleCollection,
@@ -60,6 +71,7 @@ fun TvScreen(
     onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
     onImageClick: (url: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
+    onRecommendSubjectClick: (subject: RecommendSubject) -> Unit,
     onCollectClick: () -> Unit,
     onDismissCollectDialog: () -> Unit,
     onToggleCollection: (douList: ItemDouList) -> Unit,
@@ -124,6 +136,11 @@ fun TvScreen(
                             trailers = tv.trailers,
                             photoList = photos,
                             onImageClick = onImageClick
+                        )
+                        subjectInfoRecommendModuleItem(
+                            subjectType = SubjectType.TV,
+                            recommendations = recommendations,
+                            onRecommendSubjectClick = onRecommendSubjectClick
                         )
                     }
                 }

@@ -80,6 +80,9 @@ class TvViewModel @Inject constructor(
                 userSubjectRepository.getSubjectDoneFollowingHotInterests(SubjectType.TV, tvId)
             }
             val photosResultDeferred = async { tvRepository.getPhotos(tvId) }
+            val recommendationsDeferred = async {
+                subjectCommonRepository.getSubjectRelatedItems(SubjectType.TV, tvId)
+            }
             val reviewsResultDeferred = async {
                 subjectCommonRepository.getSubjectReviews(
                     subjectType = SubjectType.TV,
@@ -90,9 +93,11 @@ class TvViewModel @Inject constructor(
             val tvResult = tvResultDeferred.await()
             val interestResult = interestsResultDeferred.await()
             val photosResult = photosResultDeferred.await()
+            val recommendationsResult = recommendationsDeferred.await()
             val reviewsResult = reviewsResultDeferred.await()
 
-            val results = listOf(tvResult, interestResult, photosResult, reviewsResult)
+            val results =
+                listOf(tvResult, interestResult, photosResult, recommendationsResult, reviewsResult)
             results.filterIsInstance<AppResult.Error>().forEach { errorResult ->
                 snackbarManager.showMessage(errorResult.error.asUiMessage())
             }
@@ -100,12 +105,14 @@ class TvViewModel @Inject constructor(
             if (tvResult is AppResult.Success &&
                 interestResult is AppResult.Success &&
                 photosResult is AppResult.Success &&
+                recommendationsResult is AppResult.Success &&
                 reviewsResult is AppResult.Success
             ) {
                 _uiState.value = TvUiState.Success(
                     tv = tvResult.data,
                     interests = interestResult.data,
                     photos = photosResult.data,
+                    recommendations = recommendationsResult.data,
                     reviews = reviewsResult.data,
                     isLoggedIn = isLoggedIn
                 )

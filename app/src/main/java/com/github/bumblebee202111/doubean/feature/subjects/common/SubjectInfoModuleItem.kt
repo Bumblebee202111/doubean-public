@@ -2,6 +2,7 @@ package com.github.bumblebee202111.doubean.feature.subjects.common
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -47,6 +48,7 @@ import com.github.bumblebee202111.doubean.model.SizedImage
 import com.github.bumblebee202111.doubean.model.SizedPhoto
 import com.github.bumblebee202111.doubean.model.fangorns.User
 import com.github.bumblebee202111.doubean.model.subjects.MovieTrailer
+import com.github.bumblebee202111.doubean.model.subjects.RecommendSubject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUserList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectReview
@@ -245,6 +247,68 @@ fun LazyListScope.subjectInfoTrailersModuleItem(
         },
         total = photoList.total
     )
+}
+
+@Composable
+fun getTypeUnit(type: SubjectType): String {
+    val resId = when (type) {
+        SubjectType.MOVIE, SubjectType.TV -> R.string.unit_for_movie
+        SubjectType.BOOK -> R.string.unit_for_book
+        else -> R.string.unit_for_generic_subject
+    }
+    return stringResource(resId)
+}
+
+@Composable
+fun getTypeTitle(type: SubjectType): String {
+    val resId = when (type) {
+        SubjectType.MOVIE -> R.string.title_movie
+        SubjectType.TV -> R.string.title_tv
+        SubjectType.BOOK -> R.string.title_book
+        SubjectType.UNSUPPORTED -> return ""
+    }
+    return stringResource(resId)
+}
+
+@Composable
+private fun getLikeRecommendTitle(subjectType: SubjectType): String {
+    val unit = getTypeUnit(subjectType)
+    val typeTitle = getTypeTitle(subjectType)
+    return stringResource(R.string.like_recommend, unit + typeTitle)
+}
+
+fun LazyListScope.subjectInfoRecommendModuleItem(
+    subjectType: SubjectType,
+    recommendations: List<RecommendSubject>,
+    onRecommendSubjectClick: (subject: RecommendSubject) -> Unit,
+) {
+    if (recommendations.isEmpty()) return
+
+    item(contentType = "recommendations") {
+        val title = getLikeRecommendTitle(subjectType)
+        Column(modifier = Modifier.padding(vertical = 16.dp)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+            Spacer(Modifier.height(8.dp))
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(items = recommendations, key = { it.id }) { subject ->
+                    Box(modifier = Modifier.clickable { onRecommendSubjectClick(subject) }) {
+                        SimpleSubjectRowItemContent(
+                            imageUrl = subject.imageUrl,
+                            title = subject.title,
+                            rating = subject.rating
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable

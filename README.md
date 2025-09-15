@@ -105,7 +105,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.9)
 
-- Subjects: Add related recommendations ([#15](https://github.com/Bumblebee202111/doubean-public/issues/15))
+- Fix contentPadding of Group Searches
 
 ### Next release \(0.9.10)
 
@@ -118,6 +118,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### Backlog
 - Navigation
+  - Consider use single NavHost (?)
   - Navigation 3 when beta
   - Allow customizing bottom navigation ([#16](https://github.com/Bumblebee202111/doubean-public/issues/16))
   - Shared element transitions for images
@@ -147,7 +148,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Investigate API for *all* followed topics like desktop Web app (currently seems unlikely)
     - Use as home/notifications data source
 - Subjects
-  - Search: Fix filter auto-selecting the wrong tag when the first option is hidden
+  - Search: Fix filter auto-selecting the wrong tag when the first option is hidden (e.g., "林俊杰")
   - Subject Detail: Ratings histogram
   - Color schemes
   - More
@@ -163,13 +164,10 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 - Shortcuts
 - Improve login prompts & tooltips
 - Use bottom sheets for list item menus
-- Improve model layering
-- i18n: Translations
 - NetworkManager
 - Widgets: Calender today
 - QR
-- (Rooted users) Optional sync of more official app preferences for API request consistency
-- Consider use single NavHost
+- (Rooted users) Optional sync of more existing preferences for API request consistency
 - Statuses (maintenance mode)
   - Additional card types
   - Pagination
@@ -180,6 +178,8 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 - Ensure basic dark mode, landscape & tablet support
 - Sync more source to public repo
 - Full deep linking support
+- Improve model layering
+- i18n: Translations
 - Test
 
 </details>

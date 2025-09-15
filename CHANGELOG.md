@@ -3,6 +3,10 @@ Change Log
 
 ## Version 0.9.9(90900)
 
+**New Features** 
+
+- Added recommendations for related items on subject detail pages.  ([#15](https://github.com/Bumblebee202111/doubean-public/issues/15))
+
 ## Version 0.9.8(90800)
 
 **Bug Fixes**

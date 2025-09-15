@@ -83,6 +83,9 @@ class BookViewModel @Inject constructor(
                     id = bookId
                 )
             }
+            val recommendationsDeferred = async {
+                subjectCommonRepository.getSubjectRelatedItems(SubjectType.BOOK, bookId)
+            }
             val reviewsResultDeferred = async {
                 subjectCommonRepository.getSubjectReviews(
                     subjectType = SubjectType.BOOK,
@@ -92,6 +95,7 @@ class BookViewModel @Inject constructor(
 
             val bookResult = bookResultDeferred.await()
             val interestResult = interestsResultDeferred.await()
+            val recommendationsResult = recommendationsDeferred.await()
             val reviewsResult = reviewsResultDeferred.await()
 
             listOf(bookResult, interestResult, reviewsResult).forEach { result ->
@@ -102,11 +106,13 @@ class BookViewModel @Inject constructor(
 
             if (bookResult is AppResult.Success &&
                 interestResult is AppResult.Success &&
+                recommendationsResult is AppResult.Success &&
                 reviewsResult is AppResult.Success
             ) {
                 _uiState.value = BookUiState.Success(
                     book = bookResult.data,
                     interests = interestResult.data,
+                    recommendations = recommendationsResult.data,
                     reviews = reviewsResult.data,
                     isLoggedIn = isLoggedIn
                 )

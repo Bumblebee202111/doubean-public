@@ -10,7 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.subjects.Rating
 import com.github.bumblebee202111.doubean.ui.component.DoubeanRatingBar
 import com.github.bumblebee202111.doubean.ui.component.DoubeanRatingBarSize
@@ -61,7 +63,8 @@ fun SubjectRatingBar(
 
         is Rating.Null -> {
             Text(
-                text = rating.reason,
+                text = rating.reason.takeIf { it.isNotBlank() }
+                    ?: stringResource(R.string.rating_zero),
                 style = textStyle,
                 color = currentLocalContentColor.copy(alpha = 0.7f),
                 maxLines = 1
