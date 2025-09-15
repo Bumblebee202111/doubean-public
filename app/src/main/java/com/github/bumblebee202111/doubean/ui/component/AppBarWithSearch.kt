@@ -91,6 +91,7 @@ fun DoubeanAppBarWithSearch(
     AppBarWithSearch(
         state = searchBarState,
         inputField = inputField,
-        navigationIcon = { BackButton(onClick = onBackClick) }
+        navigationIcon = { BackButton(onClick = onBackClick) },
+        colors = SearchBarDefaults.appBarWithSearchColors()
     )
 }

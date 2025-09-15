@@ -2,6 +2,8 @@ package com.github.bumblebee202111.doubean.feature.groups.search
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -91,7 +94,14 @@ fun GroupsSearchScreen(
         }) { innerPadding ->
         when {
             query.isBlank() && isSearchFocused -> {
-                LazyColumn(contentPadding = innerPadding) {
+                LazyColumn(
+                    modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
+                    contentPadding = PaddingValues(
+                        bottom = innerPadding.calculateBottomPadding() + 12.dp,
+                        start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
+                        end = innerPadding.calculateEndPadding(LayoutDirection.Ltr)
+                    )
+                ) {
                     searchHistory(
                         history = history,
                         onHistoryClick = onSearchAndHideKeyboard,
@@ -103,11 +113,18 @@ fun GroupsSearchScreen(
                     }
                 }
             }
+
             else -> {
                 GroupList(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    modifier = Modifier.padding(
+                        top = innerPadding.calculateTopPadding(),
+                        start = 16.dp,
+                        end = 16.dp
+                    ),
                     groupPagingItems = groupPagingItems,
-                    contentPadding = innerPadding,
+                    contentPadding = PaddingValues(
+                        bottom = innerPadding.calculateBottomPadding() + 12.dp
+                    ),
                     onGroupClick = onGroupClick
                 )
             }

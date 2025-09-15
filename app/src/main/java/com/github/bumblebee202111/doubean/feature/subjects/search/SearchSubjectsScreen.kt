@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -102,7 +105,14 @@ fun SearchSubjectsScreen(
     ) { innerPadding ->
 
         if (uiState.query.isBlank() && isSearchFocused) {
-            LazyColumn(contentPadding = innerPadding) {
+            LazyColumn(
+                modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
+                contentPadding = PaddingValues(
+                    bottom = innerPadding.calculateBottomPadding(),
+                    start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
+                    end = innerPadding.calculateEndPadding(LayoutDirection.Ltr)
+                )
+            ) {
                 searchHistory(
                     history = history,
                     onHistoryClick = onSearchAndHideKeyboard,
@@ -139,7 +149,7 @@ fun SearchSubjectsScreen(
                     else -> SearchResultBody(
                         type = uiState.selectedType,
                         searchResultSubjects = items,
-                        contentPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding()),
+                        contentPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding() + 12.dp),
                         onMovieClick = onMovieClick,
                         onTvClick = onTvClick,
                         onBookClick = onBookClick
