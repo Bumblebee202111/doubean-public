@@ -71,7 +71,7 @@ class SearchSubjectsViewModel @Inject constructor(
                 }
 
                 is AppResult.Success -> {
-                    val (banned, items, types) = result.data
+                    val (banned, items, types, initialType) = result.data
                     banned?.let {
                         snackbarManager.showMessage(it.toUiMessage())
                     }
@@ -79,7 +79,7 @@ class SearchSubjectsViewModel @Inject constructor(
                     _uiState.value.copy(
                         items = items,
                         types = types,
-                        selectedType = types?.firstOrNull()?.type,
+                        selectedType = initialType,
                         isLoading = false
                     )
                 }

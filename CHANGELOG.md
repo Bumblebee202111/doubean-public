@@ -9,7 +9,8 @@ Change Log
 
 **Bug Fixes** 
 
-- Fixed a visual glitch where list content would appear over the status bar when scrolling on search screens.
+- Fixed content scrolling over the status bar on search screens.
+- Fixed incorrect filter selection and misleading "No results" message for searches with unsupported types (e.g., "林俊杰").
 
 ## Version 0.9.8(90800)
 

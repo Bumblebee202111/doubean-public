@@ -127,7 +127,9 @@ fun SearchSubjectsScreen(
                     .padding(top = innerPadding.calculateTopPadding())
             ) {
                 val items = uiState.items
-                uiState.types?.let { types ->
+                val types = uiState.types
+
+                types?.let { types ->
                     TypeFilter(
                         types = types,
                         selectedType = uiState.selectedType,
@@ -138,7 +140,7 @@ fun SearchSubjectsScreen(
                 when {
                     uiState.isLoading -> LinearProgressIndicator(Modifier.fillMaxWidth())
                     items == null -> Unit
-                    items.isEmpty() -> Text(
+                    items.isEmpty() && types.isNullOrEmpty() -> Text(
                         stringResource(R.string.empty_search_result),
                         modifier = Modifier
                             .fillMaxSize()
