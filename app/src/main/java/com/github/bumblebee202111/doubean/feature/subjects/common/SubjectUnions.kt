@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.model.subjects.SubjectModule
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
@@ -45,7 +44,11 @@ fun SubjectUnions(
     ) {
         module.subjectUnions.forEachIndexed { index, union ->
             val isSelected = pagerState.currentPage == index
-            val textColor = if (isSelected) Color.Black else Color.Black.copy(alpha = 0.6f)
+            val textColor = if (isSelected) {
+                MaterialTheme.colorScheme.onSurface
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            }
             Text(
                 text = union.title,
                 color = textColor,
@@ -60,8 +63,7 @@ fun SubjectUnions(
 
             if (index != module.subjectUnions.lastIndex) {
                 VerticalDivider(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    color = Color.Gray.copy(alpha = 0.2f),
+                    modifier = Modifier.padding(horizontal = 8.dp)
                 )
             }
         }

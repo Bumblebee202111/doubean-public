@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+## Version 0.9.10(90910)
+
+**Improvements**
+
+- Expandable Text: The "Expand" link is now correctly hidden when text is not long enough to be truncated.
+- Expandable Text: Improved the link's visual style on colored backgrounds.
+
+**Bug Fixes** 
+
+- Fixed unreadable text in the "Subject Unions" section when using dark mode.
+
 ## Version 0.9.9(90900)
 
 **New Features** 
@@ -10,7 +21,7 @@ Change Log
 **Bug Fixes** 
 
 - Fixed content scrolling over the status bar on search screens.
-- Fixed incorrect filter selection and misleading "No results" message for searches with unsupported types (e.g., "林俊杰").
+- Fixed incorrect filter selection and misleading "No results" message for subject searches with unsupported types (e.g., "林俊杰").
 
 ## Version 0.9.8(90800)
 

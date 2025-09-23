@@ -103,11 +103,14 @@ Only selected source code from a private project is shared here to avoid potenti
 
 Upcoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for personal tracking.
 
-### Current release \(0.9.9)
+### Current release \(0.9.10)
 
-### Next release \(0.9.10)
+### Next release \(0.10.0)
 
-- i18n: Language selection
+- i18n
+  - Language selection
+  - Translations
+
 
 <details>
 <summary>Future plans (Click to expand)</summary>
@@ -146,8 +149,9 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Investigate API for *all* followed topics like desktop Web app (currently seems unlikely)
     - Use as home/notifications data source
 - Subjects
-  - Search: Fix filter auto-selecting the wrong tag when the first option is hidden (e.g., "林俊杰")
-  - Subject Detail: Ratings histogram
+  - Subject Detail
+    - Ratings histogram
+    - Trailer playback ([comment in #15](https://github.com/Bumblebee202111/doubean-public/issues/15#issuecomment-3317936337))
   - Color schemes
   - More
 - UserProfile: My subjects, My groups
@@ -156,7 +160,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Follow Doulists
   - List/post pagination
 - Persist last-active tab
-- Expand/collapse component: Hide action for short text
 - Search suggestions
 - Login: Code-based (w/o pw)
 - Shortcuts
