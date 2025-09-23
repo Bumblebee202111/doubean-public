@@ -300,7 +300,7 @@ fun GroupDetailTopBar(
                         text = group?.description ?: "",
                         maxLines = 2,
                         style = MaterialTheme.typography.bodyMedium,
-                        usesPrimaryLinkSpanStyle = false
+                        usesPrimaryLinkStyle = false
                     )
                 }
             } else {

@@ -105,8 +105,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.10)
 
-- Expand/collapse component: Hide action for short text
-
 ### Next release \(0.10.0)
 
 - i18n

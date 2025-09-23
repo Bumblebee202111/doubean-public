@@ -3,6 +3,11 @@ Change Log
 
 ## Version 0.9.10(90910)
 
+**Improvements**
+
+- Expandable Text: The "Expand" link is now correctly hidden when text is not long enough to be truncated.
+- Expandable Text: Improved the link's visual style on colored backgrounds.
+
 ## Version 0.9.9(90900)
 
 **New Features** 
