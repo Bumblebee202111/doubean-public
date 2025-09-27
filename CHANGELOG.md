@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.9.11
+
 ## Version 0.9.10(90910)
 
 **Improvements**
@@ -8,7 +10,7 @@ Change Log
 - Expandable Text: The "Expand" link is now correctly hidden when text is not long enough to be truncated.
 - Expandable Text: Improved the link's visual style on colored backgrounds.
 
-**Bug Fixes** 
+**Bug Fixes**
 
 - Fixed unreadable text in the "Subject Unions" section when using dark mode.
 
