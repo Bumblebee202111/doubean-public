@@ -52,6 +52,7 @@ import com.github.bumblebee202111.doubean.ui.common.ApplyStatusBarIconAppearance
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.FullScreenCenteredContent
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
+import com.github.bumblebee202111.doubean.ui.component.doubeanExpandedTopBarContentPadding
 import com.github.bumblebee202111.doubean.util.DateTimeStyle
 import com.github.bumblebee202111.doubean.util.toColorOrPrimary
 import com.github.bumblebee202111.doubean.util.toRelativeString
@@ -282,8 +283,7 @@ private fun UserInfo(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(end = 12.dp)
-            .padding(bottom = 24.dp)
+            .padding(doubeanExpandedTopBarContentPadding)
     ) {
         UserProfileImage(url = user.avatar, size = 64.dp)
         Spacer(Modifier.height(2.dp))

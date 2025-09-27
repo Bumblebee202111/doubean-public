@@ -1,5 +1,7 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupdetail
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -7,11 +9,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.NotificationAdd
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Button
@@ -21,8 +25,10 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.PrimaryScrollableTabRow
@@ -34,17 +40,20 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TwoRowsTopAppBar
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -58,8 +67,8 @@ import com.github.bumblebee202111.doubean.model.groups.GroupMemberRole
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.groups.GroupTab
 import com.github.bumblebee202111.doubean.ui.component.BackButton
-import com.github.bumblebee202111.doubean.ui.component.ExpandCollapseText
 import com.github.bumblebee202111.doubean.ui.component.MoreButton
+import com.github.bumblebee202111.doubean.ui.component.doubeanExpandedTopBarContentPadding
 import com.github.bumblebee202111.doubean.ui.component.doubeanTopAppBarHeight
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.ShareUtil
@@ -113,6 +122,28 @@ fun GroupDetailScreen(
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    var showBottomSheet by remember { mutableStateOf(false) }
+
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showBottomSheet = false },
+            sheetState = sheetState
+        ) {
+            GroupDescriptionSheetContent(
+                group = uiState.groupDetail,
+                onClose = {
+                    scope.launch { sheetState.hide() }.invokeOnCompletion {
+                        if (!sheetState.isVisible) {
+                            showBottomSheet = false
+                        }
+                    }
+                }
+            )
+        }
+    }
+
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -130,7 +161,8 @@ fun GroupDetailScreen(
                 },
                 viewInDouban = { OpenInUtils.openInDouban(context, it) },
                 viewInBrowser = { OpenInUtils.openInBrowser(context, it) },
-                onBackClick = onBackClick
+                onBackClick = onBackClick,
+                onDescriptionClick = { showBottomSheet = true },
             )
         }
     ) { innerPadding ->
@@ -197,6 +229,7 @@ fun GroupDetailTopBar(
     viewInDouban: (String) -> Unit,
     viewInBrowser: (String) -> Unit,
     onBackClick: () -> Unit,
+    onDescriptionClick: () -> Unit,
 ) {
     val group = uiState.groupDetail
     val cachedGroup = uiState.cachedGroup
@@ -205,7 +238,7 @@ fun GroupDetailTopBar(
     TwoRowsTopAppBar(
         title = { expanded ->
             if (expanded) {
-                Column(modifier = Modifier.padding(end = 16.dp, bottom = 12.dp)) {
+                Column(modifier = Modifier.padding(doubeanExpandedTopBarContentPadding)) {
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Column(modifier = Modifier.weight(1f)) {
                             LargeGroupAvatar(avatarUrl = group?.avatar ?: cachedGroup?.avatar)
@@ -238,13 +271,8 @@ fun GroupDetailTopBar(
                                         onOpenPreferencesDialog = showNotificationsPrefDialog
                                     )
                                 }
-                            }
 
-                            group?.apply {
                                 val isSubscriptionEnabled = isSubscriptionEnabled ?: return@apply
-                                val memberRole = memberRole ?: return@apply
-                                val isSubscribed = isSubscribed
-
                                 when {
                                     isSubscriptionEnabled && isSubscribed == false && memberRole in setOf(
                                         GroupMemberRole.NOT_MEMBER,
@@ -296,12 +324,26 @@ fun GroupDetailTopBar(
                             }
                         }
                     }
-                    ExpandCollapseText(
-                        text = group?.description ?: "",
-                        maxLines = 2,
-                        style = MaterialTheme.typography.bodyMedium,
-                        usesPrimaryLinkStyle = false
-                    )
+                    Row(
+                        modifier = Modifier
+                            .padding(top = 12.dp)
+                            .fillMaxWidth()
+                            .clickable { onDescriptionClick() },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = group?.description ?: "",
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Icon(
+                            imageVector = Icons.Default.ChevronRight,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
             } else {
                 Column {
@@ -480,5 +522,33 @@ private fun GroupNotificationsButton(
             },
             contentDescription = null
         )
+    }
+}
+
+@Composable
+private fun GroupDescriptionSheetContent(
+    group: GroupDetail?,
+    onClose: () -> Unit,
+) {
+    Column(modifier = Modifier.padding(16.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                stringResource(R.string.group_description_title),
+                style = MaterialTheme.typography.titleLarge
+            )
+            IconButton(onClick = onClose) {
+                Icon(
+                    Icons.Default.Close,
+                    contentDescription = stringResource(R.string.content_description_close)
+                )
+            }
+        }
+        Spacer(Modifier.height(16.dp))
+        Text(group?.description ?: "", style = MaterialTheme.typography.bodyLarge)
+        Spacer(Modifier.height(32.dp))
     }
 }

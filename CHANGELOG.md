@@ -3,6 +3,10 @@ Change Log
 
 ## Version 0.9.11
 
+**Improvements**
+
+- Tapping the group description now opens a bottom sheet with the full text, fixing layout and scrolling issues in the top bar.
+
 ## Version 0.9.10(90910)
 
 **Improvements**
