@@ -7,6 +7,10 @@ Change Log
 
 - Tapping the group description now opens a bottom sheet with the full text, fixing layout and scrolling issues in the top bar.
 
+**Bug Fixes**
+
+- Fixed an inconsistent border color on buttons in the group detail screen's top bar.
+
 ## Version 0.9.10(90910)
 
 **Improvements**

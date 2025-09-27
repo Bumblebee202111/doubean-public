@@ -105,8 +105,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.11)
 
-- Group Detail: Fix description action overflows
-
 ### Next release \(0.10.0)
 
 - i18n
