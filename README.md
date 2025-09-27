@@ -103,7 +103,9 @@ Only selected source code from a private project is shared here to avoid potenti
 
 Upcoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for personal tracking.
 
-### Current release \(0.9.10)
+### Current release \(0.9.11)
+
+- Group Detail: Fix description action overflows
 
 ### Next release \(0.10.0)
 
@@ -137,9 +139,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Tab
     - Track topic read status
     - Dynamic topic sorting options
-  - Group Detail
-    - Auto-collapse header for subscribed/pinned groups/tabs
-    - Fix description action overflows
+  - Group Detail: Auto-collapse header for subscribed/pinned groups/tabs
   - Topic:
     - Fully load content via official script (no manual parsing)
     - Fix content scroll restoration
