@@ -1,6 +1,7 @@
 package com.github.bumblebee202111.doubean.ui.component
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -20,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 val doubeanTopAppBarHeight = 56.dp
+val doubeanExpandedTopBarContentPadding = PaddingValues(end = 16.dp, bottom = 24.dp)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,9 +75,9 @@ fun DoubeanTopAppBar(
 ) {
     DoubeanTopAppBar(
         titleText =
-        titleResId?.let {
-            stringResource(id = it)
-        },
+            titleResId?.let {
+                stringResource(id = it)
+            },
         modifier = modifier,
         navigationIcon = navigationIcon,
         actions = actions,

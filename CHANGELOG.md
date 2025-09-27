@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+## Version 0.9.11
+
+**Improvements**
+
+- Tapping the group description now opens a bottom sheet with the full text, fixing layout and scrolling issues in the top bar.
+
+**Bug Fixes**
+
+- Fixed an inconsistent border color on buttons in the group detail screen's top bar.
+
 ## Version 0.9.10(90910)
 
 **Improvements**
@@ -8,7 +18,7 @@ Change Log
 - Expandable Text: The "Expand" link is now correctly hidden when text is not long enough to be truncated.
 - Expandable Text: Improved the link's visual style on colored backgrounds.
 
-**Bug Fixes** 
+**Bug Fixes**
 
 - Fixed unreadable text in the "Subject Unions" section when using dark mode.
 
