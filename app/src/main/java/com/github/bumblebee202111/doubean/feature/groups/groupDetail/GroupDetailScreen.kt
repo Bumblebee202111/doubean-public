@@ -1,5 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupdetail
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -292,9 +293,13 @@ fun GroupDetailTopBar(
                                     isSubscriptionEnabled && isSubscribed == true -> {
                                         OutlinedButton(
                                             onClick = unsubscribeGroup,
-                                            colors = ButtonDefaults.outlinedButtonColors().copy(
+                                            colors = ButtonDefaults.outlinedButtonColors(
                                                 contentColor = Color.White,
                                                 containerColor = groupColor
+                                            ),
+                                            border = BorderStroke(
+                                                width = 1.dp,
+                                                color = Color.White
                                             )
                                         ) {
                                             Text(text = stringResource(id = R.string.subscribed))
