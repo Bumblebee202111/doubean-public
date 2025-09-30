@@ -103,13 +103,11 @@ Only selected source code from a private project is shared here to avoid potenti
 
 Upcoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for personal tracking.
 
-### Current release \(0.9.11)
+### Current release \(0.9.12)
+
+- Clarify login prompts and informational tooltips
 
 ### Next release \(0.10.0)
-
-- i18n
-  - Language selection
-  - Translations
 
 
 <details>
@@ -153,6 +151,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Color schemes
   - More
 - UserProfile: My subjects, My groups
+- i18n: Language selection
 - Doulists
   - Edit/remove posts
   - Follow Doulists
@@ -161,7 +160,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 - Search suggestions
 - Login: Code-based (w/o pw)
 - Shortcuts
-- Improve login prompts & tooltips
 - Use bottom sheets for list item menus
 - NetworkManager
 - Widgets: Calender today
