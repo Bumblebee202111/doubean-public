@@ -67,7 +67,7 @@ fun VerifyPhoneScreen(
                 navigationIcon = {
                     BackButton(onClick = onBackClick)
                 },
-                titleText = "Verify Phone"
+                titleText = stringResource(R.string.verify_phone_title)
             )
         },
     ) { innerPadding ->
