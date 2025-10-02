@@ -67,7 +67,7 @@ class BooksViewModel @Inject constructor(
 
     private fun getMyBooks() {
         viewModelScope.launch {
-            authRepository.observeLoggedInUserId().collectLatest { userId ->
+            authRepository.loggedInUserId.collectLatest { userId ->
                 _myBooksUiState.value = when (userId) {
                     null -> MySubjectUiState.NotLoggedIn
                     else -> {

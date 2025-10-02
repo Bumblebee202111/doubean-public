@@ -23,7 +23,7 @@ import javax.inject.Inject
 class MainActivityViewModel @Inject constructor(
     preferenceStorage: PreferenceStorage,
     private val authRepository: AuthRepository,
-    userRepository: UserRepository,
+    private val userRepository: UserRepository,
     @Dispatcher(AppDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
     private val snackbarManager: SnackbarManager,
 ) :
@@ -46,23 +46,21 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    init {
+    private fun refreshUser() {
         viewModelScope.launch {
-            authRepository.observeLoggedInUserId().collect {
-                if (it != null) {
-                    viewModelScope.launch {
-                        when (val result = userRepository.fetchUser(it)) {
-                            is AppResult.Success -> Unit
-                            is AppResult.Error -> {
-                                snackbarManager.showMessage(result.error.asUiMessage())
-                            }
-                        }
-                    }
+            val currentUserId = authRepository.loggedInUserId.first()
+            if (currentUserId != null) {
+                val userResult = userRepository.fetchUser(currentUserId)
+                if (userResult is AppResult.Error) {
+                    snackbarManager.showMessage(userResult.error.asUiMessage())
                 }
             }
         }
+    }
 
+    init {
         checkAndRefreshToken()
+        refreshUser()
     }
 
 }

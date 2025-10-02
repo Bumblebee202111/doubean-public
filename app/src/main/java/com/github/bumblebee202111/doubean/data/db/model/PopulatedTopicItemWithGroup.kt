@@ -38,7 +38,7 @@ data class PopulatedTopicItemWithGroup(
 fun PopulatedTopicItemWithGroup.asExternalModel() = TopicItemWithGroup(
     id = partialEntity.id,
     title = partialEntity.title,
-    author = author.asExternalModel(),
+    author = author.toUser(),
     createTime = partialEntity.createTime,
     updateTime = partialEntity.updateTime,
     commentsCount = partialEntity.commentsCount,

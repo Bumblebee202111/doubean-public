@@ -105,8 +105,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.12)
 
-- Bottom nav currentUser fallback to flowOf(null)
-
 ### Next release \(0.10.0)
 
 
@@ -117,8 +115,8 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### Backlog
 - Navigation
+  - Navigation 3 when beta or introduced in NiA
   - Consider use single NavHost (?)
-  - Navigation 3 when beta
   - Allow customizing bottom navigation ([#16](https://github.com/Bumblebee202111/doubean-public/issues/16))
   - Shared element transitions for images
 - Groups 

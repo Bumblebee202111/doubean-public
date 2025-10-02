@@ -43,7 +43,7 @@ class MyCollectedItemsViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-            val loggedInUserId = authRepository.observeLoggedInUserId().first()
+            val loggedInUserId = authRepository.loggedInUserId.first()
             if (loggedInUserId == null) {
                 _uiState.update {
                     it.copy(isLoading = false, errorMessage = R.string.title_unlogin.toUiMessage())

@@ -15,6 +15,6 @@ data class UserEntity(
     val url: String,
 )
 
-fun UserEntity.asExternalModel() = User(
+fun UserEntity.toUser() = User(
     id = id, uid = uid, name = name, avatar = avatar, uri = uri, alt = url
 )
