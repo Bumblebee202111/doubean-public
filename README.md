@@ -105,7 +105,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.12)
 
-- Clarify login prompts and informational tooltips
+- Bottom nav currentUser fallback to flowOf(null)
 
 ### Next release \(0.10.0)
 

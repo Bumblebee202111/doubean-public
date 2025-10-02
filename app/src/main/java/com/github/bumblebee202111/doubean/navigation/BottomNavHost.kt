@@ -35,8 +35,6 @@ fun BottomNavHost(
         startDestination = startDestination,
         modifier = modifier
     ) {
-        val onAvatarClick = onAvatarClick
-
         statusesScreen(onAvatarClick = onAvatarClick)
         subjectsScreen(
             onAvatarClick = onAvatarClick,

@@ -43,7 +43,7 @@ fun CreateDouListDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text(text = stringResource(id = R.string.cancel))
+                Text(text = stringResource(id = R.string.cancel_button))
             }
         }
     )

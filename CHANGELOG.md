@@ -3,6 +3,11 @@ Change Log
 
 ## Version 0.9.12
 
+**Improvements**
+
+- Added new informational dialogs for features like Notifications and Pinned Tabs.
+- Improved the clarity of various UI hints and login prompts.
+
 ## Version 0.9.11
 
 **Improvements**

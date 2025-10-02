@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.MySubjectUiState
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
-import com.github.bumblebee202111.doubean.ui.component.LoginPromptText
+import com.github.bumblebee202111.doubean.ui.component.InlineLoginPrompt
 
 @Composable
 fun MySubject(
@@ -41,10 +41,10 @@ fun MySubject(
             }
 
             MySubjectUiState.NotLoggedIn -> {
-                LoginPromptText(
-                    contentStringRes = R.string.login_prompt_to_check_my_subjects,
+                InlineLoginPrompt(
+                    promptText = stringResource(R.string.login_prompt_view_subjects),
                     onLoginClick = onLoginClick,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier.padding(16.dp)
                 )
             }
 

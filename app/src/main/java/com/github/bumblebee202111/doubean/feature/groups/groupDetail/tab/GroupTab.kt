@@ -57,6 +57,8 @@ import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferen
 import com.github.bumblebee202111.doubean.model.groups.TopicItem
 import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 import com.github.bumblebee202111.doubean.model.groups.toSimpleGroup
+import com.github.bumblebee202111.doubean.ui.component.InfoButton
+import com.github.bumblebee202111.doubean.ui.component.InfoDialog
 import com.github.bumblebee202111.doubean.util.ShareUtil
 
 @Composable
@@ -232,14 +234,30 @@ private fun LazyListScope.tabActionsItem(
     ) {
         val context = LocalContext.current
 
+        var showSortInfoDialog by remember { mutableStateOf(false) }
+
+        if (showSortInfoDialog) {
+            InfoDialog(
+                onDismissRequest = { showSortInfoDialog = false },
+                title = stringResource(R.string.sort_topics_info_title),
+                text = stringResource(R.string.sort_topics_info_body)
+            )
+        }
+
         Row(
             modifier = Modifier.padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SortTopicsByDropDownMenu(
-                initialSortBy = sortBy ?: TopicSortBy.NEW_LAST_CREATED,
-                onSortBySelected = onSortByClick
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                SortTopicsByDropDownMenu(
+                    initialSortBy = sortBy ?: TopicSortBy.NEW_LAST_CREATED,
+                    onSortBySelected = onSortByClick
+                )
+                InfoButton(
+                    onClick = { showSortInfoDialog = true },
+                    contentDescription = stringResource(R.string.sort_topics_info_title)
+                )
+            }
             Spacer(Modifier.weight(1f))
             val tab = group.tabs.firstOrNull { it.id == tabId }
             if (tab != null && isPinned != null && topicNotificationPreferences != null) {
