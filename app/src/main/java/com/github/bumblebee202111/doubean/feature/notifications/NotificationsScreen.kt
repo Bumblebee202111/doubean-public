@@ -1,11 +1,11 @@
 package com.github.bumblebee202111.doubean.feature.notifications
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -14,6 +14,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -29,6 +34,8 @@ import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItemDisplay
 import com.github.bumblebee202111.doubean.model.groups.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
+import com.github.bumblebee202111.doubean.ui.component.InfoButton
+import com.github.bumblebee202111.doubean.ui.component.InfoDialog
 import com.github.bumblebee202111.doubean.util.DEEP_LINK_SCHEME_AND_HOST
 import com.github.bumblebee202111.doubean.util.GROUP_PATH
 import com.github.bumblebee202111.doubean.util.TOPIC_PATH
@@ -60,9 +67,18 @@ fun NotificationsScreen(
     onGroupClick: (groupId: String) -> Unit,
     onSettingsClick: () -> Unit,
 ) {
+    var showInfoDialog by remember { mutableStateOf(false) }
+
+    if (showInfoDialog) {
+        InfoDialog(
+            onDismissRequest = { showInfoDialog = false },
+            title = stringResource(R.string.notifications_info_title),
+            text = stringResource(R.string.notifications_info_body)
+        )
+    }
     Scaffold(topBar = {
         DoubeanTopAppBar(
-            title = {},
+            titleText = stringResource(R.string.title_notifications),
             navigationIcon = {
                 BackButton(onClick = onBackClick)
             },
@@ -79,29 +95,25 @@ fun NotificationsScreen(
             contentPadding = innerPadding,
         ) {
             item {
-                Text(
-                    text = stringResource(id = R.string.group_notifications_header),
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                )
-            }
-            item {
-
-                Column(
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 4.dp)
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(imageVector = Icons.Default.Info, contentDescription = null)
                     Text(
-                        text = stringResource(R.string.notifications_info),
-
-                        style = MaterialTheme.typography.bodySmall
+                        text = stringResource(id = R.string.group_notifications_header),
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    InfoButton(
+                        onClick = { showInfoDialog = true },
+                        modifier = Modifier.size(24.dp),
+                        contentDescription = stringResource(R.string.notifications_info_title)
                     )
                 }
-
             }
-            items(notificationPagingItems.itemCount,
+            items(
+                notificationPagingItems.itemCount,
                 notificationPagingItems.itemKey { it.id },
                 notificationPagingItems.itemContentType { "notification" }) { index ->
                 TopicItem(

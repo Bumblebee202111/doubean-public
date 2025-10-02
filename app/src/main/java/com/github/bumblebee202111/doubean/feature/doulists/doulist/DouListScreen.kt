@@ -311,7 +311,7 @@ private fun EditDouListDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.cancel))
+                Text(stringResource(R.string.cancel_button))
             }
         }
     )

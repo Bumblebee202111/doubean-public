@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -34,6 +35,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -57,6 +61,8 @@ import com.github.bumblebee202111.doubean.model.groups.SimpleGroup
 import com.github.bumblebee202111.doubean.model.groups.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.ui.common.AppBarNavigationAvatar
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
+import com.github.bumblebee202111.doubean.ui.component.InfoButton
+import com.github.bumblebee202111.doubean.ui.component.InfoDialog
 import com.github.bumblebee202111.doubean.ui.theme.DoubeanTheme
 import java.util.Calendar
 
@@ -141,7 +147,7 @@ fun GroupsHomeScreen(
             joinedGroupsUiState.groups?.let { groups ->
                 myGroups(groups) { onGroupClick(it, null) }
             }
-            pinnedTabs?.takeIf(List<PinnedTabItem>::isNotEmpty)?.let { pinnedTabs ->
+            pinnedTabs?.let { pinnedTabs ->
                 pinnedTabs(pinnedTabs = pinnedTabs, onItemClick = onGroupClick)
             }
             if (dayRankingUiState is DayRankingUiState.Success) {
@@ -170,12 +176,10 @@ private fun LazyListScope.myGroups(
         )
         Spacer(modifier = Modifier.size(4.dp))
         LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
             items(items = groups, key = { group -> group.id }) { group ->
-                if (groups.first() == group) {
-                    Spacer(modifier = Modifier.size(16.dp))
-                }
                 Card(
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface,
@@ -206,9 +210,6 @@ private fun LazyListScope.myGroups(
                         )
                     }
                 }
-                if (groups.last() == group) {
-                    Spacer(modifier = Modifier.size(16.dp))
-                }
             }
         }
         Spacer(Modifier.size(16.dp))
@@ -221,86 +222,104 @@ private fun LazyListScope.pinnedTabs(
     onItemClick: (groupId: String, tabId: String) -> Unit,
 ) {
     item(contentType = "pinned_tabs") {
-        Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            text = stringResource(id = R.string.title_pinned_items),
-            style = MaterialTheme.typography.titleMedium
-        )
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        var showInfoDialog by remember { mutableStateOf(false) }
+
+        if (showInfoDialog) {
+            InfoDialog(
+                onDismissRequest = { showInfoDialog = false },
+                title = stringResource(R.string.title_pinned_items),
+                text = stringResource(R.string.pin_tab_tooltip)
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            items(
-                items = pinnedTabs,
-                key = { group -> listOf(group.groupId, group.tabId) }) { group ->
-                if (pinnedTabs.first() == group) {
-                    Spacer(modifier = Modifier.size(16.dp))
-                }
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                    ),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                    onClick = { onItemClick(group.groupId, group.tabId) },
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .width(80.dp)
-                ) {
-                    Column {
-                        AsyncImage(
-                            group.groupAvatar, contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.aspectRatio(1f)
-                        )
+            Text(
+                text = stringResource(id = R.string.title_pinned_items),
+                style = MaterialTheme.typography.titleMedium
+            )
+            InfoButton(
+                onClick = { showInfoDialog = true },
+                modifier = Modifier.size(24.dp),
+                contentDescription = stringResource(R.string.about_pinned_tabs)
+            )
+        }
+        if (pinnedTabs.isNotEmpty()) {
+            Spacer(Modifier.height(4.dp))
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp)
+            ) {
+                items(
+                    items = pinnedTabs,
+                    key = { tab -> listOf(tab.groupId, tab.tabId) }) { tab ->
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                        onClick = { onItemClick(tab.groupId, tab.tabId) },
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .width(80.dp)
+                    ) {
+                        Column {
+                            AsyncImage(
+                                tab.groupAvatar, contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.aspectRatio(1f)
+                            )
 
-                        Row(
-                            modifier = Modifier.padding(4.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Group,
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp)
-                            )
-                            Text(
-                                text = group.groupName ?: "",
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 4.dp),
-                                textAlign = TextAlign.Left,
-                                style = MaterialTheme.typography.labelMedium,
-                                maxLines = 1,
-                            )
-                        }
+                            Row(
+                                modifier = Modifier.padding(4.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Group,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Text(
+                                    text = tab.groupName ?: "",
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 4.dp),
+                                    textAlign = TextAlign.Left,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    maxLines = 1,
+                                )
+                            }
 
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(start = 4.dp, end = 4.dp, bottom = 4.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Tab,
-                                contentDescription = null,
-                                modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size_extra_small)),
-                            )
-                            Text(
-                                text = group.tabName,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(4.dp),
-                                style = MaterialTheme.typography.labelMedium,
-                                textAlign = TextAlign.Left,
-                                maxLines = 1,
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(start = 4.dp, end = 4.dp, bottom = 4.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Tab,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size_extra_small)),
+                                )
+                                Text(
+                                    text = tab.tabName,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(4.dp),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    textAlign = TextAlign.Left,
+                                    maxLines = 1,
+                                )
+                            }
                         }
                     }
                 }
 
-                if (pinnedTabs.last() == group) {
-                    Spacer(modifier = Modifier.size(16.dp))
-                }
             }
-
         }
         Spacer(Modifier.size(16.dp))
     }
