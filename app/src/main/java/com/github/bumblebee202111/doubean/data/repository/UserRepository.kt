@@ -1,7 +1,7 @@
 package com.github.bumblebee202111.doubean.data.repository
 
 import com.github.bumblebee202111.doubean.data.db.AppDatabase
-import com.github.bumblebee202111.doubean.data.db.model.asExternalModel
+import com.github.bumblebee202111.doubean.data.db.model.toUser
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.fangorns.UserDetail
 import com.github.bumblebee202111.doubean.model.profile.ProfileCommunityContribution
@@ -31,7 +31,7 @@ class UserRepository @Inject constructor(
         )
     }
 
-    fun getCachedUser(userId: String) = userDao.observeUser(userId).map { it?.asExternalModel() }
+    fun getCachedUser(userId: String) = userDao.observeUser(userId).map { it?.toUser() }
 
     suspend fun getUserDetail(userId: String): AppResult<UserDetail> {
         return makeApiCall(

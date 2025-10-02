@@ -39,7 +39,7 @@ data class PopulatedTopicDetail(
 fun PopulatedTopicDetail.toTopicDetail() = TopicDetail(
     id = partialEntity.id,
     title = partialEntity.title,
-    author = author.asExternalModel(),
+    author = author.toUser(),
     createTime = partialEntity.createTime,
     updateTime = partialEntity.updateTime,
     editTime = partialEntity.editTime,

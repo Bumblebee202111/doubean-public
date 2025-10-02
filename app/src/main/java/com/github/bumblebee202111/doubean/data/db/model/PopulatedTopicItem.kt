@@ -32,7 +32,7 @@ data class PopulatedTopicItem(
 fun PopulatedTopicItem.asExternalModel() = TopicItem(
     id = partialEntity.id,
     title = partialEntity.title,
-    author = author.asExternalModel(),
+    author = author.toUser(),
     createTime = partialEntity.createTime,
     updateTime = partialEntity.updateTime,
     commentsCount = partialEntity.commentsCount,

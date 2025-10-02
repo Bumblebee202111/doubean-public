@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
-import com.github.bumblebee202111.doubean.data.repository.UserRepository
+import com.github.bumblebee202111.doubean.domain.usecase.ObserveCurrentUserUseCase
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.model.data
@@ -19,7 +19,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
@@ -34,19 +33,14 @@ class GroupsHomeViewModel @Inject constructor(
     groupRepository: GroupRepository,
     userGroupRepository: UserGroupRepository,
     authRepository: AuthRepository,
-    userRepository: UserRepository,
+    observeCurrentUserUseCase: ObserveCurrentUserUseCase,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
 
-    private val loggedInUserId = authRepository.observeLoggedInUserId()
-
     @OptIn(ExperimentalCoroutinesApi::class)
-    val currentUser = loggedInUserId.flatMapLatest { userId ->
-        userId?.let { userRepository.getCachedUser(it) } ?: emptyFlow()
-    }.stateInUi()
+    val currentUser = observeCurrentUserUseCase().stateInUi()
 
-
-    val joinedGroupsUiState = authRepository.observeLoggedInUserId().flatMapLatest { userId ->
+    val joinedGroupsUiState = authRepository.loggedInUserId.flatMapLatest { userId ->
         when (userId) {
             null -> flowOf(JoinedGroupsUiState(isLoading = false))
             else ->
