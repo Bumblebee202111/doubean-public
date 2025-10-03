@@ -36,7 +36,7 @@ class UserProfileViewModel @Inject constructor(
 
 
     private val targetUserIdFlow: Flow<String?> =
-        authRepository.observeLoggedInUserId().map { loggedInUserId ->
+        authRepository.loggedInUserId.map { loggedInUserId ->
             val isTargetingCurrentUserProfile = (navigatedUserId == null)
             _uiState.update {
                 it.copy(

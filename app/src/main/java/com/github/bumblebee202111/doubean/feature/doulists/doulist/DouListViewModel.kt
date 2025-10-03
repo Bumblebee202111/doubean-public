@@ -52,7 +52,7 @@ class DouListViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy() }
 
-            val loggedInUserId = authRepository.observeLoggedInUserId().first()
+            val loggedInUserId = authRepository.loggedInUserId.first()
 
             var listDetail: DouList? = null
             var listItems: List<DouListPostItem> = emptyList()

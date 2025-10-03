@@ -39,7 +39,7 @@ class CreatedDouListsViewModel @Inject constructor(
     private fun fetchCreatedDouLists() {
         viewModelScope.launch {
             _uiState.value = UserDouListsUiState.Loading
-            val loggedInUserId: String? = authRepository.observeLoggedInUserId().first()
+            val loggedInUserId: String? = authRepository.loggedInUserId.first()
             val isViewingOwnLists = (loggedInUserId != null && loggedInUserId == userId)
             when (val result =
                 userDouListRepository.getUserOwnedDouLists(

@@ -155,7 +155,11 @@ fun BottomNavScreen(
                 currentUser = currentUser,
                 onHeaderClick = {
                     scope.launch { drawerState.close() }
-                    navigateToUserProfile(currentUser?.uid ?: return@NavigationDrawerSheet)
+                    if (currentUser != null) {
+                        navigateToUserProfile(currentUser.uid)
+                    } else {
+                        navigateToLogin()
+                    }
                 },
                 onCollectClick = {
                     scope.launch { drawerState.close() }

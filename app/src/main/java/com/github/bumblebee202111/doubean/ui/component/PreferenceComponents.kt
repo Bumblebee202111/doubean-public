@@ -20,9 +20,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.bumblebee202111.doubean.R
 
 @Composable
 fun PreferenceCategoryHeader(title: String) {
@@ -42,9 +44,20 @@ fun SwitchPreferenceItem(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     summary: String? = null,
+    onInfoClick: (() -> Unit)? = null,
 ) {
     ListItem(
-        headlineContent = { Text(title) },
+        headlineContent = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(title)
+                if (onInfoClick != null) {
+                    InfoButton(
+                        onClick = onInfoClick,
+                        contentDescription = stringResource(R.string.more_info)
+                    )
+                }
+            }
+        },
         supportingContent = { summary?.let { Text(it) } },
         trailingContent = {
             Switch(
@@ -62,9 +75,20 @@ fun ClickablePreferenceItem(
     onClick: () -> Unit,
     summary: String? = null,
     trailingContent: @Composable (() -> Unit)? = null,
+    onInfoClick: (() -> Unit)? = null,
 ) {
     ListItem(
-        headlineContent = { Text(title) },
+        headlineContent = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(title)
+                if (onInfoClick != null) {
+                    InfoButton(
+                        onClick = onInfoClick,
+                        contentDescription = stringResource(R.string.more_info)
+                    )
+                }
+            }
+        },
         supportingContent = { summary?.let { Text(it) } },
         trailingContent = trailingContent,
         modifier = Modifier.clickable(onClick = onClick)

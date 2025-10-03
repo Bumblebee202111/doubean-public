@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+## Version 0.9.12
+
+**Improvements**
+
+- Added new informational dialogs for features like Notifications and Pinned Tabs.
+- Improved the clarity of various UI hints and login prompts.
+
+**Bug Fixes**
+
+- Fixed an issue where the user's avatar would remain visible after logging out.
+
 ## Version 0.9.11
 
 **Improvements**

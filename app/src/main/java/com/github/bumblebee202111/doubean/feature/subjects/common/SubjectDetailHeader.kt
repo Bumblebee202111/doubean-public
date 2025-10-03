@@ -25,7 +25,7 @@ import com.github.bumblebee202111.doubean.model.subjects.MovieDetail
 import com.github.bumblebee202111.doubean.model.subjects.SubjectDetail
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.TvDetail
-import com.github.bumblebee202111.doubean.ui.component.LoginPromptText
+import com.github.bumblebee202111.doubean.ui.component.InlineLoginPrompt
 
 @Composable
 fun SubjectDetailHeader(
@@ -70,8 +70,8 @@ fun SubjectDetailHeader(
                     onUpdateStatus = onUpdateStatus
                 )
             } else {
-                LoginPromptText(
-                    contentStringRes = R.string.login_prompt_to_mark_subjects,
+                InlineLoginPrompt(
+                    promptText = stringResource(R.string.login_prompt_mark_subject),
                     onLoginClick = onLoginClick
                 )
             }

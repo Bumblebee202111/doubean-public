@@ -63,7 +63,7 @@ class TvsViewModel @Inject constructor(
 
     private fun getMyTvs() {
         viewModelScope.launch {
-            authRepository.observeLoggedInUserId().collectLatest { userId ->
+            authRepository.loggedInUserId.collectLatest { userId ->
                 _myTvsUiState.value = when (userId) {
                     null -> MySubjectUiState.NotLoggedIn
                     else -> {

@@ -31,7 +31,7 @@ class UserDouListsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val userId = authRepository.observeLoggedInUserId().first()
+            val userId = authRepository.loggedInUserId.first()
             currentUserId = userId
             if (userId == null) {
                 _uiState.value = UserDouListsUiState.Error(R.string.title_unlogin.toUiMessage())

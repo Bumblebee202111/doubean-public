@@ -7,6 +7,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -19,6 +22,7 @@ import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.ClickablePreferenceItem
 import com.github.bumblebee202111.doubean.ui.component.DangerButtonPreferenceItem
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
+import com.github.bumblebee202111.doubean.ui.component.InfoDialog
 import com.github.bumblebee202111.doubean.ui.component.PreferenceCategoryHeader
 import com.github.bumblebee202111.doubean.ui.component.PreferenceDivider
 import com.github.bumblebee202111.doubean.ui.component.SwitchPreferenceItem
@@ -65,6 +69,17 @@ fun SettingsScreen(
     onGroupDefaultNotificationsPreferencesSettingsClick: () -> Unit,
     onLoginClick: () -> Unit,
 ) {
+
+    var showNotificationInfoDialog by remember { mutableStateOf(false) }
+
+    if (showNotificationInfoDialog) {
+        InfoDialog(
+            onDismissRequest = { showNotificationInfoDialog = false },
+            title = stringResource(R.string.notifications_info_title),
+            text = stringResource(R.string.notifications_info_body)
+        )
+    }
+
     Scaffold(
         topBar = {
             DoubeanTopAppBar(
@@ -117,7 +132,8 @@ fun SettingsScreen(
                             )
                         } else {
                             stringResource(R.string.notification_permission_granted)
-                        }
+                        },
+                        onInfoClick = { showNotificationInfoDialog = true }
                     )
                 }
             }
