@@ -75,9 +75,20 @@ fun ClickablePreferenceItem(
     onClick: () -> Unit,
     summary: String? = null,
     trailingContent: @Composable (() -> Unit)? = null,
+    onInfoClick: (() -> Unit)? = null,
 ) {
     ListItem(
-        headlineContent = { Text(title) },
+        headlineContent = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(title)
+                if (onInfoClick != null) {
+                    InfoButton(
+                        onClick = onInfoClick,
+                        contentDescription = stringResource(R.string.more_info)
+                    )
+                }
+            }
+        },
         supportingContent = { summary?.let { Text(it) } },
         trailingContent = trailingContent,
         modifier = Modifier.clickable(onClick = onClick)

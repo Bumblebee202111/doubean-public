@@ -28,6 +28,7 @@ import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.ClickablePreferenceItem
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
+import com.github.bumblebee202111.doubean.ui.component.InfoDialog
 import com.github.bumblebee202111.doubean.ui.component.RadioButtonItem
 import com.github.bumblebee202111.doubean.ui.component.SelectionDialog
 import com.github.bumblebee202111.doubean.ui.component.SwitchPreferenceItem
@@ -41,7 +42,6 @@ fun GroupDefaultNotificationsPreferencesSettingsScreen(
     val defaultGroupNotificationPreferences by viewModel.defaultGroupNotificationPreferences.collectAsStateWithLifecycle()
     GroupDefaultNotificationsPreferencesSettingsScreen(
         preferences = defaultGroupNotificationPreferences,
-        toggleEnableNotifications = viewModel::toggleEnableNotifications,
         toggleNotifyOnUpdates = viewModel::toggleNotifyOnUpdates,
         setSortBy = viewModel::setSortBy,
         setMaxTopicNotificationsPerFetch = viewModel::setMaxTopicNotificationsPerFetch,
@@ -53,7 +53,6 @@ fun GroupDefaultNotificationsPreferencesSettingsScreen(
 @Composable
 fun GroupDefaultNotificationsPreferencesSettingsScreen(
     preferences: GroupNotificationPreferences?,
-    toggleEnableNotifications: () -> Unit,
     toggleNotifyOnUpdates: () -> Unit,
     setSortBy: (TopicSortBy) -> Unit,
     setMaxTopicNotificationsPerFetch: (Int) -> Unit,
@@ -61,6 +60,15 @@ fun GroupDefaultNotificationsPreferencesSettingsScreen(
 ) {
     var showSortByDialog by remember { mutableStateOf(false) }
     var showMaxTopicNotificationsPerFetch by remember { mutableStateOf(false) }
+    var showSortInfoDialog by remember { mutableStateOf(false) }
+
+    if (showSortInfoDialog) {
+        InfoDialog(
+            onDismissRequest = { showSortInfoDialog = false },
+            title = stringResource(R.string.sort_topics_info_title),
+            text = stringResource(R.string.sort_topics_info_body)
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -90,7 +98,8 @@ fun GroupDefaultNotificationsPreferencesSettingsScreen(
                     ClickablePreferenceItem(
                         title = stringResource(R.string.sort_by_title),
                         onClick = { showSortByDialog = true },
-                        summary = stringResource(SortTopicsByOption.entries.first { option -> option.sortBy == preferences.sortBy }.textRes)
+                        summary = stringResource(SortTopicsByOption.entries.first { it.sortBy == preferences.sortBy }.textRes),
+                        onInfoClick = { showSortInfoDialog = true }
                     )
                 }
 
