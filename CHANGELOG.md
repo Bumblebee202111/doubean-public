@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.9.13
+
 ## Version 0.9.12
 
 **Improvements**
