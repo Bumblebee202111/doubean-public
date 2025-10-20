@@ -10,6 +10,12 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 [douban]: https://www.douban.com/
 [douban-groups]: https://www.douban.com/group/
 
+## Known Issues
+
+- **Crash on Topic Screen:** The app may crash on some devices when scrolling to the end of the comment list on certain topics.
+  - *Example topic:* `https://www.douban.com/group/topic/338980665`
+  - *Status:* The cause is under investigation and a fix is planned for a future release.
+
 ## Features
 
 - Subjects (Books/Movies/TVs):
