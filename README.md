@@ -10,6 +10,12 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 [douban]: https://www.douban.com/
 [douban-groups]: https://www.douban.com/group/
 
+## Known Issues
+
+- **Crash on Topic Screen:** The app may crash on some devices when scrolling to the end of the comment list on certain topics.
+  - *Example topic:* `https://www.douban.com/group/topic/338980665`
+  - *Status:* The cause is under investigation and a fix is planned for a future release.
+
 ## Features
 
 - Subjects (Books/Movies/TVs):
@@ -103,7 +109,7 @@ Only selected source code from a private project is shared here to avoid potenti
 
 Upcoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for personal tracking.
 
-### Current release \(0.9.12)
+### Current release \(0.9.13)
 
 ### Next release \(0.10.0)
 
@@ -128,26 +134,31 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
     - Topics within a group/tab
     - Global topic search
     - Tabbed search results
-  - Notifications: Add 1h interval option
+  - New web-based feed for all followed topics
+    - Toggleable "My Group Topics" section on the home screen
+    - Sort by creation time or "Hotness" (replies + 1 / time)
+    - Notification engine with customizable intervals (15m, 30m, 1h)
+    - Per-group settings for sort preference and check depth (with a UI hint suggesting small values for active groups)
   - Home: Potential pagination for recommended topics
   - Tab
     - Track topic read status
     - Dynamic topic sorting options
   - Group Detail: Auto-collapse header for subscribed/pinned groups/tabs
   - Topic:
-    - Fully load content via official script (no manual parsing)
+    - Render content using the same HTML/WebView approach as topics
     - Fix content scroll restoration
   - Default hide officially-flagged "unfriendly" content
   - Implement content blocking
   - Reddit-style list item expand/collapse
-  - Investigate API for *all* followed topics like desktop Web app (currently seems unlikely)
-    - Use as home/notifications data source
 - Subjects
   - Subject Detail
     - Ratings histogram
     - Trailer playback ([comment in #15](https://github.com/Bumblebee202111/doubean-public/issues/15#issuecomment-3317936337))
+    - Toggle default or hot interests
+  - Review: Load with HTML like topic content
   - Color schemes
   - More
+- Drawer: Fix user info not displayed after login
 - UserProfile: My subjects, My groups
 - i18n: Language selection
 - Doulists
