@@ -1,0 +1,6 @@
+<resources>
+
+    <style name="NightAdjusted.Theme.Doubean" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.Doubean" parent="NightAdjusted.Theme.Doubean" />
+</resources>
