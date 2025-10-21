@@ -13,9 +13,9 @@ class GroupTopicCommentPagingSource(
     PagingSource<Int, NetworkGroupTopicComment>() {
 
     override val jumpingSupported: Boolean = true
+
     override fun getRefreshKey(state: PagingState<Int, NetworkGroupTopicComment>): Int {
         return ((state.anchorPosition ?: 0) - state.config.initialLoadSize / 2).coerceAtLeast(0)
-        
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, NetworkGroupTopicComment> {
@@ -28,17 +28,20 @@ class GroupTopicCommentPagingSource(
                 count = count
             )
 
-            val prevKey = if (start == 0) null else (start - params.loadSize).coerceAtLeast(0)
-            val nextKey = (start + params.loadSize).takeIf { it < response.total }
-            response.topComments.filterIsInstance<NetworkGroupTopicComment>()
+            response.popularComments.filterIsInstance<NetworkGroupTopicComment>()
                 .takeIf { it.isNotEmpty() }?.let(onPopularCommentsFetched)
+
             val realComments = response.comments.filterIsInstance<NetworkGroupTopicComment>()
+
+            val prevKey = if (start == 0) null else (start - count).coerceAtLeast(0)
+            val nextKey = (start + count).takeIf { it < response.total }
+
             return LoadResult.Page(
                 data = realComments,
                 prevKey = prevKey,
                 nextKey = nextKey,
                 itemsBefore = start,
-                itemsAfter = response.total - start - realComments.size 
+                itemsAfter = response.total - start - realComments.size
             )
         } catch (e: Exception) {
             return LoadResult.Error(e)
