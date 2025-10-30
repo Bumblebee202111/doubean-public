@@ -3,6 +3,9 @@ Change Log
 
 ## Version 0.9.13
 
+**Improvements**
+- Updated list item menus to use a more modern and ergonomic bottom sheet.
+
 ## Version 0.9.12
 
 **Improvements**

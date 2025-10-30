@@ -1,8 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.groups.shared
 
-import android.content.Context
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,8 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -44,7 +39,6 @@ import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.ListItemCount
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
 import com.github.bumblebee202111.doubean.util.DateTimeStyle
-import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.buildGroupTopicAndTagText
 import com.github.bumblebee202111.doubean.util.toRelativeString
 
@@ -75,7 +69,15 @@ fun TopicItem(
     onAuthorClick: (id: String) -> Unit = {},
     onGroupClick: (id: String) -> Unit = {},
 ) {
-    val context = LocalContext.current
+    var showActionsBottomSheet by remember { mutableStateOf(false) }
+
+    if (showActionsBottomSheet && topic != null) {
+        TopicActionsBottomSheet(
+            topic = topic,
+            group = group,
+            onDismissRequest = { showActionsBottomSheet = false }
+        )
+    }
 
     if (topic != null) {
         Row(
@@ -159,25 +161,17 @@ fun TopicItem(
                 }
 
             }
-            Box(modifier = Modifier.padding(all = 2.dp)) {
-                var expanded by remember { mutableStateOf(false) }
 
-                IconButton(onClick = { expanded = true }) {
-                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
-                }
-                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                    DropdownMenuItem(
-                        text = { Text(text = stringResource(id = R.string.share)) },
-                        onClick = {
-                            val shareText = createTopicShareText(
-                                topic = topic,
-                                group = group,
-                                context = context
-                            )
-                            ShareUtil.share(context, shareText)
-                        })
-                }
+            IconButton(
+                onClick = { showActionsBottomSheet = true },
+                modifier = Modifier.padding(all = 2.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = stringResource(id = R.string.more)
+                )
             }
+
             val coverUrl = topic.coverUrl
             if (coverUrl != null) {
                 AsyncImage(
@@ -194,23 +188,6 @@ fun TopicItem(
                 Spacer(modifier = Modifier.width(2.dp))
             }
         }
-    }
-}
-
-fun createTopicShareText(
-    topic: AbstractTopicItem,
-    group: SimpleGroup?,
-    context: Context,
-): CharSequence {
-    return buildString {
-        group?.let { append(it.name) }
-        if (group != null && topic.tag != null) {
-            append("|")
-        }
-        topic.tag?.let { tag ->
-            append(tag.name)
-        }
-        append("@${topic.author.name}${context.getString(R.string.colon)}${topic.title} ${topic.url}")
     }
 }
 
