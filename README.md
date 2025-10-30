@@ -12,9 +12,7 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 
 ## Known Issues
 
-- **Crash on Topic Screen:** The app may crash on some devices when scrolling to the end of the comment list on certain topics.
-  - *Example topic:* `https://www.douban.com/group/topic/338980665`
-  - *Status:* The cause is under investigation and a fix is planned for a future release.
+- **Crash on Topic Screen:** May crash on some devices when scrolling. See issue [#19](https://github.com/Bumblebee202111/doubean-public/issues/19) for details.
 
 ## Features
 
@@ -121,7 +119,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### Backlog
 - Navigation
-  - Navigation 3 when beta or introduced in NiA
+  - Navigation 3 when deeplink is supported ([nav3-recipes #97](https://github.com/android/nav3-recipes/pull/97))
   - Consider use single NavHost (?)
   - Allow customizing bottom navigation ([#16](https://github.com/Bumblebee202111/doubean-public/issues/16))
   - Shared element transitions for images
@@ -158,9 +156,10 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Review: Load with HTML like topic content
   - Color schemes
   - More
-- Drawer: Fix user info not displayed after login
 - UserProfile: My subjects, My groups
-- i18n: Language selection
+- i18n
+  - Language selection
+  - AI translation support
 - Doulists
   - Edit/remove posts
   - Follow Doulists
@@ -169,7 +168,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 - Search suggestions
 - Login: Code-based (w/o pw)
 - Shortcuts
-- Use bottom sheets for list item menus
 - NetworkManager
 - Widgets: Calender today
 - QR

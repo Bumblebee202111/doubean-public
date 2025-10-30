@@ -1,8 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.groups.topic
 
-import android.content.Context
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,8 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.ThumbUp
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,7 +24,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -46,7 +41,6 @@ import com.github.bumblebee202111.doubean.ui.component.ListItemCount
 import com.github.bumblebee202111.doubean.ui.component.ListItemImages
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
 import com.github.bumblebee202111.doubean.util.DateTimeStyle
-import com.github.bumblebee202111.doubean.util.ShareUtil
 import com.github.bumblebee202111.doubean.util.toColorOrPrimary
 import com.github.bumblebee202111.doubean.util.toRelativeString
 import java.time.LocalDateTime
@@ -61,8 +55,16 @@ fun TopicComment(
     onUserClick: (id: String) -> Unit,
     onImageClick: (url: String) -> Unit,
 ) {
+    var showActionsBottomSheet by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
+    if (showActionsBottomSheet) {
+        TopicCommentActionsBottomSheet(
+            comment = comment,
+            topic = topic,
+            onDismissRequest = { showActionsBottomSheet = false }
+        )
+    }
+
     val groupThemeColor = topic.group?.color.toColorOrPrimary()
 
     Row(
@@ -89,7 +91,7 @@ fun TopicComment(
                     ipLocation = comment.ipLocation,
                     showAuthorAvatar = false,
                     onAuthorClick = onUserClick
-                    )
+                )
                 comment.refComment?.let { refComment ->
                     Spacer(modifier = Modifier.height(4.dp))
                     TopicRefCommentCard(
@@ -118,25 +120,14 @@ fun TopicComment(
             }
         }
 
-        Box(modifier = Modifier.padding(top = 4.dp)) {
-            var expanded by remember { mutableStateOf(false) }
-
-            IconButton(onClick = { expanded = true }) {
-                Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
-            }
-            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                DropdownMenuItem(
-                    text = { Text(text = stringResource(id = R.string.share)) },
-                    onClick = {
-                        val shareText = createTopicCommentShareText(
-                            comment = comment,
-                            topic = topic,
-                            context = context
-                        )
-
-                        ShareUtil.share(context, shareText)
-                    })
-            }
+        IconButton(
+            onClick = { showActionsBottomSheet = true },
+            modifier = Modifier.padding(top = 4.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = stringResource(R.string.more)
+            )
         }
     }
 
@@ -151,7 +142,7 @@ private fun TopicCommentHeaderRow(
     ipLocation: String?,
     showAuthorAvatar: Boolean,
     onAuthorClick: (id: String) -> Unit,
-    ) {
+) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         if (showAuthorAvatar) {
             UserProfileImage(url = author?.avatar, size = 16.dp)
@@ -244,33 +235,5 @@ private fun TopicRefCommentCard(
                 ListItemCount(iconVector = Icons.Outlined.ThumbUp, count = it)
             }
         }
-    }
-}
-
-private fun createTopicCommentShareText(
-    comment: TopicComment,
-    topic: TopicDetail,
-    context: Context,
-): String {
-    return buildString {
-        topic.group?.let { group -> append(group.name) }
-        topic.tag?.let { tag ->
-            append("|" + tag.name)
-        }
-
-        append(
-            "@${comment.author.name}${
-                context.getString(R.string.colon)
-            }${comment.text}"
-        )
-        comment.refComment?.let { repliedTo ->
-            append("${context.getString(R.string.repliedTo)}@${repliedTo.author.name}： ${repliedTo.text}")
-        }
-        append(
-            "${context.getString(R.string.topic)}@${topic.author.name}${
-                context.getString(R.string.colon)
-            }\n${topic.title} ${topic.url}\n"
-        )
-
     }
 }
