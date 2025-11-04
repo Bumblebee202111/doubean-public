@@ -164,7 +164,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Edit/remove posts
   - Follow Doulists
   - List/post pagination
-- Persist last-active tab
 - Search suggestions
 - Login: Code-based (w/o pw)
 - Shortcuts
