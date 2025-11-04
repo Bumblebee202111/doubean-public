@@ -1,0 +1,19 @@
+package com.github.bumblebee202111.doubean.model.groups
+
+import com.github.bumblebee202111.doubean.model.fangorns.User
+import java.time.LocalDateTime
+
+data class TopicItemWithGroup(
+    override val id: String,
+    override val title: String,
+    override val author: User,
+    override val createTime: LocalDateTime,
+    override val updateTime: LocalDateTime,
+    override val commentsCount: Int,
+    override val tags: List<GroupTopicTag>,
+    override val coverUrl: String?,
+    override val url: String,
+    override val uri: String,
+    val group: SimpleGroup,
+) : AbstractTopicItem
+

@@ -23,6 +23,7 @@ import com.github.bumblebee202111.doubean.model.auth.CaptchaSolution
 import com.github.bumblebee202111.doubean.model.auth.JCaptcha
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
+import com.github.bumblebee202111.doubean.ui.component.RexxarWebView
 
 @Composable
 fun VerifyPhoneScreen(
@@ -143,22 +144,30 @@ private fun CaptchaWebView(
     jCaptcha: JCaptcha,
     onVerifyCaptcha: (solution: CaptchaSolution) -> Unit,
 ) {
+    RexxarWebView(
+        filename = "",
         initialParams =
         mapOf(
-            "captcha_url" to jCaptcha.touchCapUrl,
-            "tc_app_id" to jCaptcha.tcAppId,
-            "isTransparent" to "true"
+            "" to jCaptcha.touchCapUrl,
+            "" to jCaptcha.tcAppId,
+            "" to "true"
         ),
-        handleFrodoV2ApiRequest = { url, method, headers, params ->
+        handleApiRequest = { url, method, headers, params ->
             when {
+                url.contains("/captcha/verify_captcha") -> {
+                    val  = params[""] ?: return@RexxarWebView null
+                    val  = params[""] ?: return@RexxarWebView null
+                    val tcAppId = params[""] ?: return@RexxarWebView null
                     val solution = CaptchaSolution(
-                        ticket = ticket,
-                        randstr = randstr,
+                         = ,
+                         = ,
                         tcAppId = tcAppId
                     )
                     onVerifyCaptcha(solution)
+                    return@RexxarWebView null
                 }
 
+                else -> return@RexxarWebView null
             }
         }
     )

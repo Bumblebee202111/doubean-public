@@ -1,0 +1,23 @@
+package com.github.bumblebee202111.doubean.model.subjects
+
+data class MovieDetail(
+    override val id: String,
+    override val rating: Rating,
+    override val cardSubtitle: String,
+    override val title: String,
+    override val coverUrl: String,
+    override val uri: String,
+    override val intro: String,
+    override val interest: SubjectInterest?,
+    val pubdate: List<String>,
+    val year: String,
+    val genres: List<String>,
+    val actorNames: List<String>,
+    val durations: List<String>,
+    val trailers: List<MovieTrailer>,
+    val countries: List<String>,
+    val originalTitle: String?,
+    val directorNames: List<String>,
+) : SubjectDetail {
+    override val type: SubjectType = SubjectType.MOVIE
+}
