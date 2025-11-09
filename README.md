@@ -107,7 +107,9 @@ Only selected source code from a private project is shared here to avoid potenti
 
 Upcoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for personal tracking.
 
-### Current release \(0.9.13)
+### Current release \(0.9.14)
+
+- Improve list loading states (e.g., retry buttons)
 
 ### Next release \(0.10.0)
 
@@ -177,7 +179,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 #### Ongoing Improvements
 
-- Improve list loading states (e.g., retry buttons)
 - Ensure basic dark mode, landscape & tablet support
 - Sync more source to public repo
 - Full deep linking support
