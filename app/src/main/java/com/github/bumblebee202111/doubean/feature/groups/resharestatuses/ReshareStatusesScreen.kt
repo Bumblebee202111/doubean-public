@@ -3,6 +3,7 @@ package com.github.bumblebee202111.doubean.feature.groups.resharestatuses
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,11 +15,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
@@ -30,6 +34,9 @@ import com.github.bumblebee202111.doubean.model.groups.GroupTopicCommentReshareI
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
+import com.github.bumblebee202111.doubean.ui.component.FullScreenCenteredContent
+import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
+import com.github.bumblebee202111.doubean.ui.util.toUiMessage
 import com.github.bumblebee202111.doubean.util.DateTimeStyle
 import com.github.bumblebee202111.doubean.util.toRelativeString
 
@@ -69,63 +76,92 @@ fun ReshareStatusesScreen(
             )
         },
         modifier = Modifier.fillMaxSize()
-    ) { paddingValues ->
-        LazyColumn(
-            contentPadding = paddingValues,
-        ) {
-            items(
-                count = reshareStatusLazyPagingItems.itemCount,
-                key = reshareStatusLazyPagingItems.itemKey { it.id },
-                contentType = reshareStatusLazyPagingItems.itemContentType { "reshareStatus" }) { index ->
-                val reshareStatus = reshareStatusLazyPagingItems[index]
+    ) { innerPadding ->
+        val isRefreshing = reshareStatusLazyPagingItems.loadState.refresh is LoadState.Loading
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            horizontal = 16.dp,
-                            vertical = 4.dp
-                        ),
-                ) {
-                    TopicActivityItemUserProfileImage(
-                        url = reshareStatus?.author?.avatar,
-                        onClick = {
-                            reshareStatus?.author?.let {
-                                onUserClick(it.id)
-                            }
-                        })
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(start = 12.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            UserNameText(
-                                reshareStatus?.author?.name ?: "",
-                                modifier = Modifier.clickable {
-                                    reshareStatus?.author?.let {
-                                        onUserClick(it.id)
-                                    }
-                                })
-                            reshareStatus?.createTime?.let {
-                                DateTimeText(
-                                    text = it.toRelativeString(style = DateTimeStyle.INTERMEDIATE),
-                                    modifier = Modifier.padding(start = 4.dp)
-                                )
-                            }
-                        }
-                        Text(
-                            text = reshareStatus?.text ?: "",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = { reshareStatusLazyPagingItems.refresh() },
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            when (val refreshState = reshareStatusLazyPagingItems.loadState.refresh) {
+                is LoadState.Error -> {
+
+                    val errorMessage = refreshState.toUiMessage()
+
+                    FullScreenErrorWithRetry(
+                        message = errorMessage.getString(),
+                        onRetryClick = { reshareStatusLazyPagingItems.retry() },
+                        contentPadding = PaddingValues()
+                    )
+                }
+
+                is LoadState.NotLoading if reshareStatusLazyPagingItems.itemCount == 0 -> {
+                    FullScreenCenteredContent(contentPadding = PaddingValues()) {
+                        Text(stringResource(R.string.empty_reshare_list))
                     }
                 }
 
-                if (index != reshareStatusLazyPagingItems.itemCount - 1) {
-                    HorizontalDivider()
+                else -> {
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        items(
+                            count = reshareStatusLazyPagingItems.itemCount,
+                            key = reshareStatusLazyPagingItems.itemKey { it.id },
+                            contentType = reshareStatusLazyPagingItems.itemContentType { "reshareStatus" }) { index ->
+                            val reshareStatus = reshareStatusLazyPagingItems[index]
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        horizontal = 16.dp,
+                                        vertical = 4.dp
+                                    ),
+                            ) {
+                                TopicActivityItemUserProfileImage(
+                                    url = reshareStatus?.author?.avatar,
+                                    onClick = {
+                                        reshareStatus?.author?.let {
+                                            onUserClick(it.id)
+                                        }
+                                    })
+                                Column(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(start = 12.dp),
+                                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        UserNameText(
+                                            reshareStatus?.author?.name ?: "",
+                                            modifier = Modifier.clickable {
+                                                reshareStatus?.author?.let {
+                                                    onUserClick(it.id)
+                                                }
+                                            })
+                                        reshareStatus?.createTime?.let {
+                                            DateTimeText(
+                                                text = it.toRelativeString(style = DateTimeStyle.INTERMEDIATE),
+                                                modifier = Modifier.padding(start = 4.dp)
+                                            )
+                                        }
+                                    }
+                                    Text(
+                                        text = reshareStatus?.text ?: "",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
+                            }
+
+                            if (index != reshareStatusLazyPagingItems.itemCount - 1) {
+                                HorizontalDivider()
+                            }
+                        }
+                    }
                 }
+
             }
         }
     }
+
 }

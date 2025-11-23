@@ -37,16 +37,20 @@ class GroupTagTopicRemoteMediator(
         loadType: LoadType,
         state: PagingState<Int, PopulatedTopicItem>,
     ): MediatorResult {
-        val start = when (loadType) {
-            LoadType.REFRESH -> 0
-            LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
-            LoadType.APPEND -> appDatabase.withTransaction {
-                remoteKeyDao.remoteKey(groupId, tagIdColumnValue, sortBy)
-            }.nextKey ?: return MediatorResult.Success(
-                endOfPaginationReached = true
-            )
-        }
-        return try {
+        return safeMediatorLoad {
+            val start = when (loadType) {
+                LoadType.REFRESH -> 0
+                LoadType.PREPEND -> return@safeMediatorLoad MediatorResult.Success(
+                    endOfPaginationReached = true
+                )
+
+                LoadType.APPEND -> appDatabase.withTransaction {
+                    remoteKeyDao.remoteKey(groupId, tagIdColumnValue, sortBy)
+                }.nextKey ?: return@safeMediatorLoad MediatorResult.Success(
+                    endOfPaginationReached = true
+                )
+            }
+
             val response = service.getGroupTopics(
                 groupId = groupId,
                 topicTagId = tagId,
@@ -124,10 +128,7 @@ class GroupTagTopicRemoteMediator(
             MediatorResult.Success(
                 endOfPaginationReached = nextKey == null
             )
-        } catch (e: Exception) {
-            MediatorResult.Error(e)
         }
-
     }
 
 

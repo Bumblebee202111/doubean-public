@@ -1,5 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.notifications
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
@@ -112,16 +114,33 @@ fun NotificationsScreen(
                     )
                 }
             }
-            items(
-                notificationPagingItems.itemCount,
-                notificationPagingItems.itemKey { it.id },
-                notificationPagingItems.itemContentType { "notification" }) { index ->
-                TopicItem(
-                    topicItemWithGroup = notificationPagingItems[index],
-                    displayMode = TopicItemDisplayMode.SHOW_GROUP,
-                    onTopicClick = onTopicClick,
-                    onAuthorClick = onGroupClick
-                )
+            if (notificationPagingItems.itemCount == 0 &&
+                notificationPagingItems.loadState.refresh is LoadState.NotLoading
+            ) {
+                item {
+                    Box(
+                        modifier = Modifier.fillParentMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.empty_notifications),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            } else {
+                items(
+                    notificationPagingItems.itemCount,
+                    notificationPagingItems.itemKey { it.id },
+                    notificationPagingItems.itemContentType { "notification" }) { index ->
+                    TopicItem(
+                        topicItemWithGroup = notificationPagingItems[index],
+                        displayMode = TopicItemDisplayMode.SHOW_GROUP,
+                        onTopicClick = onTopicClick,
+                        onAuthorClick = onGroupClick
+                    )
+                }
             }
         }
     }

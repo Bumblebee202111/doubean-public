@@ -11,10 +11,12 @@ import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.InterestsRoute
 import com.github.bumblebee202111.doubean.model.AppResult
+import com.github.bumblebee202111.doubean.model.GenericError
 import com.github.bumblebee202111.doubean.model.subjects.MySubjectStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
+import com.github.bumblebee202111.doubean.ui.model.UiMessage
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,8 +44,13 @@ class InterestsViewModel @Inject constructor(
     private val route = savedStateHandle.toRoute<InterestsRoute>()
     private val userId = route.userId
     private val subjectType = route.subjectType
-    private val subjectResult = flow {
-        emit(userSubjectRepository.getUserSubjects(userId))
+
+    private val retryTrigger = MutableStateFlow(0)
+
+    private val subjectResult = retryTrigger.flatMapLatest {
+        flow {
+            emit(userSubjectRepository.getUserSubjects(userId))
+        }
     }.mapLatest { result ->
         when (result) {
             is AppResult.Success -> {
@@ -51,7 +58,6 @@ class InterestsViewModel @Inject constructor(
             }
 
             is AppResult.Error -> {
-                snackbarManager.showMessage(result.error.asUiMessage())
                 result
             }
         }
@@ -68,7 +74,6 @@ class InterestsViewModel @Inject constructor(
                 is AppResult.Success -> interests.value = result.data
                 is AppResult.Error -> {
                     interests.value = emptyList()
-                    snackbarManager.showMessage(result.error.asUiMessage())
                 }
             }
         }.stateInUi()
@@ -122,7 +127,11 @@ class InterestsViewModel @Inject constructor(
                 }
 
                 else -> {
-                    InterestsUiState.Error
+                    val error = (subjectResult as? AppResult.Error)?.error
+                        ?: (interestsResult as? AppResult.Error)?.error
+                        ?: GenericError(null)
+
+                    InterestsUiState.Error(error.asUiMessage())
                 }
             }
         }.stateInUi(InterestsUiState.Loading)
@@ -172,7 +181,10 @@ class InterestsViewModel @Inject constructor(
                 }
             }
         }
+    }
 
+    fun retry() {
+        retryTrigger.value++
     }
 }
 
@@ -184,6 +196,6 @@ sealed interface InterestsUiState {
         val isLoggedIn: Boolean,
     ) : InterestsUiState
 
-    data object Error : InterestsUiState
+    data class Error(val message: UiMessage) : InterestsUiState
     data object Loading : InterestsUiState
 }

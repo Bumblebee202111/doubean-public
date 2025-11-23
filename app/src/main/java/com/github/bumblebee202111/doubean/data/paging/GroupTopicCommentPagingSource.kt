@@ -19,9 +19,9 @@ class GroupTopicCommentPagingSource(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, NetworkGroupTopicComment> {
-        val start = params.key ?: 0
-        val count = params.loadSize
-        try {
+        return safePagingLoad {
+            val start = params.key ?: 0
+            val count = params.loadSize
             val response = apiService.getGroupTopicComments(
                 topicId = topicId,
                 start = start,
@@ -36,15 +36,13 @@ class GroupTopicCommentPagingSource(
             val prevKey = if (start == 0) null else (start - count).coerceAtLeast(0)
             val nextKey = (start + count).takeIf { it < response.total }
 
-            return LoadResult.Page(
+            LoadResult.Page(
                 data = realComments,
                 prevKey = prevKey,
                 nextKey = nextKey,
                 itemsBefore = start,
                 itemsAfter = response.total - start - realComments.size
             )
-        } catch (e: Exception) {
-            return LoadResult.Error(e)
         }
     }
 

@@ -5,6 +5,7 @@ import com.github.bumblebee202111.doubean.model.subjects.MovieDetail
 import com.github.bumblebee202111.doubean.model.subjects.RecommendSubject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUserList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectReviewList
+import com.github.bumblebee202111.doubean.ui.model.UiMessage
 
 sealed interface MovieUiState {
     data class Success(
@@ -17,6 +18,6 @@ sealed interface MovieUiState {
 
         ) : MovieUiState
     data object Loading : MovieUiState
-    data object Error : MovieUiState
+    data class Error(val message: UiMessage) : MovieUiState
 }
 

@@ -109,7 +109,7 @@ fun CreatedDouListsScreen(
             uiState = uiState,
             onItemClick = onDouListClick,
             onRetryClick = onRetryClick,
-            contentPadding = innerPadding
+            innerPadding = innerPadding
         )
     }
 }

@@ -52,7 +52,8 @@ class SearchSubjectsViewModel @Inject constructor(
             query = trimmedQuery,
             types = null,
             isLoading = true,
-            selectedType = null
+            selectedType = null,
+            errorMessage = null
         )
 
         viewModelScope.launch {
@@ -61,13 +62,15 @@ class SearchSubjectsViewModel @Inject constructor(
 
         currentJob?.cancel()
         currentJob = viewModelScope.launch {
-            val result = repository.searchSubjects(
-                query = trimmedQuery
-            )
+            val result = repository.searchSubjects(query = trimmedQuery)
             _uiState.value = when (result) {
                 is AppResult.Error -> {
-                    snackbarManager.showMessage(result.error.asUiMessage())
-                    _uiState.value.copy(isLoading = false)
+                    val errorMessage = result.error.asUiMessage()
+                    snackbarManager.showMessage(errorMessage)
+                    _uiState.value.copy(
+                        isLoading = false,
+                        errorMessage = errorMessage
+                    )
                 }
 
                 is AppResult.Success -> {
@@ -80,7 +83,8 @@ class SearchSubjectsViewModel @Inject constructor(
                         items = items,
                         types = types,
                         selectedType = initialType,
-                        isLoading = false
+                        isLoading = false,
+                        errorMessage = null
                     )
                 }
             }
@@ -107,7 +111,8 @@ class SearchSubjectsViewModel @Inject constructor(
         currentJob = viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
                 isLoading = true,
-                selectedType = type
+                selectedType = type,
+                errorMessage = null
             )
 
             val result = repository.searchSubjects(
@@ -115,8 +120,12 @@ class SearchSubjectsViewModel @Inject constructor(
             )
             _uiState.value = when (result) {
                 is AppResult.Error -> {
-                    snackbarManager.showMessage(result.error.asUiMessage())
-                    _uiState.value.copy(isLoading = false)
+                    val errorMessage = result.error.asUiMessage()
+                    snackbarManager.showMessage(errorMessage)
+                    _uiState.value.copy(
+                        isLoading = false,
+                        errorMessage = errorMessage
+                    )
                 }
 
                 is AppResult.Success -> {
@@ -126,7 +135,8 @@ class SearchSubjectsViewModel @Inject constructor(
                     }
                     _uiState.value.copy(
                         items = items,
-                        isLoading = false
+                        isLoading = false,
+                        errorMessage = null
                     )
                 }
             }

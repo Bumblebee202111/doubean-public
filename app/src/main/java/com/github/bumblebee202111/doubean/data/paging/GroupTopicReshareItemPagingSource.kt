@@ -17,9 +17,9 @@ class GroupTopicReshareItemPagingSource(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, NetworkReshareItem> {
+        return safePagingLoad {
         val start = params.key ?: 0
         val count = params.loadSize
-        try {
             val response = apiService.getGroupTopicResharesStatuses(
                 topicId = topicId,
                 start = start,
@@ -28,15 +28,13 @@ class GroupTopicReshareItemPagingSource(
 
             val prevKey = if (start == 0) null else (start - params.loadSize).coerceAtLeast(0)
             val nextKey = (start + params.loadSize).takeIf { it < response.total }
-            return LoadResult.Page(
+            LoadResult.Page(
                 data = response.items,
                 prevKey = prevKey,
                 nextKey = nextKey,
                 itemsBefore = start,
                 itemsAfter = response.total - start - response.items.size
             )
-        } catch (e: Exception) {
-            return LoadResult.Error(e)
         }
     }
 

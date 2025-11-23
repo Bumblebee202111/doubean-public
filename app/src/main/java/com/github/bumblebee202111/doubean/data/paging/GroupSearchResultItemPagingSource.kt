@@ -4,10 +4,13 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.github.bumblebee202111.doubean.data.db.AppDatabase
+import com.github.bumblebee202111.doubean.model.AppErrorException
 import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
 import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.toGroupItemWithIntroInfo
 import com.github.bumblebee202111.doubean.network.model.toSimpleCachedGroupPartialEntity
+import com.github.bumblebee202111.doubean.network.util.handleError
+import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalPagingApi::class)
 class GroupSearchResultItemPagingSource(
@@ -42,7 +45,9 @@ class GroupSearchResultItemPagingSource(
                 nextKey = nextKey
             )
         } catch (e: Exception) {
-            LoadResult.Error(e)
+            if (e is CancellationException) throw e
+            val appError = handleError(e)
+            return LoadResult.Error(AppErrorException(appError))
         }
 
     }

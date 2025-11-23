@@ -1,7 +1,7 @@
 package com.github.bumblebee202111.doubean.feature.subjects
 
-import com.github.bumblebee202111.doubean.model.AppError
 import com.github.bumblebee202111.doubean.model.subjects.SubjectModule
+import com.github.bumblebee202111.doubean.ui.model.UiMessage
 
 sealed interface SubjectModulesUiState {
     data class Success(
@@ -9,6 +9,6 @@ sealed interface SubjectModulesUiState {
         val isLoggedIn: Boolean,
     ) : SubjectModulesUiState
 
-    data class Error(val error: AppError? = null) : SubjectModulesUiState
+    data class Error(val message: UiMessage) : SubjectModulesUiState
     data object Loading : SubjectModulesUiState
 }

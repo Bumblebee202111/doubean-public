@@ -11,6 +11,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.feature.doulists.common.douListPostItems
 import com.github.bumblebee202111.doubean.feature.doulists.common.rememberFeedItemClickHandler
 import com.github.bumblebee202111.doubean.model.subjects.MarkableSubject
+import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
+import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicator
 
 @Composable
 fun MyCollectedItemsScreen(
@@ -38,6 +40,7 @@ fun MyCollectedItemsScreen(
         onImageClick = onImageClick,
         onMarkSubject = viewModel::markSubject,
         onDouListClick = onDouListClick,
+        onRetryClick = viewModel::fetchMyCollectedItems,
         contentPadding = contentPadding
     )
 }
@@ -54,6 +57,7 @@ fun MyCollectedItemsScreen(
     onImageClick: (String) -> Unit,
     onMarkSubject: (MarkableSubject) -> Unit,
     onDouListClick: (String) -> Unit,
+    onRetryClick: () -> Unit,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
     val onItemClick = rememberFeedItemClickHandler(
@@ -63,19 +67,35 @@ fun MyCollectedItemsScreen(
         onTvClick = onTvClick
     )
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = contentPadding
-    ) {
-        douListPostItems(
-            items = uiState.items,
-            isLoggedIn = isLoggedIn,
-            isLoadingMore = uiState.isLoading,
-            onItemClick = onItemClick,
-            onUserClick = onUserClick,
-            onImageClick = onImageClick,
-            onMarkSubject = onMarkSubject,
-            onDouListClick = onDouListClick
-        )
+    when {
+        uiState.errorMessage != null -> {
+            FullScreenErrorWithRetry(
+                message = uiState.errorMessage.getString(),
+                onRetryClick = onRetryClick,
+                contentPadding = contentPadding
+            )
+        }
+
+        uiState.isLoading && uiState.items.isEmpty() -> {
+            FullScreenLoadingIndicator(contentPadding = contentPadding)
+        }
+
+        else -> {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = contentPadding
+            ) {
+                douListPostItems(
+                    items = uiState.items,
+                    isLoggedIn = isLoggedIn,
+                    isLoadingMore = uiState.isLoading,
+                    onItemClick = onItemClick,
+                    onUserClick = onUserClick,
+                    onImageClick = onImageClick,
+                    onMarkSubject = onMarkSubject,
+                    onDouListClick = onDouListClick
+                )
+            }
+        }
     }
 }

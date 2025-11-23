@@ -1,9 +1,13 @@
 package com.github.bumblebee202111.doubean.feature.subjects.movies
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -15,6 +19,7 @@ import com.github.bumblebee202111.doubean.feature.subjects.common.RankLists
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectUnions
 import com.github.bumblebee202111.doubean.model.subjects.SubjectModule
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.ui.component.SectionErrorWithRetry
 
 @Composable
 fun MoviesScreen(
@@ -28,25 +33,27 @@ fun MoviesScreen(
     val myMoviesUiState by viewModel.myMoviesUiState.collectAsStateWithLifecycle()
     val modulesUiState by viewModel.modulesUiState.collectAsStateWithLifecycle()
     MoviesScreen(
+        modifier = modifier,
         myMoviesUiState = myMoviesUiState,
         modulesUiState = modulesUiState,
         onSubjectStatusClick = onSubjectStatusClick,
         onLoginClick = onLoginClick,
         onRankListClick = onRankListClick,
         onMovieClick = onMovieClick,
-        modifier = modifier
+        onRetryClick = viewModel::retry,
     )
 }
 
 @Composable
 fun MoviesScreen(
+    modifier: Modifier = Modifier,
     myMoviesUiState: MySubjectUiState,
     modulesUiState: SubjectModulesUiState,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
     onMovieClick: (movieId: String) -> Unit,
-    modifier: Modifier = Modifier,
+    onRetryClick: () -> Unit,
 ) {
     LazyColumn(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item {
@@ -93,10 +100,26 @@ fun MoviesScreen(
             }
 
             SubjectModulesUiState.Loading -> {
-                
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillParentMaxWidth()
+                            .height(200.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
             }
 
-            is SubjectModulesUiState.Error -> Unit
+            is SubjectModulesUiState.Error -> {
+                item {
+                    SectionErrorWithRetry(
+                        message = modulesUiState.message.getString(),
+                        onRetryClick = onRetryClick
+                    )
+                }
+            }
         }
     }
 }

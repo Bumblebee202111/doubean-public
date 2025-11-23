@@ -4,6 +4,7 @@ import com.github.bumblebee202111.doubean.model.subjects.BookDetail
 import com.github.bumblebee202111.doubean.model.subjects.RecommendSubject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUserList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectReviewList
+import com.github.bumblebee202111.doubean.ui.model.UiMessage
 
 sealed interface BookUiState {
     data class Success(
@@ -15,6 +16,6 @@ sealed interface BookUiState {
     ) : BookUiState
 
     data object Loading : BookUiState
-    data object Error : BookUiState
+    data class Error(val message: UiMessage) : BookUiState
 }
 

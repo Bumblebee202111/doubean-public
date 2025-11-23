@@ -22,7 +22,7 @@ class UserSubjectInterestItemPagingSource(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, NetworkSubjectInterestWithSubject> {
-        return try {
+        return safePagingLoad {
             val start = params.key ?: initialStart
             val count = params.loadSize
 
@@ -44,8 +44,6 @@ class UserSubjectInterestItemPagingSource(
                 prevKey = if (start == initialStart) null else start - count,
                 nextKey = nextKey
             )
-        } catch (e: Exception) {
-            LoadResult.Error(e)
         }
     }
 

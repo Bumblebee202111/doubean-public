@@ -19,7 +19,7 @@ class SubjectCollectionItemPagingSource(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SubjectWithRankAndInterest<*>> {
-        return try {
+        return safePagingLoad {
             val start = params.key ?: 0
             val count = params.loadSize
 
@@ -42,8 +42,6 @@ class SubjectCollectionItemPagingSource(
                 prevKey = if (start == 0) null else start - count,
                 nextKey = nextKey
             )
-        } catch (e: Exception) {
-            LoadResult.Error(e)
         }
     }
 

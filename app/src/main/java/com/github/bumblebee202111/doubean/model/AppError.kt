@@ -1,5 +1,7 @@
 package com.github.bumblebee202111.doubean.model
 
+import java.io.IOException
+
 
 sealed interface AppError {
     val originalError: Throwable?
@@ -59,3 +61,4 @@ data class ConnectionError(override val originalError: Throwable?) : NetworkErro
 
 data class GenericError(override val originalError: Throwable?) : AppError
 
+class AppErrorException(val appError: AppError) : IOException()
