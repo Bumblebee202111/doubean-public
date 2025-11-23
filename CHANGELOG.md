@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+## Version 0.9.14
+
+**Improvements**
+
+- **Enhanced Error Handling:** Added "Retry" buttons and clearer error messages across all screens.
+- **Better Loading States:** Improved loading indicators for smoother transitions.
+- **Code Cleanup:** Major refactoring of screen components for better maintainability.
+
 ## Version 0.9.13
 
 **Improvements**

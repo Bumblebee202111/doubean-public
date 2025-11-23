@@ -1,17 +1,29 @@
+@file:Suppress("DEPRECATION")
+
 package com.github.bumblebee202111.doubean.feature.login
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -24,6 +36,7 @@ import com.github.bumblebee202111.doubean.model.auth.JCaptcha
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.RexxarWebView
+import com.google.accompanist.web.LoadingState
 
 @Composable
 fun VerifyPhoneScreen(
@@ -115,12 +128,22 @@ private fun ActiveContent(
 
         Button(
             onClick = onRequestPhoneCode,
-            enabled = !activeUiState.isRequestingCode && activeUiState.jCaptcha == null
+            enabled = !activeUiState.isRequestingCode &&
+                    activeUiState.jCaptcha == null &&
+                    activeUiState.countdownSeconds == 0
         ) {
             if (activeUiState.isRequestingCode) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
             } else {
-                Text(stringResource(R.string.verify_phone_request_code_button))
+                val text = if (activeUiState.countdownSeconds > 0) {
+                    "${activeUiState.countdownSeconds}s"
+                } else {
+                    stringResource(R.string.verify_phone_request_code_button)
+                }
+                Text(text)
             }
         }
 
@@ -144,31 +167,48 @@ private fun CaptchaWebView(
     jCaptcha: JCaptcha,
     onVerifyCaptcha: (solution: CaptchaSolution) -> Unit,
 ) {
-    RexxarWebView(
-        filename = "",
-        initialParams =
-        mapOf(
-            "" to jCaptcha.touchCapUrl,
-            "" to jCaptcha.tcAppId,
-            "" to "true"
-        ),
-        handleApiRequest = { url, method, headers, params ->
-            when {
-                url.contains("/captcha/verify_captcha") -> {
-                    val  = params[""] ?: return@RexxarWebView null
-                    val  = params[""] ?: return@RexxarWebView null
-                    val tcAppId = params[""] ?: return@RexxarWebView null
-                    val solution = CaptchaSolution(
-                         = ,
-                         = ,
-                        tcAppId = tcAppId
-                    )
-                    onVerifyCaptcha(solution)
-                    return@RexxarWebView null
-                }
+    var isLoading by remember { mutableStateOf(true) }
 
-                else -> return@RexxarWebView null
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        RexxarWebView(
+            filename = "",
+            initialParams = mapOf(
+                "" to jCaptcha.touchCapUrl,
+                "" to jCaptcha.tcAppId,
+                "" to "true"
+            ),
+            handleApiRequest = { url, method, headers, params ->
+                when {
+                    url.contains("/captcha/verify_captcha") -> {
+                        val  = params[""] ?: return@RexxarWebView null
+                        val  = params[""] ?: return@RexxarWebView null
+                        val tcAppId = params[""] ?: return@RexxarWebView null
+                        val solution = CaptchaSolution(
+                             = ,
+                             = ,
+                            tcAppId = tcAppId
+                        )
+                        onVerifyCaptcha(solution)
+                        return@RexxarWebView null
+                    }
+
+                    else -> return@RexxarWebView null
+                }
+            },
+            onLoadingStateChanged = { state ->
+                isLoading = state !is LoadingState.Finished
+            })
+        if (isLoading) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                CircularProgressIndicator()
+                Spacer(Modifier.height(8.dp))
+                Text(stringResource(R.string.loading))
             }
         }
-    )
+    }
 }

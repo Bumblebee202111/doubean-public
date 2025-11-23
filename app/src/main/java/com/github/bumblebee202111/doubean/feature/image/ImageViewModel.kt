@@ -19,4 +19,8 @@ class ImageViewModel @Inject constructor(
     fun showMessage(message: String) {
         snackbarManager.showMessage(message.toUiMessage())
     }
+
+    fun saveImage() {
+
+    }
 }

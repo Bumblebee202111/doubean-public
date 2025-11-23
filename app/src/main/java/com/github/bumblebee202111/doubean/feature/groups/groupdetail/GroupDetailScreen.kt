@@ -68,6 +68,8 @@ import com.github.bumblebee202111.doubean.model.groups.GroupMemberRole
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.groups.GroupTab
 import com.github.bumblebee202111.doubean.ui.component.BackButton
+import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
+import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicator
 import com.github.bumblebee202111.doubean.ui.component.MoreButton
 import com.github.bumblebee202111.doubean.ui.component.doubeanExpandedTopBarContentPadding
 import com.github.bumblebee202111.doubean.ui.component.doubeanTopAppBarHeight
@@ -97,7 +99,8 @@ fun GroupDetailScreen(
         saveNotificationsPreference = viewModel::saveNotificationPreferences,
         onBackClick = onBackClick,
         onTopicClick = onTopicClick,
-        onUserClick = onUserClick
+        onUserClick = onUserClick,
+        onRetryClick = viewModel::retry
     )
 }
 
@@ -114,6 +117,7 @@ fun GroupDetailScreen(
     onBackClick: () -> Unit,
     onTopicClick: (topicId: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
+    onRetryClick: () -> Unit,
 ) {
 
     var openNotificationsPreferenceDialog by remember { mutableStateOf(false) }
@@ -131,7 +135,7 @@ fun GroupDetailScreen(
             sheetState = sheetState
         ) {
             GroupDescriptionSheetContent(
-                group = uiState.groupDetail,
+                group = uiState.group,
                 onClose = {
                     scope.launch { sheetState.hide() }.invokeOnCompletion {
                         if (!sheetState.isVisible) {
@@ -165,52 +169,65 @@ fun GroupDetailScreen(
             )
         }
     ) { innerPadding ->
-        val group = uiState.groupDetail
+        val group = uiState.group
         val notificationPreferences = uiState.notificationPreferences
-        if (group != null) {
-            val taggedTabs = group.tabs
-            val pagerState = rememberPagerState(
-                initialPage = taggedTabs.indexOfFirst { it.id == initialTabId } + 1,
-                pageCount = { taggedTabs.size + 1 }
-            )
-            val isPullToRefreshEnabled = scrollBehavior.state.heightOffset == 0f
-
-            Column(
-                modifier = Modifier.padding(top = innerPadding.calculateTopPadding())
-            ) {
-                GroupTabRow(
-                    pagerState = pagerState,
-                    groupColor = group.color,
-                    taggedTabs = taggedTabs
+        when {
+            group != null -> {
+                val taggedTabs = group.tabs
+                val pagerState = rememberPagerState(
+                    initialPage = taggedTabs.indexOfFirst { it.id == initialTabId } + 1,
+                    pageCount = { taggedTabs.size + 1 }
                 )
-                GroupPager(
-                    pagerState = pagerState,
-                    taggedTabs = taggedTabs,
-                    groupId = groupId,
-                    group = group,
-                    isPullToRefreshEnabled = isPullToRefreshEnabled,
-                    onTopicClick = onTopicClick,
-                    onUserClick = onUserClick,
-                    tabContentPadding = PaddingValues(
-                        bottom = innerPadding.calculateBottomPadding()
+                val isPullToRefreshEnabled = scrollBehavior.state.heightOffset == 0f
+
+                Column(
+                    modifier = Modifier.padding(top = innerPadding.calculateTopPadding())
+                ) {
+                    GroupTabRow(
+                        pagerState = pagerState,
+                        groupColor = group.color,
+                        taggedTabs = taggedTabs
+                    )
+                    GroupPager(
+                        pagerState = pagerState,
+                        taggedTabs = taggedTabs,
+                        groupId = groupId,
+                        group = group,
+                        isPullToRefreshEnabled = isPullToRefreshEnabled,
+                        onTopicClick = onTopicClick,
+                        onUserClick = onUserClick,
+                        tabContentPadding = PaddingValues(
+                            bottom = innerPadding.calculateBottomPadding()
+                        )
+
                     )
 
-                )
+                }
 
-            }
-        }
-        if (group != null && notificationPreferences != null) {
-
-            if (openNotificationsPreferenceDialog) {
-                GroupNotificationPreferencesDialog(
-                    titleTextResId = R.string.group_notification_preferences,
-                    initialPreference = notificationPreferences,
-                    onDismissRequest = { openNotificationsPreferenceDialog = false }
-                ) { preferenceToSave ->
-                    saveNotificationsPreference(preferenceToSave)
-                    openNotificationsPreferenceDialog = false
+                if (notificationPreferences != null && openNotificationsPreferenceDialog) {
+                    GroupNotificationPreferencesDialog(
+                        titleTextResId = R.string.group_notification_preferences,
+                        initialPreference = notificationPreferences,
+                        onDismissRequest = { openNotificationsPreferenceDialog = false }
+                    ) { preferenceToSave ->
+                        saveNotificationsPreference(preferenceToSave)
+                        openNotificationsPreferenceDialog = false
+                    }
                 }
             }
+
+            uiState.isLoading -> {
+                FullScreenLoadingIndicator(contentPadding = innerPadding)
+            }
+
+            uiState.errorMessage != null -> {
+                FullScreenErrorWithRetry(
+                    message = uiState.errorMessage.getString(),
+                    contentPadding = innerPadding,
+                    onRetryClick = onRetryClick
+                )
+            }
+
         }
 
     }
@@ -230,7 +247,7 @@ fun GroupDetailTopBar(
     onBackClick: () -> Unit,
     onDescriptionClick: () -> Unit,
 ) {
-    val group = uiState.groupDetail
+    val group = uiState.group
     val cachedGroup = uiState.cachedGroup
     val notificationPreferences = uiState.notificationPreferences
     val groupColor = (group?.color ?: cachedGroup?.color).toColorOrPrimary()

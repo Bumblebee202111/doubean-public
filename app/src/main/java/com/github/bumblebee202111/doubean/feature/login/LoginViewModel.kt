@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.model.ApiError
 import com.github.bumblebee202111.doubean.model.AppResult
@@ -54,7 +55,7 @@ class LoginViewModel @Inject constructor(
         val loginResult = authRepository.loginWithDoubanSessionPref(sessionPref)
         sessionLoginResult.value = loginResult
         if (!loginResult) {
-            snackbarManager.showMessage("Import failed. Check your input.".toUiMessage())
+            snackbarManager.showMessage(R.string.error_import_failed.toUiMessage())
         }
     }
 

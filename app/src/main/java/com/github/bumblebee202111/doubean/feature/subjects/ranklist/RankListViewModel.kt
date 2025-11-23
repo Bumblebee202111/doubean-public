@@ -18,10 +18,11 @@ import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -36,12 +37,11 @@ class RankListViewModel @Inject constructor(
 ) : ViewModel() {
     private val collectionId = savedStateHandle.toRoute<RankListRoute>().collectionId
 
-    private val rankListResult = flow {
-        emit(subjectCollectionRepository.getSubjectCollection(collectionId))
-    }.onEach { result ->
-        if (result is AppResult.Error) {
-            snackbarManager.showMessage(result.error.asUiMessage())
-        }
+    private val retryTrigger = MutableStateFlow(0)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val rankListResult = retryTrigger.flatMapLatest {
+        flow { emit(subjectCollectionRepository.getSubjectCollection(collectionId)) }
     }
 
     private val updatedItems = MutableStateFlow(listOf<SubjectWithInterest<*>>())
@@ -72,7 +72,7 @@ class RankListViewModel @Inject constructor(
             }
 
             is AppResult.Error -> {
-                RankListUiState.Error
+                RankListUiState.Error(rankListResult.error.asUiMessage())
             }
         }
     }.stateInUi(RankListUiState.Loading)
@@ -103,5 +103,9 @@ class RankListViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun retry() {
+        retryTrigger.value++
     }
 }

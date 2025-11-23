@@ -102,37 +102,35 @@ class MovieViewModel @Inject constructor(
             val results = listOf(
                 movieResult,
                 interestResult,
-                recommendationsResult,
                 photosResult,
+                recommendationsResult,
                 reviewsResult
             )
-            results.filterIsInstance<AppResult.Error>().forEach { errorResult ->
-                snackbarManager.showMessage(errorResult.error.asUiMessage())
-            }
 
-            if (movieResult is AppResult.Success &&
-                interestResult is AppResult.Success &&
-                photosResult is AppResult.Success &&
-                recommendationsResult is AppResult.Success &&
-                reviewsResult is AppResult.Success
-            ) {
+            val firstError = results.filterIsInstance<AppResult.Error>().firstOrNull()
+
+            if (firstError != null) {
+                val uiMessage = firstError.error.asUiMessage()
+                snackbarManager.showMessage(uiMessage)
+                _uiState.value = MovieUiState.Error(uiMessage)
+            } else {
                 _uiState.value = MovieUiState.Success(
-                    movie = movieResult.data,
-                    interests = interestResult.data,
-                    photos = photosResult.data,
-                    recommendations = recommendationsResult.data,
-                    reviews = reviewsResult.data,
+                    movie = (movieResult as AppResult.Success).data,
+                    interests = (interestResult as AppResult.Success).data,
+                    photos = (photosResult as AppResult.Success).data,
+                    recommendations = (recommendationsResult as AppResult.Success).data,
+                    reviews = (reviewsResult as AppResult.Success).data,
                     isLoggedIn = isLoggedIn
                 )
-            } else {
-                _uiState.value = MovieUiState.Error
             }
         }
     }
 
-    suspend fun refreshData() {
-        val currentLoginStatus = authRepository.isLoggedIn().first()
-        triggerDataLoad(currentLoginStatus)
+    fun refreshData() {
+        viewModelScope.launch {
+            val currentLoginStatus = authRepository.isLoggedIn().first()
+            triggerDataLoad(currentLoginStatus)
+        }
     }
 
     fun updateStatus(newStatus: SubjectInterestStatus) {

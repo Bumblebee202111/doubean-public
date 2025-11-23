@@ -1,30 +1,25 @@
-@file:OptIn(ExperimentalCoroutinesApi::class)
-
 package com.github.bumblebee202111.doubean.feature.groups.home
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
 import com.github.bumblebee202111.doubean.domain.usecase.ObserveCurrentUserUseCase
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.CachedAppResult
-import com.github.bumblebee202111.doubean.model.data
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -40,19 +35,28 @@ class GroupsHomeViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val currentUser = observeCurrentUserUseCase().stateInUi()
 
-    val joinedGroupsUiState = authRepository.loggedInUserId.flatMapLatest { userId ->
+    private val joinedGroupsRetryTrigger = MutableStateFlow(0)
+    val joinedGroupsUiState = combine(
+        authRepository.loggedInUserId,
+        joinedGroupsRetryTrigger
+    ) { userId, _ -> userId }.flatMapLatest { userId ->
         when (userId) {
             null -> flowOf(JoinedGroupsUiState(isLoading = false))
             else ->
                 userGroupRepository.getUserJoinedGroups(userId).map { result ->
                     when (result) {
                         is CachedAppResult.Error -> {
-                            snackbarManager.showMessage(result.error.asUiMessage())
-                            JoinedGroupsUiState(isLoading = false, groups = result.cache)
+                            val errorMessage = result.error.asUiMessage()
+                            snackbarManager.showMessage(errorMessage)
+                            JoinedGroupsUiState(
+                                isLoading = false,
+                                groups = result.cache,
+                                errorMessage = errorMessage
+                            )
                         }
 
                         is CachedAppResult.Loading -> {
-                            JoinedGroupsUiState(isLoading = false, groups = result.cache)
+                            JoinedGroupsUiState(groups = result.cache)
                         }
 
                         is CachedAppResult.Success -> {
@@ -61,47 +65,85 @@ class GroupsHomeViewModel @Inject constructor(
                     }
                 }
         }
-    }.stateInUi(JoinedGroupsUiState(isLoading = true))
+    }.stateInUi(JoinedGroupsUiState())
 
     val pinnedTabs =
-        userGroupRepository.getPinnedTabs().flowOn(Dispatchers.IO).stateInUi()
+        userGroupRepository.getPinnedTabs().stateInUi()
 
-    private val _dayRankingUiState =
-        MutableStateFlow<DayRankingUiState>(DayRankingUiState.Loading)
-    val dayRankingUiState = _dayRankingUiState.asStateFlow()
+    private val isLoggedIn: Flow<Boolean> = authRepository.isLoggedIn()
 
-    init {
-        viewModelScope.launch {
-            authRepository.isLoggedIn().onEach { isLoggedIn ->
-                when (isLoggedIn) {
-                    true -> _dayRankingUiState.value = DayRankingUiState.Hidden
-                    false ->
-                        when (val result = groupRepository.getDayRanking()) {
-                            is AppResult.Error -> {
-                                snackbarManager.showMessage(result.error.asUiMessage())
-                                _dayRankingUiState.value = DayRankingUiState.Error(result.error)
-                            }
+    private val dayRankingRetryTrigger = MutableStateFlow(0)
 
-                            is AppResult.Success -> _dayRankingUiState.value =
-                                DayRankingUiState.Success(result.data)
-                        }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val dayRankingUiState: StateFlow<DayRankingUiState> = combine(
+        isLoggedIn,
+        dayRankingRetryTrigger
+    ) { isLoggedIn, _ -> isLoggedIn }.flatMapLatest { isLoggedIn ->
+        if (isLoggedIn) {
+            flowOf<DayRankingUiState>(DayRankingUiState.Hidden)
+        } else {
+            flow {
+                emit(DayRankingUiState.Loading)
+                when (val result = groupRepository.getDayRanking()) {
+                    is AppResult.Error -> {
+                        val errorMessage = result.error.asUiMessage()
+                        snackbarManager.showMessage(errorMessage)
+                        emit(DayRankingUiState.Error(errorMessage = errorMessage))
+                    }
+
+                    is AppResult.Success -> {
+                        emit(DayRankingUiState.Success(result.data))
+                    }
                 }
-            }.collect { }
+            }
         }
+    }.stateInUi(DayRankingUiState.Loading)
 
-    }
-
-
-    val recentTopicsFeed = authRepository.isLoggedIn().flatMapLatest { isLoggedIn ->
+    private val recentTopicsFeedRetryTrigger = MutableStateFlow(0)
+    val recentTopicsFeedUiState = combine(
+        isLoggedIn,
+        recentTopicsFeedRetryTrigger
+    ) { isLoggedIn, _ -> isLoggedIn }.flatMapLatest { isLoggedIn ->
         when (isLoggedIn) {
             true -> userGroupRepository.getRecentTopicsFeed()
-                .onEach { if (it is CachedAppResult.Error) snackbarManager.showMessage(it.error.asUiMessage()) }
                 .map { result ->
-                    result.data
+                    when (result) {
+                        is CachedAppResult.Loading -> RecentTopicsFeedUiState(
+                            isLoading = true,
+                            topics = result.cache
+                        )
+
+                        is CachedAppResult.Error -> {
+                            val errorMessage = result.error.asUiMessage()
+                            snackbarManager.showMessage(errorMessage)
+                            RecentTopicsFeedUiState(
+                                isLoading = false,
+                                topics = result.cache,
+                                errorMessage = errorMessage
+                            )
+                        }
+
+                        is CachedAppResult.Success -> RecentTopicsFeedUiState(
+                            isLoading = false,
+                            topics = result.data
+                        )
+                    }
                 }
 
-            false -> flowOf(null)
+            false -> flowOf(RecentTopicsFeedUiState(isLoading = false, topics = null))
         }
-    }.stateInUi()
+    }.stateInUi(RecentTopicsFeedUiState(isLoading = true))
+
+    fun retryJoinedGroups() {
+        joinedGroupsRetryTrigger.value++
+    }
+
+    fun retryRecentTopicsFeed() {
+        recentTopicsFeedRetryTrigger.value++
+    }
+
+    fun retryDayRanking() {
+        dayRankingRetryTrigger.value++
+    }
 }
 

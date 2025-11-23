@@ -11,13 +11,13 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun FullScreenCenteredContent(
-    paddingValues: PaddingValues,
+    contentPadding: PaddingValues,
     content: @Composable BoxScope.() -> Unit,
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues),
+            .padding(contentPadding),
         contentAlignment = Alignment.Center,
         content = content
     )

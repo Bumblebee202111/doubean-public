@@ -40,6 +40,7 @@ import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectsSearchType
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItem
 import com.github.bumblebee202111.doubean.ui.component.DoubeanAppBarWithSearch
+import com.github.bumblebee202111.doubean.ui.component.SectionErrorWithRetry
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 
 @Composable
@@ -138,6 +139,21 @@ fun SearchSubjectsScreen(
                 }
 
                 when {
+                    uiState.errorMessage != null -> {
+                        val onRetry = {
+                            if (uiState.selectedType != null) {
+                                onTypeSelected(uiState.selectedType)
+                            } else {
+                                onSearchTriggered(uiState.query)
+                            }
+                        }
+
+                        SectionErrorWithRetry(
+                            message = uiState.errorMessage.getString(),
+                            onRetryClick = onRetry,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                    }
                     uiState.isLoading -> LinearProgressIndicator(Modifier.fillMaxWidth())
                     items == null -> Unit
                     items.isEmpty() && types.isNullOrEmpty() -> Text(

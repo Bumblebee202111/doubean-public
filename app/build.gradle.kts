@@ -23,7 +23,7 @@ android {
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 91400
-        versionName = "0.9.1=14"
+        versionName = "0.9.14"
 
         setProperty("archivesBaseName", "doubean_$versionName")
 
@@ -60,6 +60,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     namespace = "com.github.bumblebee202111.doubean"
+    kotlinOptions {
+        freeCompilerArgs = listOf("-XXLanguage:+WhenGuards")
+    }
 }
 
 dependencies {

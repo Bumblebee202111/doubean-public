@@ -22,6 +22,8 @@ import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.ui.common.CollectDialogUiState
 import com.github.bumblebee202111.doubean.ui.common.CreateDouListDialog
 import com.github.bumblebee202111.doubean.ui.common.DouListDialog
+import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
+import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicator
 
 @Composable
 fun TvScreen(
@@ -58,6 +60,7 @@ fun TvScreen(
         onCreateDouList = viewModel::showCreateDialog,
         onDismissCreateDialog = viewModel::dismissCreateDialog,
         onCreateAndCollect = viewModel::createAndCollect,
+        onRetryClick = viewModel::refreshData
     )
 }
 
@@ -78,6 +81,7 @@ fun TvScreen(
     onCreateDouList: () -> Unit,
     onDismissCreateDialog: () -> Unit,
     onCreateAndCollect: (title: String) -> Unit,
+    onRetryClick: () -> Unit,
 ) {
     collectDialogUiState?.let { state ->
         DouListDialog(
@@ -146,8 +150,16 @@ fun TvScreen(
                 }
             }
 
-            else -> {
+            is TvUiState.Loading -> {
+                FullScreenLoadingIndicator(contentPadding = innerPadding)
+            }
 
+            is TvUiState.Error -> {
+                FullScreenErrorWithRetry(
+                    message = uiState.message.getString(),
+                    onRetryClick = onRetryClick,
+                    contentPadding = innerPadding
+                )
             }
         }
     }

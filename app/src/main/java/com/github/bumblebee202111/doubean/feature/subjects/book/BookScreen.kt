@@ -20,6 +20,8 @@ import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.ui.common.CollectDialogUiState
 import com.github.bumblebee202111.doubean.ui.common.CreateDouListDialog
 import com.github.bumblebee202111.doubean.ui.common.DouListDialog
+import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
+import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicator
 
 @Composable
 fun BookScreen(
@@ -56,6 +58,7 @@ fun BookScreen(
         onCreateDouList = viewModel::showCreateDialog,
         onDismissCreateDialog = viewModel::dismissCreateDialog,
         onCreateAndCollect = viewModel::createAndCollect,
+        onRetryClick = viewModel::refreshData,
     )
 }
 
@@ -76,6 +79,7 @@ fun BookScreen(
     onCreateDouList: () -> Unit,
     onDismissCreateDialog: () -> Unit,
     onCreateAndCollect: (title: String) -> Unit,
+    onRetryClick: () -> Unit,
 ) {
     collectDialogUiState?.let { state ->
         DouListDialog(
@@ -136,8 +140,16 @@ fun BookScreen(
                 }
             }
 
-            else -> {
+            is BookUiState.Loading -> {
+                FullScreenLoadingIndicator(contentPadding = innerPadding)
+            }
 
+            is BookUiState.Error -> {
+                FullScreenErrorWithRetry(
+                    message = uiState.message.getString(),
+                    onRetryClick = onRetryClick,
+                    contentPadding = innerPadding
+                )
             }
         }
     }

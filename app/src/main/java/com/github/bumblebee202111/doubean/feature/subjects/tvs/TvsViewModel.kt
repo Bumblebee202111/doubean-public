@@ -13,12 +13,13 @@ import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,15 +30,17 @@ class TvsViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
+
+    private val retryTrigger = MutableStateFlow(0)
+
     private val _myTvsUiState: MutableStateFlow<MySubjectUiState> =
         MutableStateFlow(MySubjectUiState.Loading)
     val myTvsUiState = _myTvsUiState.asStateFlow()
 
-    private val modulesResult = flow {
-        emit(subjectCommonRepository.getSubjectModules(SubjectType.TV))
-    }.onEach { result ->
-        if (result is AppResult.Error) {
-            snackbarManager.showMessage(result.error.asUiMessage())
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val modulesResult = retryTrigger.flatMapLatest {
+        flow {
+            emit(subjectCommonRepository.getSubjectModules(SubjectType.TV))
         }
     }
 
@@ -46,14 +49,16 @@ class TvsViewModel @Inject constructor(
     val modulesUiState = combine(
         isLoggedIn,
         modulesResult,
-    ) { isLoggedIn, modules ->
-        when (modules) {
+    ) { isLoggedIn, result ->
+        when (result) {
             is AppResult.Success -> {
-                SubjectModulesUiState.Success(modules = modules.data, isLoggedIn = isLoggedIn)
+                SubjectModulesUiState.Success(modules = result.data, isLoggedIn = isLoggedIn)
             }
 
-            is AppResult.Error ->
-                SubjectModulesUiState.Error(modules.error)
+            is AppResult.Error -> {
+                val errorMessage = result.error.asUiMessage()
+                SubjectModulesUiState.Error(errorMessage)
+            }
         }
     }.stateInUi(SubjectModulesUiState.Loading)
 
@@ -90,5 +95,9 @@ class TvsViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun retry() {
+        retryTrigger.value++
     }
 }
