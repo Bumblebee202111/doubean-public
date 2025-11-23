@@ -17,6 +17,8 @@ import com.github.bumblebee202111.doubean.model.subjects.Subject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithRankAndInterest
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
+import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
+import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicator
 
 @Composable
 fun RankListScreen(
@@ -36,6 +38,7 @@ fun RankListScreen(
         onMovieClick = onMovieClick,
         onTvClick = onTvClick,
         onBookClick = onBookClick,
+        onRetryClick = viewModel::retry
     )
 }
 
@@ -48,21 +51,26 @@ fun RankListScreen(
     onMovieClick: (movieId: String) -> Unit,
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
+    onRetryClick: () -> Unit,
 ) {
     Scaffold(topBar = {
         RankListTopBar(onBackClick = onBackClick)
-    }) {
+    }) { innerPadding ->
         when (uiState) {
-            RankListUiState.Error -> {
-                /* TODO */
+            is RankListUiState.Error -> {
+                FullScreenErrorWithRetry(
+                    message = uiState.message.getString(),
+                    onRetryClick = onRetryClick,
+                    contentPadding = innerPadding
+                )
             }
 
             RankListUiState.Loading -> {
-                /* TODO */
+                FullScreenLoadingIndicator(contentPadding = innerPadding)
             }
 
             is RankListUiState.Success -> {
-                LazyColumn(Modifier.fillMaxWidth(), contentPadding = it) {
+                LazyColumn(Modifier.fillMaxWidth(), contentPadding = innerPadding) {
                     with(uiState) {
                         rankList(
                             subjectCollection = rankList,

@@ -1,5 +1,7 @@
 package com.github.bumblebee202111.doubean.model
 
+import java.io.IOException
+
 /**
  * com.douban.frodo.network.FrodoError
  */
@@ -61,3 +63,4 @@ data class ConnectionError(override val originalError: Throwable?) : NetworkErro
 
 data class GenericError(override val originalError: Throwable?) : AppError
 
+class AppErrorException(val appError: AppError) : IOException()

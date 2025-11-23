@@ -35,6 +35,6 @@ fun UserDouListsScreen(
         uiState = uiState,
         onItemClick = onDouListClick,
         onRetryClick = onRetryClick,
-        contentPadding = contentPadding
+        innerPadding = contentPadding
     )
 }

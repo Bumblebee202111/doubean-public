@@ -8,9 +8,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.SearchHistoryRepository
-import com.github.bumblebee202111.doubean.model.AppError
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
 import com.github.bumblebee202111.doubean.model.search.SearchType
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.stateInUi
@@ -44,19 +42,26 @@ class GroupsSearchViewModel @Inject constructor(
     val dayRankingUiState = _dayRankingUiState.asStateFlow()
 
     init {
+        fetchDayRanking()
+    }
+
+    private fun fetchDayRanking() {
         viewModelScope.launch {
+            _dayRankingUiState.value = DayRankingUiState.Loading
             when (val result = groupRepository.getDayRanking()) {
                 is AppResult.Error -> {
-                    snackbarManager.showMessage(result.error.asUiMessage())
-                    _dayRankingUiState.value = DayRankingUiState.Error(result.error)
+                    val errorMessage = result.error.asUiMessage()
+                    _dayRankingUiState.value = DayRankingUiState.Error(errorMessage)
                 }
-
                 is AppResult.Success -> {
                     _dayRankingUiState.value = DayRankingUiState.Success(result.data)
                 }
             }
         }
+    }
 
+    fun retryDayRanking() {
+        fetchDayRanking()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -99,8 +104,3 @@ class GroupsSearchViewModel @Inject constructor(
     }
 }
 
-sealed interface DayRankingUiState {
-    data class Success(val items: List<GroupItemWithIntroInfo>) : DayRankingUiState
-    data object Loading : DayRankingUiState
-    data class Error(val error: AppError) : DayRankingUiState
-}

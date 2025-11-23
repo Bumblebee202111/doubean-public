@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -51,6 +50,8 @@ import com.github.bumblebee202111.doubean.model.profile.ProfileStatItemTypes
 import com.github.bumblebee202111.doubean.ui.common.ApplyStatusBarIconAppearance
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.FullScreenCenteredContent
+import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
+import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicator
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
 import com.github.bumblebee202111.doubean.ui.component.doubeanExpandedTopBarContentPadding
 import com.github.bumblebee202111.doubean.util.DateTimeStyle
@@ -73,7 +74,8 @@ fun UserProfileScreen(
         onSettingsClick = onSettingsClick,
         onLoginClick = onLoginClick,
         onHiddenTypeClick = viewModel::showInfoMessage,
-        onStatItemUriClick = onStatItemUriClick
+        onStatItemUriClick = onStatItemUriClick,
+        onRetryClick = viewModel::retry
     )
 }
 
@@ -86,6 +88,7 @@ fun UserProfileScreen(
     onLoginClick: () -> Unit,
     onHiddenTypeClick: (String) -> Unit,
     onStatItemUriClick: (uri: String) -> Boolean,
+    onRetryClick: () -> Unit,
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -121,7 +124,8 @@ fun UserProfileScreen(
             UserProfileContentArea(
                 uiState = uiState,
                 innerPadding = innerPadding,
-                onLoginClick = onLoginClick
+                onLoginClick = onLoginClick,
+                onRetryClick = onRetryClick
             )
         }
     )
@@ -224,24 +228,20 @@ private fun UserProfileContentArea(
     uiState: UserProfileUiState,
     innerPadding: PaddingValues,
     onLoginClick: () -> Unit,
+    onRetryClick: () -> Unit,
 ) {
 
     when {
         uiState.isLoading -> {
-            FullScreenCenteredContent(innerPadding) {
-                CircularProgressIndicator()
-            }
+            FullScreenLoadingIndicator(contentPadding = innerPadding)
         }
 
         uiState.errorMessage != null -> {
-            FullScreenCenteredContent(innerPadding) {
-                Text(
-                    text = uiState.errorMessage.getString(),
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(16.dp)
-                )
-                // TODO: Consider adding a retry button
-            }
+            FullScreenErrorWithRetry(
+                message = uiState.errorMessage.getString(),
+                onRetryClick = onRetryClick,
+                contentPadding = innerPadding
+            )
         }
 
         uiState.user != null -> {

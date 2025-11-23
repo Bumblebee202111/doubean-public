@@ -109,8 +109,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 ### Current release \(0.9.14)
 
-- Improve list loading states (e.g., retry buttons)
-
 ### Next release \(0.10.0)
 
 
@@ -125,6 +123,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Consider use single NavHost (?)
   - Allow customizing bottom navigation ([#16](https://github.com/Bumblebee202111/doubean-public/issues/16))
   - Shared element transitions for images
+- Add error message mappings to match official
 - Groups 
   - Interactions
     - Pin my groups

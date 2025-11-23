@@ -45,6 +45,8 @@ import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemImage
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusActionTextResIdsMap
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
+import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
+import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicator
 import kotlinx.coroutines.launch
 
 @Composable
@@ -64,7 +66,8 @@ fun InterestsScreen(
         onMovieClick = onMovieClick,
         onTvClick = onTvClick,
         onBookClick = onBookClick,
-        onUpdateInterestStatus = viewModel::onUpdateInterestStatus
+        onUpdateInterestStatus = viewModel::onUpdateInterestStatus,
+        onRetryClick = viewModel::retry
     )
 }
 
@@ -78,22 +81,23 @@ fun InterestsScreen(
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
     onUpdateInterestStatus: (subject: SubjectWithInterest<*>, newStatus: SubjectInterestStatus) -> Unit,
+    onRetryClick: () -> Unit,
 ) {
-    when (uiState) {
-        is InterestsUiState.Success -> {
 
+    Scaffold(topBar = {
+        DoubeanTopAppBar(
+            titleText = stringResource(
+                id = R.string.title_my_subject,
+                (uiState as? InterestsUiState.Success)?.title ?: "",
+            ),
+            navigationIcon = {
+                BackButton(onClick = onBackClick)
+            }
+        )
+    }) { innerPadding ->
+        when (uiState) {
+            is InterestsUiState.Success -> {
 
-            Scaffold(topBar = {
-                DoubeanTopAppBar(
-                    titleText = stringResource(
-                        id = R.string.title_my_subject,
-                        uiState.title
-                    ),
-                    navigationIcon = {
-                        BackButton(onClick = onBackClick)
-                    }
-                )
-            }) { innerPadding ->
                 val lazyListState = rememberLazyListState()
                 val coroutineScope = rememberCoroutineScope()
                 val onSubjectClick: (SubjectWithInterest<*>) -> Unit = {
@@ -170,14 +174,18 @@ fun InterestsScreen(
                 }
             }
 
-        }
 
-        InterestsUiState.Error -> {
-            //TODO
-        }
+            is InterestsUiState.Error -> {
+                FullScreenErrorWithRetry(
+                    message = stringResource(R.string.error_loading_failed),
+                    onRetryClick = onRetryClick,
+                    contentPadding = PaddingValues()
+                )
+            }
 
-        InterestsUiState.Loading -> {
-            //TODO
+            InterestsUiState.Loading -> {
+                FullScreenLoadingIndicator(contentPadding = PaddingValues())
+            }
         }
     }
 }

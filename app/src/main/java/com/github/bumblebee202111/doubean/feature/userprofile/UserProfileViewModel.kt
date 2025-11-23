@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -34,8 +35,9 @@ class UserProfileViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UserProfileUiState(isLoading = true))
     val uiState: StateFlow<UserProfileUiState> = _uiState.asStateFlow()
 
+    private val retryTrigger = MutableStateFlow(0)
 
-    private val targetUserIdFlow: Flow<String?> =
+    private val baseTargetUserIdFlow: Flow<String?> =
         authRepository.loggedInUserId.map { loggedInUserId ->
             val isTargetingCurrentUserProfile = (navigatedUserId == null)
             _uiState.update {
@@ -46,6 +48,9 @@ class UserProfileViewModel @Inject constructor(
             }
             if (isTargetingCurrentUserProfile) loggedInUserId else navigatedUserId
         }.distinctUntilChanged()
+
+    private val targetUserIdFlow: Flow<String?> =
+        baseTargetUserIdFlow.combine(retryTrigger) { userId, _ -> userId }
 
     init {
         viewModelScope.launch {
@@ -136,6 +141,10 @@ class UserProfileViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun retry() {
+        retryTrigger.value++
     }
 
     fun showInfoMessage(message: String) {

@@ -16,9 +16,11 @@ import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -36,7 +38,14 @@ class GroupDetailViewModel @Inject constructor(
     val initialTabId = savedStateHandle.toRoute<GroupDetailRoute>().defaultTabId
     private val _uiState = MutableStateFlow(GroupDetailUiState())
     val uiState = _uiState.asStateFlow()
-    private val groupDetailResult = groupRepository.getGroup(groupId)
+
+    private val retryTrigger = MutableStateFlow(0)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val groupResult = retryTrigger.flatMapLatest {
+        groupRepository.getGroup(groupId)
+    }
+
     private val notificationPreferences =
         userGroupRepository.getGroupNotificationPreferences(groupId)
     private val defaultNotificationPreferences =
@@ -49,7 +58,7 @@ class GroupDetailViewModel @Inject constructor(
     private fun observeCombinedData() {
         viewModelScope.launch {
             combine(
-                groupDetailResult,
+                groupResult,
                 notificationPreferences,
                 defaultNotificationPreferences
             ) { groupDetailResult, notificationPreferences, defaultNotificationPreferences ->
@@ -58,10 +67,11 @@ class GroupDetailViewModel @Inject constructor(
                     notificationPreferences ?: defaultNotificationPreferences
                 when (groupDetailResult) {
                     is CachedAppResult.Error -> {
-                        snackBarManager.showMessage(groupDetailResult.error.asUiMessage())
+                        val errorMessage = groupDetailResult.error.asUiMessage()
+                        snackBarManager.showMessage(errorMessage)
                         GroupDetailUiState(
                             notificationPreferences = uiNotificationPreferences,
-                            isError = true,
+                            errorMessage = errorMessage,
                             cachedGroup = groupDetailResult.cache
                         )
                     }
@@ -77,7 +87,7 @@ class GroupDetailViewModel @Inject constructor(
                     is CachedAppResult.Success -> {
                         GroupDetailUiState(
                             notificationPreferences = uiNotificationPreferences,
-                            groupDetail = groupDetailResult.data
+                            group = groupDetailResult.data
                         )
 
                     }
@@ -88,20 +98,25 @@ class GroupDetailViewModel @Inject constructor(
         }
     }
 
+    fun retry() {
+        retryTrigger.value++
+    }
+
     fun subscribe() {
         viewModelScope.launch {
             when (val result = userGroupRepository.subscribeGroup(groupId)) {
                 is AppResult.Error -> {
-                    snackBarManager.showMessage(result.error.asUiMessage())
+                    val errorMessage = result.error.asUiMessage()
+                    snackBarManager.showMessage(errorMessage)
                     _uiState.update { prevState ->
-                        prevState.copy(isError = true)
+                        prevState.copy(errorMessage = errorMessage)
                     }
                 }
 
                 is AppResult.Success -> {
                     _uiState.update { prevState ->
                         prevState.copy(
-                            groupDetail = prevState.groupDetail?.copy(
+                            group = prevState.group?.copy(
                                 isSubscribed = true
                             )
                         )
@@ -115,16 +130,17 @@ class GroupDetailViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = userGroupRepository.unsubscribeGroup(groupId)) {
                 is AppResult.Error -> {
-                    snackBarManager.showMessage(result.error.asUiMessage())
+                    val errorMessage = result.error.asUiMessage()
+                    snackBarManager.showMessage(errorMessage)
                     _uiState.update { prevState ->
-                        prevState.copy(isError = true)
+                        prevState.copy(errorMessage = errorMessage)
                     }
                 }
 
                 is AppResult.Success -> {
                     _uiState.update { prevState ->
                         prevState.copy(
-                            groupDetail = prevState.groupDetail?.copy(
+                            group = prevState.group?.copy(
                                 isSubscribed = false
                             )
                         )

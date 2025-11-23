@@ -1,6 +1,7 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupdetail.tab
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -39,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -57,8 +59,11 @@ import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferen
 import com.github.bumblebee202111.doubean.model.groups.TopicItem
 import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 import com.github.bumblebee202111.doubean.model.groups.toSimpleGroup
+import com.github.bumblebee202111.doubean.ui.component.FullScreenCenteredContent
+import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
 import com.github.bumblebee202111.doubean.ui.component.InfoButton
 import com.github.bumblebee202111.doubean.ui.component.InfoDialog
+import com.github.bumblebee202111.doubean.ui.util.toUiMessage
 import com.github.bumblebee202111.doubean.util.ShareUtil
 
 @Composable
@@ -134,59 +139,81 @@ fun GroupTab(
                 enabled = isPullToRefreshEnabled,
             )
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentPadding = contentPadding
-        ) {
-
-            if (group != null) {
-                tabActionsItem(
-                    tabId = tabId,
-                    isPinned = isPinned,
-                    topicNotificationPreferences = topicNotificationPreferences,
-                    group = group,
-                    sortBy = sortBy,
-                    onOpenAlertDialog = { openAlertDialog = true },
-                    onSortByClick = updateSortBy,
-                    unpinTab = unpinTab,
-                    pinTab = pinTab
+        when (val refreshState = topicPagingItems.loadState.refresh) {
+            is LoadState.Error -> {
+                FullScreenErrorWithRetry(
+                    message = refreshState.toUiMessage().getString(),
+                    onRetryClick = { topicPagingItems.retry() },
+                    contentPadding = contentPadding
                 )
             }
 
-            topicItems(
-                topicPagingItems = topicPagingItems,
-                group = group,
-                onTopicClick = onTopicClick,
-                onUserClick = onUserClick
-            )
+            else -> {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentPadding = contentPadding
+                ) {
 
+                    if (group != null) {
+                        tabActionsItem(
+                            tabId = tabId,
+                            isPinned = isPinned,
+                            topicNotificationPreferences = topicNotificationPreferences,
+                            group = group,
+                            sortBy = sortBy,
+                            onOpenAlertDialog = { openAlertDialog = true },
+                            onSortByClick = updateSortBy,
+                            unpinTab = unpinTab,
+                            pinTab = pinTab
+                        )
+                    }
 
-            topicPagingItems.apply {
-                when (val append = loadState.append) {
-                    is LoadState.Loading -> {
+                    if (topicPagingItems.itemCount == 0 && !isRefreshing) {
                         item {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator()
+                            FullScreenCenteredContent(contentPadding = PaddingValues(top = 128.dp)) {
+                                Text(stringResource(R.string.empty_content_title))
                             }
                         }
+                    } else {
+                        topicItems(
+                            topicPagingItems = topicPagingItems,
+                            group = group,
+                            onTopicClick = onTopicClick,
+                            onUserClick = onUserClick
+                        )
                     }
 
-                    is LoadState.Error -> {
-                        item {
-                            Text(
-                                append.error.message.toString(),
-                                color = MaterialTheme.colorScheme.error
-                            )
+                    item {
+                        when (val appendState = topicPagingItems.loadState.append) {
+                            is LoadState.Loading -> {
+
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
+
+                            is LoadState.Error -> {
+                                Text(
+                                    text = appendState.toUiMessage().getString(),
+                                    color = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp)
+                                        .clickable { topicPagingItems.retry() },
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+
+                            else -> Unit
+
                         }
                     }
-
-                    else -> {}
                 }
             }
         }

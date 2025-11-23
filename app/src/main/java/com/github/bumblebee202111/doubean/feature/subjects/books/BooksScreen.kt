@@ -1,9 +1,13 @@
 package com.github.bumblebee202111.doubean.feature.subjects.books
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -14,6 +18,7 @@ import com.github.bumblebee202111.doubean.feature.subjects.common.MySubject
 import com.github.bumblebee202111.doubean.feature.subjects.common.RankLists
 import com.github.bumblebee202111.doubean.model.subjects.SubjectModule
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.ui.component.SectionErrorWithRetry
 
 @Composable
 fun BooksScreen(
@@ -27,25 +32,27 @@ fun BooksScreen(
     val myBooksUiState by viewModel.myBooksUiState.collectAsStateWithLifecycle()
     val modulesUiState by viewModel.modulesUiState.collectAsStateWithLifecycle()
     BooksScreen(
+        modifier = modifier,
         myBooksUiState = myBooksUiState,
         modulesUiState = modulesUiState,
         onSubjectStatusClick = onSubjectStatusClick,
         onLoginClick = onLoginClick,
         onRankListClick = onRankListClick,
         onBookClick = onBookClick,
-        modifier = modifier
+        onRetryClick = viewModel::retry
     )
 }
 
 @Composable
 fun BooksScreen(
+    modifier: Modifier = Modifier,
     myBooksUiState: MySubjectUiState,
     modulesUiState: SubjectModulesUiState,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
-    modifier: Modifier = Modifier,
+    onRetryClick: () -> Unit,
 ) {
 
     LazyColumn(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -81,11 +88,25 @@ fun BooksScreen(
             }
 
             SubjectModulesUiState.Loading -> {
-                //TODO
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillParentMaxWidth()
+                            .height(200.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
             }
 
             is SubjectModulesUiState.Error -> {
-                //TODO
+                item {
+                    SectionErrorWithRetry(
+                        message = modulesUiState.message.getString(),
+                        onRetryClick = onRetryClick
+                    )
+                }
             }
 
         }

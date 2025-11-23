@@ -61,6 +61,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     namespace = "com.github.bumblebee202111.doubean"
+    kotlinOptions {
+        freeCompilerArgs = listOf("-XXLanguage:+WhenGuards")
+    }
 }
 
 dependencies {

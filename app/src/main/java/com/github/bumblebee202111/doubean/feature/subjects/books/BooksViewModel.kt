@@ -17,8 +17,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,16 +30,14 @@ class BooksViewModel @Inject constructor(
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
 
+    private val retryTrigger = MutableStateFlow(0)
+
     private val _myBooksUiState: MutableStateFlow<MySubjectUiState> =
         MutableStateFlow(MySubjectUiState.Loading)
     val myBooksUiState = _myBooksUiState.asStateFlow()
 
-    private val modulesResult = flow {
-        emit(subjectCommonRepository.getSubjectModules(SubjectType.BOOK))
-    }.onEach { result ->
-        if (result is AppResult.Error) {
-            snackbarManager.showMessage(result.error.asUiMessage())
-        }
+    private val modulesResult = retryTrigger.flatMapLatest {
+        flow { emit(subjectCommonRepository.getSubjectModules(SubjectType.BOOK)) }
     }
 
     val isLoggedIn = authRepository.isLoggedIn()
@@ -47,17 +45,19 @@ class BooksViewModel @Inject constructor(
     val modulesUiState = combine(
         isLoggedIn,
         modulesResult
-    ) { isLoggedIn, modulesResult ->
-        when (modulesResult) {
+    ) { isLoggedIn, result ->
+        when (result) {
             is AppResult.Success -> {
                 SubjectModulesUiState.Success(
-                    modules = modulesResult.data,
+                    modules = result.data,
                     isLoggedIn = isLoggedIn
                 )
             }
 
-            is AppResult.Error ->
-                SubjectModulesUiState.Error(modulesResult.error)
+            is AppResult.Error -> {
+                val errorMessage = result.error.asUiMessage()
+                SubjectModulesUiState.Error(errorMessage)
+            }
         }
     }.stateInUi(SubjectModulesUiState.Loading)
 
@@ -88,5 +88,9 @@ class BooksViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun retry() {
+        retryTrigger.value++
     }
 }

@@ -5,6 +5,7 @@ import com.github.bumblebee202111.doubean.model.subjects.RecommendSubject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUserList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectReviewList
 import com.github.bumblebee202111.doubean.model.subjects.TvDetail
+import com.github.bumblebee202111.doubean.ui.model.UiMessage
 
 sealed interface TvUiState {
     data class Success(
@@ -17,6 +18,6 @@ sealed interface TvUiState {
     ) : TvUiState
 
     data object Loading : TvUiState
-    data object Error : TvUiState
+    data class Error(val message: UiMessage) : TvUiState
 }
 
