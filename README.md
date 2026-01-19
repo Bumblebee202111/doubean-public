@@ -12,6 +12,7 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 
 ## Known Issues
 
+- Topic WebView won't load images
 - **Crash on Topic Screen:** May crash on some devices when scrolling. See issue [#19](https://github.com/Bumblebee202111/doubean-public/issues/19) for details.
 
 ## Features
@@ -107,7 +108,10 @@ Only selected source code from a private project is shared here to avoid potenti
 
 Upcoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for personal tracking.
 
-### Current release \(0.9.14)
+### Current release \(0.9.15)
+
+- Update deps
+- Update base Douban version
 
 ### Next release \(0.10.0)
 
