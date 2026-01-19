@@ -9,7 +9,7 @@ import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -250,8 +250,11 @@ private fun TopicTimeDisplay(createTime: LocalDateTime, editTime: LocalDateTime?
         AnimatedContent(
             targetState = showCreateTime,
             transitionSpec = {
-                fadeIn(animationSpec = tween(durationMillis = 300)) with
-                        fadeOut(animationSpec = tween(durationMillis = 300)) using
+                fadeIn(animationSpec = tween(durationMillis = 300)).togetherWith(
+                    fadeOut(
+                        animationSpec = tween(durationMillis = 300)
+                    )
+                ) using
                         SizeTransform(clip = false)
             },
             label = "timeAnimation"
