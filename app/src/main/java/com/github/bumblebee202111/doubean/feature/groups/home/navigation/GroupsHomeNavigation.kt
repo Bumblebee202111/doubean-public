@@ -14,7 +14,7 @@ fun NavGraphBuilder.groupsHomeScreen(
     onSearchClick: () -> Unit,
     onNotificationsClick: () -> Unit,
     onGroupClick: (groupId: String, tabId: String?) -> Unit,
-    onTopicClick: (topicId: String) -> Unit,
+    onTopicClick: (uri: String) -> Unit,
 ) = composable<GroupsHomeRoute>(
     deepLinks = listOf(
         navDeepLink {

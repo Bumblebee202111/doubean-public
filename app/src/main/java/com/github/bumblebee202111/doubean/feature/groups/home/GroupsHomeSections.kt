@@ -284,7 +284,7 @@ fun LazyListScope.pinnedTabs(
 
 fun LazyListScope.myTopics(
     uiState: RecentTopicsFeedUiState,
-    onTopicClick: (topicId: String) -> Unit,
+    onTopicClick: (uri: String) -> Unit,
     onGroupClick: (groupId: String) -> Unit,
     onRetryClick: () -> Unit,
 ) {

@@ -10,9 +10,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TopicRoute(
     val topicId: String,
+    val spmId: String? = null,
 )
 
-fun NavController.navigateToTopic(topicId: String) = navigate(route = TopicRoute(topicId))
+fun NavController.navigateToTopic(topicId: String, spmId: String? = null) =
+    navigate(route = TopicRoute(topicId, spmId))
 
 fun NavGraphBuilder.topicScreen(
     onBackClick: () -> Unit,
@@ -25,7 +27,11 @@ fun NavGraphBuilder.topicScreen(
 ) = composable<TopicRoute>(
     deepLinks = listOf(
         navDeepLink {
-            uriPattern = "https://github.com/Bumblebee202111/doubean/group/topic/{topicId}"
+            uriPattern =
+                "https://github.com/Bumblebee202111/doubean/group/topic/{topicId}?_spm_id={spmId}"
+        },
+        navDeepLink {
+            uriPattern = "douban://douban.com/group/topic/{topicId}?_spm_id={spmId}"
         }
     )
 ) {

@@ -18,7 +18,7 @@ fun BottomNavHost(
     navigateToNotifications: () -> Unit,
     navigateToSettings: () -> Unit,
     navigateToGroupDetail: (groupId: String, defaultTabId: String?) -> Unit,
-    navigateToTopic: (topicId: String) -> Unit,
+    navigateToTopic: (uri: String) -> Unit,
     navigateToLogin: () -> Unit,
     navigateToSubjectInterests: (userId: String, subjectType: SubjectType) -> Unit,
     navigateToSearchSubjects: () -> Unit,

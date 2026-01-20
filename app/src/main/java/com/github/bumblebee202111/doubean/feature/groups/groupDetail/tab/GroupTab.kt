@@ -72,7 +72,7 @@ fun GroupTab(
     tabId: String?,
     group: GroupDetail?,
     isPullToRefreshEnabled: Boolean,
-    onTopicClick: (topicId: String) -> Unit,
+    onTopicClick: (uri: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
     viewModel: GroupTabViewModel = hiltViewModel<GroupTabViewModel, GroupTabViewModel.Factory>(
         creationCallback = { factory ->
@@ -118,7 +118,7 @@ fun GroupTab(
     unpinTab: () -> Unit,
     pinTab: () -> Unit,
     saveNotificationsPreference: (preferences: GroupNotificationPreferences) -> Unit,
-    onTopicClick: (topicId: String) -> Unit,
+    onTopicClick: (uri: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
@@ -374,7 +374,7 @@ private fun LazyListScope.tabActionsItem(
 private fun LazyListScope.topicItems(
     topicPagingItems: LazyPagingItems<TopicItem>,
     group: GroupDetail?,
-    onTopicClick: (topicId: String) -> Unit,
+    onTopicClick: (uri: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
 ) {
     items(
