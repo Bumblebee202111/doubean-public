@@ -14,7 +14,6 @@ import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigat
 import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.reshareStatusesScreen
 import com.github.bumblebee202111.doubean.feature.groups.search.navigation.groupsSearchScreen
 import com.github.bumblebee202111.doubean.feature.groups.search.navigation.navigateToSearch
-import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.navigateToTopic
 import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.topicScreen
 import com.github.bumblebee202111.doubean.feature.groups.webView.navigation.navigateToWebView
 import com.github.bumblebee202111.doubean.feature.groups.webView.navigation.webViewScreen
@@ -76,7 +75,7 @@ fun MainNavHost(
             navigateToNotifications = navController::navigateToNotifications,
             navigateToSettings = navController::navigateToSettings,
             navigateToGroup = navController::navigateToGroup,
-            navigateToTopic = navController::navigateToTopic,
+            navigateToTopic = { navigateToUriBasic(it) },
             navigateToLogin = navController::navigateToLogin,
             navigateToSubjectInterests = navController::navigateToInterests,
             navigateToSearchSubjects = navController::navigateToSearchSubjects,
@@ -94,7 +93,7 @@ fun MainNavHost(
         )
         notificationsScreen(
             onBackClick = navController::navigateUp,
-            onTopicClick = navController::navigateToTopic,
+            onTopicClick = { navigateToUriBasic(it) },
             onGroupClick = { groupId ->
                 navController.navigateToGroup(groupId)
             },
@@ -102,7 +101,7 @@ fun MainNavHost(
         )
         groupDetailScreen(
             onBackClick = navController::navigateUp,
-            onTopicClick = navController::navigateToTopic,
+            onTopicClick = { navigateToUriBasic(it) },
             onUserClick = navController::navigateToUserProfile
         )
         topicScreen(
@@ -203,7 +202,7 @@ fun MainNavHost(
         )
         douListScreen(
             onBackClick = navController::navigateUp,
-            onTopicClick = navController::navigateToTopic,
+            onTopicClick = { navigateToUriBasic(it) },
             onBookClick = navController::navigateToBook,
             onMovieClick = navController::navigateToMovie,
             onTvClick = navController::navigateToTv,
@@ -212,7 +211,7 @@ fun MainNavHost(
         )
         myDouListsScreen(
             onBackClick = navController::navigateUp,
-            onTopicClick = navController::navigateToTopic,
+            onTopicClick = { navigateToUriBasic(it) },
             onBookClick = navController::navigateToBook,
             onMovieClick = navController::navigateToMovie,
             onTvClick = navController::navigateToTv,

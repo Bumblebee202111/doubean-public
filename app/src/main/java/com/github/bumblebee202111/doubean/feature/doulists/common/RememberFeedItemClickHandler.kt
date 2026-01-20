@@ -49,7 +49,7 @@ private fun attemptInternalNavigation(
 ): Boolean {
     return when (feedItem.type) {
         BaseFeedableItem.TYPE_TOPIC -> {
-            onTopicClick(feedItem.id)
+            onTopicClick(feedItem.uri)
             true
         }
 

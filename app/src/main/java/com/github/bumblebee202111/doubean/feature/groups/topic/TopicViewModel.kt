@@ -56,9 +56,11 @@ class TopicViewModel @Inject constructor(
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
 
-    val topicId = savedStateHandle.toRoute<TopicRoute>().topicId
+    private val topicRoute = savedStateHandle.toRoute<TopicRoute>()
+    val topicId = topicRoute.topicId
+    val spmId = topicRoute.spmId
 
-    private val commentsDataFlows = topicRepository.getTopicCommentsData(topicId)
+    private val commentsDataFlows = topicRepository.getTopicCommentsData(topicId, spmId)
 
     val popularComments = commentsDataFlows.first
 
@@ -74,7 +76,7 @@ class TopicViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val topicResult = retryTrigger.flatMapLatest {
-        topicRepository.getTopic(topicId)
+        topicRepository.getTopic(topicId, spmId)
     }.stateInUi()
 
     val topic = topicResult.onEach { result ->

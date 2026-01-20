@@ -8,6 +8,7 @@ import com.github.bumblebee202111.doubean.network.model.NetworkGroupTopicComment
 class GroupTopicCommentPagingSource(
     private val apiService: ApiService,
     private val topicId: String,
+    private val spmId: String? = null,
     private val onPopularCommentsFetched: (List<NetworkGroupTopicComment>) -> Unit,
 ) :
     PagingSource<Int, NetworkGroupTopicComment>() {
@@ -25,7 +26,8 @@ class GroupTopicCommentPagingSource(
             val response = apiService.getGroupTopicComments(
                 topicId = topicId,
                 start = start,
-                count = count
+                count = count,
+                spmId = spmId
             )
 
             response.popularComments.filterIsInstance<NetworkGroupTopicComment>()

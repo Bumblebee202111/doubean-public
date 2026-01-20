@@ -44,12 +44,15 @@ class GroupTopicRepository @Inject constructor(
     private val groupTopicDao = appDatabase.groupTopicDao()
     private val userDao = appDatabase.userDao()
 
-    fun getTopic(id: String): Flow<CachedAppResult<TopicDetail, TopicDetail?>> =
+    fun getTopic(
+        id: String,
+        spmId: String? = null,
+    ): Flow<CachedAppResult<TopicDetail, TopicDetail?>> =
         networkBoundResource(
             queryDb = {
                 groupTopicDao.loadTopic(id)
             },
-            fetchRemote = { apiService.getGroupTopic(id) },
+            fetchRemote = { apiService.getGroupTopic(id, spmId) },
             saveRemoteResponseToDb = { response ->
                 val topicDetail = response.toTopicItemPartialEntity()
                 val topicTags =
@@ -71,7 +74,10 @@ class GroupTopicRepository @Inject constructor(
             }
         )
 
-    fun getTopicCommentsData(topicId: String): Pair<StateFlow<List<TopicComment>>, Flow<PagingData<TopicComment>>> {
+    fun getTopicCommentsData(
+        topicId: String,
+        spmId: String? = null,
+    ): Pair<StateFlow<List<TopicComment>>, Flow<PagingData<TopicComment>>> {
         val popularComments = MutableStateFlow<List<TopicComment>>(emptyList())
         val allCommentsPagingData = Pager(
             config = PagingConfig(
@@ -84,6 +90,7 @@ class GroupTopicRepository @Inject constructor(
                 GroupTopicCommentPagingSource(
                     apiService = apiService,
                     topicId = topicId,
+                    spmId = spmId,
                     onPopularCommentsFetched = { it ->
                         popularComments.value = it.map(NetworkGroupTopicComment::asExternalModel)
                     })

@@ -46,7 +46,7 @@ import com.github.bumblebee202111.doubean.util.toRelativeString
 fun TopicItem(
     topicItemWithGroup: TopicItemWithGroup?,
     displayMode: TopicItemDisplayMode,
-    onTopicClick: (id: String) -> Unit,
+    onTopicClick: (uri: String) -> Unit,
     onAuthorClick: (id: String) -> Unit = {},
     onGroupClick: (id: String) -> Unit = {},
 ) {
@@ -65,7 +65,7 @@ fun TopicItem(
     topic: AbstractTopicItem?,
     group: SimpleGroup?,
     displayMode: TopicItemDisplayMode,
-    onTopicClick: (id: String) -> Unit,
+    onTopicClick: (uri: String) -> Unit,
     onAuthorClick: (id: String) -> Unit = {},
     onGroupClick: (id: String) -> Unit = {},
 ) {
@@ -83,7 +83,7 @@ fun TopicItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { onTopicClick(topic.id) }
+                .clickable { onTopicClick(topic.uri) }
         ) {
             Spacer(modifier = Modifier.width(16.dp))
             Column(
