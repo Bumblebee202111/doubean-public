@@ -16,7 +16,7 @@ fun NavGraphBuilder.bottomNavScreen(
     navigateToNotifications: () -> Unit,
     navigateToSettings: () -> Unit,
     navigateToGroup: (groupId: String, defaultTabId: String?) -> Unit,
-    navigateToTopic: (topicId: String) -> Unit,
+    navigateToTopic: (uri: String) -> Unit,
     navigateToLogin: () -> Unit,
     navigateToSubjectInterests: (userId: String, subjectType: SubjectType) -> Unit,
     navigateToSearchSubjects: () -> Unit,

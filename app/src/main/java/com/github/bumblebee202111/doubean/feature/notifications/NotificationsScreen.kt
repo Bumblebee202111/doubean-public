@@ -45,7 +45,7 @@ import com.github.bumblebee202111.doubean.util.TOPIC_PATH
 @Composable
 fun NotificationsScreen(
     onBackClick: () -> Unit,
-    onTopicClick: (topicId: String) -> Unit,
+    onTopicClick: (uri: String) -> Unit,
     onGroupClick: (groupId: String) -> Unit,
     onSettingsClick: () -> Unit,
     viewModel: NotificationsViewModel = hiltViewModel(),
@@ -65,7 +65,7 @@ fun NotificationsScreen(
 fun NotificationsScreen(
     notificationPagingItems: LazyPagingItems<TopicItemWithGroup>,
     onBackClick: () -> Unit,
-    onTopicClick: (topicId: String) -> Unit,
+    onTopicClick: (uri: String) -> Unit,
     onGroupClick: (groupId: String) -> Unit,
     onSettingsClick: () -> Unit,
 ) {
