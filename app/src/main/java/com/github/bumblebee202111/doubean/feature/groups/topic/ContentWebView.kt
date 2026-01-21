@@ -18,9 +18,20 @@ import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.model.groups.TopicDetail
 import com.github.bumblebee202111.doubean.ui.component.DoubeanWebView
 import com.github.bumblebee202111.doubean.ui.component.DoubeanWebViewClient
+import com.github.bumblebee202111.doubean.util.AppAndDeviceInfoProvider
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.TOPIC_CSS_FILENAME
 import com.google.accompanist.web.rememberWebViewStateWithHTMLData
+import dagger.hilt.EntryPoint
+import dagger.hilt.EntryPoints
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+interface ContentWebViewEntryPoint {
+    fun appAndDeviceInfoProvider(): AppAndDeviceInfoProvider
+}
 
 @Suppress("DEPRECATION")
 @SuppressLint("ClickableViewAccessibility")
@@ -33,6 +44,12 @@ fun ContentWebView(
     onOpenDeepLinkUrl: (String, Boolean) -> Boolean,
 ) {
     val context = LocalContext.current
+    val appAndDeviceInfoProvider = remember {
+        EntryPoints.get(context.applicationContext, ContentWebViewEntryPoint::class.java)
+            .appAndDeviceInfoProvider()
+    }
+    val rexxarUA = remember { appAndDeviceInfoProvider.getRexxarUserAgent() }
+
     val webViewState = rememberWebViewStateWithHTMLData(html)
 
     DoubeanWebView(
@@ -42,27 +59,27 @@ fun ContentWebView(
             .fillMaxSize()
             .alpha(0.99F),
         captureBackPresses = false,
-        onCreated = {
-            it.apply {
+        onCreated = { webView ->
+            webView.apply {
                 setPadding(0, 0, 0, 0)
                 setBackgroundColor(Color.TRANSPARENT)
                 settings.apply {
                     setNeedInitialFocus(false)
-
+                    userAgentString = rexxarUA
                     useWideViewPort = true
                 }
 
                 setOnTouchListener { _, event ->
                     if (event.action == MotionEvent.ACTION_UP
                     ) {
-                        val webViewHitTestResult = getHitTestResult()
+                        val webViewHitTestResult = hitTestResult
                         if (webViewHitTestResult.type == WebView.HitTestResult.IMAGE_TYPE ||
                             webViewHitTestResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
                         ) {
                             val imageUrl = webViewHitTestResult.extra
                             if (imageUrl != null && URLUtil.isValidUrl(imageUrl)) {
                                 val largeImageUrl = topic.images
-                                    ?.firstOrNull { it.normal.url == imageUrl }
+                                    ?.firstOrNull { image -> image.normal.url == imageUrl }
                                     ?.large?.url
                                     ?: imageUrl
                                 onImageClick(largeImageUrl)
