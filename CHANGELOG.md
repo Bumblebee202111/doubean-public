@@ -1,7 +1,15 @@
 Change Log
 ==========
 
+## Version 0.9.16
+
 ## Version 0.9.15
+
+- **Bumped Douban version to `7.105.1(328)`**
+    - Includes support for URI-based topic navigation and `spm_id` tracking.
+    - Updated topic styles to match the latest version.
+- Fixed topic image loading issues by implementing Rexxar User-Agent.
+- Updated project dependencies.
 
 ## Version 0.9.14
 

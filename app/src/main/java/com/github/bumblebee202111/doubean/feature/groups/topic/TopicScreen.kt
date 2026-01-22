@@ -76,7 +76,6 @@ fun TopicScreen(
     onOpenDeepLinkUrl: (String, Boolean) -> Boolean,
     viewModel: TopicViewModel = hiltViewModel(),
 ) {
-    val topic by viewModel.topic.collectAsStateWithLifecycle()
     val topicResult by viewModel.topicResult.collectAsStateWithLifecycle()
     val popularComments: List<TopicComment> by viewModel.popularComments.collectAsStateWithLifecycle()
     val allCommentLazyPagingItems = viewModel.allComments.collectAsLazyPagingItems()
@@ -84,7 +83,6 @@ fun TopicScreen(
     val contentHtml by viewModel.contentHtml.collectAsStateWithLifecycle()
     val commentSortBy by viewModel.commentsSortBy.collectAsStateWithLifecycle()
     val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
-    val groupColor = topic?.group?.color
     val shouldShowSpinner by viewModel.shouldShowSpinner.collectAsStateWithLifecycle()
     val collectDialogUiState by viewModel.collectDialogUiState.collectAsStateWithLifecycle()
     val showCreateDouListDialog by viewModel.showCreateDouListDialog.collectAsStateWithLifecycle()
@@ -97,7 +95,6 @@ fun TopicScreen(
         contentHtml = contentHtml,
         commentSortBy = commentSortBy,
         isLoggedIn = isLoggedIn,
-        groupColorString = groupColor,
         shouldShowSpinner = shouldShowSpinner,
         updateCommentSortBy = viewModel::updateCommentsSortBy,
         displayInvalidImageUrl = viewModel::displayInvalidImageUrl,
@@ -138,7 +135,6 @@ fun TopicScreen(
     contentHtml: String?,
     commentSortBy: TopicCommentSortBy,
     isLoggedIn: Boolean,
-    groupColorString: String?,
     shouldShowSpinner: Boolean,
     collectDialogUiState: CollectDialogUiState?,
     showCreateDouListDialog: Boolean,
@@ -163,31 +159,27 @@ fun TopicScreen(
     val context = LocalContext.current
     var shouldShowDialog by rememberSaveable { mutableStateOf(false) }
 
-    var scrollToCommentItemIndex: Int? by remember {
-        mutableStateOf(null)
-    }
+    var scrollToCommentItemIndex: Int? by remember { mutableStateOf(null) }
     val listState = rememberLazyListState()
 
     val itemCountBeforeComments = 2
 
     LaunchedEffect(scrollToCommentItemIndex) {
-        val targetIndex = scrollToCommentItemIndex
-        if (targetIndex != null) {
-            val maxIndex = when (commentSortBy) {
-                TopicCommentSortBy.POPULAR -> popularComments.size - 1
-                TopicCommentSortBy.ALL -> allCommentLazyPagingItems.itemCount - 1
-            }
-            val clampedIndex = targetIndex.coerceIn(0, maxIndex.coerceAtLeast(0))
-
-            listState.scrollToItem(itemCountBeforeComments + clampedIndex)
-
-            if (commentSortBy == TopicCommentSortBy.ALL) {
-                snapshotFlow { allCommentLazyPagingItems.loadState }
-                    .awaitNotLoading()
-                listState.scrollToItem(itemCountBeforeComments + clampedIndex)
-            }
-            scrollToCommentItemIndex = null
+        val targetIndex = scrollToCommentItemIndex ?: return@LaunchedEffect
+        val maxIndex = when (commentSortBy) {
+            TopicCommentSortBy.POPULAR -> popularComments.size - 1
+            TopicCommentSortBy.ALL -> allCommentLazyPagingItems.itemCount - 1
         }
+        val clampedIndex = targetIndex.coerceIn(0, maxIndex.coerceAtLeast(0))
+
+        listState.scrollToItem(itemCountBeforeComments + clampedIndex)
+
+        if (commentSortBy == TopicCommentSortBy.ALL) {
+            snapshotFlow { allCommentLazyPagingItems.loadState }
+                .awaitNotLoading()
+            listState.scrollToItem(itemCountBeforeComments + clampedIndex)
+        }
+        scrollToCommentItemIndex = null
     }
 
     val isRefreshingComments = allCommentLazyPagingItems.loadState.refresh is LoadState.Loading
@@ -197,7 +189,7 @@ fun TopicScreen(
             val topic = topicResult?.data
             var appBarMenuExpanded by rememberSaveable { mutableStateOf(false) }
             var viewInMenuExpanded by rememberSaveable { mutableStateOf(false) }
-            val groupColor = groupColorString.toColorOrPrimary()
+            val groupColor = topic?.group?.color.toColorOrPrimary()
             DoubeanTopAppBar(
                 title = {
                     topic?.title?.let {
@@ -447,10 +439,7 @@ private enum class TopicCommentSortOption(
         sortBy = TopicCommentSortBy.ALL
     );
 
-
     companion object {
         val displayOrder = listOf(TOP, ALL)
     }
 }
-
-
