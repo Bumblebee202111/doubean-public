@@ -34,11 +34,10 @@ import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -70,11 +69,10 @@ class TopicViewModel @Inject constructor(
         MutableStateFlow(TopicCommentSortBy.ALL)
     val commentsSortBy = _commentsSortBy.asStateFlow()
 
-    val shouldShowSpinner = commentsDataFlows.first.map { it.isNotEmpty() }.stateInUi(false)
+    val shouldShowSpinner = popularComments.map { it.isNotEmpty() }.stateInUi(false)
 
     private val retryTrigger = MutableStateFlow(0)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val topicResult = retryTrigger.flatMapLatest {
         topicRepository.getTopic(topicId, spmId)
     }.stateInUi()
@@ -87,23 +85,15 @@ class TopicViewModel @Inject constructor(
         it?.data
     }.stateInUi()
 
-    val contentHtml = topicResult.flatMapLatest { result ->
-        when (result) {
-            null -> flowOf(null)
-            is CachedAppResult.Loading, is CachedAppResult.Error -> {
-                flowOf<String?>(null)
-            }
-
-            is CachedAppResult.Success -> {
-                val content = result.data.content
-                if (content.isNullOrBlank()) {
-                    flowOf<String?>(null)
-                } else {
-                    processTopicContent(content)
-                }
+    val contentHtml = topic.flatMapLatest { topicDetail ->
+        flow {
+            val content = topicDetail?.content
+            if (content.isNullOrBlank()) {
+                emit(null)
+            } else {
+                emit(processTopicContent(content))
             }
         }
-
     }.stateInUi()
 
     val isLoggedIn = authRepository.isLoggedIn().stateInUi(false)
@@ -156,18 +146,14 @@ class TopicViewModel @Inject constructor(
                 topicId = topicId,
                 reactionType = if (isVote) ReactionType.TYPE_VOTE else ReactionType.TYPE_CANCEL_VOTE
             )
-            when (result) {
-                is AppResult.Error -> {
-                    snackbarManager.showMessage(result.error.asUiMessage())
-                }
-
-                is AppResult.Success -> Unit
+            if (result is AppResult.Error) {
+                snackbarManager.showMessage(result.error.asUiMessage())
             }
         }
     }
 
     val shouldShowPhotoList =
-        topicResult.map { it?.data?.content?.contains("image-container") == false }
+        topic.map { it?.content?.contains("image-container") == false }
             .stateInUi()
 
     fun updateCommentsSortBy(commentSortBy: TopicCommentSortBy) {
@@ -186,61 +172,57 @@ class TopicViewModel @Inject constructor(
         retryTrigger.value++
     }
 
-    private suspend fun processTopicContent(content: String): Flow<String?> {
-        val matchResults = CONTENT_ENTITY_REGEX.findAll(content)
+    private suspend fun processTopicContent(content: String): String {
+        val matchResults = CONTENT_ENTITY_REGEX.findAll(content).toList()
+
+        if (matchResults.isEmpty()) {
+            return formatHtmlContent(content)
+        }
 
         val ids: List<TopicContentEntityId> = matchResults.mapNotNull { matchResult ->
             val groupValues = matchResult.groupValues
             when (groupValues[2]) {
-                "poll" -> {
-                    PollId(groupValues[3])
-                }
-
-                "question" -> {
-                    QuestionId(groupValues[3])
-                }
-
+                "poll" -> PollId(groupValues[3])
+                "question" -> QuestionId(groupValues[3])
                 else -> {
                     Log.w(
                         "TopicViewModel",
-                        "Unknown entity type found in content: ${groupValues.getOrNull(2)}"
+                        "Unknown entity type found: ${groupValues.getOrNull(2)}"
                     )
                     null
                 }
             }
-        }.toList()
-
-        if (ids.isEmpty()) {
-            return flowOf(formatHtmlContent(content))
         }
 
-        return flowOf(pollRepository.getPollsAndQuestions(ids)).map { entitiesResult ->
-            when (entitiesResult) {
-                is AppResult.Error -> {
-                    snackbarManager.showMessage(entitiesResult.error.asUiMessage())
-                    formatHtmlContent(content)
-                }
+        return when (val entitiesResult = pollRepository.getPollsAndQuestions(ids)) {
+            is AppResult.Error -> {
+                snackbarManager.showMessage(entitiesResult.error.asUiMessage())
+                formatHtmlContent(content)
+            }
 
-                is AppResult.Success -> {
-                    val entities = entitiesResult.data
-                    val expandedContentElement =
-                        content.replace(CONTENT_ENTITY_REGEX) { matchResult ->
-                            val groupValues = matchResult.groupValues
-
-                            buildString {
-                                append(groupValues[1]) 
-                                entities.forEach {
-                                    when (it) {
-                                        is Poll -> append(buildPollHtml(it))
-                                        is Question -> append(buildQuestionHtml(it))
-                                    }
-                                }
-                                append(groupValues[6]) 
+            is AppResult.Success -> {
+                val entities = entitiesResult.data
+                val expandedContent = content.replace(CONTENT_ENTITY_REGEX) { matchResult ->
+                    val groupValues = matchResult.groupValues
+                    val entityId = groupValues[3]
+                    val entity = entities.find {
+                        when (it) {
+                            is Poll -> it.id == entityId
+                            is Question -> it.id == entityId
+                        }
+                    }
+                    buildString {
+                        append(groupValues[1])
+                        entity?.let {
+                            when (it) {
+                                is Poll -> append(buildPollHtml(it))
+                                is Question -> append(buildQuestionHtml(it))
                             }
                         }
-                    Log.d("Topic detail", "content: $expandedContentElement")
-                    formatHtmlContent(expandedContentElement)
+                        append(groupValues[6])
+                    }
                 }
+                formatHtmlContent(expandedContent)
             }
         }
     }

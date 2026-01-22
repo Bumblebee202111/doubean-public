@@ -45,7 +45,6 @@ import com.github.bumblebee202111.doubean.util.toColorOrPrimary
 import com.github.bumblebee202111.doubean.util.toRelativeString
 import java.time.LocalDateTime
 
-
 @Composable
 fun TopicComment(
     comment: TopicComment,
@@ -80,7 +79,6 @@ fun TopicComment(
                 onClick = { onUserClick(comment.author.id) })
             Spacer(modifier = Modifier.width(8.dp))
             Column(Modifier.fillMaxWidth()) {
-                
                 TopicCommentHeaderRow(
                     author = comment.author,
                     isOp = comment.author.id == topic.author.id,
@@ -103,9 +101,8 @@ fun TopicComment(
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = comment.text ?: "", style = MaterialTheme.typography.bodyMedium)
                 comment.photos.takeUnless(List<SizedPhoto>?::isNullOrEmpty)?.let { photos ->
-                    Spacer(modifier = Modifier.height(8.dp))
                     val images: List<SizedImage> = remember(photos) { photos.map { it.image } }
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
                     ListItemImages(
                         images = images,
                         onImageClick = { image -> onImageClick(image.large.url) }
@@ -169,9 +166,7 @@ private fun TopicCommentHeaderRow(
         createTime?.let {
             Text(
                 text = stringResource(id = R.string.middle_dot),
-                modifier = Modifier.padding(
-                    horizontal = 4.dp
-                ),
+                modifier = Modifier.padding(horizontal = 4.dp),
                 style = MaterialTheme.typography.labelLarge
             )
             DateTimeText(
