@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.9.16
+
 ## Version 0.9.15
 
 - **Bumped Douban version to `7.105.1(328)`**
