@@ -11,14 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -36,7 +30,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -45,7 +38,6 @@ import androidx.paging.awaitNotLoading
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.groups.shared.groupTopAppBarColor
 import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.model.data
 import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
@@ -55,15 +47,11 @@ import com.github.bumblebee202111.doubean.model.groups.TopicDetail
 import com.github.bumblebee202111.doubean.ui.common.CollectDialogUiState
 import com.github.bumblebee202111.doubean.ui.common.CreateDouListDialog
 import com.github.bumblebee202111.doubean.ui.common.DouListDialog
-import com.github.bumblebee202111.doubean.ui.component.BackButton
-import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
 import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicator
-import com.github.bumblebee202111.doubean.ui.component.MoreButton
 import com.github.bumblebee202111.doubean.ui.component.SortByDropDownMenu
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import com.github.bumblebee202111.doubean.util.OpenInUtils
-import com.github.bumblebee202111.doubean.util.toColorOrPrimary
 
 @Composable
 fun TopicScreen(
@@ -186,79 +174,17 @@ fun TopicScreen(
 
     Scaffold(
         topBar = {
-            val topic = topicResult?.data
-            var appBarMenuExpanded by rememberSaveable { mutableStateOf(false) }
-            var viewInMenuExpanded by rememberSaveable { mutableStateOf(false) }
-            val groupColor = topic?.group?.color.toColorOrPrimary()
-            DoubeanTopAppBar(
-                title = {
-                    topic?.title?.let {
-                        Text(
-                            text = it,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                },
-                navigationIcon = {
-                    BackButton(onClick = onBackClick)
-                },
-                actions = {
-                    MoreButton(onClick = { appBarMenuExpanded = !appBarMenuExpanded })
-
-                    DropdownMenu(
-                        expanded = appBarMenuExpanded,
-                        onDismissRequest = { appBarMenuExpanded = false }) {
-                        val canJump = when (commentSortBy) {
-                            TopicCommentSortBy.POPULAR -> popularComments.isNotEmpty()
-                            TopicCommentSortBy.ALL -> allCommentLazyPagingItems.itemCount > 0
-                        }
-                        if (topic != null && canJump) {
-                            DropdownMenuItem(
-                                text = { Text(text = stringResource(R.string.jump_to_comment)) },
-                                onClick = {
-                                    appBarMenuExpanded = false
-                                    shouldShowDialog = true
-                                }
-                            )
-                        }
-                        DropdownMenuItem(
-                            text = {
-                                Text(text = stringResource(R.string.view_in))
-                            },
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = Icons.Filled.ChevronRight,
-                                    contentDescription = null
-                                )
-                            },
-                            onClick = {
-                                appBarMenuExpanded = false
-                                viewInMenuExpanded = true
-                            })
-                    }
-
-                    DropdownMenu(
-                        expanded = viewInMenuExpanded,
-                        onDismissRequest = { viewInMenuExpanded = false }) {
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.view_in_web)) },
-                            onClick = {
-                                viewInMenuExpanded = false
-                                topic?.url?.let(onWebViewClick)
-                            })
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.view_in_douban)) },
-                            onClick = {
-                                topic?.uri?.let {
-                                    viewInMenuExpanded = false
-                                    OpenInUtils.openInDouban(context, it)
-                                }
-                            })
-
-                    }
-                },
-                colors = groupTopAppBarColor(groupColor)
+            val canJump = when (commentSortBy) {
+                TopicCommentSortBy.POPULAR -> popularComments.isNotEmpty()
+                TopicCommentSortBy.ALL -> allCommentLazyPagingItems.itemCount > 0
+            }
+            TopicTopAppBar(
+                topic = topicResult?.data,
+                canJump = canJump,
+                onBackClick = onBackClick,
+                onJumpToCommentClick = { shouldShowDialog = true },
+                onWebViewClick = onWebViewClick,
+                onOpenInDoubanClick = { OpenInUtils.openInDouban(context, it) }
             )
         },
         modifier = Modifier.fillMaxSize()
