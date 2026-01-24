@@ -3,7 +3,8 @@ Change Log
 
 ## Version 0.9.16
 
-- Optimized jumping to comments with smoother paging.
+- ([#16](https://github.com/Bumblebee202111/doubean-public/issues/16)) Optimized jumping to comments
+  with smoother paging.
 - Fixed phone verification captcha issues during login.
 - General performance and stability improvements.
 
