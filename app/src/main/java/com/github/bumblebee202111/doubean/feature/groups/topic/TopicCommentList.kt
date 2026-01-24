@@ -69,16 +69,19 @@ fun LazyListScope.allComments(
                 count = comments.itemCount,
                 key = comments.itemKey { it.id },
                 contentType = comments.itemContentType { "TopicComment" }) { index ->
-                comments[index]?.let {
+                val comment = comments[index]
+                if (comment != null) {
                     TopicComment(
-                        comment = it,
+                        comment = comment,
                         topic = topic,
                         onUserClick = onUserClick,
                         onImageClick = onImageClick
                     )
-                    if (index < comments.itemCount - 1)
-                        HorizontalDivider(thickness = 1.dp)
+                } else {
+                    TopicCommentPlaceholder()
                 }
+                if (index < comments.itemCount - 1)
+                    HorizontalDivider(thickness = 1.dp)
             }
 
             item(key = "append_state") {
