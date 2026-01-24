@@ -3,6 +3,10 @@ Change Log
 
 ## Version 0.9.16
 
+- Optimized jumping to comments with smoother paging.
+- Fixed phone verification captcha issues during login.
+- General performance and stability improvements.
+
 ## Version 0.9.15
 
 - **Bumped Douban version to `7.105.1(328)`**
