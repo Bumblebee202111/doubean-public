@@ -1,13 +1,17 @@
 package com.github.bumblebee202111.doubean.feature.groups.topic
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.ThumbUp
@@ -23,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -63,6 +68,9 @@ fun TopicComment(
     }
 
     val groupThemeColor = topic.group?.color.toColorOrPrimary()
+    val isOp = remember(comment.author.id, topic.author.id) {
+        comment.author.id == topic.author.id
+    }
 
     Row(
         modifier = Modifier
@@ -81,7 +89,7 @@ fun TopicComment(
             Column(Modifier.fillMaxWidth()) {
                 TopicCommentHeaderRow(
                     author = comment.author,
-                    isOp = comment.author.id == topic.author.id,
+                    isOp = isOp,
                     groupColor = groupThemeColor,
                     createTime = comment.createTime,
                     ipLocation = comment.ipLocation,
@@ -129,6 +137,48 @@ fun TopicComment(
 }
 
 @Composable
+fun TopicCommentPlaceholder(
+    modifier: Modifier = Modifier,
+) {
+    val placeholderColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 4.dp, top = 12.dp, bottom = 12.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(placeholderColor)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Box(
+                modifier = Modifier
+                    .width(100.dp)
+                    .height(14.dp)
+                    .background(placeholderColor, MaterialTheme.shapes.small)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .height(14.dp)
+                    .background(placeholderColor, MaterialTheme.shapes.small)
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.6f)
+                    .height(14.dp)
+                    .background(placeholderColor, MaterialTheme.shapes.small)
+            )
+        }
+    }
+}
+
+@Composable
 private fun TopicCommentHeaderRow(
     author: User?,
     isOp: Boolean,
@@ -147,7 +197,7 @@ private fun TopicCommentHeaderRow(
             text = author?.name ?: "",
             modifier = Modifier
                 .weight(weight = 1f, fill = false)
-                .clickable {
+                .clickable(enabled = author?.id != null) {
                     author?.id?.let(onAuthorClick)
                 },
             fontWeight = FontWeight.Medium,
@@ -199,11 +249,14 @@ private fun TopicRefCommentCard(
     onAuthorClick: (id: String) -> Unit,
     onImageClick: (url: String) -> Unit,
 ) {
+    val isRefOp = remember(refComment.author.id, topicAuthorId) {
+        refComment.author.id == topicAuthorId
+    }
     OutlinedCard(modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
             TopicCommentHeaderRow(
                 author = refComment.author,
-                isOp = refComment.author.id == topicAuthorId,
+                isOp = isRefOp,
                 groupColor = groupColor,
                 createTime = refComment.createTime,
                 ipLocation = refComment.ipLocation,

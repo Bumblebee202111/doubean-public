@@ -52,6 +52,7 @@ import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicato
 import com.github.bumblebee202111.doubean.ui.component.SortByDropDownMenu
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import com.github.bumblebee202111.doubean.util.OpenInUtils
+import kotlinx.coroutines.yield
 
 @Composable
 fun TopicScreen(
@@ -154,19 +155,32 @@ fun TopicScreen(
 
     LaunchedEffect(scrollToCommentItemIndex) {
         val targetIndex = scrollToCommentItemIndex ?: return@LaunchedEffect
-        val maxIndex = when (commentSortBy) {
-            TopicCommentSortBy.POPULAR -> popularComments.size - 1
-            TopicCommentSortBy.ALL -> allCommentLazyPagingItems.itemCount - 1
+        val maxCount = when (commentSortBy) {
+            TopicCommentSortBy.POPULAR -> popularComments.size
+            TopicCommentSortBy.ALL -> allCommentLazyPagingItems.itemCount
         }
-        val clampedIndex = targetIndex.coerceIn(0, maxIndex.coerceAtLeast(0))
 
-        listState.scrollToItem(itemCountBeforeComments + clampedIndex)
+        if (maxCount == 0) {
+            scrollToCommentItemIndex = null
+            return@LaunchedEffect
+        }
+
+        val clampedIndex = targetIndex.coerceIn(0, maxCount - 1)
 
         if (commentSortBy == TopicCommentSortBy.ALL) {
-            snapshotFlow { allCommentLazyPagingItems.loadState }
-                .awaitNotLoading()
-            listState.scrollToItem(itemCountBeforeComments + clampedIndex)
+            
+            if (allCommentLazyPagingItems.peek(clampedIndex) == null) {
+                allCommentLazyPagingItems[clampedIndex]
+                
+                snapshotFlow { allCommentLazyPagingItems.loadState }
+                    .awaitNotLoading()
+                
+                yield()
+            }
         }
+
+        
+        listState.scrollToItem(itemCountBeforeComments + clampedIndex)
         scrollToCommentItemIndex = null
     }
 
