@@ -1,5 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.subjects.common
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,11 +9,13 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
@@ -50,6 +53,7 @@ import com.github.bumblebee202111.doubean.model.fangorns.User
 import com.github.bumblebee202111.doubean.model.subjects.MovieTrailer
 import com.github.bumblebee202111.doubean.model.subjects.RecommendSubject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUser
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUserList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectReview
 import com.github.bumblebee202111.doubean.model.subjects.SubjectReviewList
@@ -65,37 +69,47 @@ import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.toRelativeString
 import java.time.LocalDateTime
 
-fun LazyListScope.subjectInfoNormalModuleItem(
+enum class CountType(val icon: ImageVector) {
+    REACTIONS(Icons.AutoMirrored.Outlined.Reply),
+    USEFUL(Icons.Outlined.ThumbUp),
+    RESHARES(Icons.Outlined.Repeat);
+}
+
+fun LazyListScope.subjectGenericModuleItem(
     titleResId: Int,
     body: @Composable ColumnScope.() -> Unit,
     total: Int? = null,
 ) {
     item {
-        SubjectInfoModuleItemContent(
+        SubjectModuleContainer(
             titleResId = titleResId,
             body = body,
             modifier = Modifier.padding(vertical = 16.dp),
             total = total
         )
     }
-
-}
-
-fun LazyListScope.subjectInfoIntroModuleItem(intro: String) {
-    subjectInfoNormalModuleItem(titleResId = R.string.subject_module_title_intro, body = {
-        ExpandCollapseText(
-            text = intro,
-            maxLines = IntroMaxLines,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
-    }, null)
 }
 
 private const val IntroMaxLines = 4
 
+fun LazyListScope.subjectInfoIntroModuleItem(intro: String) {
+    subjectGenericModuleItem(
+        titleResId = R.string.subject_module_title_intro,
+        body = {
+            ExpandCollapseText(
+                text = intro,
+                maxLines = IntroMaxLines,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
+    )
+}
+
 fun LazyListScope.subjectInfoInterestsModuleItem(
     interestList: SubjectInterestWithUserList,
-    onUserClick: (userId: String) -> Unit,
+    onUserClick: (String) -> Unit,
+    sortType: InterestSortType = InterestSortType.DEFAULT,
+    onSortChange: ((InterestSortType) -> Unit)? = null,
 ) {
     item {
         Surface(
@@ -104,72 +118,25 @@ fun LazyListScope.subjectInfoInterestsModuleItem(
                 .clip(RoundedCornerShape(size = 16.dp)),
             color = MaterialTheme.colorScheme.surfaceVariant
         ) {
-            SubjectInfoModuleItemContent(
+            SubjectModuleContainer(
                 titleResId = R.string.subject_module_title_interests,
                 body = {
-                    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                        val interests = interestList.interests
-                        interests.forEach { interest ->
-                            Column {
-                                if (interest != interests.first()) {
-                                    Spacer(modifier = Modifier.size(16.dp))
-                                }
-                                Row {
-                                    UserProfileImage(
-                                        url = interest.user.avatar,
-                                        size = 40.dp,
-                                        onClick = { onUserClick(interest.user.id) }
-                                    )
-                                    Spacer(modifier = Modifier.size(8.dp))
-                                    Column {
-                                        Text(
-                                            text = interest.user.name,
-                                            modifier = Modifier.clickable {
-                                                onUserClick(interest.user.id)
-                                            },
-                                            style = MaterialTheme.typography.labelLarge,
-                                            fontWeight = FontWeight.Bold,
-                                        )
-                                        Spacer(modifier = Modifier.size(2.dp))
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                            interest.rating?.let {
-                                                SubjectRatingBar(
-                                                    rating = it,
-                                                    size = SubjectRatingBarSize.Compact
-                                                )
-                                                Spacer(modifier = Modifier.size(4.dp))
-                                            }
-                                            DateTimeText(
-                                                text = interest.createTime.toRelativeString(style = DateTimeStyle.ABBREVIATED)
-                                            )
-                                        }
-                                    }
-                                }
-
-                                interest.comment?.let { comment ->
-                                    Spacer(modifier = Modifier.size(12.dp))
-                                    Text(text = comment)
-                                }
-
-                                Spacer(modifier = Modifier.size(12.dp))
-
-                                ListItemCount(
-                                    iconVector = Icons.Outlined.ThumbUp,
-                                    count = interest.voteCount
-                                )
-                            }
-                            if (interest != interests.last()) {
-                                Spacer(modifier = Modifier.size(16.dp))
-                                HorizontalDivider()
-                            }
-                        }
-                    }
+                    InterestList(
+                        interests = interestList.interests,
+                        onUserClick = onUserClick
+                    )
                 },
                 modifier = Modifier.padding(vertical = 16.dp),
-                total = interestList.total
+                total = interestList.total,
+                headerSlot = if (onSortChange != null) {
+                    {
+                        InterestSortToggle(
+                            currentSort = sortType,
+                            onSortChange = onSortChange
+                        )
+                    }
+                } else null
             )
-
-
         }
     }
 }
@@ -178,7 +145,7 @@ fun LazyListScope.subjectInfoCelebritiesModuleItem(
     directorNames: List<String>,
     actorNames: List<String>,
 ) {
-    subjectInfoNormalModuleItem(
+    subjectGenericModuleItem(
         titleResId = R.string.subject_module_title_celebrities,
         body = {
             LazyRow(
@@ -187,27 +154,19 @@ fun LazyListScope.subjectInfoCelebritiesModuleItem(
             ) {
                 items(
                     items = directorNames,
-                    contentType = { R.string.director }) { directorName ->
+                    contentType = { R.string.director }
+                ) { directorName ->
                     SubjectInfoCelebrity(name = directorName, typeNameRes = R.string.director)
                 }
                 items(
                     items = actorNames,
-                    contentType = { R.string.actor }) { actorName ->
+                    contentType = { R.string.actor }
+                ) { actorName ->
                     SubjectInfoCelebrity(name = actorName, typeNameRes = R.string.actor)
                 }
             }
-        })
-}
-
-@Composable
-private fun SubjectInfoCelebrity(name: String, typeNameRes: Int) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = name)
-        Text(
-            text = stringResource(id = typeNameRes),
-            style = MaterialTheme.typography.labelSmall
-        )
-    }
+        }
+    )
 }
 
 fun LazyListScope.subjectInfoTrailersModuleItem(
@@ -215,7 +174,7 @@ fun LazyListScope.subjectInfoTrailersModuleItem(
     photoList: PhotoList,
     onImageClick: (url: String) -> Unit,
 ) {
-    subjectInfoNormalModuleItem(
+    subjectGenericModuleItem(
         titleResId = R.string.subject_module_title_trailers,
         body = {
             LazyRow(
@@ -247,34 +206,6 @@ fun LazyListScope.subjectInfoTrailersModuleItem(
         },
         total = photoList.total
     )
-}
-
-@Composable
-fun getTypeUnit(type: SubjectType): String {
-    val resId = when (type) {
-        SubjectType.MOVIE, SubjectType.TV -> R.string.unit_for_movie
-        SubjectType.BOOK -> R.string.unit_for_book
-        else -> R.string.unit_for_generic_subject
-    }
-    return stringResource(resId)
-}
-
-@Composable
-fun getTypeTitle(type: SubjectType): String {
-    val resId = when (type) {
-        SubjectType.MOVIE -> R.string.title_movie
-        SubjectType.TV -> R.string.title_tv
-        SubjectType.BOOK -> R.string.title_book
-        SubjectType.UNSUPPORTED -> return ""
-    }
-    return stringResource(resId)
-}
-
-@Composable
-private fun getLikeRecommendTitle(subjectType: SubjectType): String {
-    val unit = getTypeUnit(subjectType)
-    val typeTitle = getTypeTitle(subjectType)
-    return stringResource(R.string.like_recommend, unit + typeTitle)
 }
 
 fun LazyListScope.subjectInfoRecommendModuleItem(
@@ -312,6 +243,295 @@ fun LazyListScope.subjectInfoRecommendModuleItem(
 }
 
 @Composable
+private fun SubjectModuleContainer(
+    @StringRes titleResId: Int,
+    body: @Composable ColumnScope.() -> Unit,
+    modifier: Modifier = Modifier,
+    total: Int? = null,
+    headerSlot: (@Composable RowScope.() -> Unit)? = null,
+) {
+    Column(modifier = modifier) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(id = titleResId),
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            if (headerSlot != null) {
+                headerSlot()
+                if (total != null) {
+                    Spacer(modifier = Modifier.width(12.dp))
+                }
+            }
+
+            total?.let {
+                Text(text = it.toString(), style = MaterialTheme.typography.bodyMedium)
+            }
+        }
+        Spacer(modifier = Modifier.size(12.dp))
+        body()
+    }
+}
+
+@Composable
+private fun InterestList(
+    interests: List<SubjectInterestWithUser>,
+    onUserClick: (String) -> Unit,
+) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        interests.forEachIndexed { index, interest ->
+            if (index > 0) {
+                Spacer(modifier = Modifier.size(16.dp))
+            }
+            InterestItem(interest = interest, onUserClick = onUserClick)
+            if (index < interests.lastIndex) {
+                Spacer(modifier = Modifier.size(16.dp))
+                HorizontalDivider()
+            }
+        }
+    }
+}
+
+@Composable
+private fun InterestItem(
+    interest: SubjectInterestWithUser,
+    onUserClick: (String) -> Unit,
+) {
+    Column {
+        Row {
+            UserProfileImage(
+                url = interest.user.avatar,
+                size = 40.dp,
+                onClick = { onUserClick(interest.user.id) }
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Column {
+                Text(
+                    text = interest.user.name,
+                    modifier = Modifier.clickable {
+                        onUserClick(interest.user.id)
+                    },
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(modifier = Modifier.size(2.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    interest.rating?.let {
+                        SubjectRatingBar(
+                            rating = it,
+                            size = SubjectRatingBarSize.Compact
+                        )
+                        Spacer(modifier = Modifier.size(4.dp))
+                    }
+                    DateTimeText(
+                        text = interest.createTime.toRelativeString(style = DateTimeStyle.ABBREVIATED)
+                    )
+                }
+            }
+        }
+
+        interest.comment?.let { comment ->
+            Spacer(modifier = Modifier.size(12.dp))
+            Text(text = comment)
+        }
+
+        Spacer(modifier = Modifier.size(12.dp))
+
+        ListItemCount(
+            iconVector = Icons.Outlined.ThumbUp,
+            count = interest.voteCount
+        )
+    }
+}
+
+@Composable
+private fun SubjectInfoCelebrity(name: String, @StringRes typeNameRes: Int) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(text = name)
+        Text(
+            text = stringResource(id = typeNameRes),
+            style = MaterialTheme.typography.labelSmall
+        )
+    }
+}
+
+@Composable
+private fun SubjectReviewCard(
+    review: SubjectReview,
+    modifier: Modifier = Modifier,
+    onUserClick: (userId: String) -> Unit,
+) {
+    val context = LocalContext.current
+    Card(
+        modifier = modifier,
+        onClick = {
+            OpenInUtils.openInDouban(context = context, uri = review.uri)
+        }
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            ReviewHeader(review = review, onUserClick = onUserClick)
+
+            Spacer(modifier = Modifier.size(4.dp))
+            Text(
+                text = review.title,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.size(2.dp))
+            Text(text = review.abstract, style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.padding(4.dp))
+            ListItemImages(images = review.photos.map(SizedPhoto::image))
+
+            Spacer(modifier = Modifier.padding(4.dp))
+            ReviewStats(review = review)
+        }
+    }
+}
+
+@Composable
+private fun ReviewHeader(
+    review: SubjectReview,
+    onUserClick: (userId: String) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        UserProfileImage(
+            url = review.user.avatar,
+            size = dimensionResource(R.dimen.icon_size_extra_small),
+            onClick = { onUserClick(review.user.id) }
+        )
+        Spacer(modifier = Modifier.size(4.dp))
+        Text(
+            text = review.user.name,
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.clickable { onUserClick(review.user.id) }
+        )
+        Row(
+            modifier = Modifier.height(IntrinsicSize.Min),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            VerticalDivider(Modifier.padding(horizontal = 4.dp))
+            val ratingActionResId =
+                SubjectStatusActionTextResIdsMap.getValue(review.subjectType)
+                    .getValue(SubjectInterestStatus.MARK_STATUS_DONE)
+            Text(
+                text = stringResource(id = ratingActionResId),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.outline,
+                fontWeight = FontWeight.Light
+            )
+        }
+        review.rating?.let { rating ->
+            Spacer(modifier = Modifier.size(1.dp))
+            SubjectRatingBar(
+                rating = rating,
+                size = SubjectRatingBarSize.Compact
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        DateTimeText(
+            text = review.createTime.toRelativeString(style = DateTimeStyle.ABBREVIATED),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+
+@Composable
+private fun ReviewStats(review: SubjectReview) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(24.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        listOfNotNull(
+            review.reactionsCount.takeIf { it > 0 }?.let { CountType.REACTIONS to it },
+            review.usefulCount.takeIf { it > 0 }?.let { CountType.USEFUL to it },
+            review.resharesCount.takeIf { it > 0 }?.let { CountType.RESHARES to it }
+        ).forEach { (type, count) ->
+            ListItemCount(
+                iconVector = type.icon,
+                count = count
+            )
+        }
+    }
+}
+
+@Composable
+private fun InterestSortToggle(
+    currentSort: InterestSortType,
+    onSortChange: (InterestSortType) -> Unit,
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        SortText(
+            text = stringResource(R.string.interest_sort_default),
+            isActive = currentSort == InterestSortType.DEFAULT,
+            onClick = { onSortChange(InterestSortType.DEFAULT) }
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        SortText(
+            text = stringResource(R.string.interest_sort_hot),
+            isActive = currentSort == InterestSortType.HOT,
+            onClick = { onSortChange(InterestSortType.HOT) }
+        )
+    }
+}
+
+@Composable
+private fun SortText(
+    text: String,
+    isActive: Boolean,
+    onClick: () -> Unit,
+) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelLarge,
+        color = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(
+            alpha = 0.7f
+        ),
+        fontWeight = if (isActive) FontWeight.Bold else FontWeight.Normal,
+        modifier = Modifier.clickable(onClick = onClick)
+    )
+}
+
+@Composable
+private fun getTypeUnit(type: SubjectType): String {
+    val resId = when (type) {
+        SubjectType.MOVIE, SubjectType.TV -> R.string.unit_for_movie
+        SubjectType.BOOK -> R.string.unit_for_book
+        else -> R.string.unit_for_generic_subject
+    }
+    return stringResource(resId)
+}
+
+@Composable
+private fun getTypeTitle(type: SubjectType): String {
+    val resId = when (type) {
+        SubjectType.MOVIE -> R.string.title_movie
+        SubjectType.TV -> R.string.title_tv
+        SubjectType.BOOK -> R.string.title_book
+        SubjectType.UNSUPPORTED -> return ""
+    }
+    return stringResource(resId)
+}
+
+@Composable
+private fun getLikeRecommendTitle(subjectType: SubjectType): String {
+    val unit = getTypeUnit(subjectType)
+    val typeTitle = getTypeTitle(subjectType)
+    return stringResource(R.string.like_recommend, unit + typeTitle)
+}
+
+@Composable
 fun SubjectInfoReviewsModuleItemContent(
     subjectType: SubjectType,
     reviews: SubjectReviewList,
@@ -324,7 +544,7 @@ fun SubjectInfoReviewsModuleItemContent(
         SubjectType.BOOK -> R.string.title_review_book
         SubjectType.UNSUPPORTED -> throw IllegalArgumentException()
     }
-    SubjectInfoModuleItemContent(
+    SubjectModuleContainer(
         titleResId = titleResId,
         body = {
             LazyColumn(
@@ -339,143 +559,6 @@ fun SubjectInfoReviewsModuleItemContent(
         modifier = modifier,
         total = reviews.total
     )
-}
-
-@Composable
-private fun SubjectReviewCard(
-    review: SubjectReview,
-    modifier: Modifier = Modifier,
-    onUserClick: (userId: String) -> Unit,
-) {
-    val context = LocalContext.current
-    Card(modifier = modifier, onClick = {
-        OpenInUtils.openInDouban(context = context, uri = review.uri)
-    }) {
-        Column(Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-
-            ) {
-                UserProfileImage(
-                    url = review.user.avatar,
-                    size = dimensionResource(R.dimen.icon_size_extra_small),
-                    onClick = {
-                        onUserClick(review.user.id)
-                    }
-                )
-                Spacer(modifier = Modifier.size(4.dp))
-                Text(
-                    text = review.user.name,
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable {
-                        onUserClick(review.user.id)
-                    }
-                )
-                Row(
-                    modifier = Modifier
-                        .height(IntrinsicSize.Min),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    VerticalDivider(Modifier.padding(horizontal = 4.dp))
-                    val ratingActionResId =
-                        SubjectStatusActionTextResIdsMap.getValue(review.subjectType)
-                            .getValue(SubjectInterestStatus.MARK_STATUS_DONE)
-                    Text(
-                        text = stringResource(id = ratingActionResId),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.outline,
-                        fontWeight = FontWeight.Light
-                    )
-                }
-                review.rating?.let { rating ->
-                    Spacer(modifier = Modifier.size(1.dp))
-                    SubjectRatingBar(
-                        rating = rating,
-                        size = SubjectRatingBarSize.Compact
-                    )
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                DateTimeText(
-                    text = review.createTime.toRelativeString(style = DateTimeStyle.ABBREVIATED),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            Spacer(modifier = Modifier.size(4.dp))
-            Text(
-                text = review.title,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.size(2.dp))
-            Text(text = review.abstract, style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.padding(4.dp))
-            ListItemImages(images = review.photos.map(SizedPhoto::image))
-
-            Spacer(modifier = Modifier.padding(4.dp))
-            
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                listOfNotNull(
-                    review.reactionsCount.takeIf { it > 0 }?.let {
-                        CountType.REACTIONS to it
-                    },
-                    review.usefulCount.takeIf { it > 0 }?.let {
-                        CountType.USEFUL to it
-                    },
-                    review.resharesCount.takeIf { it > 0 }?.let {
-                        CountType.RESHARES to it
-                    }
-                ).forEach { (type, count) ->
-                    ListItemCount(
-                        iconVector = type.icon,
-                        count = count
-                    )
-                }
-            }
-
-        }
-    }
-}
-
-enum class CountType(val icon: ImageVector) {
-    REACTIONS(Icons.AutoMirrored.Outlined.Reply),
-    USEFUL(Icons.Outlined.ThumbUp),
-    RESHARES(Icons.Outlined.Repeat);
-}
-
-@Composable
-private fun SubjectInfoModuleItemContent(
-    titleResId: Int,
-    body: @Composable ColumnScope.() -> Unit,
-    modifier: Modifier = Modifier,
-    total: Int? = null,
-) {
-
-    Column(modifier = modifier) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(id = titleResId),
-                style = MaterialTheme.typography.titleMedium
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            total?.let {
-                Text(text = it.toString(), style = MaterialTheme.typography.bodyMedium)
-            }
-        }
-        Spacer(modifier = Modifier.size(12.dp))
-        body()
-    }
 }
 
 @Preview

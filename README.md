@@ -152,7 +152,6 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Subject Detail
     - Ratings histogram
     - Trailer playback ([comment in #15](https://github.com/Bumblebee202111/doubean-public/issues/15#issuecomment-3317936337))
-    - Toggle default or hot interests
   - Review: Load with HTML like topic content
   - Color schemes
   - More
