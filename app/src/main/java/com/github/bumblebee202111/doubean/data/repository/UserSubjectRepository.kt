@@ -119,6 +119,23 @@ class UserSubjectRepository @Inject constructor(private val apiService: ApiServi
         )
     }
 
+    suspend fun getSubjectDoneHotInterests(
+        type: SubjectType,
+        id: String,
+    ): AppResult<SubjectInterestWithUserList> {
+        return makeApiCall(
+            apiCall = {
+                apiService.getSubjectDoneHotInterests(
+                    type = type.toNetworkSubjectType().value,
+                    id = id
+                )
+            },
+            mapSuccess = {
+                it.toSubjectInterestWithUserList()
+            }
+        )
+    }
+
     private companion object {
         const val USER_SUBJECT_COUNT = 20
     }

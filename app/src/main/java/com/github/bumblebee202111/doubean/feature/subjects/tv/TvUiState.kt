@@ -1,5 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.subjects.tv
 
+import com.github.bumblebee202111.doubean.feature.subjects.common.InterestSortType
 import com.github.bumblebee202111.doubean.model.PhotoList
 import com.github.bumblebee202111.doubean.model.subjects.RecommendSubject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUserList
@@ -11,6 +12,7 @@ sealed interface TvUiState {
     data class Success(
         val tv: TvDetail,
         val interests: SubjectInterestWithUserList,
+        val interestSortType: InterestSortType = InterestSortType.DEFAULT,
         val photos: PhotoList,
         val recommendations: List<RecommendSubject>,
         val reviews: SubjectReviewList,
