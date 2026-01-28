@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github.bumblebee202111.doubean.feature.subjects.common.InterestSortType
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectDetailHeader
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectReviewsSheetContent
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectScaffold
@@ -60,6 +61,7 @@ fun TvScreen(
         onCreateDouList = viewModel::showCreateDialog,
         onDismissCreateDialog = viewModel::dismissCreateDialog,
         onCreateAndCollect = viewModel::createAndCollect,
+        onToggleInterestSort = viewModel::toggleInterestSortType,
         onRetryClick = viewModel::refreshData
     )
 }
@@ -81,6 +83,7 @@ fun TvScreen(
     onCreateDouList: () -> Unit,
     onDismissCreateDialog: () -> Unit,
     onCreateAndCollect: (title: String) -> Unit,
+    onToggleInterestSort: (InterestSortType) -> Unit,
     onRetryClick: () -> Unit,
 ) {
     collectDialogUiState?.let { state ->
@@ -130,7 +133,9 @@ fun TvScreen(
                         subjectInfoIntroModuleItem(intro = tv.intro)
                         subjectInfoInterestsModuleItem(
                             interestList = interests,
-                            onUserClick = onUserClick
+                            onUserClick = onUserClick,
+                            sortType = interestSortType,
+                            onSortChange = onToggleInterestSort
                         )
                         subjectInfoCelebritiesModuleItem(
                             directorNames = tv.directorNames,

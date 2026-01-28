@@ -11,12 +11,14 @@ import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepositor
 import com.github.bumblebee202111.doubean.data.repository.TvRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.common.CollectionHandler
+import com.github.bumblebee202111.doubean.feature.subjects.common.InterestSortType
 import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.TvRoute
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.common.CollectType
 import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterest
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUserList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
@@ -60,6 +62,8 @@ class TvViewModel @Inject constructor(
     val collectDialogUiState = collectionHandler.collectDialogUiState
     val showCreateDouListDialog = collectionHandler.showCreateDialogEvent
 
+    private var currentInterestSortType = InterestSortType.DEFAULT
+
     init {
         viewModelScope.launch {
             authRepository.isLoggedIn()
@@ -77,7 +81,7 @@ class TvViewModel @Inject constructor(
 
             val tvResultDeferred = async { tvRepository.getTv(tvId) }
             val interestsResultDeferred = async {
-                userSubjectRepository.getSubjectDoneFollowingHotInterests(SubjectType.TV, tvId)
+                fetchInterests(SubjectType.TV, tvId, currentInterestSortType)
             }
             val photosResultDeferred = async { tvRepository.getPhotos(tvId) }
             val recommendationsDeferred = async {
@@ -114,6 +118,43 @@ class TvViewModel @Inject constructor(
                     reviews = (reviewsResult as AppResult.Success).data,
                     isLoggedIn = isLoggedIn
                 )
+            }
+        }
+    }
+
+    private suspend fun fetchInterests(
+        type: SubjectType,
+        id: String,
+        sortType: InterestSortType,
+    ): AppResult<SubjectInterestWithUserList> {
+        return when (sortType) {
+            InterestSortType.DEFAULT -> userSubjectRepository.getSubjectDoneFollowingHotInterests(
+                type,
+                id
+            )
+
+            InterestSortType.HOT -> userSubjectRepository.getSubjectDoneHotInterests(type, id)
+        }
+    }
+
+    fun toggleInterestSortType(sortType: InterestSortType) {
+        val currentState = _uiState.value
+        if (currentState !is TvUiState.Success || currentInterestSortType == sortType) return
+
+        viewModelScope.launch {
+            currentInterestSortType = sortType
+
+            val result = fetchInterests(SubjectType.TV, tvId, sortType)
+
+            if (result is AppResult.Success) {
+                _uiState.value = currentState.copy(
+                    interests = result.data,
+                    interestSortType = sortType
+                )
+            } else if (result is AppResult.Error) {
+                snackbarManager.showMessage(result.error.asUiMessage())
+
+                currentInterestSortType = currentState.interestSortType
             }
         }
     }
