@@ -79,9 +79,25 @@ class MovieViewModel @Inject constructor(
         loadDataJob = viewModelScope.launch {
             _uiState.value = MovieUiState.Loading
 
-            val movieResultDeferred = async { movieRepository.getMovie(movieId) }
+            val movieResult = movieRepository.getMovie(movieId)
+
+            if (movieResult is AppResult.Error) {
+                val uiMessage = movieResult.error.asUiMessage()
+                snackbarManager.showMessage(uiMessage)
+                _uiState.value = MovieUiState.Error(uiMessage)
+                return@launch
+            }
+
+            val movie = (movieResult as AppResult.Success).data
+
+            val interestStatus = if (movie.isReleased) {
+                SubjectInterestStatus.MARK_STATUS_DONE
+            } else {
+                SubjectInterestStatus.MARK_STATUS_MARK
+            }
+
             val interestsResultDeferred = async {
-                fetchInterests(SubjectType.MOVIE, movieId, currentInterestSortType)
+                fetchInterests(SubjectType.MOVIE, movieId, currentInterestSortType, interestStatus)
             }
             val photosResultDeferred = async { movieRepository.getPhotos(movieId) }
             val recommendationsDeferred = async {
@@ -94,14 +110,12 @@ class MovieViewModel @Inject constructor(
                 )
             }
 
-            val movieResult = movieResultDeferred.await()
             val interestResult = interestsResultDeferred.await()
             val photosResult = photosResultDeferred.await()
             val recommendationsResult = recommendationsDeferred.await()
             val reviewsResult = reviewsResultDeferred.await()
 
             val results = listOf(
-                movieResult,
                 interestResult,
                 photosResult,
                 recommendationsResult,
@@ -116,7 +130,7 @@ class MovieViewModel @Inject constructor(
                 _uiState.value = MovieUiState.Error(uiMessage)
             } else {
                 _uiState.value = MovieUiState.Success(
-                    movie = (movieResult as AppResult.Success).data,
+                    movie = movie,
                     interests = (interestResult as AppResult.Success).data,
                     interestSortType = currentInterestSortType,
                     photos = (photosResult as AppResult.Success).data,
@@ -132,14 +146,16 @@ class MovieViewModel @Inject constructor(
         type: SubjectType,
         id: String,
         sortType: InterestSortType,
+        status: SubjectInterestStatus,
     ): AppResult<SubjectInterestWithUserList> {
         return when (sortType) {
-            InterestSortType.DEFAULT -> userSubjectRepository.getSubjectDoneFollowingHotInterests(
+            InterestSortType.DEFAULT -> userSubjectRepository.getSubjectFollowingHotInterests(
                 type,
-                id
+                id,
+                status
             )
 
-            InterestSortType.HOT -> userSubjectRepository.getSubjectDoneHotInterests(type, id)
+            InterestSortType.HOT -> userSubjectRepository.getSubjectHotInterests(type, id, status)
         }
     }
 
@@ -150,7 +166,14 @@ class MovieViewModel @Inject constructor(
         viewModelScope.launch {
             currentInterestSortType = sortType
 
-            val result = fetchInterests(SubjectType.MOVIE, movieId, sortType)
+            val movie = currentState.movie
+            val interestStatus = if (movie.isReleased) {
+                SubjectInterestStatus.MARK_STATUS_DONE
+            } else {
+                SubjectInterestStatus.MARK_STATUS_MARK
+            }
+
+            val result = fetchInterests(SubjectType.MOVIE, movieId, sortType, interestStatus)
 
             if (result is AppResult.Success) {
                 _uiState.value = currentState.copy(
