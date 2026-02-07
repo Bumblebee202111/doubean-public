@@ -3,6 +3,13 @@ Change Log
 
 ## Version 0.9.18
 
+- **Improved Image Viewer**:
+  - Double-tap to zoom in and out.
+  - Pinch-to-zoom is now smoother and no longer rotates the image.
+  - Panning is more responsive and fluid.
+  - (Partially
+    fixes [#21](https://github.com/Bumblebee202111/doubean-public/issues/21), [#24](https://github.com/Bumblebee202111/doubean-public/issues/24))
+
 ## Version 0.9.17
 
 - Added support for toggling default or hot interests in subject

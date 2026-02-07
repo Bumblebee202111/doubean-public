@@ -17,8 +17,8 @@ import com.github.bumblebee202111.doubean.feature.groups.search.navigation.navig
 import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.topicScreen
 import com.github.bumblebee202111.doubean.feature.groups.webView.navigation.navigateToWebView
 import com.github.bumblebee202111.doubean.feature.groups.webView.navigation.webViewScreen
-import com.github.bumblebee202111.doubean.feature.image.navigation.imageScreen
-import com.github.bumblebee202111.doubean.feature.image.navigation.navigateToImage
+import com.github.bumblebee202111.doubean.feature.imageviewer.navigation.imageViewerScreen
+import com.github.bumblebee202111.doubean.feature.imageviewer.navigation.navigateToImageViewer
 import com.github.bumblebee202111.doubean.feature.login.LOGIN_SUCCESSFUL
 import com.github.bumblebee202111.doubean.feature.login.navigation.LoginRoute
 import com.github.bumblebee202111.doubean.feature.login.navigation.loginScreen
@@ -110,7 +110,7 @@ fun MainNavHost(
             onGroupClick = navController::navigateToGroup,
             onReshareStatusesClick = navController::navigateToReshareStatuses,
             onUserClick = navController::navigateToUserProfile,
-            onImageClick = navController::navigateToImage,
+            onImageClick = navController::navigateToImageViewer,
             onOpenDeepLinkUrl = { uriString: String, showSnackbarOnFailure: Boolean ->
                 navController.tryNavigateToUri(
                     uriString = uriString,
@@ -144,7 +144,7 @@ fun MainNavHost(
         groupDefaultNotificationsPreferencesSettingsScreen(
             onBackClick = navController::navigateUp
         )
-        imageScreen(
+        imageViewerScreen(
             navigateUp = navController::navigateUp
         )
         userProfileScreen(
@@ -166,7 +166,7 @@ fun MainNavHost(
         movieScreen(
             onBackClick = navController::navigateUp,
             onLoginClick = navController::navigateToLogin,
-            onImageClick = navController::navigateToImage,
+            onImageClick = navController::navigateToImageViewer,
             onUserClick = navController::navigateToUserProfile,
             onMovieClick = navController::navigateToMovie,
             onTvClick = navController::navigateToTv,
@@ -175,7 +175,7 @@ fun MainNavHost(
         tvScreen(
             onBackClick = navController::navigateUp,
             onLoginClick = navController::navigateToLogin,
-            onImageClick = navController::navigateToImage,
+            onImageClick = navController::navigateToImageViewer,
             onUserClick = navController::navigateToUserProfile,
             onMovieClick = navController::navigateToMovie,
             onTvClick = navController::navigateToTv,
@@ -184,7 +184,7 @@ fun MainNavHost(
         bookScreen(
             onBackClick = navController::navigateUp,
             onLoginClick = navController::navigateToLogin,
-            onImageClick = navController::navigateToImage,
+            onImageClick = navController::navigateToImageViewer,
             onUserClick = navController::navigateToUserProfile,
             onMovieClick = navController::navigateToMovie,
             onTvClick = navController::navigateToTv,
@@ -207,7 +207,7 @@ fun MainNavHost(
             onMovieClick = navController::navigateToMovie,
             onTvClick = navController::navigateToTv,
             onUserClick = navController::navigateToUserProfile,
-            onImageClick = navController::navigateToImage
+            onImageClick = navController::navigateToImageViewer
         )
         myDouListsScreen(
             onBackClick = navController::navigateUp,
@@ -216,7 +216,7 @@ fun MainNavHost(
             onMovieClick = navController::navigateToMovie,
             onTvClick = navController::navigateToTv,
             onUserClick = navController::navigateToUserProfile,
-            onImageClick = navController::navigateToImage,
+            onImageClick = navController::navigateToImageViewer,
             onDouListClick = navController::navigateToDouList
         )
     }
