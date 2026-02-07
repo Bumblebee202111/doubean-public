@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.9.18
+
 ## Version 0.9.17
 
 - Added support for toggling default or hot interests in subject
