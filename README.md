@@ -1,10 +1,11 @@
 doubean
 =======
 
-An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and exploring Subjects (books/movies/TVs)
-\([豆瓣][douban]非官方app，支持[小组][douban-groups]浏览和书影探索\)
+An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and exploring Subjects (Books/Movies/TVs)
+([豆瓣][douban]非官方app，支持[小组][douban-groups]浏览和书影探索)
 
-**Disclaimer:** This is a continuously evolving project focused on core features using Jetpack Compose. Some features are a work-in-progress (WIP), and you may encounter bugs.
+**Disclaimer:** This is a continuously evolving project focused on core features using Jetpack Compose. Some features
+are works in progress (WIP), and you may encounter bugs.
 
 
 [douban]: https://www.douban.com/
@@ -31,9 +32,9 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
     - Sort topics within each page by create time or default order
     - Customizable topic notifications
 - Doulists:
-  - View doulists and their items (topics, subjects, reviews)
-  - Collect subjects and topics into doulists
-  - My Doulists: Collected items + doulists
+  - View Doulists and their items (topics, subjects, reviews)
+  - Collect subjects and topics into Doulists
+  - My Doulists: Collected items + Doulists
 - General:
   - Ad-free and lightweight (~3MB)
   - Login support & session reuse (advanced, root required)
@@ -59,11 +60,11 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 
 ## Getting Started
 
-- Download the [Latest release][latest-release]
-- Install on Android: 8.1+
+- Download the [latest release][latest-release]
+- Requires Android 8.1+
 - Feel free to [file issues](https://github.com/Bumblebee202111/doubean-public/issues)
-- Keep official app: Recommended for full platform functionality
-- Troubleshooting: If crashes occur after updates, try clearing app data
+- Keep the official app installed: Recommended for full platform functionality
+- Troubleshooting: If the app crashes after an update, try clearing the app data
 
 [latest-release]: https://github.com/Bumblebee202111/doubean-public/releases/latest
 
@@ -71,12 +72,13 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 
 ### Source Code Status
 
-Only selected source code from a private project is shared here to avoid potential issues. More may be synced later.
+Only selected source code from a private project is shared here to avoid potential issues. Additional code may be synced
+later.
 
 ### Guidelines
 
-- For personal learning & exploration
-- Please avoid wide promotion
+- Intended for personal learning & exploration
+- Please avoid widespread promotion
 
 ## Tech Stack
 
@@ -97,29 +99,31 @@ Only selected source code from a private project is shared here to avoid potenti
 [paging]: https://developer.android.com/topic/libraries/architecture/paging/v3-overview
 [room]: https://developer.android.com/topic/libraries/architecture/room
 [viewmodel]: https://developer.android.com/topic/libraries/architecture/viewmodel
-[workmanager]:https://developer.android.com/topic/libraries/architecture/workmanager
+
+[workmanager]: https://developer.android.com/topic/libraries/architecture/workmanager
 [ui]: https://developer.android.com/guide/topics/ui
 [notifications]: https://developer.android.com/develop/ui/views/notifications
 [kotlin-coroutines]: https://kotlinlang.org/docs/reference/coroutines-overview.html
 
 ## Roadmap
 
-Upcoming features, bug fixes, libraries to use and environment changes \(roughly in chronological order\). Primarily for personal tracking.
+Upcoming features, bug fixes, libraries, and environment changes (roughly in chronological order). Primarily for
+personal tracking.
 
-### Current release \(0.9.17)
+### Current Release (0.9.17)
 
-### Next release \(0.10.0)
+### Next Release (0.10.0)
 
 
 <details>
-<summary>Future plans (Click to expand)</summary>
+<summary>Future Plans (Click to expand)</summary>
 
 #### High Priority
 
 #### Backlog
 - Navigation
-    - Navigation 3 when deeplink is supported
-  - Consider use single NavHost (?)
+  - Navigation 3 when deep linking is supported
+  - Consider using a single NavHost (?)
   - Allow customizing bottom navigation ([#16](https://github.com/Bumblebee202111/doubean-public/issues/16))
   - Shared element transitions for images
 - Add error message mappings to match official
@@ -143,8 +147,9 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
     - Dynamic topic sorting options
   - Group Detail: Auto-collapse header for subscribed/pinned groups/tabs
   - Topic:
-    - Render content using the same HTML/WebView approach as topics
+    - Render content using HTML/WebView
     - Fix content scroll restoration
+    - OP comments ([#21](https://github.com/Bumblebee202111/doubean-public/issues/21))
   - Default hide officially-flagged "unfriendly" content
   - Implement content blocking
   - Reddit-style list item expand/collapse
@@ -152,7 +157,8 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Subject Detail
     - Ratings histogram
     - Trailer playback ([comment in #15](https://github.com/Bumblebee202111/doubean-public/issues/15#issuecomment-3317936337))
-  - Review: Load with HTML like topic content
+    - Available sources ([#23](https://github.com/Bumblebee202111/doubean-public/issues/23))
+  - Review: Render content using the same HTML/WebView approach as topics
   - Color schemes
   - More
 - UserProfile: My subjects, My groups
@@ -164,10 +170,10 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
   - Follow Doulists
   - List/post pagination
 - Search suggestions
-- Login: Code-based (w/o pw)
+- Login: Code-based (without password)
 - Shortcuts
 - NetworkManager
-- Widgets: Calender today
+- Widgets: Calendar today
 - QR
 - (Rooted users) Optional sync of more existing preferences for API request consistency
 - Statuses (maintenance mode)
@@ -207,7 +213,7 @@ Upcoming features, bug fixes, libraries to use and environment changes \(roughly
 
 [google-chrome]:https://www.google.com/chrome/
 
-## Stars :star: & Donation :coffee:
+## Stars :star: & Donations :coffee:
 
 Your ⭐ **stars** motivate continued development! If you find this project helpful and wish to support its development, you can treat me to a coffee via WeChat Pay: 
 
