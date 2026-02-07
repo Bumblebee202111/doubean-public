@@ -30,7 +30,7 @@ Source: `app/src/main/java/com/github/bumblebee202111/doubean`
     - `doulists`: Public collections.
     - `mydoulists`: User's collections.
     - `search`: Search.
-    - `image`: Image viewer.
+  - `imageviewer`: Image viewer.
     - `login`: Authentication.
     - `settings`: Preferences.
     - `notifications`: Notifications screen.
