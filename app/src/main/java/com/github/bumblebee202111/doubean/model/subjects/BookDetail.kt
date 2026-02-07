@@ -9,7 +9,6 @@ data class BookDetail(
     override val uri: String,
     override val intro: String,
     override val interest: SubjectInterest?,
-    override val isReleased: Boolean,
     val pubdate: List<String>,
     val author: List<String>,
     val subtitle: String?,

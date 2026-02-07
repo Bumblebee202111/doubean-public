@@ -100,17 +100,15 @@ class UserSubjectRepository @Inject constructor(private val apiService: ApiServi
             mapSuccess = NetworkSubjectInterest::toSubjectInterest
         )
 
-    suspend fun getSubjectFollowingHotInterests(
+    suspend fun getSubjectDoneFollowingHotInterests(
         type: SubjectType,
         id: String,
-        status: SubjectInterestStatus,
     ): AppResult<SubjectInterestWithUserList> {
         return makeApiCall(
             apiCall = {
-                apiService.getSubjectFollowingHotInterests(
+                apiService.getSubjectDoneFollowingHotInterests(
                     type = type.toNetworkSubjectType().value,
-                    id = id,
-                    status = status.toNetworkStatus().value
+                    id = id
                 )
             },
             mapSuccess = {
@@ -119,17 +117,15 @@ class UserSubjectRepository @Inject constructor(private val apiService: ApiServi
         )
     }
 
-    suspend fun getSubjectHotInterests(
+    suspend fun getSubjectDoneHotInterests(
         type: SubjectType,
         id: String,
-        status: SubjectInterestStatus,
     ): AppResult<SubjectInterestWithUserList> {
         return makeApiCall(
             apiCall = {
-                apiService.getSubjectHotInterests(
+                apiService.getSubjectDoneHotInterests(
                     type = type.toNetworkSubjectType().value,
-                    id = id,
-                    status = status.toNetworkStatus().value
+                    id = id
                 )
             },
             mapSuccess = {

@@ -9,7 +9,6 @@ data class TvDetail(
     override val uri: String,
     override val intro: String,
     override val interest: SubjectInterest?,
-    override val isReleased: Boolean,
     val pubdate: List<String>,
     val year: String,
     val languages: List<String>,

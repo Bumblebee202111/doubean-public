@@ -17,7 +17,6 @@ import com.github.bumblebee202111.doubean.model.common.CollectType
 import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterest
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
-import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUserList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
@@ -71,33 +70,17 @@ class BookViewModel @Inject constructor(
         }
     }
 
+
     private fun triggerDataLoad(isLoggedIn: Boolean) {
         loadDataJob?.cancel()
         loadDataJob = viewModelScope.launch {
             _uiState.value = BookUiState.Loading
 
-            val bookResult = bookRepository.getBook(bookId)
-
-            if (bookResult is AppResult.Error) {
-                val uiMessage = bookResult.error.asUiMessage()
-                snackbarManager.showMessage(uiMessage)
-                _uiState.value = BookUiState.Error(uiMessage)
-                return@launch
-            }
-
-            val book = (bookResult as AppResult.Success).data
-
-            val interestStatus = if (book.isReleased) {
-                SubjectInterestStatus.MARK_STATUS_DONE
-            } else {
-                SubjectInterestStatus.MARK_STATUS_MARK
-            }
-
+            val bookResultDeferred = async { bookRepository.getBook(bookId) }
             val interestsResultDeferred = async {
-                userSubjectRepository.getSubjectFollowingHotInterests(
+                userSubjectRepository.getSubjectDoneFollowingHotInterests(
                     type = SubjectType.BOOK,
-                    id = bookId,
-                    status = interestStatus
+                    id = bookId
                 )
             }
             val recommendationsDeferred = async {
@@ -110,11 +93,12 @@ class BookViewModel @Inject constructor(
                 )
             }
 
+            val bookResult = bookResultDeferred.await()
             val interestResult = interestsResultDeferred.await()
             val recommendationsResult = recommendationsDeferred.await()
             val reviewsResult = reviewsResultDeferred.await()
 
-            val results = listOf(interestResult, recommendationsResult, reviewsResult)
+            val results = listOf(bookResult, interestResult, recommendationsResult, reviewsResult)
 
             val firstError = results.filterIsInstance<AppResult.Error>().firstOrNull()
 
@@ -124,7 +108,7 @@ class BookViewModel @Inject constructor(
                 _uiState.value = BookUiState.Error(uiMessage)
             } else {
                 _uiState.value = BookUiState.Success(
-                    book = book,
+                    book = (bookResult as AppResult.Success).data,
                     interests = (interestResult as AppResult.Success).data,
                     recommendations = (recommendationsResult as AppResult.Success).data,
                     reviews = (reviewsResult as AppResult.Success).data,
@@ -132,14 +116,6 @@ class BookViewModel @Inject constructor(
                 )
             }
         }
-    }
-
-    private suspend fun fetchInterests(
-        type: SubjectType,
-        id: String,
-        status: SubjectInterestStatus,
-    ): AppResult<SubjectInterestWithUserList> {
-        return userSubjectRepository.getSubjectFollowingHotInterests(type, id, status)
     }
 
     fun refreshData() {
@@ -181,9 +157,13 @@ class BookViewModel @Inject constructor(
                             originalBook.interest
                         }
                     }
-                    _uiState.value = currentSuccessState.copy(
-                        book = originalBook.copy(interest = confirmedInterest)
-                    )
+
+                    val confirmedBook = originalBook.copy(interest = confirmedInterest)
+
+                    (_uiState.value as? BookUiState.Success)?.takeIf { it.book.id == originalBook.id }
+                        ?.let { latestSuccessState ->
+                            _uiState.value = latestSuccessState.copy(book = confirmedBook)
+                        }
                 }
 
                 is AppResult.Error -> {

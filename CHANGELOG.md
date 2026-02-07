@@ -3,11 +3,6 @@ Change Log
 
 ## Version 0.9.17
 
-- Fixed subject reviews sheet being initially fully expanded
-- Added support for toggling default or hot interests in subject details
-- Updated interest status logic to match official behavior based on release state
--
-
 ## Version 0.9.16
 
 - ([#21](https://github.com/Bumblebee202111/doubean-public/issues/21)) Optimized jumping to comments
