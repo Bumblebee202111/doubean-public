@@ -110,10 +110,13 @@ later.
 Upcoming features, bug fixes, libraries, and environment changes (roughly in chronological order). Primarily for
 personal tracking.
 
-### Current Release (0.9.17)
+### Current Release (0.9.18)
 
-### Next Release (0.10.0)
+- Image viewer
+  - Improve gestures ([#21](https://github.com/Bumblebee202111/doubean-public/issues/21))
+  -
 
+### Next Release (0..)
 
 <details>
 <summary>Future Plans (Click to expand)</summary>
@@ -149,7 +152,7 @@ personal tracking.
   - Topic:
     - Render content using HTML/WebView
     - Fix content scroll restoration
-    - OP comments ([#21](https://github.com/Bumblebee202111/doubean-public/issues/21))
+    - OP comments only ([#21](https://github.com/Bumblebee202111/doubean-public/issues/21))
   - Default hide officially-flagged "unfriendly" content
   - Implement content blocking
   - Reddit-style list item expand/collapse
