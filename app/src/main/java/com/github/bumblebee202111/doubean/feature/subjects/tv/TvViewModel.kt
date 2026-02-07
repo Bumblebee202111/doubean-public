@@ -79,9 +79,25 @@ class TvViewModel @Inject constructor(
         loadDataJob = viewModelScope.launch {
             _uiState.value = TvUiState.Loading
 
-            val tvResultDeferred = async { tvRepository.getTv(tvId) }
+            val tvResult = tvRepository.getTv(tvId)
+
+            if (tvResult is AppResult.Error) {
+                val uiMessage = tvResult.error.asUiMessage()
+                snackbarManager.showMessage(uiMessage)
+                _uiState.value = TvUiState.Error(uiMessage)
+                return@launch
+            }
+
+            val tv = (tvResult as AppResult.Success).data
+
+            val interestStatus = if (tv.isReleased) {
+                SubjectInterestStatus.MARK_STATUS_DONE
+            } else {
+                SubjectInterestStatus.MARK_STATUS_MARK
+            }
+
             val interestsResultDeferred = async {
-                fetchInterests(SubjectType.TV, tvId, currentInterestSortType)
+                fetchInterests(SubjectType.TV, tvId, currentInterestSortType, interestStatus)
             }
             val photosResultDeferred = async { tvRepository.getPhotos(tvId) }
             val recommendationsDeferred = async {
@@ -94,14 +110,13 @@ class TvViewModel @Inject constructor(
                 )
             }
 
-            val tvResult = tvResultDeferred.await()
             val interestResult = interestsResultDeferred.await()
             val photosResult = photosResultDeferred.await()
             val recommendationsResult = recommendationsDeferred.await()
             val reviewsResult = reviewsResultDeferred.await()
 
             val results =
-                listOf(tvResult, interestResult, photosResult, recommendationsResult, reviewsResult)
+                listOf(interestResult, photosResult, recommendationsResult, reviewsResult)
 
             val firstError = results.filterIsInstance<AppResult.Error>().firstOrNull()
 
@@ -111,7 +126,7 @@ class TvViewModel @Inject constructor(
                 _uiState.value = TvUiState.Error(uiMessage)
             } else {
                 _uiState.value = TvUiState.Success(
-                    tv = (tvResult as AppResult.Success).data,
+                    tv = tv,
                     interests = (interestResult as AppResult.Success).data,
                     photos = (photosResult as AppResult.Success).data,
                     recommendations = (recommendationsResult as AppResult.Success).data,
@@ -126,14 +141,16 @@ class TvViewModel @Inject constructor(
         type: SubjectType,
         id: String,
         sortType: InterestSortType,
+        status: SubjectInterestStatus,
     ): AppResult<SubjectInterestWithUserList> {
         return when (sortType) {
-            InterestSortType.DEFAULT -> userSubjectRepository.getSubjectDoneFollowingHotInterests(
+            InterestSortType.DEFAULT -> userSubjectRepository.getSubjectFollowingHotInterests(
                 type,
-                id
+                id,
+                status
             )
 
-            InterestSortType.HOT -> userSubjectRepository.getSubjectDoneHotInterests(type, id)
+            InterestSortType.HOT -> userSubjectRepository.getSubjectHotInterests(type, id, status)
         }
     }
 
@@ -144,7 +161,14 @@ class TvViewModel @Inject constructor(
         viewModelScope.launch {
             currentInterestSortType = sortType
 
-            val result = fetchInterests(SubjectType.TV, tvId, sortType)
+            val tv = currentState.tv
+            val interestStatus = if (tv.isReleased) {
+                SubjectInterestStatus.MARK_STATUS_DONE
+            } else {
+                SubjectInterestStatus.MARK_STATUS_MARK
+            }
+
+            val result = fetchInterests(SubjectType.TV, tvId, sortType, interestStatus)
 
             if (result is AppResult.Success) {
                 _uiState.value = currentState.copy(
@@ -153,7 +177,6 @@ class TvViewModel @Inject constructor(
                 )
             } else if (result is AppResult.Error) {
                 snackbarManager.showMessage(result.error.asUiMessage())
-
                 currentInterestSortType = currentState.interestSortType
             }
         }
@@ -198,12 +221,9 @@ class TvViewModel @Inject constructor(
                             originalTv.interest
                         }
                     }
-                    val confirmedTv = originalTv.copy(interest = confirmedInterest)
-
-                    (_uiState.value as? TvUiState.Success)?.takeIf { it.tv.id == originalTv.id }
-                        ?.let { latestSuccessState ->
-                            _uiState.value = latestSuccessState.copy(tv = confirmedTv)
-                        }
+                    _uiState.value = currentSuccessState.copy(
+                        tv = originalTv.copy(interest = confirmedInterest)
+                    )
                 }
 
                 is AppResult.Error -> {
