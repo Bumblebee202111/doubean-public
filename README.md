@@ -72,8 +72,7 @@ are works in progress (WIP), and you may encounter bugs.
 
 ### Source Code Status
 
-Only selected source code from a private project is shared here to avoid potential issues. Additional code may be synced
-later.
+This repository contains a curated subset of code from a private project. It is automatically synced using [Copybara](https://github.com/google/copybara) to filter files, scrub sensitive information, and preserve the original commit history.
 
 ### Guidelines
 
