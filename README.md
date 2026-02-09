@@ -109,16 +109,13 @@ This repository contains a curated subset of code from a private project. It is 
 Upcoming features, bug fixes, libraries, and environment changes (roughly in chronological order). Primarily for
 personal tracking.
 
-### Current Release (0.9.18)
+### Current Release (0.9.19)
 
 ### Next Release (0..)
 
 <details>
 <summary>Future Plans (Click to expand)</summary>
 
-#### High Priority
-
-#### Backlog
 - Navigation
   - Navigation 3 when deep linking is supported
   - Consider using a single NavHost (?)
