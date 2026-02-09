@@ -10,6 +10,7 @@ data class MovieDetail(
     override val intro: String,
     override val interest: SubjectInterest?,
     override val isReleased: Boolean,
+    override val vendors: List<Vendor>,
     val pubdate: List<String>,
     val year: String,
     val genres: List<String>,
