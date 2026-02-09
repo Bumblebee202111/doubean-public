@@ -1,7 +1,7 @@
 package com.github.bumblebee202111.doubean.data.repository
 
 import com.github.bumblebee202111.doubean.network.ApiService
-import com.github.bumblebee202111.doubean.network.model.toMovieDetail
+import com.github.bumblebee202111.doubean.network.model.subject.toMovieDetail
 import com.github.bumblebee202111.doubean.network.model.toPhotoList
 import com.github.bumblebee202111.doubean.network.util.makeApiCall
 import javax.inject.Inject

@@ -152,7 +152,6 @@ personal tracking.
   - Subject Detail
     - Ratings histogram
     - Trailer playback ([comment in #15](https://github.com/Bumblebee202111/doubean-public/issues/15#issuecomment-3317936337))
-    - Available sources ([#23](https://github.com/Bumblebee202111/doubean-public/issues/23))
   - Review: Render content using the same HTML/WebView approach as topics
   - Color schemes
   - More

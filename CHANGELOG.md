@@ -3,6 +3,8 @@ Change Log
 
 ## Version 0.9.19
 
+- Added support for displaying vendors (播放源/在线观看) in movie and TV subject details.
+
 ## Version 0.9.18
 
 - **Improved Image Viewer**:

@@ -9,6 +9,7 @@ sealed interface SubjectDetail : MarkableSubject {
     val uri: String
     val intro: String
     val isReleased: Boolean
+    val vendors: List<Vendor>
 
     override val type: SubjectType
     override val interest: SubjectInterest?

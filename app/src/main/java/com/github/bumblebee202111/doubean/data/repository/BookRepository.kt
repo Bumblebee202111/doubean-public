@@ -1,8 +1,8 @@
 package com.github.bumblebee202111.doubean.data.repository
 
 import com.github.bumblebee202111.doubean.network.ApiService
-import com.github.bumblebee202111.doubean.network.model.NetworkBookDetail
-import com.github.bumblebee202111.doubean.network.model.toBookDetail
+import com.github.bumblebee202111.doubean.network.model.subject.NetworkBookDetail
+import com.github.bumblebee202111.doubean.network.model.subject.toBookDetail
 import com.github.bumblebee202111.doubean.network.util.makeApiCall
 import javax.inject.Inject
 import javax.inject.Singleton

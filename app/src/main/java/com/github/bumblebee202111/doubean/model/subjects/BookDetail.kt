@@ -10,6 +10,7 @@ data class BookDetail(
     override val intro: String,
     override val interest: SubjectInterest?,
     override val isReleased: Boolean,
+    override val vendors: List<Vendor> = emptyList(),
     val pubdate: List<String>,
     val author: List<String>,
     val subtitle: String?,
