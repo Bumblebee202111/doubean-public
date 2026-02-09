@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.9.19
+
 ## Version 0.9.18
 
 - **Improved Image Viewer**:
