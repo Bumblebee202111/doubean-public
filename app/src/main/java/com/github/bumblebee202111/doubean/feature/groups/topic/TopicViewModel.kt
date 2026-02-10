@@ -59,9 +59,19 @@ class TopicViewModel @Inject constructor(
     val topicId = topicRoute.topicId
     val spmId = topicRoute.spmId
 
-    private val commentsDataFlows = topicRepository.getTopicCommentsData(topicId, spmId)
+    private val _authorOnlyMode = MutableStateFlow(false)
+    val authorOnlyMode = _authorOnlyMode.asStateFlow()
 
-    val popularComments = commentsDataFlows.first
+    private val commentsDataFlows = Pair(
+        authorOnlyMode.flatMapLatest { onlyOp ->
+            topicRepository.getTopicCommentsData(topicId, spmId, onlyOp).first
+        },
+        authorOnlyMode.flatMapLatest { onlyOp ->
+            topicRepository.getTopicCommentsData(topicId, spmId, onlyOp).second
+        }
+    )
+
+    val popularComments = commentsDataFlows.first.stateInUi(emptyList())
 
     val allComments = commentsDataFlows.second.cachedIn(viewModelScope)
 
@@ -158,6 +168,10 @@ class TopicViewModel @Inject constructor(
 
     fun updateCommentsSortBy(commentSortBy: TopicCommentSortBy) {
         _commentsSortBy.value = commentSortBy
+    }
+
+    fun updateAuthorOnlyMode(enabled: Boolean) {
+        _authorOnlyMode.value = enabled
     }
 
     private fun roundedPercentage(f: Float): Double {

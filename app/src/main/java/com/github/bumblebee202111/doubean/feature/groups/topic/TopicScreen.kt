@@ -2,17 +2,26 @@ package com.github.bumblebee202111.doubean.feature.groups.topic
 
 import android.annotation.SuppressLint
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -24,11 +33,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.LocalPinnableContainer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -75,6 +84,7 @@ fun TopicScreen(
     val shouldShowSpinner by viewModel.shouldShowSpinner.collectAsStateWithLifecycle()
     val collectDialogUiState by viewModel.collectDialogUiState.collectAsStateWithLifecycle()
     val showCreateDouListDialog by viewModel.showCreateDouListDialog.collectAsStateWithLifecycle()
+    val authorOnlyMode by viewModel.authorOnlyMode.collectAsStateWithLifecycle()
 
     TopicScreen(
         topicResult = topicResult,
@@ -85,10 +95,12 @@ fun TopicScreen(
         commentSortBy = commentSortBy,
         isLoggedIn = isLoggedIn,
         shouldShowSpinner = shouldShowSpinner,
-        updateCommentSortBy = viewModel::updateCommentsSortBy,
-        displayInvalidImageUrl = viewModel::displayInvalidImageUrl,
         collectDialogUiState = collectDialogUiState,
         showCreateDouListDialog = showCreateDouListDialog,
+        authorOnlyMode = authorOnlyMode,
+        updateCommentSortBy = viewModel::updateCommentsSortBy,
+        updateAuthorOnlyMode = viewModel::updateAuthorOnlyMode,
+        displayInvalidImageUrl = viewModel::displayInvalidImageUrl,
         onBackClick = onBackClick,
         onWebViewClick = onWebViewClick,
         onGroupClick = onGroupClick,
@@ -127,7 +139,9 @@ fun TopicScreen(
     shouldShowSpinner: Boolean,
     collectDialogUiState: CollectDialogUiState?,
     showCreateDouListDialog: Boolean,
+    authorOnlyMode: Boolean,
     updateCommentSortBy: (TopicCommentSortBy) -> Unit,
+    updateAuthorOnlyMode: (Boolean) -> Unit,
     displayInvalidImageUrl: () -> Unit,
     onBackClick: () -> Unit,
     onWebViewClick: (String) -> Unit,
@@ -261,24 +275,17 @@ fun TopicScreen(
                                 )
                             }
 
-                            if (shouldShowSpinner) {
-                                item(
-                                    key = "TopicCommentSortBy",
-                                    contentType = "TopicCommentSortBy"
-                                ) {
-                                    TopicCommentSortByDropDownMenu(
-                                        commentSortBy = commentSortBy,
-                                        updateCommentSortBy = updateCommentSortBy,
-                                        modifier = Modifier.padding(
-                                            horizontal = dimensionResource(id = R.dimen.margin_normal),
-                                            vertical = dimensionResource(id = R.dimen.margin_small)
-                                        )
-                                    )
-                                }
-                            } else {
-                                item {
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                }
+                            item(
+                                key = "CommentActions",
+                                contentType = "CommentActions"
+                            ) {
+                                TopicCommentActions(
+                                    shouldShowSpinner = shouldShowSpinner,
+                                    commentSortBy = commentSortBy,
+                                    updateCommentSortBy = updateCommentSortBy,
+                                    authorOnlyMode = authorOnlyMode,
+                                    updateAuthorOnlyMode = updateAuthorOnlyMode
+                                )
                             }
                             when (commentSortBy) {
                                 TopicCommentSortBy.POPULAR -> {
@@ -291,6 +298,22 @@ fun TopicScreen(
                                 }
 
                                 TopicCommentSortBy.ALL -> {
+                                    if (authorOnlyMode && allCommentLazyPagingItems.itemCount == 0 && allCommentLazyPagingItems.loadState.refresh is LoadState.NotLoading) {
+                                        item {
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(32.dp),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Text(
+                                                    text = stringResource(R.string.empty_author_comments_list),
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            }
+                                        }
+                                    }
                                     allComments(
                                         comments = allCommentLazyPagingItems,
                                         topic = topic,
@@ -344,6 +367,51 @@ fun TopicScreen(
         CreateDouListDialog(
             onDismissRequest = onDismissCreateDialog,
             onConfirm = onCreateAndCollect
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TopicCommentActions(
+    shouldShowSpinner: Boolean,
+    commentSortBy: TopicCommentSortBy,
+    updateCommentSortBy: (TopicCommentSortBy) -> Unit,
+    authorOnlyMode: Boolean,
+    updateAuthorOnlyMode: (Boolean) -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        if (shouldShowSpinner) {
+            TopicCommentSortByDropDownMenu(
+                commentSortBy = commentSortBy,
+                updateCommentSortBy = updateCommentSortBy,
+                modifier = Modifier.weight(1f)
+            )
+        } else {
+            Text(
+                text = stringResource(id = R.string.all_comments),
+                style = MaterialTheme.typography.labelLarge,
+                modifier = Modifier.weight(1f)
+            )
+        }
+        FilterChip(
+            selected = authorOnlyMode,
+            onClick = { updateAuthorOnlyMode(!authorOnlyMode) },
+            label = { Text(stringResource(R.string.author_only_mode)) },
+            leadingIcon = if (authorOnlyMode) {
+                {
+                    Icon(
+                        imageVector = Icons.Filled.Done,
+                        contentDescription = null,
+                        modifier = Modifier.size(FilterChipDefaults.IconSize)
+                    )
+                }
+            } else {
+                null
+            }
         )
     }
 }

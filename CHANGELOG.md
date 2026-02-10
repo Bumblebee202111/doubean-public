@@ -3,6 +3,9 @@ Change Log
 
 ## Version 0.9.20
 
+- Added an author-only mode for topic comments. (Part
+  of [#21](https://github.com/Bumblebee202111/doubean-public/issues/21))
+
 ## Version 0.9.19
 
 - Added support for displaying vendors (播放源/在线观看) in movie and TV subject details.

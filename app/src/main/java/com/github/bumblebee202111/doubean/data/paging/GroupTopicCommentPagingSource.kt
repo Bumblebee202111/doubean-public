@@ -9,6 +9,7 @@ class GroupTopicCommentPagingSource(
     private val apiService: ApiService,
     private val topicId: String,
     private val spmId: String? = null,
+    private val onlyOp: Boolean = false,
     private val onPopularCommentsFetched: (List<NetworkGroupTopicComment>) -> Unit,
 ) :
     PagingSource<Int, NetworkGroupTopicComment>() {
@@ -23,12 +24,21 @@ class GroupTopicCommentPagingSource(
         return safePagingLoad {
             val start = params.key ?: 0
             val count = params.loadSize
-            val response = apiService.getGroupTopicComments(
-                topicId = topicId,
-                start = start,
-                count = count,
-                spmId = spmId
-            )
+            val response = if (onlyOp) {
+                apiService.getGroupTopicOpComments(
+                    topicId = topicId,
+                    start = start,
+                    count = count,
+                    spmId = spmId
+                )
+            } else {
+                apiService.getGroupTopicComments(
+                    topicId = topicId,
+                    start = start,
+                    count = count,
+                    spmId = spmId
+                )
+            }
 
             response.popularComments.filterIsInstance<NetworkGroupTopicComment>()
                 .takeIf { it.isNotEmpty() }?.let(onPopularCommentsFetched)
