@@ -96,7 +96,7 @@ class VerifyPhoneViewModel @Inject constructor(
             } ?: return@launch
             val solution = currentState.captchaSolution
 
-            if ((currentState.jCaptcha != null) != (solution != null)) {
+            if (currentState.jCaptcha != null && solution == null) {
                 return@launch
             }
 
