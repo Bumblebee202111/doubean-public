@@ -5,6 +5,7 @@ Change Log
 
 - Added an author-only mode for topic comments. (Part
   of [#21](https://github.com/Bumblebee202111/doubean-public/issues/21))
+- Fix phone verification not working after solving captcha.
 
 ## Version 0.9.19
 

@@ -50,7 +50,7 @@ fun VerifyPhoneScreen(
         onRequestPhoneCode = viewModel::requestPhoneCode,
         onPhoneCodeChanged = viewModel::updatePhoneCode,
         onVerifyCaptcha = viewModel::verifyCaptcha,
-        onverifyPhoneCode = viewModel::verifyPhoneCode,
+        onVerifyPhoneCode = viewModel::verifyPhoneCode,
         onBackClick = onBackClick,
         onSuccess = onSuccess
     )
@@ -63,7 +63,7 @@ fun VerifyPhoneScreen(
     onRequestPhoneCode: () -> Unit,
     onPhoneCodeChanged: (String) -> Unit,
     onVerifyCaptcha: (solution: CaptchaSolution) -> Unit,
-    onverifyPhoneCode: () -> Unit,
+    onVerifyPhoneCode: () -> Unit,
     onBackClick: () -> Unit,
     onSuccess: () -> Unit,
 ) {
@@ -90,7 +90,7 @@ fun VerifyPhoneScreen(
                 onRequestPhoneCode = onRequestPhoneCode,
                 onPhoneCodeChanged = onPhoneCodeChanged,
                 onVerifyCaptcha = onVerifyCaptcha,
-                onVerifyPhoneCode = onverifyPhoneCode,
+                onVerifyPhoneCode = onVerifyPhoneCode,
                 modifier = Modifier.padding(innerPadding)
             )
 
