@@ -109,7 +109,9 @@ This repository contains a curated subset of code from a private project. It is 
 Upcoming features, bug fixes, libraries, and environment changes (roughly in chronological order). Primarily for
 personal tracking.
 
-### Current Release (0.9.19)
+### Current Release (0.9.20)
+
+- Topic: OP comments only ([#21](https://github.com/Bumblebee202111/doubean-public/issues/21))
 
 ### Next Release (0..)
 
@@ -144,7 +146,6 @@ personal tracking.
   - Topic:
     - Render content using HTML/WebView
     - Fix content scroll restoration
-    - OP comments only ([#21](https://github.com/Bumblebee202111/doubean-public/issues/21))
   - Default hide officially-flagged "unfriendly" content
   - Implement content blocking
   - Reddit-style list item expand/collapse
