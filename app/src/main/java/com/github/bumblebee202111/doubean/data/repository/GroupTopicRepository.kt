@@ -77,6 +77,7 @@ class GroupTopicRepository @Inject constructor(
     fun getTopicCommentsData(
         topicId: String,
         spmId: String? = null,
+        onlyOp: Boolean = false,
     ): Pair<StateFlow<List<TopicComment>>, Flow<PagingData<TopicComment>>> {
         val popularComments = MutableStateFlow<List<TopicComment>>(emptyList())
         val allCommentsPagingData = Pager(
@@ -92,6 +93,7 @@ class GroupTopicRepository @Inject constructor(
                     apiService = apiService,
                     topicId = topicId,
                     spmId = spmId,
+                    onlyOp = onlyOp,
                     onPopularCommentsFetched = { it ->
                         popularComments.value = it.map(NetworkGroupTopicComment::asExternalModel)
                     })

@@ -111,9 +111,7 @@ personal tracking.
 
 ### Current Release (0.9.20)
 
-- Topic: OP comments only ([#21](https://github.com/Bumblebee202111/doubean-public/issues/21))
-
-### Next Release (0..)
+### Next Release (0..)`
 
 <details>
 <summary>Future Plans (Click to expand)</summary>
