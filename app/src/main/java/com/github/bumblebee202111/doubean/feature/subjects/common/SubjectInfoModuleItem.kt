@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,10 +24,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Reply
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -173,6 +177,7 @@ fun LazyListScope.subjectInfoTrailersModuleItem(
     trailers: List<MovieTrailer>,
     photoList: PhotoList,
     onImageClick: (url: String) -> Unit,
+    onTrailerClick: (trailer: MovieTrailer) -> Unit,
 ) {
     subjectGenericModuleItem(
         titleResId = R.string.subject_module_title_trailers,
@@ -182,15 +187,26 @@ fun LazyListScope.subjectInfoTrailersModuleItem(
                 horizontalArrangement = Arrangement.spacedBy(1.dp)
             ) {
                 val trailerHeightModifier = Modifier.height(160.dp)
-                items(items = trailers, key = { it.id }) {
-                    AsyncImage(
-                        model = it.coverUrl,
-                        contentDescription = null,
-                        modifier = trailerHeightModifier.clickable {
-                            onImageClick(it.coverUrl)
-                        },
-                        contentScale = ContentScale.FillHeight
-                    )
+                items(items = trailers, key = { it.id }) { trailer ->
+                    Box(
+                        modifier = trailerHeightModifier
+                            .clickable { onTrailerClick(trailer) }
+                    ) {
+                        AsyncImage(
+                            model = trailer.coverUrl,
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.FillHeight
+                        )
+                        Icon(
+                            imageVector = Icons.Filled.PlayArrow,
+                            contentDescription = stringResource(id = R.string.play_trailer),
+                            tint = Color.White,
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .size(48.dp)
+                        )
+                    }
                 }
                 items(items = photoList.photos, key = { it.image.normal.url }) {
                     AsyncImage(

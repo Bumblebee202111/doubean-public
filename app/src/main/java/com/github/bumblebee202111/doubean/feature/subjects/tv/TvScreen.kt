@@ -1,8 +1,11 @@
 package com.github.bumblebee202111.doubean.feature.subjects.tv
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.feature.subjects.common.InterestSortType
@@ -102,6 +105,8 @@ fun TvScreen(
         )
     }
 
+    val context = LocalContext.current
+
     SubjectScaffold(
         reviewsSheetContent = {
             if (uiState is TvUiState.Success) {
@@ -144,7 +149,13 @@ fun TvScreen(
                         subjectInfoTrailersModuleItem(
                             trailers = tv.trailers,
                             photoList = photos,
-                            onImageClick = onImageClick
+                            onImageClick = onImageClick,
+                            onTrailerClick = { trailer ->
+                                val intent = Intent(Intent.ACTION_VIEW).apply {
+                                    setDataAndType(Uri.parse(trailer.videoUrl), "video/*")
+                                }
+                                context.startActivity(intent)
+                            }
                         )
                         subjectInfoRecommendModuleItem(
                             subjectType = SubjectType.TV,
