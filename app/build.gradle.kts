@@ -22,8 +22,8 @@ android {
         applicationId = "com.github.bumblebee202111.doubean"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 92000
-        versionName = "0.9.20"
+        versionCode = 92100
+        versionName = "0.9.21"
 
         setProperty("archivesBaseName", "doubean_$versionName")
 
