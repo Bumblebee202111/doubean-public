@@ -111,9 +111,6 @@ personal tracking.
 
 ### Current Release (0.9.21)
 
-- Trailer
-  playback ([comment in #15](https://github.com/Bumblebee202111/doubean-public/issues/15#issuecomment-3317936337))
-
 ### Next Release (0..)`
 
 <details>

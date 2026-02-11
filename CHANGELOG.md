@@ -3,6 +3,8 @@ Change Log
 
 ## Version 0.9.21
 
+- Implemented lightweight trailer playback on the subject detail screen
+
 ## Version 0.9.20
 
 - Added an author-only mode for topic comments. (Part
