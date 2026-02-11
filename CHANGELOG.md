@@ -4,6 +4,7 @@ Change Log
 ## Version 0.9.21
 
 - Implemented lightweight trailer playback on the subject detail screen
+  - Fixed [comment in #15](https://github.com/Bumblebee202111/doubean-public/issues/15#issuecomment-3317936337)
 
 ## Version 0.9.20
 
