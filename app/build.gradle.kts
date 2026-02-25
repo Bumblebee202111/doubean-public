@@ -131,7 +131,7 @@ kotlin {
         jvmTarget.set(JvmTarget.JVM_17)
         freeCompilerArgs.addAll(
             listOf(
-                "-Xcontext-receivers"
+                "-Xcontext-parameters"
             )
         )
     }

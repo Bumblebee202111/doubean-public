@@ -8,15 +8,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 
 
-context(ViewModel)
+context(viewModel: ViewModel)
 fun <T> Flow<T>.stateInUi(
 ): StateFlow<T?> {
-    return stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), null)
+    return stateIn(viewModel.viewModelScope, SharingStarted.WhileSubscribed(5000L), null)
 }
 
-context(ViewModel)
+context(viewModel: ViewModel)
 fun <T : Any> Flow<T>.stateInUi(
     initialValue: T,
 ): StateFlow<T> {
-    return stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), initialValue)
+    return stateIn(viewModel.viewModelScope, SharingStarted.WhileSubscribed(5000L), initialValue)
 }
