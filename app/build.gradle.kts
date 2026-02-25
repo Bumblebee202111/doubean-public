@@ -60,9 +60,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     namespace = "com.github.bumblebee202111.doubean"
-    kotlinOptions {
-        freeCompilerArgs = listOf("-XXLanguage:+WhenGuards")
-    }
 }
 
 dependencies {
@@ -131,7 +128,9 @@ kotlin {
         jvmTarget.set(JvmTarget.JVM_17)
         freeCompilerArgs.addAll(
             listOf(
-                "-Xcontext-parameters"
+                "-Xcontext-parameters",
+                "-Xannotation-default-target=param-property",
+                "-XXLanguage:+WhenGuards"
             )
         )
     }

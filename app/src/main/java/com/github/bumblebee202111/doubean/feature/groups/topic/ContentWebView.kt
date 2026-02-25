@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.util.Log
 import android.view.MotionEvent
 import android.webkit.URLUtil
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -96,11 +97,11 @@ fun ContentWebView(
         },
         client = remember {
             object : DoubeanWebViewClient(listOf(TOPIC_CSS_FILENAME)) {
-                @Deprecated("Deprecated in Java")
                 override fun shouldOverrideUrlLoading(
                     view: WebView?,
-                    url: String?,
+                    request: WebResourceRequest?,
                 ): Boolean {
+                    val url = request?.url?.toString()
                     return url?.let { handleUrlLoading(context, it, onOpenDeepLinkUrl) } == true
                 }
             }
