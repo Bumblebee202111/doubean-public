@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.10.0-beta1
+
 ## Version 0.9.21
 
 - Implemented lightweight trailer playback on the subject detail screen

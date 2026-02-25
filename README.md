@@ -99,7 +99,10 @@ This repository contains a curated subset of code from a private project. It is 
 Upcoming features, bug fixes, libraries, and environment changes (roughly in chronological order). Primarily for
 personal tracking.
 
-### Current Release (0.9.21)
+### Current Release (0.10.0)
+
+- Navigation 3
+- Use a single NavHost
 
 ### Next Release (0..)
 
@@ -107,8 +110,6 @@ personal tracking.
 <summary>Future Plans (Click to expand)</summary>
 
 - Navigation
-  - Navigation 3 when deep linking is supported
-  - Consider using a single NavHost (?)
   - Allow customizing bottom navigation ([#16](https://github.com/Bumblebee202111/doubean-public/issues/16))
   - Shared element transitions for images
 - Add error message mappings to match official
