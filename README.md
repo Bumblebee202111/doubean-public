@@ -7,7 +7,6 @@ An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and expl
 **Disclaimer:** This is a continuously evolving project focused on core features using Jetpack Compose. Some features
 are works in progress (WIP), and you may encounter bugs.
 
-
 [douban]: https://www.douban.com/
 [douban-groups]: https://www.douban.com/group/
 
@@ -48,15 +47,9 @@ are works in progress (WIP), and you may encounter bugs.
 
 ## Screenshots
 
-<p> <img src="screenshots/phone_subjects.png" alt="phone_subjects" height="300" />
-<img src="screenshots/phone_groups_home.png" alt="phone_groups" height="300" />
-<img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" />
-<img src="screenshots/phone_topic.png" alt="phone_topic" height="300" />
-<img src="screenshots/phone_doulist.png" alt="phone_doulist" height="300" />
-<img src="screenshots/tablet_movie.png" alt="tablet_movie" height="450" />
-<img src="screenshots/tablet_interests.png" alt="tablet_interests" height="450" /> </p>
-
-
+<img src="screenshots/phone_subjects.png" alt="phone_subjects" height="300" /> <img src="screenshots/phone_groups_home.png" alt="phone_groups" height="300" /> <img src="screenshots/phone_group_detail.png" alt="phone_group_detail" height="300" /> <img src="screenshots/phone_topic.png" alt="phone_topic" height="300" /> <img src="screenshots/phone_doulist.png" alt="phone_doulist" height="300" />
+<br>
+<img src="screenshots/tablet_movie.png" alt="tablet_movie" height="400" /> <img src="screenshots/tablet_interests.png" alt="tablet_interests" height="400" />
 
 ## Getting Started
 
@@ -85,20 +78,17 @@ This repository contains a curated subset of code from a private project. It is 
 - [Architecture][arch]: [Lifecycles][lifecycle], [Navigation][navigation], [Paging][paging], [Room][room], DataStore, [ViewModel][viewmodel], [WorkManager][workmanager]
 - [UI][ui]: Jetpack Compose
 - Behavior: [Notifications][notifications]
-- Third-party libraries
-  - [Kotlin Coroutines][kotlin-coroutines], Kotlinx Serialization, Ktor, Coil, libsu, Accompanist Permissions/WebView
+- Third-party libraries: [Kotlin Coroutines][kotlin-coroutines], Kotlinx Serialization, Ktor, Coil, libsu, Accompanist
+  Permissions/WebView
 
 [foundation]: https://developer.android.com/jetpack/components
-[appcompat]: https://developer.android.com/topic/libraries/support-library/packages#v7-appcompat
 [android-ktx]: https://developer.android.com/kotlin/ktx
-[test]: https://developer.android.com/training/testing/
 [arch]: https://developer.android.com/jetpack/arch/
 [lifecycle]: https://developer.android.com/topic/libraries/architecture/lifecycle
 [navigation]: https://developer.android.com/topic/libraries/architecture/navigation/
 [paging]: https://developer.android.com/topic/libraries/architecture/paging/v3-overview
 [room]: https://developer.android.com/topic/libraries/architecture/room
 [viewmodel]: https://developer.android.com/topic/libraries/architecture/viewmodel
-
 [workmanager]: https://developer.android.com/topic/libraries/architecture/workmanager
 [ui]: https://developer.android.com/guide/topics/ui
 [notifications]: https://developer.android.com/develop/ui/views/notifications
@@ -111,7 +101,7 @@ personal tracking.
 
 ### Current Release (0.9.21)
 
-### Next Release (0..)`
+### Next Release (0..)
 
 <details>
 <summary>Future Plans (Click to expand)</summary>
@@ -131,8 +121,9 @@ personal tracking.
     - Topics within a group/tab
     - Global topic search
     - Tabbed search results
-  - New web-based feed for all followed topics
+  - New web-based feed for *all* followed topics
     - Toggleable "My Group Topics" section on the home screen
+      - Currently use tabbed but incomplete recent topics via API
     - Sort by creation time or "Hotness" (replies + 1 / time)
     - Notification engine with customizable intervals (15m, 30m, 1h)
     - Per-group settings for sort preference and check depth (with a UI hint suggesting small values for active groups)
@@ -142,14 +133,19 @@ personal tracking.
     - Dynamic topic sorting options
   - Group Detail: Auto-collapse header for subscribed/pinned groups/tabs
   - Topic:
-    - Render content using HTML/WebView
+    - Render content using *dynamic* HTML/WebView
     - Fix content scroll restoration
   - Default hide officially-flagged "unfriendly" content
   - Implement content blocking
   - Reddit-style list item expand/collapse
 - Subjects
+  - Music Support: Browse and view music details ([#26](https://github.com/Bumblebee202111/doubean-public/issues/26))
   - Subject Detail
     - Ratings histogram
+    - Friends' Interests/Reviews: View interests/reviews from followed
+      users ([#26](https://github.com/Bumblebee202111/doubean-public/issues/26))
+    - Celebrities: Add photos ([#24](https://github.com/Bumblebee202111/doubean-public/issues/24))
+    - Trailers: Support loading more ([#24](https://github.com/Bumblebee202111/doubean-public/issues/24))
   - Review: Render content using the same HTML/WebView approach as topics
   - Color schemes
   - More
@@ -191,7 +187,8 @@ personal tracking.
 - Various social apps (UI/UX inspiration)
 
 [guides]: https://developer.android.google.cn/guide
-[material]:https://material.io/
+
+[material]: https://material.io/
 
 ## Utilities
 
@@ -199,19 +196,17 @@ personal tracking.
 - [jadx][jadx]-gui for model understanding
 - [Google Chrome][google-chrome] for debugging CSS
 
-[http-canary]:https://github.com/MegatronKing/HttpCanary/
+[http-canary]: https://github.com/MegatronKing/HttpCanary/
 
-[jadx]:https://github.com/skylot/jadx/releases
+[jadx]: https://github.com/skylot/jadx/releases
 
-[google-chrome]:https://www.google.com/chrome/
+[google-chrome]: https://www.google.com/chrome/
 
-## Stars :star: & Donations :coffee:
+## Support
 
-Your ⭐ **stars** motivate continued development! If you find this project helpful and wish to support its development, you can treat me to a coffee via WeChat Pay: 
+If you find this project helpful and wish to support its development, you can treat me to a coffee via WeChat Pay:
 
-<p align="center">  <img src="assets/wechat_donate_qr.png" alt="WeChat Donate QR Code" width="200"/> </p> 
-
-Thank you for your support!
+<img src="assets/wechat_donate_qr.png" alt="WeChat Donate QR Code" width="200"/>
 
 ## License
 
