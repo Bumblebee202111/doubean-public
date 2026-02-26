@@ -102,7 +102,6 @@ personal tracking.
 ### Current Release (0.10.0)
 
 - Navigation 3
-- Use a single NavHost
 
 ### Next Release (0..)
 

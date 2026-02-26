@@ -7,12 +7,14 @@ import com.github.bumblebee202111.doubean.coroutines.Dispatcher
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.UserRepository
+import com.github.bumblebee202111.doubean.domain.usecase.ObserveCurrentUserUseCase
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.take
@@ -26,6 +28,7 @@ class MainActivityViewModel @Inject constructor(
     private val userRepository: UserRepository,
     @Dispatcher(AppDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
     private val snackbarManager: SnackbarManager,
+    observeCurrentUserUseCase: ObserveCurrentUserUseCase,
 ) :
     ViewModel() {
     val enableNotifications =
@@ -36,6 +39,9 @@ class MainActivityViewModel @Inject constructor(
 
     val autoImportSessionAtStartup =
         preferenceStorage.preferToAutoImportSessionAtStartup.stateInUi()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val currentUser = observeCurrentUserUseCase().stateInUi()
 
     private fun checkAndRefreshToken() {
         viewModelScope.launch {

@@ -1,18 +1,16 @@
 package com.github.bumblebee202111.doubean.ui
 
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -21,7 +19,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.github.bumblebee202111.doubean.feature.app.navigation.BottomNavRoute
 import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.GroupDetailRoute
 import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.ReshareStatusesRoute
 import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.TopicRoute
@@ -36,22 +33,17 @@ fun DoubeanApp(
     startWithGroups: Boolean,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val currentDestination = navController
-        .currentBackStackEntryAsState().value?.destination
+    val currentDestination = navController.currentBackStackEntryAsState().value?.destination
 
-    var bottomNavTabWantsLightIcons by remember { mutableStateOf<Boolean?>(null) }
-    val useLightIcons = remember(currentDestination, bottomNavTabWantsLightIcons) {
-        when {
-            setOf(
-                GroupDetailRoute::class, TopicRoute::class, ReshareStatusesRoute::class,
-                UserProfileRoute::class
-            ).any { currentDestination?.hasRoute(it) == true } -> true
+    val useLightIcons = remember(currentDestination) {
+        val needsLightIcons = setOf(
+            GroupDetailRoute::class,
+            TopicRoute::class,
+            ReshareStatusesRoute::class,
+            UserProfileRoute::class
+        ).any { currentDestination?.hasRoute(it) == true }
 
-            currentDestination?.hasRoute(BottomNavRoute::class) == true ->
-                bottomNavTabWantsLightIcons
-
-            else -> null
-        }
+        if (needsLightIcons) true else null
     }
 
     ApplyStatusBarIconAppearance(useLightIcons = useLightIcons)
@@ -63,9 +55,7 @@ fun DoubeanApp(
     LaunchedEffect(currentMessage, snackbarHostState, lifecycleOwner) {
         if (currentMessage != null && messageToDisplay != null) {
             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                val result = snackbarHostState.showSnackbar(
-                    message = messageToDisplay
-                )
+                val result = snackbarHostState.showSnackbar(message = messageToDisplay)
                 if (result == SnackbarResult.Dismissed && snackbarManager.currentMessage.value == currentMessage) {
                     snackbarManager.messageShown()
                 }
@@ -73,24 +63,19 @@ fun DoubeanApp(
         }
     }
 
-    Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        snackbarHost = {
-            SnackbarHost(
-                hostState = snackbarHostState,
-                modifier = Modifier.systemBarsPadding()
-            )
-        },
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         MainNavScreen(
             navController = navController,
             snackbarManager = snackbarManager,
             startWithGroups = startWithGroups,
-            onActiveTabAppearanceNeeded = { useLight ->
-                bottomNavTabWantsLightIcons = useLight
-            },
-            modifier = Modifier.padding(it)
+            modifier = Modifier.fillMaxSize()
+        )
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .systemBarsPadding()
         )
     }
-
 }

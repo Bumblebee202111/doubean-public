@@ -4,12 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.github.bumblebee202111.doubean.feature.app.navigation.bottomNavScreen
 import com.github.bumblebee202111.doubean.feature.doulists.createddoulists.navigation.createdDouListsScreen
 import com.github.bumblebee202111.doubean.feature.doulists.doulist.navigation.douListScreen
 import com.github.bumblebee202111.doubean.feature.doulists.doulist.navigation.navigateToDouList
 import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.groupDetailScreen
 import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.navigateToGroup
+import com.github.bumblebee202111.doubean.feature.groups.home.navigation.GroupsHomeRoute
+import com.github.bumblebee202111.doubean.feature.groups.home.navigation.groupsHomeScreen
 import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.navigateToReshareStatuses
 import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.reshareStatusesScreen
 import com.github.bumblebee202111.doubean.feature.groups.search.navigation.groupsSearchScreen
@@ -25,19 +26,21 @@ import com.github.bumblebee202111.doubean.feature.login.navigation.loginScreen
 import com.github.bumblebee202111.doubean.feature.login.navigation.navigateToLogin
 import com.github.bumblebee202111.doubean.feature.login.navigation.verifyPhoneScreen
 import com.github.bumblebee202111.doubean.feature.mydoulists.navigation.myDouListsScreen
-import com.github.bumblebee202111.doubean.feature.mydoulists.navigation.navigateToMyDouLists
 import com.github.bumblebee202111.doubean.feature.notifications.navigation.navigateToNotifications
 import com.github.bumblebee202111.doubean.feature.notifications.navigation.notificationsScreen
 import com.github.bumblebee202111.doubean.feature.settings.navigation.groupDefaultNotificationsPreferencesSettingsScreen
 import com.github.bumblebee202111.doubean.feature.settings.navigation.navigateToGroupDefaultNotificationsPreferencesSettings
 import com.github.bumblebee202111.doubean.feature.settings.navigation.navigateToSettings
 import com.github.bumblebee202111.doubean.feature.settings.navigation.settingsScreen
+import com.github.bumblebee202111.doubean.feature.statuses.navigation.statusesScreen
 import com.github.bumblebee202111.doubean.feature.subjects.book.navigation.bookScreen
 import com.github.bumblebee202111.doubean.feature.subjects.book.navigation.navigateToBook
 import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.interestsScreen
 import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.navigateToInterests
 import com.github.bumblebee202111.doubean.feature.subjects.movie.navigation.movieScreen
 import com.github.bumblebee202111.doubean.feature.subjects.movie.navigation.navigateToMovie
+import com.github.bumblebee202111.doubean.feature.subjects.navigation.SubjectsRoute
+import com.github.bumblebee202111.doubean.feature.subjects.navigation.subjectsScreen
 import com.github.bumblebee202111.doubean.feature.subjects.ranklist.navigation.navigateToRankList
 import com.github.bumblebee202111.doubean.feature.subjects.ranklist.navigation.rankListScreen
 import com.github.bumblebee202111.doubean.feature.subjects.search.navigation.navigateToSearchSubjects
@@ -52,41 +55,53 @@ import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 fun MainNavHost(
     navController: NavHostController,
     snackbarManager: SnackbarManager,
-    startDestination: Any,
     startWithGroups: Boolean,
-    onActiveTabAppearanceNeeded: (useLightIcons: Boolean?) -> Unit,
+    onAvatarClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    
+    val startDestination = if (startWithGroups) GroupsHomeRoute else SubjectsRoute
 
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier
     ) {
-
         val navigateToUriBasic = { uriString: String ->
             navController.tryNavigateToUri(uriString, snackbarManager)
         }
 
-        bottomNavScreen(
-            startWithGroups = startWithGroups,
-            onActiveTabAppearanceNeeded = onActiveTabAppearanceNeeded,
-            navigateToSearch = navController::navigateToSearch,
-            navigateToNotifications = navController::navigateToNotifications,
-            navigateToSettings = navController::navigateToSettings,
-            navigateToGroup = navController::navigateToGroup,
-            navigateToTopic = { navigateToUriBasic(it) },
-            navigateToLogin = navController::navigateToLogin,
-            navigateToSubjectInterests = navController::navigateToInterests,
-            navigateToSearchSubjects = navController::navigateToSearchSubjects,
-            navigateToRankList = navController::navigateToRankList,
-            navigateToMovie = navController::navigateToMovie,
-            navigateToTv = navController::navigateToTv,
-            navigateToBook = navController::navigateToBook,
-            navigateToUserProfile = navController::navigateToUserProfile,
-            navigateToMyDouLists = navController::navigateToMyDouLists,
-            navigateToUri = navigateToUriBasic
+        
+        statusesScreen(onAvatarClick = onAvatarClick)
+
+        subjectsScreen(
+            onAvatarClick = onAvatarClick,
+            onSubjectStatusClick = navController::navigateToInterests,
+            onLoginClick = navController::navigateToLogin,
+            onSearchClick = navController::navigateToSearchSubjects,
+            onRankListClick = navController::navigateToRankList,
+            onMovieClick = navController::navigateToMovie,
+            onTvClick = navController::navigateToTv,
+            onBookClick = navController::navigateToBook
         )
+
+        groupsHomeScreen(
+            onAvatarClick = onAvatarClick,
+            onSearchClick = navController::navigateToSearch,
+            onNotificationsClick = navController::navigateToNotifications,
+            onGroupClick = navController::navigateToGroup,
+            onTopicClick = { navigateToUriBasic(it) }
+        )
+
+        
+        userProfileScreen(
+            onBackClick = navController::navigateUp,
+            onSettingsClick = navController::navigateToSettings,
+            onLoginClick = navController::navigateToLogin,
+            onStatItemUriClick = navigateToUriBasic
+        )
+
+        
         groupsSearchScreen(
             onGroupClick = navController::navigateToGroup,
             onBackClick = navController::navigateUp
@@ -94,9 +109,7 @@ fun MainNavHost(
         notificationsScreen(
             onBackClick = navController::navigateUp,
             onTopicClick = { navigateToUriBasic(it) },
-            onGroupClick = { groupId ->
-                navController.navigateToGroup(groupId)
-            },
+            onGroupClick = { groupId -> navController.navigateToGroup(groupId) },
             onSettingsClick = navController::navigateToSettings
         )
         groupDetailScreen(
@@ -126,7 +139,7 @@ fun MainNavHost(
         webViewScreen(onBackClick = navController::navigateUp)
         loginScreen(
             onSaveIsLoginSuccessSuccessfulChange = {
-                navController.previousBackStackEntry!!.savedStateHandle[LOGIN_SUCCESSFUL] = it
+                navController.previousBackStackEntry?.savedStateHandle?.set(LOGIN_SUCCESSFUL, it)
             },
             onPopBackStack = navController::popBackStack,
             onOpenDeepLinkUrl = navigateToUriBasic
@@ -146,10 +159,6 @@ fun MainNavHost(
         )
         imageViewerScreen(
             navigateUp = navController::navigateUp
-        )
-        userProfileScreen(
-            onBackClick = navController::navigateUp,
-            onStatItemUriClick = navigateToUriBasic
         )
         interestsScreen(
             onBackClick = navController::navigateUp,
