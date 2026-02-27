@@ -1,20 +1,19 @@
 package com.github.bumblebee202111.doubean.feature.mydoulists.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
-import androidx.navigation.compose.composable
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.mydoulists.MyDouListsScreen
+import com.github.bumblebee202111.doubean.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable
-object MyDouListsRoute
+object MyDouListsNavKey : NavKey
 
-fun NavController.navigateToMyDouLists(navOptions: NavOptions? = null) {
-    this.navigate(MyDouListsRoute, navOptions)
+fun Navigator.navigateToMyDouLists() {
+    this.navigate(MyDouListsNavKey)
 }
 
-fun NavGraphBuilder.myDouListsScreen(
+fun EntryProviderScope<NavKey>.myDouListsEntry(
     onBackClick: () -> Unit,
     onTopicClick: (String) -> Unit,
     onBookClick: (String) -> Unit,
@@ -24,7 +23,7 @@ fun NavGraphBuilder.myDouListsScreen(
     onImageClick: (imageUrl: String) -> Unit,
     onDouListClick: (douListId: String) -> Unit,
 ) {
-    composable<MyDouListsRoute> {
+    entry<MyDouListsNavKey> {
         MyDouListsScreen(
             onBackClick = onBackClick,
             onTopicClick = onTopicClick,

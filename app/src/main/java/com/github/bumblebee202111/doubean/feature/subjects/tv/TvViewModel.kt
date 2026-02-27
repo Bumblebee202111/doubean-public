@@ -1,9 +1,7 @@
 package com.github.bumblebee202111.doubean.feature.subjects.tv
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.DouListRepository
 import com.github.bumblebee202111.doubean.data.repository.ItemDouListRepository
@@ -12,7 +10,6 @@ import com.github.bumblebee202111.doubean.data.repository.TvRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.common.CollectionHandler
 import com.github.bumblebee202111.doubean.feature.subjects.common.InterestSortType
-import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.TvRoute
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.common.CollectType
 import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
@@ -23,6 +20,9 @@ import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -32,21 +32,18 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class TvViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = TvViewModel.Factory::class)
+class TvViewModel @AssistedInject constructor(
     private val tvRepository: TvRepository,
     private val userSubjectRepository: UserSubjectRepository,
     private val subjectCommonRepository: SubjectCommonRepository,
     private val authRepository: AuthRepository,
     itemDouListRepository: ItemDouListRepository,
     douListRepository: DouListRepository,
-    savedStateHandle: SavedStateHandle,
     private val snackbarManager: SnackbarManager,
+    @Assisted val tvId: String,
 ) : ViewModel() {
-    private val tvId = savedStateHandle.toRoute<TvRoute>().tvId
-
     private val _uiState = MutableStateFlow<TvUiState>(TvUiState.Loading)
     val uiState: StateFlow<TvUiState> = _uiState.asStateFlow()
 
@@ -261,5 +258,10 @@ class TvViewModel @Inject constructor(
                 douList = douList
             )
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(tvId: String): TvViewModel
     }
 }

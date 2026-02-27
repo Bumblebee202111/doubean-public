@@ -71,7 +71,7 @@ fun TopicScreen(
     onReshareStatusesClick: (String) -> Unit,
     onUserClick: (String) -> Unit,
     onImageClick: (String) -> Unit,
-    onOpenDeepLinkUrl: (String, Boolean) -> Boolean,
+    onOpenDeepLinkUrl: (String) -> Boolean,
     viewModel: TopicViewModel = hiltViewModel(),
 ) {
     val topicResult by viewModel.topicResult.collectAsStateWithLifecycle()
@@ -149,7 +149,7 @@ fun TopicScreen(
     onReshareStatusesClick: (String) -> Unit,
     onUserClick: (String) -> Unit,
     onImageClick: (String) -> Unit,
-    onOpenDeepLinkUrl: (String, Boolean) -> Boolean,
+    onOpenDeepLinkUrl: (String) -> Boolean,
     onReact: (Boolean) -> Unit,
     onRefresh: () -> Unit,
     onCollectClick: () -> Unit,

@@ -8,10 +8,10 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.groups.home.navigation.GroupsHomeRoute
-import com.github.bumblebee202111.doubean.feature.statuses.navigation.StatusesRoute
-import com.github.bumblebee202111.doubean.feature.subjects.navigation.SubjectsRoute
-import com.github.bumblebee202111.doubean.feature.userprofile.navigation.UserProfileRoute
+import com.github.bumblebee202111.doubean.feature.groups.home.navigation.GroupsHomeNavKey
+import com.github.bumblebee202111.doubean.feature.statuses.navigation.StatusesNavKey
+import com.github.bumblebee202111.doubean.feature.subjects.navigation.SubjectsNavKey
+import com.github.bumblebee202111.doubean.feature.userprofile.navigation.UserProfileNavKey
 
 enum class TopLevelDestination(
     val route: Any,
@@ -19,22 +19,22 @@ enum class TopLevelDestination(
     val iconVector: ImageVector,
 ) {
     Home(
-        route = StatusesRoute,
+        route = StatusesNavKey,
         labelResId = R.string.title_statuses,
         iconVector = Icons.Filled.Timeline
     ),
     Subjects(
-        route = SubjectsRoute,
+        route = SubjectsNavKey,
         labelResId = R.string.title_subjects,
         iconVector = Icons.Filled.Collections
     ),
     Groups(
-        route = GroupsHomeRoute,
+        route = GroupsHomeNavKey,
         labelResId = R.string.title_groups,
         iconVector = Icons.Filled.Groups
     ),
     Me(
-        route = UserProfileRoute(),
+        route = UserProfileNavKey(),
         labelResId = R.string.title_me,
         iconVector = Icons.Filled.Person
     )

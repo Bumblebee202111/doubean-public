@@ -1,9 +1,7 @@
 package com.github.bumblebee202111.doubean.feature.subjects.book
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.BookRepository
 import com.github.bumblebee202111.doubean.data.repository.DouListRepository
@@ -11,17 +9,18 @@ import com.github.bumblebee202111.doubean.data.repository.ItemDouListRepository
 import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.common.CollectionHandler
-import com.github.bumblebee202111.doubean.feature.subjects.book.navigation.BookRoute
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.common.CollectType
 import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterest
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
-import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUserList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -31,25 +30,22 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class BookViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = BookViewModel.Factory::class)
+class BookViewModel @AssistedInject constructor(
     private val bookRepository: BookRepository,
     private val userSubjectRepository: UserSubjectRepository,
     private val subjectCommonRepository: SubjectCommonRepository,
     private val authRepository: AuthRepository,
     itemDouListRepository: ItemDouListRepository,
     douListRepository: DouListRepository,
-    savedStateHandle: SavedStateHandle,
     private val snackbarManager: SnackbarManager,
+    @Assisted val bookId: String,
 ) : ViewModel() {
-    private val bookId = savedStateHandle.toRoute<BookRoute>().bookId
     private val _uiState = MutableStateFlow<BookUiState>(BookUiState.Loading)
     val uiState: StateFlow<BookUiState> = _uiState.asStateFlow()
 
     private var loadDataJob: Job? = null
-
 
     private val collectionHandler = CollectionHandler(
         scope = viewModelScope,
@@ -134,14 +130,6 @@ class BookViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchInterests(
-        type: SubjectType,
-        id: String,
-        status: SubjectInterestStatus,
-    ): AppResult<SubjectInterestWithUserList> {
-        return userSubjectRepository.getSubjectFollowingHotInterests(type, id, status)
-    }
-
     fun refreshData() {
         viewModelScope.launch {
             val currentLoginStatus = authRepository.isLoggedIn().first()
@@ -221,5 +209,10 @@ class BookViewModel @Inject constructor(
                 douList = douList
             )
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(bookId: String): BookViewModel
     }
 }

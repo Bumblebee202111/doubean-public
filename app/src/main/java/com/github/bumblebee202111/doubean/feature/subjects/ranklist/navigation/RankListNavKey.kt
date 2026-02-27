@@ -1,23 +1,23 @@
 package com.github.bumblebee202111.doubean.feature.subjects.ranklist.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.subjects.ranklist.RankListScreen
+import com.github.bumblebee202111.doubean.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RankListRoute(
+data class RankListNavKey(
     val collectionId: String,
-)
+) : NavKey
 
-fun NavGraphBuilder.rankListScreen(
+fun EntryProviderScope<NavKey>.rankListEntry(
     onBackClick: () -> Unit,
     onMovieClick: (movieId: String) -> Unit,
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
 ) {
-    composable<RankListRoute> {
+    entry<RankListNavKey> {
         RankListScreen(
             onBackClick = onBackClick,
             onMovieClick = onMovieClick,
@@ -27,7 +27,7 @@ fun NavGraphBuilder.rankListScreen(
     }
 }
 
-fun NavController.navigateToRankList(collectionId: String) = navigate(RankListRoute(collectionId))
+fun Navigator.navigateToRankList(collectionId: String) = navigate(RankListNavKey(collectionId))
 
 
 

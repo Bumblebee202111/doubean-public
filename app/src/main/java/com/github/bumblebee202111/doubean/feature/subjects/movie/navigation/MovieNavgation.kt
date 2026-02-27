@@ -1,15 +1,17 @@
 package com.github.bumblebee202111.doubean.feature.subjects.movie.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.subjects.movie.MovieScreen
+import com.github.bumblebee202111.doubean.feature.subjects.movie.MovieViewModel
+import com.github.bumblebee202111.doubean.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MovieRoute(val movieId: String)
+data class MovieNavKey(val movieId: String) : NavKey
 
-fun NavGraphBuilder.movieScreen(
+fun EntryProviderScope<NavKey>.movieEntry(
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onImageClick: (url: String) -> Unit,
@@ -18,7 +20,7 @@ fun NavGraphBuilder.movieScreen(
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
 ) {
-    composable<MovieRoute> {
+    entry<MovieNavKey> { key ->
         MovieScreen(
             onBackClick = onBackClick,
             onLoginClick = onLoginClick,
@@ -26,9 +28,14 @@ fun NavGraphBuilder.movieScreen(
             onUserClick = onUserClick,
             onMovieClick = onMovieClick,
             onTvClick = onTvClick,
-            onBookClick = onBookClick
+            onBookClick = onBookClick,
+            viewModel = hiltViewModel<MovieViewModel, MovieViewModel.Factory>(
+                creationCallback = { factory ->
+                    factory.create(key.movieId)
+                }
+            )
         )
     }
 }
 
-fun NavController.navigateToMovie(movieId: String) = navigate(MovieRoute(movieId))
+fun Navigator.navigateToMovie(movieId: String) = navigate(MovieNavKey(movieId))

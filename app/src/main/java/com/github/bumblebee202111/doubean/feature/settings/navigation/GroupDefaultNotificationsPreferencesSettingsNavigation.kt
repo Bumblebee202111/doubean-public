@@ -1,20 +1,20 @@
 package com.github.bumblebee202111.doubean.feature.settings.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.settings.GroupDefaultNotificationsPreferencesSettingsScreen
+import com.github.bumblebee202111.doubean.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable
 data object
-GroupDefaultNotificationsPreferencesSettingsRoute
+GroupDefaultNotificationsPreferencesSettingsNavKey : NavKey
 
-fun NavController.navigateToGroupDefaultNotificationsPreferencesSettings() =
-    navigate(route = GroupDefaultNotificationsPreferencesSettingsRoute)
+fun Navigator.navigateToGroupDefaultNotificationsPreferencesSettings() =
+    navigate(key = GroupDefaultNotificationsPreferencesSettingsNavKey)
 
-fun NavGraphBuilder.groupDefaultNotificationsPreferencesSettingsScreen(onBackClick: () -> Unit) =
-    composable<GroupDefaultNotificationsPreferencesSettingsRoute> {
+fun EntryProviderScope<NavKey>.groupDefaultNotificationsPreferencesSettingsEntry(onBackClick: () -> Unit) =
+    entry<GroupDefaultNotificationsPreferencesSettingsNavKey> {
         GroupDefaultNotificationsPreferencesSettingsScreen(
             onBackClick = onBackClick
         )

@@ -1,22 +1,21 @@
 package com.github.bumblebee202111.doubean.feature.groups.webView.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.groups.webView.WebViewScreen
+import com.github.bumblebee202111.doubean.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class WebViewRoute(
+data class WebViewNavKey(
     val url: String,
-)
+) : NavKey
 
-fun NavController.navigateToWebView(url: String) = navigate(route = WebViewRoute(url))
+fun Navigator.navigateToWebView(url: String) = navigate(key = WebViewNavKey(url))
 
-fun NavGraphBuilder.webViewScreen(onBackClick: () -> Unit) = composable<WebViewRoute> {
+fun EntryProviderScope<NavKey>.webViewEntry(onBackClick: () -> Unit) = entry<WebViewNavKey> { key ->
     WebViewScreen(
-        it.toRoute<WebViewRoute>().url,
+        key.url,
         onBackClick = onBackClick,
     )
 }

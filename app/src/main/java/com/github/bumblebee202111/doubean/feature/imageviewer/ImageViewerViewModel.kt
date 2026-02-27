@@ -1,26 +1,23 @@
 package com.github.bumblebee202111.doubean.feature.imageviewer
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.data.repository.ImageRepository
-import com.github.bumblebee202111.doubean.feature.imageviewer.navigation.ImageViewerRoute
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.model.toUiMessage
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class ImageViewerViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = ImageViewerViewModel.Factory::class)
+class ImageViewerViewModel @AssistedInject constructor(
     private val imageRepository: ImageRepository,
-    savedStateHandle: SavedStateHandle,
     private val snackbarManager: SnackbarManager,
+    @Assisted val imageUrl: String,
 ) : ViewModel() {
-    val imageUrl = savedStateHandle.toRoute<ImageViewerRoute>().imageUrl
-
     fun saveImage() {
         viewModelScope.launch {
             imageRepository.saveImage(imageUrl)
@@ -35,5 +32,10 @@ class ImageViewerViewModel @Inject constructor(
                     )
                 }
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(imageUrl: String): ImageViewerViewModel
     }
 }

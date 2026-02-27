@@ -38,11 +38,8 @@ import com.github.bumblebee202111.doubean.model.auth.LoginResult
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 
-const val LOGIN_SUCCESSFUL: String = "LOGIN_SUCCESSFUL"
-
 @Composable
 fun LoginScreen(
-    onSaveIsLoginSuccessSuccessfulChange: (Boolean) -> Unit,
     onBackClick: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel(),
     onOpenDeepLinkUrl: (url: String) -> Boolean,
@@ -68,7 +65,6 @@ fun LoginScreen(
         onSubmitSessionPreference = viewModel::loginWithDoubanSession,
         login = viewModel::login,
         clearSolutionUri = viewModel::clearSolutionUri,
-        onSaveIsLoginSuccessSuccessfulChange = onSaveIsLoginSuccessSuccessfulChange,
         onPopBackStack = onBackClick,
         onOpenDeepLinkUrl = onOpenDeepLinkUrl
     )
@@ -89,7 +85,6 @@ fun LoginScreen(
     onSubmitSessionPreference: (sessionPref: String) -> Unit,
     login: () -> Unit,
     clearSolutionUri: () -> Unit,
-    onSaveIsLoginSuccessSuccessfulChange: (Boolean) -> Unit,
     onPopBackStack: () -> Unit,
     onOpenDeepLinkUrl: (url: String) -> Boolean,
 ) {
@@ -97,7 +92,6 @@ fun LoginScreen(
     LaunchedEffect(loginResult) {
         when (loginResult) {
             is LoginResult.Success -> {
-                onSaveIsLoginSuccessSuccessfulChange(true)
                 onPopBackStack()
             }
             else -> Unit

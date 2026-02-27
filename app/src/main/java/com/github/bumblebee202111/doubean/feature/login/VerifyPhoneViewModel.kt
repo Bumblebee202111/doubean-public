@@ -1,11 +1,8 @@
 package com.github.bumblebee202111.doubean.feature.login
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
-import com.github.bumblebee202111.doubean.feature.login.navigation.VerifyPhoneRoute
 import com.github.bumblebee202111.doubean.model.AppError
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.auth.CaptchaSolution
@@ -14,6 +11,9 @@ import com.github.bumblebee202111.doubean.model.auth.VerifyPhoneCodeResult
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.model.toUiMessage
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -24,14 +24,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
-class VerifyPhoneViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = VerifyPhoneViewModel.Factory::class)
+class VerifyPhoneViewModel @AssistedInject constructor(
     private val authRepository: AuthRepository,
-    savedStateHandle: SavedStateHandle,
     private val snackbarManager: SnackbarManager,
+    @Assisted val userId: String,
 ) : ViewModel() {
-
-    private val userId = savedStateHandle.toRoute<VerifyPhoneRoute>().userId
 
     private val _uiState = MutableStateFlow<VerifyPhoneMainUiState>(
         VerifyPhoneMainUiState.Active()
@@ -181,5 +179,10 @@ class VerifyPhoneViewModel @Inject constructor(
             isVerifyingCode = false,
             error = error
         )
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(userId: String): VerifyPhoneViewModel
     }
 }

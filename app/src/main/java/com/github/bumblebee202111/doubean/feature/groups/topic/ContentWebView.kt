@@ -42,7 +42,7 @@ fun ContentWebView(
     html: String,
     onImageClick: (String) -> Unit,
     displayInvalidImageUrl: () -> Unit,
-    onOpenDeepLinkUrl: (String, Boolean) -> Boolean,
+    onOpenDeepLinkUrl: (String) -> Boolean,
 ) {
     val context = LocalContext.current
     val appAndDeviceInfoProvider = remember {
@@ -114,11 +114,11 @@ private const val CONTENT_WEB_VIEW_TAG = "ContentWebView"
 private fun handleUrlLoading(
     context: Context,
     url: String,
-    onOpenDeepLinkUrl: (String, Boolean) -> Boolean,
+    onOpenDeepLinkUrl: (String) -> Boolean,
 ): Boolean {
     Log.d(CONTENT_WEB_VIEW_TAG, "Handling URL: $url")
 
-    if (onOpenDeepLinkUrl(url, false)) {
+    if (onOpenDeepLinkUrl(url)) {
         Log.i(CONTENT_WEB_VIEW_TAG, "Internal navigation initiated for: $url")
         return true
     } else {

@@ -1,21 +1,25 @@
 package com.github.bumblebee202111.doubean.feature.groups.resharestatuses
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.repository.GroupTopicRepository
-import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.ReshareStatusesRoute
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-@HiltViewModel
-class ReshareStatusesViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = ReshareStatusesViewModel.Factory::class)
+class ReshareStatusesViewModel @AssistedInject constructor(
     groupTopicRepository: GroupTopicRepository,
-    savedStateHandle: SavedStateHandle,
+    @Assisted val topicId: String,
 ) : ViewModel() {
-    private val topicId = savedStateHandle.toRoute<ReshareStatusesRoute>().topicId
     val reshareStatusesPagingData =
         groupTopicRepository.getTopicReshareStatusesPagingData(topicId).cachedIn(viewModelScope)
+
+    @AssistedFactory
+    interface Factory {
+        fun create(topicId: String): ReshareStatusesViewModel
+    }
 }

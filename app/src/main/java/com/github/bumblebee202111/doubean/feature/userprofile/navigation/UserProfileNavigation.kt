@@ -1,28 +1,35 @@
 package com.github.bumblebee202111.doubean.feature.userprofile.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.userprofile.UserProfileScreen
+import com.github.bumblebee202111.doubean.feature.userprofile.UserProfileViewModel
+import com.github.bumblebee202111.doubean.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserProfileRoute(val userId: String? = null)
+data class UserProfileNavKey(val userId: String? = null) : NavKey
 
-fun NavGraphBuilder.userProfileScreen(
+fun EntryProviderScope<NavKey>.userProfileEntry(
     onStatItemUriClick: (uri: String) -> Boolean,
     onBackClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
 ) =
-    composable<UserProfileRoute> {
+    entry<UserProfileNavKey> { key ->
         UserProfileScreen(
             onStatItemUriClick = onStatItemUriClick,
             onBackClick = onBackClick,
             onSettingsClick = onSettingsClick,
-            onLoginClick = onLoginClick
+            onLoginClick = onLoginClick,
+            viewModel = hiltViewModel<UserProfileViewModel, UserProfileViewModel.Factory>(
+                creationCallback = { factory ->
+                    factory.create(key.userId)
+                }
+            )
         )
     }
 
-fun NavController.navigateToUserProfile(userId: String? = null) =
-    navigate(route = UserProfileRoute(userId))
+fun Navigator.navigateToUserProfile(userId: String? = null) =
+    navigate(key = UserProfileNavKey(userId))

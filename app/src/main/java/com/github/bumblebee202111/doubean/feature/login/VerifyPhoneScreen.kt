@@ -42,7 +42,7 @@ import com.google.accompanist.web.LoadingState
 fun VerifyPhoneScreen(
     onBackClick: () -> Unit,
     onSuccess: () -> Unit,
-    viewModel: VerifyPhoneViewModel = hiltViewModel(),
+    viewModel: VerifyPhoneViewModel,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     VerifyPhoneScreen(

@@ -1,23 +1,21 @@
 package com.github.bumblebee202111.doubean.feature.login.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.login.LoginScreen
+import com.github.bumblebee202111.doubean.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object LoginRoute
+data object LoginNavKey : NavKey
 
-fun NavController.navigateToLogin() = navigate(route = LoginRoute)
+fun Navigator.navigateToLogin() = navigate(key = LoginNavKey)
 
-fun NavGraphBuilder.loginScreen(
-    onSaveIsLoginSuccessSuccessfulChange: (Boolean) -> Unit,
+fun EntryProviderScope<NavKey>.loginEntry(
     onPopBackStack: () -> Unit,
     onOpenDeepLinkUrl: (url: String) -> Boolean,
-) = composable<LoginRoute> {
+) = entry<LoginNavKey> {
     LoginScreen(
-        onSaveIsLoginSuccessSuccessfulChange = onSaveIsLoginSuccessSuccessfulChange,
         onBackClick = onPopBackStack,
         onOpenDeepLinkUrl = onOpenDeepLinkUrl
     )

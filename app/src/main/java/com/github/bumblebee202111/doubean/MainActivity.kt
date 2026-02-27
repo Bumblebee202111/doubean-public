@@ -11,13 +11,14 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation3.runtime.NavKey
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
+import com.github.bumblebee202111.doubean.navigation.toNavKeyOrNull
 import com.github.bumblebee202111.doubean.ui.DoubeanApp
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.theme.DoubeanTheme
@@ -55,14 +56,16 @@ class MainActivity : ComponentActivity() {
             window.isNavigationBarContrastEnforced = false
         }
 
+        val initialDeepLinkKey: NavKey? = intent.data?.toString()?.toNavKeyOrNull()
+
         setContent {
             DoubeanTheme {
                 val startAppWithGroups by mainActivityViewModel.startAppWithGroups.collectAsStateWithLifecycle()
                 startAppWithGroups?.let {
                     DoubeanApp(
-                        navController = rememberNavController(),
                         snackbarManager = snackbarManager,
-                        startWithGroups = it
+                        startWithGroups = it,
+                        initialDeepLinkKey = initialDeepLinkKey
                     )
                 }
             }

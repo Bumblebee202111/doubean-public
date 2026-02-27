@@ -1,21 +1,21 @@
 package com.github.bumblebee202111.doubean.feature.settings.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.settings.SettingsScreen
+import com.github.bumblebee202111.doubean.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object SettingsRoute
+data object SettingsNavKey : NavKey
 
-fun NavController.navigateToSettings() = navigate(route = SettingsRoute)
+fun Navigator.navigateToSettings() = navigate(key = SettingsNavKey)
 
-fun NavGraphBuilder.settingsScreen(
+fun EntryProviderScope<NavKey>.settingsEntry(
     onBackClick: () -> Unit,
     onGroupDefaultNotificationsPreferencesSettingsClick: () -> Unit,
     onLoginClick: () -> Unit,
-) = composable<SettingsRoute> {
+) = entry<SettingsNavKey> {
     SettingsScreen(
         onBackClick = onBackClick,
         onGroupDefaultNotificationsPreferencesSettingsClick =

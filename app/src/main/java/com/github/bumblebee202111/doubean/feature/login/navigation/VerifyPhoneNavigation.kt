@@ -1,30 +1,30 @@
 package com.github.bumblebee202111.doubean.feature.login.navigation
 
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import androidx.navigation.navDeepLink
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.login.VerifyPhoneScreen
+import com.github.bumblebee202111.doubean.feature.login.VerifyPhoneViewModel
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class VerifyPhoneRoute(
+data class VerifyPhoneNavKey(
+    @SerialName("user_id")
     val userId: String,
-)
+) : NavKey
 
-fun NavGraphBuilder.verifyPhoneScreen(
+fun EntryProviderScope<NavKey>.verifyPhoneEntry(
     onBackClick: () -> Unit,
     onSuccess: () -> Unit,
-) = composable<VerifyPhoneRoute>(
-    deepLinks =
-    listOf(
-        navDeepLink {
-            uriPattern = "douban:
-        }
-    )
-
-) {
+) = entry<VerifyPhoneNavKey> { key ->
     VerifyPhoneScreen(
         onBackClick = onBackClick,
-        onSuccess = onSuccess
+        onSuccess = onSuccess,
+        viewModel = hiltViewModel<VerifyPhoneViewModel, VerifyPhoneViewModel.Factory>(
+            creationCallback = { factory ->
+                factory.create(userId = key.userId)
+            }
+        )
     )
 }

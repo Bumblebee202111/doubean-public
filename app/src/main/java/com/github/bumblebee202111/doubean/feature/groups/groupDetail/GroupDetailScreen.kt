@@ -84,7 +84,7 @@ fun GroupDetailScreen(
     onBackClick: () -> Unit,
     onTopicClick: (topicId: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
-    viewModel: GroupDetailViewModel = hiltViewModel(),
+    viewModel: GroupDetailViewModel,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val initialTabId: String? = viewModel.initialTabId

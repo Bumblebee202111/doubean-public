@@ -1,16 +1,16 @@
 package com.github.bumblebee202111.doubean.feature.doulists.createddoulists
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.UserDouListRepository
-import com.github.bumblebee202111.doubean.feature.doulists.createddoulists.navigation.CreatedDouListsRoute
 import com.github.bumblebee202111.doubean.feature.doulists.userdoulists.UserDouListsUiState
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,15 +19,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
-class CreatedDouListsViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = CreatedDouListsViewModel.Factory::class)
+class CreatedDouListsViewModel @AssistedInject constructor(
     private val userDouListRepository: UserDouListRepository,
     private val authRepository: AuthRepository,
     private val snackbarManager: SnackbarManager,
-    savedStateHandle: SavedStateHandle,
+    @Assisted val userId: String,
 ) : ViewModel() {
-    val routeArgs: CreatedDouListsRoute = savedStateHandle.toRoute()
-    val userId = routeArgs.userId
 
     private val _uiState = MutableStateFlow<UserDouListsUiState>(UserDouListsUiState.Loading)
     val uiState: StateFlow<UserDouListsUiState> = _uiState.asStateFlow()
@@ -62,5 +60,10 @@ class CreatedDouListsViewModel @Inject constructor(
 
     fun onRetry() {
         fetchCreatedDouLists()
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(userId: String): CreatedDouListsViewModel
     }
 }

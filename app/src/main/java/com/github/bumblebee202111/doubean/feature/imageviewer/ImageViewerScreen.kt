@@ -47,7 +47,7 @@ private const val ANIMATION_DURATION_MS = 300
 @Composable
 fun ImageViewerScreen(
     navigateUp: () -> Unit,
-    viewModel: ImageViewerViewModel = hiltViewModel(),
+    viewModel: ImageViewerViewModel,
 ) {
     ImageViewerScreen(
         imageUrl = viewModel.imageUrl,

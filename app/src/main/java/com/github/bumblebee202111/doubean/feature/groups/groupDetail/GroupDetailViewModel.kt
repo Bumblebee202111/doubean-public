@@ -1,19 +1,19 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupdetail
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.GroupRepository
 import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
-import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.GroupDetailRoute
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,18 +24,16 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-@HiltViewModel
-class GroupDetailViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = GroupDetailViewModel.Factory::class)
+class GroupDetailViewModel @AssistedInject constructor(
     private val groupRepository: GroupRepository,
     private val userGroupRepository: UserGroupRepository,
-    private val preferenceStorage: PreferenceStorage,
-    savedStateHandle: SavedStateHandle,
+    preferenceStorage: PreferenceStorage,
     private val snackBarManager: SnackbarManager,
+    @Assisted("groupId") val groupId: String,
+    @Assisted("initialTabId") val initialTabId: String?,
 ) : ViewModel() {
-    val groupId = savedStateHandle.toRoute<GroupDetailRoute>().groupId
-    val initialTabId = savedStateHandle.toRoute<GroupDetailRoute>().defaultTabId
     private val _uiState = MutableStateFlow(GroupDetailUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -162,5 +160,13 @@ class GroupDetailViewModel @Inject constructor(
             }
 
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            @Assisted("groupId") groupId: String,
+            @Assisted("initialTabId") initialTabId: String?,
+        ): GroupDetailViewModel
     }
 }

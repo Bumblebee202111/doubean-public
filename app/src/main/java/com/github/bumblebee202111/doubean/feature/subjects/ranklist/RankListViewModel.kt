@@ -1,15 +1,12 @@
 package com.github.bumblebee202111.doubean.feature.subjects.ranklist
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.SubjectCollectionRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
-import com.github.bumblebee202111.doubean.feature.subjects.ranklist.navigation.RankListRoute
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
@@ -17,6 +14,9 @@ import com.github.bumblebee202111.doubean.model.subjects.SubjectWithRankAndInter
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,17 +25,15 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class RankListViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = RankListViewModel.Factory::class)
+class RankListViewModel @AssistedInject constructor(
     private val subjectCollectionRepository: SubjectCollectionRepository,
     private val userSubjectRepository: UserSubjectRepository,
-    private val authRepository: AuthRepository,
-    savedStateHandle: SavedStateHandle,
+    authRepository: AuthRepository,
     private val snackbarManager: SnackbarManager,
+    @Assisted val collectionId: String,
 ) : ViewModel() {
-    private val collectionId = savedStateHandle.toRoute<RankListRoute>().collectionId
 
     private val retryTrigger = MutableStateFlow(0)
 
@@ -107,5 +105,10 @@ class RankListViewModel @Inject constructor(
 
     fun retry() {
         retryTrigger.value++
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(collectionId: String): RankListViewModel
     }
 }

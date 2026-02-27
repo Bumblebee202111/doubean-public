@@ -4,10 +4,8 @@ package com.github.bumblebee202111.doubean.feature.groups.topic
 
 import android.util.Log
 import androidx.core.text.htmlEncode
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.DouListRepository
@@ -15,7 +13,6 @@ import com.github.bumblebee202111.doubean.data.repository.GroupTopicRepository
 import com.github.bumblebee202111.doubean.data.repository.ItemDouListRepository
 import com.github.bumblebee202111.doubean.data.repository.PollRepository
 import com.github.bumblebee202111.doubean.feature.common.CollectionHandler
-import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.TopicRoute
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.model.common.CollectType
@@ -32,6 +29,9 @@ import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.model.toUiMessage
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,20 +44,17 @@ import kotlinx.coroutines.launch
 import java.math.RoundingMode
 import javax.inject.Inject
 
-@HiltViewModel
-class TopicViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = TopicViewModel.Factory::class)
+class TopicViewModel @AssistedInject constructor(
     private val pollRepository: PollRepository,
     val authRepository: AuthRepository,
     private val topicRepository: GroupTopicRepository,
     itemDouListRepository: ItemDouListRepository,
     douListRepository: DouListRepository,
-    savedStateHandle: SavedStateHandle,
     private val snackbarManager: SnackbarManager,
+    @Assisted("topicId") val topicId: String,
+    @Assisted("spmId") val spmId: String?,
 ) : ViewModel() {
-
-    private val topicRoute = savedStateHandle.toRoute<TopicRoute>()
-    val topicId = topicRoute.topicId
-    val spmId = topicRoute.spmId
 
     private val _authorOnlyMode = MutableStateFlow(false)
     val authorOnlyMode = _authorOnlyMode.asStateFlow()
@@ -324,5 +321,13 @@ class TopicViewModel @Inject constructor(
     companion object {
         private val CONTENT_ENTITY_REGEX =
             "(<div data-entity-type=\"(poll|question)\" data-id=\"(\\d*)\">)<div class=\"(poll|question)-wrapper\"><div class=\"(poll|question)-title\"><span>[^<>]*</span></div></div>(</div>)".toRegex()
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            @Assisted("topicId") topicId: String,
+            @Assisted("spmId") spmId: String?,
+        ): TopicViewModel
     }
 }

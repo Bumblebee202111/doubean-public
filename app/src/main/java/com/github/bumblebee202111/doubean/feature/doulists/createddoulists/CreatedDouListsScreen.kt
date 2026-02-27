@@ -42,7 +42,7 @@ import com.github.bumblebee202111.doubean.ui.component.doubeanTopAppBarHeight
 fun CreatedDouListsScreen(
     onBackClick: () -> Unit,
     onDouListClick: (douListId: String) -> Unit,
-    viewModel: CreatedDouListsViewModel = hiltViewModel(),
+    viewModel: CreatedDouListsViewModel,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     CreatedDouListsScreen(

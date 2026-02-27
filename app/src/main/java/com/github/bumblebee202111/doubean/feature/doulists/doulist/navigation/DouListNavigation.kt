@@ -1,21 +1,22 @@
 package com.github.bumblebee202111.doubean.feature.doulists.doulist.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
-import androidx.navigation.compose.composable
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.doulists.doulist.DouListScreen
+import com.github.bumblebee202111.doubean.feature.doulists.doulist.DouListViewModel
+import com.github.bumblebee202111.doubean.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class DouListRoute(val douListId: String)
+data class DouListNavKey(val douListId: String) : NavKey
 
 
-fun NavController.navigateToDouList(douListId: String, navOptions: NavOptions? = null) {
-    this.navigate(route = DouListRoute(douListId = douListId), navOptions = navOptions)
+fun Navigator.navigateToDouList(douListId: String) {
+    this.navigate(key = DouListNavKey(douListId = douListId))
 }
 
-fun NavGraphBuilder.douListScreen(
+fun EntryProviderScope<NavKey>.douListEntry(
     onBackClick: () -> Unit,
     onTopicClick: (String) -> Unit,
     onBookClick: (String) -> Unit,
@@ -24,7 +25,7 @@ fun NavGraphBuilder.douListScreen(
     onUserClick: (String) -> Unit,
     onImageClick: (String) -> Unit,
 ) {
-    composable<DouListRoute> {
+    entry<DouListNavKey> {
         DouListScreen(
             onBackClick = onBackClick,
             onTopicClick = onTopicClick,
@@ -32,7 +33,12 @@ fun NavGraphBuilder.douListScreen(
             onMovieClick = onMovieClick,
             onTvClick = onTvClick,
             onUserClick = onUserClick,
-            onImageClick = onImageClick
+            onImageClick = onImageClick,
+            viewModel = hiltViewModel<DouListViewModel, DouListViewModel.Factory>(
+                creationCallback = { factory ->
+                    factory.create(it.douListId)
+                }
+            )
         )
     }
 

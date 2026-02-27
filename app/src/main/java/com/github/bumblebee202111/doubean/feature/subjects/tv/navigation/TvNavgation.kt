@@ -1,15 +1,16 @@
 package com.github.bumblebee202111.doubean.feature.subjects.tv.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.subjects.tv.TvScreen
+import com.github.bumblebee202111.doubean.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TvRoute(val tvId: String)
+data class TvNavKey(val tvId: String) : NavKey
 
-fun NavGraphBuilder.tvScreen(
+
+fun EntryProviderScope<NavKey>.tvEntry(
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onImageClick: (url: String) -> Unit,
@@ -18,7 +19,7 @@ fun NavGraphBuilder.tvScreen(
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
 ) {
-    composable<TvRoute> {
+    entry<TvNavKey> {
         TvScreen(
             onBackClick = onBackClick,
             onLoginClick = onLoginClick,
@@ -31,4 +32,4 @@ fun NavGraphBuilder.tvScreen(
     }
 }
 
-fun NavController.navigateToTv(tvId: String) = navigate(TvRoute(tvId))
+fun Navigator.navigateToTv(tvId: String) = navigate(TvNavKey(tvId))

@@ -1,15 +1,17 @@
 package com.github.bumblebee202111.doubean.feature.subjects.book.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.subjects.book.BookScreen
+import com.github.bumblebee202111.doubean.feature.subjects.book.BookViewModel
+import com.github.bumblebee202111.doubean.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BookRoute(val bookId: String)
+data class BookNavKey(val bookId: String) : NavKey
 
-fun NavGraphBuilder.bookScreen(
+fun EntryProviderScope<NavKey>.bookEntry(
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onImageClick: (url: String) -> Unit,
@@ -18,7 +20,7 @@ fun NavGraphBuilder.bookScreen(
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
 ) {
-    composable<BookRoute> {
+    entry<BookNavKey> { key ->
         BookScreen(
             onBackClick = onBackClick,
             onLoginClick = onLoginClick,
@@ -26,9 +28,14 @@ fun NavGraphBuilder.bookScreen(
             onUserClick = onUserClick,
             onMovieClick = onMovieClick,
             onTvClick = onTvClick,
-            onBookClick = onBookClick
+            onBookClick = onBookClick,
+            viewModel = hiltViewModel<BookViewModel, BookViewModel.Factory>(
+                creationCallback = { factory ->
+                    factory.create(key.bookId)
+                }
+            )
         )
     }
 }
 
-fun NavController.navigateToBook(bookId: String) = navigate(BookRoute(bookId))
+fun Navigator.navigateToBook(bookId: String) = navigate(BookNavKey(bookId))

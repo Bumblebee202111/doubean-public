@@ -78,7 +78,7 @@ fun TopicHeader(
     onGroupClick: (String, String?) -> Unit,
     onUserClick: (String) -> Unit,
     onReshareStatusesClick: (String) -> Unit,
-    onOpenDeepLinkUrl: (String, Boolean) -> Boolean,
+    onOpenDeepLinkUrl: (String) -> Boolean,
     displayInvalidImageUrl: () -> Unit,
     onReact: (Boolean) -> Unit,
     onCollectActionInitiated: () -> Unit,
