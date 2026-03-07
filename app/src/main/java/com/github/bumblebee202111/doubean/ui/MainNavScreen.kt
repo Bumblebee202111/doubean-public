@@ -1,5 +1,6 @@
 package com.github.bumblebee202111.doubean.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -92,6 +93,12 @@ fun MainNavScreen(
 
     val sceneStrategy = remember(bottomNavStrategy) {
         DialogSceneStrategy<NavKey>() then bottomNavStrategy
+    }
+
+    BackHandler(enabled = drawerState.isOpen) {
+        scope.launch {
+            drawerState.close()
+        }
     }
 
     ModalNavigationDrawer(
