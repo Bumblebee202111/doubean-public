@@ -3,6 +3,9 @@ Change Log
 
 ## Version 0.10.0-beta1
 
+- **Smoother Navigation:** Major under-the-hood rewrite (Navigation 3).
+- **Android 15 Ready:** Updated target SDK to 35.
+
 ## Version 0.9.21
 
 - Implemented lightweight trailer playback on the subject detail screen
