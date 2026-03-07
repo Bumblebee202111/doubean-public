@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -66,6 +67,27 @@ fun MainNavScreen(
         }
     }
 
+    val currentKey by remember {
+        derivedStateOf {
+            val currentStack = navigationState.backStacks[navigationState.topLevelRoute]
+            currentStack?.lastOrNull() ?: navigationState.topLevelRoute
+        }
+    }
+
+    val topLevelContentKeys = remember(topLevelRoutes) {
+        topLevelRoutes.map { it.toString() }.toSet()
+    }
+
+    val isTopLevel by remember {
+        derivedStateOf { currentKey.toString() in topLevelContentKeys }
+    }
+
+    LaunchedEffect(isTopLevel) {
+        if (!isTopLevel && drawerState.isOpen) {
+            drawerState.close()
+        }
+    }
+
     val bottomNavStrategy = remember(topLevelRoutes, navigator) {
         BottomNavSceneStrategy(topLevelRoutes, navigator)
     }
@@ -76,6 +98,7 @@ fun MainNavScreen(
 
     ModalNavigationDrawer(
         drawerState = drawerState,
+        gesturesEnabled = isTopLevel, 
         drawerContent = {
             NavigationDrawerSheet(
                 currentUser = currentUser,
