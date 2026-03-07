@@ -1,10 +1,8 @@
 package com.github.bumblebee202111.doubean.navigation
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -23,6 +21,7 @@ class BottomNavScene(
     val entry: NavEntry<NavKey>,
     override val previousEntries: List<NavEntry<NavKey>>,
     val navigator: Navigator,
+    val topLevelDestinations: List<TopLevelDestination>,
 ) : Scene<NavKey> {
 
     override val key: Any = "BottomNavSceneKey"
@@ -36,7 +35,7 @@ class BottomNavScene(
             }
 
             NavigationBar {
-                TopLevelDestination.entries.forEach { destination ->
+                topLevelDestinations.forEach { destination ->
                     NavigationBarItem(
                         icon = { Icon(destination.iconVector, contentDescription = null) },
                         label = { Text(stringResource(destination.labelResId)) },
@@ -51,7 +50,8 @@ class BottomNavScene(
 
 
 class BottomNavSceneStrategy(
-    topLevelRoutes: Set<NavKey>,
+    private val topLevelRoutes: Set<NavKey>,
+    private val topLevelDestinations: List<TopLevelDestination>,
     private val navigator: Navigator,
 ) : SceneStrategy<NavKey> {
 
@@ -60,14 +60,14 @@ class BottomNavSceneStrategy(
     override fun SceneStrategyScope<NavKey>.calculateScene(entries: List<NavEntry<NavKey>>): Scene<NavKey>? {
         val currentEntry = entries.lastOrNull() ?: return null
 
-        
         val isTopLevel = currentEntry.contentKey in topLevelContentKeys
 
         if (isTopLevel) {
             return BottomNavScene(
                 entry = currentEntry,
                 previousEntries = entries.dropLast(1),
-                navigator = navigator
+                navigator = navigator,
+                topLevelDestinations = topLevelDestinations
             )
         }
 

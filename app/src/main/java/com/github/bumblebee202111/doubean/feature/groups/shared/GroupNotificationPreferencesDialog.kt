@@ -62,12 +62,12 @@ fun GroupNotificationPreferencesDialog(
             TextButton(onClick = {
                 onConfirmation(preferences)
             }) {
-                Text(stringResource(id = R.string.save))
+                Text(stringResource(id = R.string.action_save))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text(stringResource(id = R.string.cancel_button))
+                Text(stringResource(id = R.string.action_cancel))
             }
         },
         title = { Text(text = stringResource(id = titleTextResId)) },

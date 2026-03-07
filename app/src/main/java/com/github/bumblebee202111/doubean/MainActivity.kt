@@ -18,6 +18,7 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
+import com.github.bumblebee202111.doubean.navigation.TopLevelDestination
 import com.github.bumblebee202111.doubean.navigation.toNavKeyOrNull
 import com.github.bumblebee202111.doubean.ui.DoubeanApp
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
@@ -59,13 +60,22 @@ class MainActivity : ComponentActivity() {
         val initialDeepLinkKey: NavKey? = intent.data?.toString()?.toNavKeyOrNull()
 
         setContent {
-            val startAppWithGroups by viewModel.startAppWithGroups.collectAsStateWithLifecycle()
-            val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
             DoubeanTheme {
-                startAppWithGroups?.let {
+                val startupTabName by viewModel.startupTab.collectAsStateWithLifecycle()
+                val visibleTabNames by viewModel.visibleTabs.collectAsStateWithLifecycle()
+                val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
+                if (startupTabName != null && visibleTabNames != null) {
+                    val topLevelDestinations =
+                        TopLevelDestination.entries.filter { it.name in visibleTabNames!! }
+
+                    val startRoute =
+                        TopLevelDestination.entries.find { it.name == startupTabName }?.route
+                            ?: topLevelDestinations.first().route
+
                     DoubeanApp(
                         snackbarManager = snackbarManager,
-                        startWithGroups = it,
+                        startRoute = startRoute as NavKey,
+                        topLevelDestinations = topLevelDestinations,
                         currentUser = currentUser,
                         initialDeepLinkKey = initialDeepLinkKey
                     )

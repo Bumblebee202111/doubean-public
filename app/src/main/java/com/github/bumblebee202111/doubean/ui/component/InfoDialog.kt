@@ -20,7 +20,7 @@ fun InfoDialog(
         text = { Text(text) },
         confirmButton = {
             TextButton(onClick = onDismissRequest) {
-                Text(stringResource(R.string.ok_button))
+                Text(stringResource(R.string.action_ok))
             }
         }
     )

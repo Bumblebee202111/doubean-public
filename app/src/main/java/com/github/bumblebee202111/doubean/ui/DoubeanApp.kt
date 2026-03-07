@@ -19,10 +19,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.GroupDetailNavKey
-import com.github.bumblebee202111.doubean.feature.groups.home.navigation.GroupsHomeNavKey
 import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.ReshareStatusesNavKey
 import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.TopicNavKey
-import com.github.bumblebee202111.doubean.feature.subjects.navigation.SubjectsNavKey
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.UserProfileNavKey
 import com.github.bumblebee202111.doubean.model.fangorns.User
 import com.github.bumblebee202111.doubean.navigation.Navigator
@@ -34,20 +32,22 @@ import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 @Composable
 fun DoubeanApp(
     snackbarManager: SnackbarManager,
-    startWithGroups: Boolean,
+    startRoute: NavKey,
+    topLevelDestinations: List<TopLevelDestination>,
     currentUser: User?,
     initialDeepLinkKey: NavKey? = null,
-
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val topLevelRoutes = remember { TopLevelDestination.entries.map { it.route as NavKey }.toSet() }
-    val startRoute = if (startWithGroups) GroupsHomeNavKey else SubjectsNavKey
+    val topLevelRoutes = remember(topLevelDestinations) {
+        topLevelDestinations.map { it.route as NavKey }.toSet()
+    }
 
     val navigationState = rememberNavigationState(
         startRoute = startRoute,
         topLevelRoutes = topLevelRoutes
     )
+
     val navigator = remember { Navigator(navigationState) }
 
     val currentKey by remember {
@@ -87,6 +87,7 @@ fun DoubeanApp(
         MainNavScreen(
             navigationState = navigationState,
             navigator = navigator,
+            topLevelDestinations = topLevelDestinations,
             topLevelRoutes = topLevelRoutes,
             initialDeepLinkKey = initialDeepLinkKey,
             currentUser = currentUser,

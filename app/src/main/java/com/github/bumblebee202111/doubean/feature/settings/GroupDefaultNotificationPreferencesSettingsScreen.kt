@@ -190,12 +190,12 @@ private fun MaxTopicNotificationsPerFetchDialog(
                     onDismiss()
                 }
             ) {
-                Text(stringResource(R.string.save))
+                Text(stringResource(R.string.action_save))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.cancel_button))
+                Text(stringResource(R.string.action_cancel))
             }
         }
     )

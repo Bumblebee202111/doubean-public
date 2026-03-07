@@ -17,7 +17,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,8 +33,8 @@ class MainActivityViewModel @Inject constructor(
     val enableNotifications =
         preferenceStorage.preferToReceiveNotifications.flowOn(ioDispatcher).stateInUi()
 
-    val startAppWithGroups =
-        preferenceStorage.startAppWithGroups.flowOn(ioDispatcher).take(1).stateInUi()
+    val startupTab = preferenceStorage.startupTab.stateInUi()
+    val visibleTabs = preferenceStorage.visibleTabs.stateInUi()
 
     val autoImportSessionAtStartup =
         preferenceStorage.preferToAutoImportSessionAtStartup.stateInUi()

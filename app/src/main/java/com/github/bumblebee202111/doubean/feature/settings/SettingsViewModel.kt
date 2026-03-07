@@ -6,8 +6,6 @@ import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,9 +16,9 @@ class SettingsViewModel @Inject constructor(
 ) :
     ViewModel() {
     val enableNotifications =
-        preferenceStorage.preferToReceiveNotifications.flowOn(Dispatchers.IO).stateInUi()
-    val startAppWithGroups =
-        preferenceStorage.startAppWithGroups.flowOn(Dispatchers.IO).stateInUi()
+        preferenceStorage.preferToReceiveNotifications.stateInUi()
+    val startupTab = preferenceStorage.startupTab.stateInUi()
+    val visibleTabs = preferenceStorage.visibleTabs.stateInUi()
     val autoImportSessionAtStartup =
         preferenceStorage.preferToAutoImportSessionAtStartup.stateInUi()
     val isLoggedIn = authRepository.isLoggedIn().stateInUi()
@@ -31,10 +29,12 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun toggleSetGroupsAsStartDestination() {
-        viewModelScope.launch {
-            preferenceStorage.setStartAppWithGroups(!startAppWithGroups.value!!)
-        }
+    fun setStartupTab(tabName: String) {
+        viewModelScope.launch { preferenceStorage.setStartupTab(tabName) }
+    }
+
+    fun setVisibleTabs(tabs: Set<String>) {
+        viewModelScope.launch { preferenceStorage.setVisibleTabs(tabs) }
     }
 
     fun toggleAutoImportSessionAtStartup() {

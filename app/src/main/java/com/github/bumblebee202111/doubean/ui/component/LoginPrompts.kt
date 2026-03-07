@@ -92,7 +92,7 @@ fun LoginPromptDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text(stringResource(R.string.cancel_button))
+                Text(stringResource(R.string.action_cancel))
             }
         }
     )

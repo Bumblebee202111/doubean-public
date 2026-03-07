@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_ACCESS_TOKEN
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_AUTO_IMPORT_SESSION_AT_STARTUP
@@ -20,11 +21,11 @@ import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.Preferenc
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_LAST_REFRESH_TIME
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_RECEIVE_NOTIFICATIONS
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_REFRESH_TOKEN
-import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_START_APP_WITH_GROUPS
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_UDID
 import com.github.bumblebee202111.doubean.data.repository.DoubanPrefCurrentAccountInfo
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
+import com.github.bumblebee202111.doubean.navigation.TopLevelDestination
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
@@ -44,10 +45,10 @@ class PreferenceStorage(
 
     object PreferencesKeys {
         val PREF_RECEIVE_NOTIFICATIONS = booleanPreferencesKey("pref_receive_notifications")
-        val PREF_START_APP_WITH_GROUPS = booleanPreferencesKey("pref_start_app_with_groups")
+        val PREF_STARTUP_TAB = stringPreferencesKey("pref_startup_tab")
+        val PREF_VISIBLE_TABS = stringSetPreferencesKey("pref_visible_tabs")
         val PREF_AUTO_IMPORT_SESSION_AT_STARTUP =
             booleanPreferencesKey("pref_auto_import_session_at_startup")
-
         val PREF_GROUP_NOTIFICATIONS_NOTIFY_ON_UPDATES =
             booleanPreferencesKey("group_notifications_default_notify_on_updates")
         val PREF_GROUP_NOTIFICATIONS_DEFAULT_SORT_BY =
@@ -83,14 +84,28 @@ class PreferenceStorage(
         it[PREF_RECEIVE_NOTIFICATIONS] ?: false
     }
 
-    suspend fun setStartAppWithGroups(startAppWithGroups: Boolean) {
-        dataStore.edit {
-            it[PREF_START_APP_WITH_GROUPS] = startAppWithGroups
-        }
+    val startupTab = dataStore.data.map {
+        it[PreferencesKeys.PREF_STARTUP_TAB] ?: TopLevelDestination.Subjects.name
     }
 
-    val startAppWithGroups = dataStore.data.map {
-        it[PREF_START_APP_WITH_GROUPS] ?: false
+    suspend fun setStartupTab(tabName: String) {
+        dataStore.edit { it[PreferencesKeys.PREF_STARTUP_TAB] = tabName }
+    }
+
+    val visibleTabs = dataStore.data.map {
+        it[PreferencesKeys.PREF_VISIBLE_TABS] ?: TopLevelDestination.entries.map { e -> e.name }
+            .toSet()
+    }
+
+    suspend fun setVisibleTabs(tabs: Set<String>) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.PREF_VISIBLE_TABS] = tabs
+            val currentStartup =
+                preferences[PreferencesKeys.PREF_STARTUP_TAB] ?: TopLevelDestination.Subjects.name
+            if (currentStartup !in tabs) {
+                preferences[PreferencesKeys.PREF_STARTUP_TAB] = TopLevelDestination.Me.name
+            }
+        }
     }
 
     val defaultGroupNotificationPreferences = dataStore.data.map { p ->

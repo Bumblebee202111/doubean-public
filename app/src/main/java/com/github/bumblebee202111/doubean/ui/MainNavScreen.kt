@@ -40,6 +40,7 @@ import com.github.bumblebee202111.doubean.model.fangorns.User
 import com.github.bumblebee202111.doubean.navigation.BottomNavSceneStrategy
 import com.github.bumblebee202111.doubean.navigation.NavigationState
 import com.github.bumblebee202111.doubean.navigation.Navigator
+import com.github.bumblebee202111.doubean.navigation.TopLevelDestination
 import com.github.bumblebee202111.doubean.navigation.UserDrawerHeader
 import com.github.bumblebee202111.doubean.navigation.createDoubeanEntryProvider
 import com.github.bumblebee202111.doubean.navigation.toEntries
@@ -49,6 +50,7 @@ import kotlinx.coroutines.launch
 fun MainNavScreen(
     navigationState: NavigationState,
     navigator: Navigator,
+    topLevelDestinations: List<TopLevelDestination>,
     topLevelRoutes: Set<NavKey>,
     modifier: Modifier = Modifier,
     initialDeepLinkKey: NavKey? = null,
@@ -84,8 +86,8 @@ fun MainNavScreen(
         }
     }
 
-    val bottomNavStrategy = remember(topLevelRoutes, navigator) {
-        BottomNavSceneStrategy(topLevelRoutes, navigator)
+    val bottomNavStrategy = remember(topLevelRoutes, navigator, topLevelDestinations) {
+        BottomNavSceneStrategy(topLevelRoutes, topLevelDestinations, navigator)
     }
 
     val sceneStrategy = remember(bottomNavStrategy) {
