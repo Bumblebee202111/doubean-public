@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var authRepository: AuthRepository
 
-    private val mainActivityViewModel: MainActivityViewModel by viewModels()
+    private val viewModel: MainActivityViewModel by viewModels()
 
     @Inject
     lateinit var snackbarManager: SnackbarManager
@@ -59,12 +59,14 @@ class MainActivity : ComponentActivity() {
         val initialDeepLinkKey: NavKey? = intent.data?.toString()?.toNavKeyOrNull()
 
         setContent {
+            val startAppWithGroups by viewModel.startAppWithGroups.collectAsStateWithLifecycle()
+            val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
             DoubeanTheme {
-                val startAppWithGroups by mainActivityViewModel.startAppWithGroups.collectAsStateWithLifecycle()
                 startAppWithGroups?.let {
                     DoubeanApp(
                         snackbarManager = snackbarManager,
                         startWithGroups = it,
+                        currentUser = currentUser,
                         initialDeepLinkKey = initialDeepLinkKey
                     )
                 }
@@ -74,7 +76,7 @@ class MainActivity : ComponentActivity() {
         setupWorkManager()
 
         lifecycleScope.launch {
-            mainActivityViewModel.autoImportSessionAtStartup.take(1).collect {
+            viewModel.autoImportSessionAtStartup.take(1).collect {
                 if (it == true) {
                     syncDoubanSession()
                 }
@@ -101,7 +103,7 @@ class MainActivity : ComponentActivity() {
             ).setConstraints(constraints).build()
 
         lifecycleScope.launch {
-            mainActivityViewModel.enableNotifications.collect { enableNotifications ->
+            viewModel.enableNotifications.collect { enableNotifications ->
                 when (enableNotifications) {
                     true -> {
                         workManager.enqueueUniquePeriodicWork(

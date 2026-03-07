@@ -28,12 +28,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.scene.DialogSceneStrategy
 import androidx.navigation3.ui.NavDisplay
-import com.github.bumblebee202111.doubean.MainActivityViewModel
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.login.navigation.navigateToLogin
 import com.github.bumblebee202111.doubean.feature.mydoulists.navigation.navigateToMyDouLists
@@ -55,9 +52,8 @@ fun MainNavScreen(
     topLevelRoutes: Set<NavKey>,
     modifier: Modifier = Modifier,
     initialDeepLinkKey: NavKey? = null,
-    viewModel: MainActivityViewModel = hiltViewModel(),
+    currentUser: User?,
 ) {
-    val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -98,14 +94,14 @@ fun MainNavScreen(
 
     ModalNavigationDrawer(
         drawerState = drawerState,
-        gesturesEnabled = isTopLevel, 
+        gesturesEnabled = isTopLevel,
         drawerContent = {
             NavigationDrawerSheet(
                 currentUser = currentUser,
                 onHeaderClick = {
                     scope.launch { drawerState.close() }
                     if (currentUser != null) {
-                        navigator.navigateToUserProfile(currentUser!!.uid)
+                        navigator.navigateToUserProfile(currentUser.uid)
                     } else {
                         navigator.navigateToLogin()
                     }

@@ -24,6 +24,7 @@ import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigat
 import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.TopicNavKey
 import com.github.bumblebee202111.doubean.feature.subjects.navigation.SubjectsNavKey
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.UserProfileNavKey
+import com.github.bumblebee202111.doubean.model.fangorns.User
 import com.github.bumblebee202111.doubean.navigation.Navigator
 import com.github.bumblebee202111.doubean.navigation.TopLevelDestination
 import com.github.bumblebee202111.doubean.navigation.rememberNavigationState
@@ -34,7 +35,9 @@ import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 fun DoubeanApp(
     snackbarManager: SnackbarManager,
     startWithGroups: Boolean,
+    currentUser: User?,
     initialDeepLinkKey: NavKey? = null,
+
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -86,6 +89,7 @@ fun DoubeanApp(
             navigator = navigator,
             topLevelRoutes = topLevelRoutes,
             initialDeepLinkKey = initialDeepLinkKey,
+            currentUser = currentUser,
             modifier = Modifier.fillMaxSize()
         )
 
