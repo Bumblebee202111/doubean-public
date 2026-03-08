@@ -8,8 +8,7 @@ Change Log
   Resolves https://github.com/Bumblebee202111/doubean-public/issues/16)
 - **Fix:** Pressing the system "Back" button now correctly closes the side menu instead of
   navigating away from the current screen.
-- **Fix:** Downgraded Material 3 to resolve a library regression that caused the subject reviews
-  bottom sheet to initially open fully expanded.
+- **Fix:** Subject reviews sheet being initially fully expanded (Regression).
 
 ## Version 0.10.0-beta1
 
