@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+## Version 0.10.0-beta2
+
+- **Feature:** Added bottom navigation customization. You can now hide unused tabs and select your
+  default startup tab in Settings. (
+  Resolves https://github.com/Bumblebee202111/doubean-public/issues/16)
+- **Fix:** Pressing the system "Back" button now correctly closes the side menu instead of
+  navigating away from the current screen.
+- **Fix:** Downgraded Material 3 to resolve a library regression that caused the subject reviews
+  bottom sheet to initially open fully expanded.
+
 ## Version 0.10.0-beta1
 
 - **Smoother Navigation:** Major under-the-hood rewrite (Navigation 3).

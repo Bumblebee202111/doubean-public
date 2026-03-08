@@ -123,7 +123,7 @@ personal tracking.
     - Tabbed search results
   - New web-based feed for *all* followed topics
     - Toggleable "My Group Topics" section on the home screen
-      - Currently use tabbed but incomplete recent topics via API
+      - Currently use tagged but incomplete recent topics via API
     - Sort by creation time or "Hotness" (replies + 1 / time)
     - Notification engine with customizable intervals (15m, 30m, 1h)
     - Per-group settings for sort preference and check depth (with a UI hint suggesting small values for active groups)
