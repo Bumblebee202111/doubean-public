@@ -4,8 +4,8 @@ doubean
 An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and exploring Subjects (Books/Movies/TVs)
 ([豆瓣][douban]非官方app，支持[小组][douban-groups]浏览和书影探索)
 
-**Disclaimer:** This is a continuously evolving project focused on core features using Jetpack Compose. Some features
-are works in progress (WIP), and you may encounter bugs.
+**Disclaimer:** This is a continuously evolving project focused on core features using Jetpack
+Compose. Some features are works in progress (WIP), and you may encounter bugs.
 
 [douban]: https://www.douban.com/
 [douban-groups]: https://www.douban.com/group/
@@ -36,6 +36,7 @@ are works in progress (WIP), and you may encounter bugs.
   - My Doulists: Collected items + Doulists
 - General:
   - Ad-free and lightweight (~3MB)
+  - Customizable bottom navigation (hide tabs & set startup tab)
   - Login support & session reuse (advanced, root required)
   - Partial deep linking
   - Direct official API calls
@@ -75,17 +76,19 @@ This repository contains a curated subset of code from a private project. It is 
 ## Tech Stack
 
 - [Foundation][foundation]: [Android KTX][android-ktx]
-- [Architecture][arch]: [Lifecycles][lifecycle], [Navigation][navigation], [Paging][paging], [Room][room], DataStore, [ViewModel][viewmodel], [WorkManager][workmanager]
+- [Architecture][arch]: [Lifecycles][lifecycle], [Navigation 3][navigation-3], [Paging][paging], [Room][room],
+  DataStore, [ViewModel][viewmodel], [WorkManager][workmanager]
 - [UI][ui]: Jetpack Compose
 - Behavior: [Notifications][notifications]
-- Third-party libraries: [Kotlin Coroutines][kotlin-coroutines], Kotlinx Serialization, Ktor, Coil, libsu, Accompanist
-  Permissions/WebView
+- Third-party libraries: [Kotlin Coroutines][kotlin-coroutines], Kotlinx Serialization, Ktor, Coil,
+  libsu, Accompanist Permissions/WebView
 
 [foundation]: https://developer.android.com/jetpack/components
 [android-ktx]: https://developer.android.com/kotlin/ktx
 [arch]: https://developer.android.com/jetpack/arch/
 [lifecycle]: https://developer.android.com/topic/libraries/architecture/lifecycle
-[navigation]: https://developer.android.com/topic/libraries/architecture/navigation/
+
+[navigation-3]: https://developer.android.com/guide/navigation/navigation-3
 [paging]: https://developer.android.com/topic/libraries/architecture/paging/v3-overview
 [room]: https://developer.android.com/topic/libraries/architecture/room
 [viewmodel]: https://developer.android.com/topic/libraries/architecture/viewmodel
@@ -96,12 +99,10 @@ This repository contains a curated subset of code from a private project. It is 
 
 ## Roadmap
 
-Upcoming features, bug fixes, libraries, and environment changes (roughly in chronological order). Primarily for
-personal tracking.
+Upcoming features, bug fixes, libraries, and environment changes (roughly in chronological order).
+Primarily for personal tracking.
 
 ### Current Release (0.10.0)
-
-- Navigation 3
 
 ### Next Release (0..)
 
@@ -109,7 +110,6 @@ personal tracking.
 <summary>Future Plans (Click to expand)</summary>
 
 - Navigation
-  - Allow customizing bottom navigation ([#16](https://github.com/Bumblebee202111/doubean-public/issues/16))
   - Shared element transitions for images
 - Add error message mappings to match official
 - Groups 
@@ -187,7 +187,6 @@ personal tracking.
 - Various social apps (UI/UX inspiration)
 
 [guides]: https://developer.android.google.cn/guide
-
 [material]: https://material.io/
 
 ## Utilities
@@ -197,9 +196,7 @@ personal tracking.
 - [Google Chrome][google-chrome] for debugging CSS
 
 [http-canary]: https://github.com/MegatronKing/HttpCanary/
-
 [jadx]: https://github.com/skylot/jadx/releases
-
 [google-chrome]: https://www.google.com/chrome/
 
 ## Support
