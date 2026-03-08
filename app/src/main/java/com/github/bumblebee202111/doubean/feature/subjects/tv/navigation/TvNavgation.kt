@@ -1,8 +1,10 @@
 package com.github.bumblebee202111.doubean.feature.subjects.tv.navigation
 
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.subjects.tv.TvScreen
+import com.github.bumblebee202111.doubean.feature.subjects.tv.TvViewModel
 import com.github.bumblebee202111.doubean.navigation.Navigator
 import kotlinx.serialization.Serializable
 
@@ -19,7 +21,7 @@ fun EntryProviderScope<NavKey>.tvEntry(
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
 ) {
-    entry<TvNavKey> {
+    entry<TvNavKey> { key ->
         TvScreen(
             onBackClick = onBackClick,
             onLoginClick = onLoginClick,
@@ -27,7 +29,12 @@ fun EntryProviderScope<NavKey>.tvEntry(
             onUserClick = onUserClick,
             onMovieClick = onMovieClick,
             onTvClick = onTvClick,
-            onBookClick = onBookClick
+            onBookClick = onBookClick,
+            viewModel = hiltViewModel<TvViewModel, TvViewModel.Factory>(
+                creationCallback = { factory ->
+                    factory.create(key.tvId)
+                }
+            )
         )
     }
 }

@@ -9,6 +9,7 @@ Change Log
 - **Fix:** Pressing the system "Back" button now correctly closes the side menu instead of
   navigating away from the current screen.
 - **Fix:** Subject reviews sheet being initially fully expanded (Regression).
+- **Fix:** TV nav impl.
 
 ## Version 0.10.0-beta1
 
