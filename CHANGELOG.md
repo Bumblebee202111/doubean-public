@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+## Version 0.10.0
+
+- **Improved:** Refined Chinese translations for a more natural settings experience.
+
+**Important changes since 0.9.x**
+
+- **New:** Customize your bottom navigation in Settings—choose your default startup tab and hide any
+  tabs you don't use ([#16](https://github.com/Bumblebee202111/doubean-public/issues/16)).
+- **Improved:** Major under-the-hood navigation rewrite  (Navigation 3).
+- **Updated:** Android 15 ready (Target SDK 35).
+
 ## Version 0.10.0-beta2
 
 - **Feature:** Added bottom navigation customization. You can now hide unused tabs and select your
