@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.10.1
+
 ## Version 0.10.0
 
 - **Improved:** Refined Chinese translations for a more natural settings experience.
