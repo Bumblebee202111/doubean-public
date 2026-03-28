@@ -35,7 +35,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -83,154 +82,152 @@ fun TopicHeader(
     onReact: (Boolean) -> Unit,
     onCollectActionInitiated: () -> Unit,
 ) {
-    Surface(modifier = Modifier.fillMaxWidth()) {
-        Column(Modifier.fillMaxWidth()) {
-            Spacer(Modifier.height(12.dp))
-            topic.group?.let { group ->
-                Row(
-                    modifier = Modifier
-                        .padding(horizontal = 40.dp)
-                        .clickable { onGroupClick(group.id, null) },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    SmallGroupAvatar(avatarUrl = group.avatar)
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        text = group.name,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                Spacer(Modifier.height(8.dp))
-            }
-            Row(
-                Modifier.padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                UserProfileImage(
-                    url = topic.author.avatar,
-                    size = dimensionResource(id = R.dimen.icon_size_large),
-                    onClick = { onUserClick(topic.author.id) }
-                )
-                Spacer(Modifier.width(8.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = topic.author.name,
-                        modifier = Modifier.clickable { onUserClick(topic.author.id) },
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Spacer(Modifier.height(4.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        TopicTimeDisplay(
-                            createTime = topic.createTime,
-                            editTime = topic.editTime
-                        )
-                        topic.ipLocation?.let {
-                            Text(
-                                text = " · $it",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.padding(start = dimensionResource(R.dimen.margin_extra_small))
-                            )
-                        }
-                    }
-                }
-            }
-            Spacer(Modifier.height(8.dp))
-            val showPhotos = remember(shouldShowPhotoList, topic.images) {
-                shouldShowPhotoList == true && !topic.images.isNullOrEmpty()
-            }
-            if (showPhotos) {
-                topic.images?.let { images ->
-                    LazyRow(
-                        contentPadding = PaddingValues(horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(items = images, key = { it.normal.url }) { image ->
-                            AsyncImage(
-                                model = image.normal.url,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .height(320.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .clickable {
-                                        onImageClick(image.large.url)
-                                    },
-                                contentScale = ContentScale.FillHeight
-                            )
-                        }
-                    }
-                }
-            }
-            Spacer(Modifier.height(12.dp))
-            Text(
-                text = topic.title,
-                modifier = Modifier.padding(horizontal = 16.dp),
-                style = MaterialTheme.typography.headlineSmall
-            )
-            Spacer(Modifier.height(8.dp))
-            topic.tag?.let { tag ->
-                AssistChip(
-                    onClick = { topic.group?.let { group -> onGroupClick(group.id, tag.id) } },
-                    label = { Text(tag.name) },
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
-            contentHtml?.let {
-                ContentWebView(
-                    topic = topic,
-                    html = it,
-                    onImageClick = onImageClick,
-                    displayInvalidImageUrl = displayInvalidImageUrl,
-                    onOpenDeepLinkUrl = onOpenDeepLinkUrl
-                )
-            }
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Spacer(Modifier.height(12.dp))
+        topic.group?.let { group ->
             Row(
                 modifier = Modifier
-                    .padding(
-                        horizontal = 12.dp,
-                    )
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                    .padding(horizontal = 40.dp)
+                    .clickable { onGroupClick(group.id, null) },
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                topic.commentCount?.let { count ->
-                    CountItem(
-                        count = count,
-                        labelRes = R.plurals.comments
+                SmallGroupAvatar(avatarUrl = group.avatar)
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    text = group.name,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+            Spacer(Modifier.height(8.dp))
+        }
+        Row(
+            Modifier.padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            UserProfileImage(
+                url = topic.author.avatar,
+                size = dimensionResource(id = R.dimen.icon_size_large),
+                onClick = { onUserClick(topic.author.id) }
+            )
+            Spacer(Modifier.width(8.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = topic.author.name,
+                    modifier = Modifier.clickable { onUserClick(topic.author.id) },
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Spacer(Modifier.height(4.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    TopicTimeDisplay(
+                        createTime = topic.createTime,
+                        editTime = topic.editTime
                     )
-                }
-                topic.resharesCount?.let { count ->
-                    CountItem(
-                        count = count,
-                        labelRes = R.plurals.reshares,
-                        onClick = if (count != 0) {
-                            { onReshareStatusesClick(topic.id) }
-                        } else null
-                    )
-                }
-                topic.likeCount?.let { count ->
-                    CountItem(
-                        count = count,
-                        labelRes = R.plurals.likes
-                    )
-                }
-                topic.collectionsCount?.let { count ->
-                    CountItem(
-                        count = count,
-                        labelRes = R.plurals.collections
-                    )
+                    topic.ipLocation?.let {
+                        Text(
+                            text = " · $it",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(start = dimensionResource(R.dimen.margin_extra_small))
+                        )
+                    }
                 }
             }
-            TopicSocialActions(
-                topic = topic,
-                isLoggedIn = isLoggedIn,
-                onReact = onReact,
-                onCollectClick = onCollectActionInitiated
+        }
+        Spacer(Modifier.height(8.dp))
+        val showPhotos = remember(shouldShowPhotoList, topic.images) {
+            shouldShowPhotoList == true && !topic.images.isNullOrEmpty()
+        }
+        if (showPhotos) {
+            topic.images?.let { images ->
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(items = images, key = { it.normal.url }) { image ->
+                        AsyncImage(
+                            model = image.normal.url,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .height(320.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .clickable {
+                                    onImageClick(image.large.url)
+                                },
+                            contentScale = ContentScale.FillHeight
+                        )
+                    }
+                }
+            }
+        }
+        Spacer(Modifier.height(12.dp))
+        Text(
+            text = topic.title,
+            modifier = Modifier.padding(horizontal = 16.dp),
+            style = MaterialTheme.typography.headlineSmall
+        )
+        Spacer(Modifier.height(8.dp))
+        topic.tag?.let { tag ->
+            AssistChip(
+                onClick = { topic.group?.let { group -> onGroupClick(group.id, tag.id) } },
+                label = { Text(tag.name) },
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
+        contentHtml?.let {
+            ContentWebView(
+                topic = topic,
+                html = it,
+                onImageClick = onImageClick,
+                displayInvalidImageUrl = displayInvalidImageUrl,
+                onOpenDeepLinkUrl = onOpenDeepLinkUrl
+            )
+        }
+        Row(
+            modifier = Modifier
+                .padding(
+                    horizontal = 12.dp,
+                )
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            topic.commentCount?.let { count ->
+                CountItem(
+                    count = count,
+                    labelRes = R.plurals.comments
+                )
+            }
+            topic.resharesCount?.let { count ->
+                CountItem(
+                    count = count,
+                    labelRes = R.plurals.reshares,
+                    onClick = if (count != 0) {
+                        { onReshareStatusesClick(topic.id) }
+                    } else null
+                )
+            }
+            topic.likeCount?.let { count ->
+                CountItem(
+                    count = count,
+                    labelRes = R.plurals.likes
+                )
+            }
+            topic.collectionsCount?.let { count ->
+                CountItem(
+                    count = count,
+                    labelRes = R.plurals.collections
+                )
+            }
+        }
+        TopicSocialActions(
+            topic = topic,
+            isLoggedIn = isLoggedIn,
+            onReact = onReact,
+            onCollectClick = onCollectActionInitiated
+        )
     }
 }
 

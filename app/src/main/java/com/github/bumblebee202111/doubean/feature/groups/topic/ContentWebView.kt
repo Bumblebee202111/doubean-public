@@ -2,7 +2,6 @@ package com.github.bumblebee202111.doubean.feature.groups.topic
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.util.Log
 import android.view.MotionEvent
 import android.webkit.URLUtil
@@ -10,10 +9,11 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.model.groups.TopicDetail
@@ -53,17 +53,20 @@ fun ContentWebView(
 
     val webViewState = rememberWebViewStateWithHTMLData(html)
     
+
+    val backgroundColor = MaterialTheme.colorScheme.surface.toArgb()
     DoubeanWebView(
         state = webViewState,
         modifier = Modifier
             .padding(horizontal = 16.dp)
-            .fillMaxSize()
-            .alpha(0.99F),
+            .fillMaxSize(),
         captureBackPresses = false,
         onCreated = { webView ->
             webView.apply {
                 setPadding(0, 0, 0, 0)
-                setBackgroundColor(Color.TRANSPARENT)
+
+                setBackgroundColor(backgroundColor)
+
                 settings.apply {
                     setNeedInitialFocus(false)
                     userAgentString = rexxarUA
