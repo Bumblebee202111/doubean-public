@@ -10,10 +10,6 @@ Compose. Some features are works in progress (WIP), and you may encounter bugs.
 [douban]: https://www.douban.com/
 [douban-groups]: https://www.douban.com/group/
 
-## Known Issues
-
-- **Crash on Topic Screen:** May crash on some devices when scrolling. See issue [#19](https://github.com/Bumblebee202111/doubean-public/issues/19) for details.
-
 ## Features
 
 - Subjects (Books/Movies/TVs):
@@ -134,7 +130,6 @@ Primarily for personal tracking.
   - Group Detail: Auto-collapse header for subscribed/pinned groups/tabs
   - Topic:
     - Render content using *dynamic* HTML/WebView
-    - Fix content scroll restoration
   - Default hide officially-flagged "unfriendly" content
   - Implement content blocking
   - Reddit-style list item expand/collapse

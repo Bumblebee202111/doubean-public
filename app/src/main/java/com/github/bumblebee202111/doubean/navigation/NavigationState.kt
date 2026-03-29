@@ -7,6 +7,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
@@ -23,7 +25,18 @@ fun rememberNavigationState(
     startRoute: NavKey,
     topLevelRoutes: Set<NavKey>,
 ): NavigationState {
-    val topLevelRouteState = remember { mutableStateOf(startRoute) }
+
+    val topLevelRouteState = rememberSaveable(
+        saver = Saver(
+            save = { it.value.toString() },
+            restore = { savedString ->
+                val restoredKey = topLevelRoutes.find { it.toString() == savedString } ?: startRoute
+                mutableStateOf(restoredKey)
+            }
+        )
+    ) {
+        mutableStateOf(startRoute)
+    }
 
     val currentBackStacks = topLevelRoutes.associateWith { routeKey ->
         key(routeKey.toString()) {
@@ -46,6 +59,7 @@ fun rememberNavigationState(
         navigationState.startRoute = startRoute
         navigationState.backStacks = currentBackStacks
 
+        
         if (navigationState.topLevelRoute !in topLevelRoutes) {
             navigationState.topLevelRoute = startRoute
         }
