@@ -8,13 +8,23 @@ import android.webkit.URLUtil
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.model.groups.TopicDetail
 import com.github.bumblebee202111.doubean.ui.component.DoubeanWebView
@@ -27,6 +37,7 @@ import dagger.hilt.EntryPoint
 import dagger.hilt.EntryPoints
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.delay
 
 @EntryPoint
 @InstallIn(SingletonComponent::class)
@@ -55,16 +66,57 @@ fun ContentWebView(
     
 
     val backgroundColor = MaterialTheme.colorScheme.surface.toArgb()
+
+    val density = LocalDensity.current
+    val orientation = LocalConfiguration.current.orientation
+
+    var savedHeightPx by rememberSaveable(orientation) { mutableIntStateOf(0) }
+    var isRestoring by remember(savedHeightPx) { mutableStateOf(savedHeightPx > 0) }
+    var webViewRef by remember { mutableStateOf<WebView?>(null) }
+
+    
+    val isLoading = webViewState.isLoading
+    LaunchedEffect(isLoading, isRestoring) {
+        if (!isLoading && isRestoring) {
+            delay(400) 
+            isRestoring = false
+        }
+    }
+
+    
+    DisposableEffect(Unit) {
+        onDispose {
+            webViewRef?.height?.let { height ->
+                if (height > 0) savedHeightPx = height
+            }
+        }
+    }
+
     DoubeanWebView(
         state = webViewState,
         modifier = Modifier
             .padding(horizontal = 16.dp)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .then(
+                if (isRestoring && savedHeightPx > 0) {
+                    Modifier.heightIn(min = with(density) { savedHeightPx.toDp() })
+                } else {
+                    Modifier
+                }
+            ),
         captureBackPresses = false,
         onCreated = { webView ->
+            webViewRef = webView
+
+            
+            webView.addOnLayoutChangeListener { v, _, _, _, _, _, _, _, _ ->
+                if (isRestoring && v.height >= savedHeightPx - 50) {
+                    isRestoring = false
+                }
+            }
+
             webView.apply {
                 setPadding(0, 0, 0, 0)
-
                 setBackgroundColor(backgroundColor)
 
                 settings.apply {
@@ -74,8 +126,7 @@ fun ContentWebView(
                 }
 
                 setOnTouchListener { _, event ->
-                    if (event.action == MotionEvent.ACTION_UP
-                    ) {
+                    if (event.action == MotionEvent.ACTION_UP) {
                         val webViewHitTestResult = hitTestResult
                         if (webViewHitTestResult.type == WebView.HitTestResult.IMAGE_TYPE ||
                             webViewHitTestResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE

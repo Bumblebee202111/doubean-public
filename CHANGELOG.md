@@ -3,6 +3,10 @@ Change Log
 
 ## Version 0.10.1
 
+- **Fixed:** Resolved a critical crash (`SIGSEGV`) that occurred when scrolling away from topics
+  with very long image lists ([#19](https://github.com/Bumblebee202111/doubean-public/issues/19)).
+- **Fixed:** Scroll position no longer jumps when navigating back to a topic with many images.
+
 ## Version 0.10.0
 
 - **Improved:** Refined Chinese translations for a more natural settings experience.
