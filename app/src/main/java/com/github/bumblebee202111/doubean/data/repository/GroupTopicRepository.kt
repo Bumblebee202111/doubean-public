@@ -34,6 +34,10 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
+data class TopicCommentsResult(
+    val popularComments: StateFlow<List<TopicComment>>,
+    val allCommentsPagingData: Flow<PagingData<TopicComment>>,
+)
 @Singleton
 class GroupTopicRepository @Inject constructor(
     private val appDatabase: AppDatabase,
@@ -78,7 +82,7 @@ class GroupTopicRepository @Inject constructor(
         topicId: String,
         spmId: String? = null,
         onlyOp: Boolean = false,
-    ): Pair<StateFlow<List<TopicComment>>, Flow<PagingData<TopicComment>>> {
+    ): TopicCommentsResult {
         val popularComments = MutableStateFlow<List<TopicComment>>(emptyList())
         val allCommentsPagingData = Pager(
             config = PagingConfig(
@@ -99,7 +103,7 @@ class GroupTopicRepository @Inject constructor(
                     })
             }
         ).flow.map { it.map(NetworkGroupTopicComment::asExternalModel) }
-        return Pair(first = popularComments, second = allCommentsPagingData)
+        return TopicCommentsResult(popularComments, allCommentsPagingData)
     }
 
     fun getTopicReshareStatusesPagingData(topicId: String): Flow<PagingData<GroupTopicCommentReshareItem>> {

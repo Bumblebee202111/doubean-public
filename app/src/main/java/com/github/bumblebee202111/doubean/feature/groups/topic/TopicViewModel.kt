@@ -42,7 +42,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.math.RoundingMode
-import javax.inject.Inject
 
 @HiltViewModel(assistedFactory = TopicViewModel.Factory::class)
 class TopicViewModel @AssistedInject constructor(
@@ -59,18 +58,17 @@ class TopicViewModel @AssistedInject constructor(
     private val _authorOnlyMode = MutableStateFlow(false)
     val authorOnlyMode = _authorOnlyMode.asStateFlow()
 
-    private val commentsDataFlows = Pair(
-        authorOnlyMode.flatMapLatest { onlyOp ->
-            topicRepository.getTopicCommentsData(topicId, spmId, onlyOp).first
-        },
-        authorOnlyMode.flatMapLatest { onlyOp ->
-            topicRepository.getTopicCommentsData(topicId, spmId, onlyOp).second
-        }
-    )
+    private val commentsDataResult = authorOnlyMode.map { onlyOp ->
+        topicRepository.getTopicCommentsData(topicId, spmId, onlyOp)
+    }
 
-    val popularComments = commentsDataFlows.first.stateInUi(emptyList())
+    val popularComments = commentsDataResult
+        .flatMapLatest { it.popularComments }
+        .stateInUi(emptyList())
 
-    val allComments = commentsDataFlows.second.cachedIn(viewModelScope)
+    val allComments = commentsDataResult
+        .flatMapLatest { it.allCommentsPagingData }
+        .cachedIn(viewModelScope)
 
     private val _commentsSortBy: MutableStateFlow<TopicCommentSortBy> =
         MutableStateFlow(TopicCommentSortBy.ALL)

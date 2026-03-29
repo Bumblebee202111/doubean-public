@@ -237,7 +237,8 @@ private fun TopicTimeDisplay(createTime: LocalDateTime, editTime: LocalDateTime?
     var showCreateTime by rememberSaveable { mutableStateOf(true) }
 
     if (editTime != null && editTime != createTime) {
-        LaunchedEffect(Unit) {
+
+        LaunchedEffect(createTime, editTime) {
             while (true) {
                 delay(3000L)
                 showCreateTime = !showCreateTime
@@ -247,12 +248,8 @@ private fun TopicTimeDisplay(createTime: LocalDateTime, editTime: LocalDateTime?
         AnimatedContent(
             targetState = showCreateTime,
             transitionSpec = {
-                fadeIn(animationSpec = tween(durationMillis = 300)).togetherWith(
-                    fadeOut(
-                        animationSpec = tween(durationMillis = 300)
-                    )
-                ) using
-                        SizeTransform(clip = false)
+                (fadeIn(tween(300)) togetherWith fadeOut(tween(300)))
+                    .using(SizeTransform(clip = false))
             },
             label = "timeAnimation"
         ) { targetStateIsCreateTime ->
@@ -287,18 +284,13 @@ private fun CountItem(
     onClick: (() -> Unit)? = null,
 ) {
     val text = pluralStringResource(labelRes, count, count)
-    val isClickable = onClick != null
     Text(
         text = text,
         style = MaterialTheme.typography.bodySmall,
-        color = if (isClickable) {
-            MaterialTheme.colorScheme.primary
-        } else {
-            MaterialTheme.colorScheme.onSurfaceVariant
-        },
+        color = if (onClick != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = Modifier
             .clip(MaterialTheme.shapes.small)
-            .then(if (isClickable) Modifier.clickable(onClick = onClick) else Modifier)
+            .clickable(enabled = onClick != null, onClick = onClick ?: {})
             .padding(horizontal = 8.dp, vertical = 4.dp)
             .wrapContentWidth()
     )

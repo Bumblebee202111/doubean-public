@@ -167,7 +167,7 @@ fun TopicScreen(
 
     val itemCountBeforeComments = 2
 
-    LaunchedEffect(scrollToCommentItemIndex) {
+    LaunchedEffect(scrollToCommentItemIndex, commentSortBy) {
         val targetIndex = scrollToCommentItemIndex ?: return@LaunchedEffect
         val maxCount = when (commentSortBy) {
             TopicCommentSortBy.POPULAR -> popularComments.size

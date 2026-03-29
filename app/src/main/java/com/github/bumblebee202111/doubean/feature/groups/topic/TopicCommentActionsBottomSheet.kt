@@ -18,16 +18,15 @@ import com.github.bumblebee202111.doubean.model.groups.TopicComment
 import com.github.bumblebee202111.doubean.model.groups.TopicDetail
 import com.github.bumblebee202111.doubean.util.ShareUtil
 
-private fun createTopicCommentShareText(
-    comment: TopicComment,
+private fun TopicComment.createShareText(
     topic: TopicDetail,
     context: Context,
 ): String {
     return buildString {
         topic.group?.let { group -> append(group.name) }
         topic.tag?.let { tag -> append("|" + tag.name) }
-        append("@${comment.author.name}${context.getString(R.string.colon)}${comment.text}")
-        comment.refComment?.let { repliedTo ->
+        append("@${author.name}${context.getString(R.string.colon)}${text}")
+        refComment?.let { repliedTo ->
             append("${context.getString(R.string.repliedTo)}@${repliedTo.author.name}： ${repliedTo.text}")
         }
         append("${context.getString(R.string.topic)}@${topic.author.name}${context.getString(R.string.colon)}\n${topic.title} ${topic.url}\n")
@@ -53,7 +52,7 @@ fun TopicCommentActionsBottomSheet(
                 )
             },
             modifier = Modifier.clickable {
-                val shareText = createTopicCommentShareText(comment, topic, context)
+                val shareText = comment.createShareText(topic, context)
                 ShareUtil.share(context, shareText)
                 onDismissRequest()
             }

@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import com.github.bumblebee202111.doubean.model.SizedImage
 import com.github.bumblebee202111.doubean.model.groups.TopicDetail
 import com.github.bumblebee202111.doubean.ui.component.DoubeanWebView
 import com.github.bumblebee202111.doubean.ui.component.DoubeanWebViewClient
@@ -38,6 +39,8 @@ import dagger.hilt.EntryPoints
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.delay
+
+private const val CONTENT_WEB_VIEW_TAG = "ContentWebView"
 
 @EntryPoint
 @InstallIn(SingletonComponent::class)
@@ -127,23 +130,12 @@ fun ContentWebView(
 
                 setOnTouchListener { _, event ->
                     if (event.action == MotionEvent.ACTION_UP) {
-                        val webViewHitTestResult = hitTestResult
-                        if (webViewHitTestResult.type == WebView.HitTestResult.IMAGE_TYPE ||
-                            webViewHitTestResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
-                        ) {
-                            val imageUrl = webViewHitTestResult.extra
-                            if (imageUrl != null && URLUtil.isValidUrl(imageUrl)) {
-                                val largeImageUrl = topic.images
-                                    ?.firstOrNull { image -> image.normal.url == imageUrl }
-                                    ?.large?.url
-                                    ?: imageUrl
-                                onImageClick(largeImageUrl)
-                                return@setOnTouchListener true
-                            } else if (imageUrl != null) {
-                                Log.w("ContentWebView", "Invalid image URL clicked: $imageUrl")
-                                displayInvalidImageUrl()
-                            }
-                        }
+                        return@setOnTouchListener handleWebViewImageClick(
+                            hitTestResult = hitTestResult,
+                            topicImages = topic.images,
+                            onImageClick = onImageClick,
+                            displayInvalidImageUrl = displayInvalidImageUrl
+                        )
                     }
                     return@setOnTouchListener false
                 }
@@ -163,7 +155,30 @@ fun ContentWebView(
     )
 }
 
-private const val CONTENT_WEB_VIEW_TAG = "ContentWebView"
+
+private fun handleWebViewImageClick(
+    hitTestResult: WebView.HitTestResult,
+    topicImages: List<SizedImage>?,
+    onImageClick: (String) -> Unit,
+    displayInvalidImageUrl: () -> Unit,
+): Boolean {
+    if (hitTestResult.type == WebView.HitTestResult.IMAGE_TYPE ||
+        hitTestResult.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE
+    ) {
+        val imageUrl = hitTestResult.extra
+        if (imageUrl != null && URLUtil.isValidUrl(imageUrl)) {
+            val largeImageUrl = topicImages
+                ?.firstOrNull { image -> image.normal.url == imageUrl }
+                ?.large?.url ?: imageUrl
+            onImageClick(largeImageUrl)
+            return true
+        } else if (imageUrl != null) {
+            Log.w(CONTENT_WEB_VIEW_TAG, "Invalid image URL clicked: $imageUrl")
+            displayInvalidImageUrl()
+        }
+    }
+    return false
+}
 
 private fun handleUrlLoading(
     context: Context,
