@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.10.2
+
 ## Version 0.10.1
 
 - **Fixed:** Resolved a critical crash (`SIGSEGV`) that occurred when scrolling away from topics
