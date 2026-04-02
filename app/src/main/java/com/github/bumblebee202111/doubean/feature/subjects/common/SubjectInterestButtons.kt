@@ -10,7 +10,6 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +23,8 @@ import com.github.bumblebee202111.doubean.ui.common.subject.SubjectCurrentStatus
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusActionIconsMap
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusActionTextResIdsMap
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusTextResIdsMap
+import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton
+import com.github.bumblebee202111.doubean.ui.component.doubeanItemShape
 
 @Composable
 fun SubjectInterestButtons(
@@ -41,9 +42,9 @@ fun SubjectInterestButtons(
                         onClick = {
                             onUpdateStatus(status)
                         },
-                        shape = SegmentedButtonDefaults.itemShape(
+                        shape = SegmentedButtonDefaults.doubeanItemShape(
                             index = index,
-                            count = interestStatuses.size,
+                            count = interestStatuses.size
                         ),
                         enabled = status != subject.interest?.status,
                         icon = {
@@ -81,7 +82,7 @@ fun SubjectInterestUnmarkButton(
     subject: MarkableSubject,
     onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
 ) {
-    TextButton(onClick = {
+    DoubeanTextButton(onClick = {
         onUpdateStatus(SubjectInterestStatus.MARK_STATUS_UNMARK)
     }) {
         SubjectSingleInterestButtonContent(

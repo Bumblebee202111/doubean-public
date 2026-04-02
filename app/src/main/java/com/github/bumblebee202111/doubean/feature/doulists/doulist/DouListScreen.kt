@@ -14,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +33,7 @@ import com.github.bumblebee202111.doubean.model.common.DouListPostItem
 import com.github.bumblebee202111.doubean.model.doulists.DouList
 import com.github.bumblebee202111.doubean.model.subjects.MarkableSubject
 import com.github.bumblebee202111.doubean.ui.component.BackButton
+import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
 import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicator
@@ -295,7 +295,7 @@ private fun EditDouListDialog(
             )
         },
         confirmButton = {
-            TextButton(
+            DoubeanTextButton(
                 onClick = { onConfirm(title) },
                 enabled = !isError && title != initialTitle
             ) {
@@ -303,7 +303,7 @@ private fun EditDouListDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            DoubeanTextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.action_cancel))
             }
         }

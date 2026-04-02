@@ -18,13 +18,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.search.SearchHistory
+import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton
 
 fun LazyListScope.searchHistory(
     history: List<SearchHistory>,
@@ -45,7 +45,7 @@ fun LazyListScope.searchHistory(
                 text = stringResource(R.string.search_history_title),
                 style = MaterialTheme.typography.titleSmall
             )
-            TextButton(onClick = onClearAllClick) {
+            DoubeanTextButton(onClick = onClearAllClick) {
                 Text(stringResource(R.string.search_history_clear_all))
             }
         }

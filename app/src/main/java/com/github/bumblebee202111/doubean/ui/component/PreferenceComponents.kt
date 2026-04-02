@@ -12,7 +12,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -97,7 +96,7 @@ fun ClickablePreferenceItem(
 
 @Composable
 fun DangerButtonPreferenceItem(title: String, onClick: () -> Unit) {
-    OutlinedButton(
+    DoubeanOutlinedButton(
         onClick = onClick,
         modifier = Modifier.padding(horizontal = 16.dp),
         colors = ButtonDefaults.outlinedButtonColors(

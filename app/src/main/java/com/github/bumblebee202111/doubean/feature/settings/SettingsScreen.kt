@@ -14,7 +14,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +33,7 @@ import com.github.bumblebee202111.doubean.navigation.TopLevelDestination
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.ClickablePreferenceItem
 import com.github.bumblebee202111.doubean.ui.component.DangerButtonPreferenceItem
+import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.InfoDialog
 import com.github.bumblebee202111.doubean.ui.component.PreferenceCategoryHeader
@@ -128,7 +128,7 @@ fun SettingsScreen(
                 }
             },
             confirmButton = {
-                TextButton(onClick = {
+                DoubeanTextButton(onClick = {
                     showStartupTabDialog = false
                 }) { Text(stringResource(R.string.action_cancel)) }
             }
@@ -171,13 +171,13 @@ fun SettingsScreen(
                 }
             },
             confirmButton = {
-                TextButton(onClick = {
+                DoubeanTextButton(onClick = {
                     setVisibleTabs(selectedTabs)
                     showVisibleTabsDialog = false
                 }) { Text(stringResource(android.R.string.ok)) }
             },
             dismissButton = {
-                TextButton(onClick = {
+                DoubeanTextButton(onClick = {
                     showVisibleTabsDialog = false
                 }) { Text(stringResource(R.string.action_cancel)) }
             }

@@ -50,7 +50,8 @@ Source: `app/src/main/java/com/github/bumblebee202111/doubean`
 
 ## Guidelines
 
-- **UI**: Compose only. Use `DoubeanTheme`.
+- **UI**: Compose only. Use `DoubeanTheme`. We use a refined Material 3 style (crisper, less
+  bubbly).
 - **Arch**: MVVM. State via Flows.
 - **Navigation**: Navigation 3. Use `@Serializable NavKey` for routes. Manage routing via `Navigator` and `NavDisplay`. Deep links are parsed manually into keys.
 - **Net**: Ktor. Errors via `SnackbarManager`.

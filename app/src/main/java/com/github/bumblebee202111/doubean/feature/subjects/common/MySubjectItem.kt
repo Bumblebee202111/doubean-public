@@ -10,7 +10,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +26,7 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.subjects.Subject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
+import com.github.bumblebee202111.doubean.ui.component.DoubeanOutlinedButton
 
 @Composable
 fun <T : Subject> MySubjectItem(
@@ -70,7 +70,7 @@ fun <T : Subject> MySubjectItem(
 
 @Composable
 fun MySubjectItemMore(moreCount: Int, onClick: () -> Unit = {}) {
-    OutlinedButton(
+    DoubeanOutlinedButton(
         onClick = onClick,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         colors = ButtonDefaults.outlinedButtonColors(

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -28,12 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.auth.CaptchaSolution
 import com.github.bumblebee202111.doubean.model.auth.JCaptcha
 import com.github.bumblebee202111.doubean.ui.component.BackButton
+import com.github.bumblebee202111.doubean.ui.component.DoubeanButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.RexxarWebView
 import com.google.accompanist.web.LoadingState
@@ -126,7 +125,7 @@ private fun ActiveContent(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
 
-        Button(
+        DoubeanButton(
             onClick = onRequestPhoneCode,
             enabled = !activeUiState.isRequestingCode &&
                     activeUiState.jCaptcha == null &&
@@ -148,7 +147,7 @@ private fun ActiveContent(
         }
 
         if (activeUiState.isCodeSent) {
-            Button(
+            DoubeanButton(
                 onClick = onVerifyPhoneCode,
                 enabled = activeUiState.canVerify
             ) {

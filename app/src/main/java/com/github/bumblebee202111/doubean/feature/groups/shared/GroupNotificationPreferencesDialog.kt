@@ -9,7 +9,6 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
+import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton
 import com.github.bumblebee202111.doubean.ui.component.InfoButton
 import com.github.bumblebee202111.doubean.ui.component.InfoDialog
 
@@ -59,14 +59,14 @@ fun GroupNotificationPreferencesDialog(
     AlertDialog(
         onDismissRequest = onDismissRequest,
         confirmButton = {
-            TextButton(onClick = {
+            DoubeanTextButton(onClick = {
                 onConfirmation(preferences)
             }) {
                 Text(stringResource(id = R.string.action_save))
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismissRequest) {
+            DoubeanTextButton(onClick = onDismissRequest) {
                 Text(stringResource(id = R.string.action_cancel))
             }
         },

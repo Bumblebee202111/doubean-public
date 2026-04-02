@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -49,6 +48,7 @@ import com.github.bumblebee202111.doubean.model.profile.ProfileCommunityContribu
 import com.github.bumblebee202111.doubean.model.profile.ProfileStatItemTypes
 import com.github.bumblebee202111.doubean.ui.common.ApplyStatusBarIconAppearance
 import com.github.bumblebee202111.doubean.ui.component.BackButton
+import com.github.bumblebee202111.doubean.ui.component.DoubeanButton
 import com.github.bumblebee202111.doubean.ui.component.FullScreenCenteredContent
 import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
 import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicator
@@ -253,7 +253,7 @@ private fun UserProfileContentArea(
 
         uiState.isTargetingCurrentUser && !uiState.isLoggedIn -> {
             FullScreenCenteredContent(innerPadding) {
-                Button(onClick = onLoginClick) {
+                DoubeanButton(onClick = onLoginClick) {
                     Text(text = stringResource(R.string.title_login))
                 }
             }

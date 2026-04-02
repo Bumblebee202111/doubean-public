@@ -10,7 +10,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,6 +21,7 @@ import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.groups.TopicComment
 import com.github.bumblebee202111.doubean.model.groups.TopicDetail
+import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton
 import com.github.bumblebee202111.doubean.ui.component.SectionErrorWithRetry
 import com.github.bumblebee202111.doubean.ui.util.toUiMessage
 
@@ -111,7 +111,7 @@ fun LazyListScope.allComments(
                                 color = MaterialTheme.colorScheme.error,
                                 modifier = Modifier.weight(1f)
                             )
-                            TextButton(onClick = { comments.retry() }) {
+                            DoubeanTextButton(onClick = { comments.retry() }) {
                                 Text(stringResource(R.string.retry))
                             }
                         }

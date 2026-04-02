@@ -11,14 +11,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,6 +34,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.auth.LoginResult
 import com.github.bumblebee202111.doubean.ui.component.BackButton
+import com.github.bumblebee202111.doubean.ui.component.DoubeanButton
+import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 
 @Composable
@@ -183,7 +183,7 @@ private fun LoginSection(
         visualTransformation = PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
     )
-    Button(
+    DoubeanButton(
         onClick = login,
         modifier = Modifier.fillMaxWidth(),
         enabled = isFormValid
@@ -207,7 +207,7 @@ private fun SessionImportSection(
         text = stringResource(R.string.login_session_import_note),
         style = MaterialTheme.typography.bodyMedium
     )
-    TextButton(onClick = triggerAutoImport, modifier = Modifier.fillMaxWidth()) {
+    DoubeanTextButton(onClick = triggerAutoImport, modifier = Modifier.fillMaxWidth()) {
         Text(stringResource(R.string.login_session_import_auto_button))
     }
     Text(
@@ -238,7 +238,7 @@ private fun SessionImportSection(
             }
         ),
     )
-    Button(
+    DoubeanButton(
         onClick = {
             keyboardController?.hide()
             onSubmitSessionPreference(pref)

@@ -10,12 +10,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,7 +47,7 @@ fun FullScreenLoginPrompt(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(Modifier.height(24.dp))
-        Button(onClick = onLoginClick) {
+        DoubeanButton(onClick = onLoginClick) {
             Text(stringResource(R.string.login_button))
         }
     }
@@ -64,7 +61,7 @@ fun InlineLoginPrompt(
     onLoginClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    OutlinedButton(
+    DoubeanOutlinedButton(
         onClick = onLoginClick,
         modifier = modifier.fillMaxWidth()
     ) {
@@ -86,12 +83,12 @@ fun LoginPromptDialog(
         title = { Text(title) },
         text = { Text(message) },
         confirmButton = {
-            TextButton(onClick = onLoginClick) {
+            DoubeanTextButton(onClick = onLoginClick) {
                 Text(stringResource(R.string.login_button))
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismissRequest) {
+            DoubeanTextButton(onClick = onDismissRequest) {
                 Text(stringResource(R.string.action_cancel))
             }
         }

@@ -19,7 +19,6 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.NotificationAdd
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -30,14 +29,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TwoRowsTopAppBar
@@ -56,7 +53,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.groupdetail.tab.GroupTab
@@ -68,6 +64,9 @@ import com.github.bumblebee202111.doubean.model.groups.GroupMemberRole
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.groups.GroupTab
 import com.github.bumblebee202111.doubean.ui.component.BackButton
+import com.github.bumblebee202111.doubean.ui.component.DoubeanButton
+import com.github.bumblebee202111.doubean.ui.component.DoubeanOutlinedButton
+import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton
 import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
 import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicator
 import com.github.bumblebee202111.doubean.ui.component.MoreButton
@@ -296,7 +295,7 @@ fun GroupDetailTopBar(
                                         GroupMemberRole.MEMBER_INVITED_WAIT_FOR_ADMIN,
                                         GroupMemberRole.MEMBER_REQUESTED_WAIT_FOR_ADMIN
                                     ) -> {
-                                        Button(
+                                        DoubeanButton(
                                             onClick = subscribeGroup,
                                             colors = ButtonDefaults.buttonColors().copy(
                                                 contentColor = groupColor,
@@ -308,7 +307,7 @@ fun GroupDetailTopBar(
                                     }
 
                                     isSubscriptionEnabled && isSubscribed == true -> {
-                                        OutlinedButton(
+                                        DoubeanOutlinedButton(
                                             onClick = unsubscribeGroup,
                                             colors = ButtonDefaults.outlinedButtonColors(
                                                 contentColor = Color.White,
@@ -327,7 +326,7 @@ fun GroupDetailTopBar(
                                         GroupMemberRole.MEMBER,
                                         GroupMemberRole.MEMBER_ADMIN,
                                     ) -> {
-                                        TextButton(
+                                        DoubeanTextButton(
                                             onClick = {},
                                             colors = ButtonDefaults.textButtonColors().copy(
                                                 disabledContentColor = Color.White,

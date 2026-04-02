@@ -8,7 +8,6 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -27,6 +26,7 @@ import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferen
 import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.ClickablePreferenceItem
+import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.InfoDialog
 import com.github.bumblebee202111.doubean.ui.component.RadioButtonItem
@@ -184,7 +184,7 @@ private fun MaxTopicNotificationsPerFetchDialog(
             )
         },
         confirmButton = {
-            TextButton(
+            DoubeanTextButton(
                 onClick = {
                     onConfirm(value)
                     onDismiss()
@@ -194,7 +194,7 @@ private fun MaxTopicNotificationsPerFetchDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            DoubeanTextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.action_cancel))
             }
         }

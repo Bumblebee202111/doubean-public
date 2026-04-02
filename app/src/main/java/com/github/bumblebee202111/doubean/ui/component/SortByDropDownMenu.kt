@@ -7,7 +7,6 @@ import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -41,7 +40,7 @@ fun <OptionT, ValueT> SortByDropDownMenu(
         onExpandedChange = { expanded = it },
         modifier = modifier
     ) {
-        TextButton(
+        DoubeanTextButton(
             onClick = {  },
             modifier = Modifier.menuAnchor(
                 type = ExposedDropdownMenuAnchorType.PrimaryNotEditable,
