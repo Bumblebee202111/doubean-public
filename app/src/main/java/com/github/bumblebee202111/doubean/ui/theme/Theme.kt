@@ -254,9 +254,9 @@ val unspecified_scheme = ColorFamily(
 private val DoubeanShapes = Shapes(
     extraSmall = RoundedCornerShape(4.dp),
     small = RoundedCornerShape(6.dp),
-    medium = RoundedCornerShape(10.dp),
-    large = RoundedCornerShape(12.dp),
-    extraLarge = RoundedCornerShape(20.dp)
+    medium = RoundedCornerShape(8.dp),
+    large = RoundedCornerShape(14.dp),
+    extraLarge = RoundedCornerShape(24.dp)
 )
 
 @Composable
