@@ -21,7 +21,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Reply
 import androidx.compose.material.icons.filled.PlayArrow
@@ -79,6 +78,8 @@ enum class CountType(val icon: ImageVector) {
     RESHARES(Icons.Outlined.Repeat);
 }
 
+private const val CollapsedTextMaxLines = 4
+
 fun LazyListScope.subjectGenericModuleItem(
     titleResId: Int,
     body: @Composable ColumnScope.() -> Unit,
@@ -94,16 +95,15 @@ fun LazyListScope.subjectGenericModuleItem(
     }
 }
 
-private const val IntroMaxLines = 4
-
 fun LazyListScope.subjectInfoIntroModuleItem(intro: String) {
     subjectGenericModuleItem(
         titleResId = R.string.subject_module_title_intro,
         body = {
             ExpandCollapseText(
                 text = intro,
-                maxLines = IntroMaxLines,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                maxLines = CollapsedTextMaxLines,
+                modifier = Modifier.padding(horizontal = 16.dp),
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     )
@@ -118,8 +118,8 @@ fun LazyListScope.subjectInfoInterestsModuleItem(
     item {
         Surface(
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 16.dp)
-                .clip(RoundedCornerShape(size = 16.dp)),
+                .padding(16.dp)
+                .clip(MaterialTheme.shapes.large),
             color = MaterialTheme.colorScheme.surfaceVariant
         ) {
             SubjectModuleContainer(
@@ -353,7 +353,11 @@ private fun InterestItem(
 
         interest.comment?.let { comment ->
             Spacer(modifier = Modifier.size(12.dp))
-            Text(text = comment)
+            ExpandCollapseText(
+                text = comment,
+                maxLines = CollapsedTextMaxLines,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
 
         Spacer(modifier = Modifier.size(12.dp))
@@ -399,7 +403,13 @@ private fun SubjectReviewCard(
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.size(2.dp))
-            Text(text = review.abstract, style = MaterialTheme.typography.bodyMedium)
+
+            ExpandCollapseText(
+                text = review.abstract,
+                maxLines = CollapsedTextMaxLines,
+                style = MaterialTheme.typography.bodyMedium
+            )
+
             Spacer(modifier = Modifier.padding(4.dp))
             ListItemImages(images = review.photos.map(SizedPhoto::image))
 
