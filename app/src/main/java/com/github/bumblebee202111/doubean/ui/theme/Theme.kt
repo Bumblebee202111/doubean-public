@@ -2,6 +2,7 @@ package com.github.bumblebee202111.doubean.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
@@ -251,12 +252,30 @@ val unspecified_scheme = ColorFamily(
     Color.Unspecified, Color.Unspecified, Color.Unspecified, Color.Unspecified
 )
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 private val DoubeanShapes = Shapes(
-    extraSmall = RoundedCornerShape(4.dp),
-    small = RoundedCornerShape(6.dp),
-    medium = RoundedCornerShape(8.dp),
-    large = RoundedCornerShape(14.dp),
-    extraLarge = RoundedCornerShape(24.dp)
+
+    
+    extraSmall = RoundedCornerShape(4.dp),         
+
+    
+    small = RoundedCornerShape(8.dp),              
+
+    
+    medium = RoundedCornerShape(10.dp),            
+
+    
+    large = RoundedCornerShape(14.dp),             
+
+    
+    
+    extraLarge = RoundedCornerShape(20.dp),        
+
+    
+    
+    largeIncreased = RoundedCornerShape(16.dp),      
+    extraLargeIncreased = RoundedCornerShape(24.dp), 
+    extraExtraLarge = RoundedCornerShape(32.dp)      
 )
 
 @Composable
