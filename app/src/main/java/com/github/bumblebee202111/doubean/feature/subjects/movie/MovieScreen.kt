@@ -1,11 +1,11 @@
 package com.github.bumblebee202111.doubean.feature.subjects.movie
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.feature.subjects.common.InterestSortType
@@ -158,7 +158,7 @@ fun MovieScreen(
                             onImageClick = onImageClick,
                             onTrailerClick = { trailer ->
                                 val intent = Intent(Intent.ACTION_VIEW).apply {
-                                    setDataAndType(Uri.parse(trailer.videoUrl), "video/*")
+                                    setDataAndType(trailer.videoUrl.toUri(), "video/*")
                                 }
                                 context.startActivity(intent)
                             }
