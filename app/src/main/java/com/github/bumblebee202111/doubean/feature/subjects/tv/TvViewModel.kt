@@ -107,13 +107,21 @@ class TvViewModel @AssistedInject constructor(
                 )
             }
 
+            val creditListResultDeferred = async {
+                subjectCommonRepository.getSubjectCreditList(SubjectType.TV, tvId)
+            }
+
             val interestResult = interestsResultDeferred.await()
             val photosResult = photosResultDeferred.await()
             val recommendationsResult = recommendationsDeferred.await()
             val reviewsResult = reviewsResultDeferred.await()
+            val creditListResult = creditListResultDeferred.await()
 
             val results =
-                listOf(interestResult, photosResult, recommendationsResult, reviewsResult)
+                listOf(
+                    interestResult, photosResult, recommendationsResult, reviewsResult,
+                    creditListResult
+                )
 
             val firstError = results.filterIsInstance<AppResult.Error>().firstOrNull()
 
@@ -124,8 +132,9 @@ class TvViewModel @AssistedInject constructor(
             } else {
                 _uiState.value = TvUiState.Success(
                     tv = tv,
-                    interests = (interestResult as AppResult.Success).data,
+                    creditList = (creditListResult as AppResult.Success).data,
                     photos = (photosResult as AppResult.Success).data,
+                    interests = (interestResult as AppResult.Success).data,
                     recommendations = (recommendationsResult as AppResult.Success).data,
                     reviews = (reviewsResult as AppResult.Success).data,
                     isLoggedIn = isLoggedIn

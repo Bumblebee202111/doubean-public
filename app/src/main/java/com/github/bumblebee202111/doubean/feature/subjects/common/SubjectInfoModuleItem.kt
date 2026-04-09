@@ -45,6 +45,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -54,6 +55,8 @@ import com.github.bumblebee202111.doubean.model.PhotoList
 import com.github.bumblebee202111.doubean.model.SizedImage
 import com.github.bumblebee202111.doubean.model.SizedPhoto
 import com.github.bumblebee202111.doubean.model.fangorns.User
+import com.github.bumblebee202111.doubean.model.subjects.Celebrity
+import com.github.bumblebee202111.doubean.model.subjects.CreditList
 import com.github.bumblebee202111.doubean.model.subjects.MovieTrailer
 import com.github.bumblebee202111.doubean.model.subjects.RecommendSubject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
@@ -109,67 +112,24 @@ fun LazyListScope.subjectInfoIntroModuleItem(intro: String) {
     )
 }
 
-fun LazyListScope.subjectInfoInterestsModuleItem(
-    interestList: SubjectInterestWithUserList,
-    onUserClick: (String) -> Unit,
-    sortType: InterestSortType = InterestSortType.DEFAULT,
-    onSortChange: ((InterestSortType) -> Unit)? = null,
-) {
-    item {
-        Surface(
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 16.dp)
-                .clip(RoundedCornerShape(size = 16.dp)),
-            color = MaterialTheme.colorScheme.surfaceVariant
-        ) {
-            SubjectModuleContainer(
-                titleResId = R.string.subject_module_title_interests,
-                body = {
-                    InterestList(
-                        interests = interestList.interests,
-                        onUserClick = onUserClick
-                    )
-                },
-                modifier = Modifier.padding(vertical = 16.dp),
-                total = interestList.total,
-                headerSlot = if (onSortChange != null) {
-                    {
-                        InterestSortToggle(
-                            currentSort = sortType,
-                            onSortChange = onSortChange
-                        )
-                    }
-                } else null
-            )
-        }
-    }
-}
-
 fun LazyListScope.subjectInfoCelebritiesModuleItem(
-    directorNames: List<String>,
-    actorNames: List<String>,
+    creditList: CreditList,
 ) {
+    if (creditList.total == 0) return
+
     subjectGenericModuleItem(
         titleResId = R.string.subject_module_title_celebrities,
         body = {
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(
-                    items = directorNames,
-                    contentType = { R.string.director }
-                ) { directorName ->
-                    SubjectInfoCelebrity(name = directorName, typeNameRes = R.string.director)
-                }
-                items(
-                    items = actorNames,
-                    contentType = { R.string.actor }
-                ) { actorName ->
-                    SubjectInfoCelebrity(name = actorName, typeNameRes = R.string.actor)
+                items(items = creditList.items, key = { it.id }) { celebrity ->
+                    SubjectInfoCelebrity(celebrity = celebrity)
                 }
             }
-        }
+        },
+        total = creditList.total
     )
 }
 
@@ -222,6 +182,42 @@ fun LazyListScope.subjectInfoTrailersModuleItem(
         },
         total = photoList.total
     )
+}
+
+fun LazyListScope.subjectInfoInterestsModuleItem(
+    interestList: SubjectInterestWithUserList,
+    onUserClick: (String) -> Unit,
+    sortType: InterestSortType = InterestSortType.DEFAULT,
+    onSortChange: ((InterestSortType) -> Unit)? = null,
+) {
+    item {
+        Surface(
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+                .clip(RoundedCornerShape(size = 16.dp)),
+            color = MaterialTheme.colorScheme.surfaceVariant
+        ) {
+            SubjectModuleContainer(
+                titleResId = R.string.subject_module_title_interests,
+                body = {
+                    InterestList(
+                        interests = interestList.interests,
+                        onUserClick = onUserClick
+                    )
+                },
+                modifier = Modifier.padding(vertical = 16.dp),
+                total = interestList.total,
+                headerSlot = if (onSortChange != null) {
+                    {
+                        InterestSortToggle(
+                            currentSort = sortType,
+                            onSortChange = onSortChange
+                        )
+                    }
+                } else null
+            )
+        }
+    }
 }
 
 fun LazyListScope.subjectInfoRecommendModuleItem(
@@ -366,12 +362,34 @@ private fun InterestItem(
 }
 
 @Composable
-private fun SubjectInfoCelebrity(name: String, @StringRes typeNameRes: Int) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = name)
+private fun SubjectInfoCelebrity(celebrity: Celebrity) {
+    Column(
+        modifier = Modifier.width(80.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        AsyncImage(
+            model = celebrity.avatarUrl,
+            contentDescription = null,
+            modifier = Modifier
+                .width(80.dp)
+                .height(112.dp)
+                .clip(MaterialTheme.shapes.small),
+            contentScale = ContentScale.Crop
+        )
+        Spacer(modifier = Modifier.height(6.dp))
         Text(
-            text = stringResource(id = typeNameRes),
-            style = MaterialTheme.typography.labelSmall
+            text = celebrity.name,
+            style = MaterialTheme.typography.bodySmall,
+            fontWeight = FontWeight.Medium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        Text(
+            text = celebrity.character,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

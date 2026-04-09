@@ -2,6 +2,7 @@ package com.github.bumblebee202111.doubean.feature.subjects.movie
 
 import com.github.bumblebee202111.doubean.feature.subjects.common.InterestSortType
 import com.github.bumblebee202111.doubean.model.PhotoList
+import com.github.bumblebee202111.doubean.model.subjects.CreditList
 import com.github.bumblebee202111.doubean.model.subjects.MovieDetail
 import com.github.bumblebee202111.doubean.model.subjects.RecommendSubject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUserList
@@ -11,9 +12,10 @@ import com.github.bumblebee202111.doubean.ui.model.UiMessage
 sealed interface MovieUiState {
     data class Success(
         val movie: MovieDetail,
+        val creditList: CreditList,
+        val photos: PhotoList,
         val interests: SubjectInterestWithUserList,
         val interestSortType: InterestSortType = InterestSortType.DEFAULT,
-        val photos: PhotoList,
         val recommendations: List<RecommendSubject>,
         val reviews: SubjectReviewList,
         val isLoggedIn: Boolean,

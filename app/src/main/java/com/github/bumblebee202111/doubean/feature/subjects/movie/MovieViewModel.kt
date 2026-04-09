@@ -108,16 +108,22 @@ class MovieViewModel @AssistedInject constructor(
                 )
             }
 
+            val creditListResultDeferred = async {
+                subjectCommonRepository.getSubjectCreditList(SubjectType.MOVIE, movieId)
+            }
+
             val interestResult = interestsResultDeferred.await()
             val photosResult = photosResultDeferred.await()
             val recommendationsResult = recommendationsDeferred.await()
             val reviewsResult = reviewsResultDeferred.await()
+            val creditListResult = creditListResultDeferred.await()
 
             val results = listOf(
                 interestResult,
                 photosResult,
                 recommendationsResult,
-                reviewsResult
+                reviewsResult,
+                creditListResult
             )
 
             val firstError = results.filterIsInstance<AppResult.Error>().firstOrNull()
@@ -129,9 +135,10 @@ class MovieViewModel @AssistedInject constructor(
             } else {
                 _uiState.value = MovieUiState.Success(
                     movie = movie,
+                    creditList = (creditListResult as AppResult.Success).data,
+                    photos = (photosResult as AppResult.Success).data,
                     interests = (interestResult as AppResult.Success).data,
                     interestSortType = currentInterestSortType,
-                    photos = (photosResult as AppResult.Success).data,
                     recommendations = (recommendationsResult as AppResult.Success).data,
                     reviews = (reviewsResult as AppResult.Success).data,
                     isLoggedIn = isLoggedIn

@@ -1,6 +1,7 @@
 package com.github.bumblebee202111.doubean.data.repository
 
 import com.github.bumblebee202111.doubean.model.AppResult
+import com.github.bumblebee202111.doubean.model.subjects.CreditList
 import com.github.bumblebee202111.doubean.model.subjects.RecommendSubject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectModule
 import com.github.bumblebee202111.doubean.model.subjects.SubjectReviewList
@@ -9,6 +10,7 @@ import com.github.bumblebee202111.doubean.network.ApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkSubjectModules
 import com.github.bumblebee202111.doubean.network.model.NetworkSubjectReviewList
 import com.github.bumblebee202111.doubean.network.model.subject.NetworkRecommend
+import com.github.bumblebee202111.doubean.network.model.subject.toCreditList
 import com.github.bumblebee202111.doubean.network.model.subject.toRecommendSubject
 import com.github.bumblebee202111.doubean.network.model.toNetworkSubjectType
 import com.github.bumblebee202111.doubean.network.model.toSubjectModules
@@ -19,6 +21,23 @@ import javax.inject.Singleton
 
 @Singleton
 class SubjectCommonRepository @Inject constructor(private val service: ApiService) {
+
+    suspend fun getSubjectCreditList(
+        subjectType: SubjectType,
+        subjectId: String,
+    ): AppResult<CreditList> {
+        return makeApiCall(
+            apiCall = {
+                service.getSubjectCredits(
+                    subjectType = subjectType.toNetworkSubjectType().value,
+                    subjectId = subjectId
+                )
+            },
+            mapSuccess = { networkCreditList ->
+                networkCreditList.toCreditList()
+            }
+        )
+    }
 
     suspend fun getSubjectRelatedItems(
         subjectType: SubjectType,
