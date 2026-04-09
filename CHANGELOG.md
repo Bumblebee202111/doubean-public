@@ -3,6 +3,17 @@ Change Log
 
 ## Version 0.10.2
 
+- **Improved:** Movie and TV details now display richer celebrity information, including actor
+  photos, roles, and characters. (Partially
+  resolves [#24](https://github.com/Bumblebee202111/doubean-public/issues/24), [#34](https://github.com/Bumblebee202111/doubean-public/issues/34)
+- **Improved:** Long reviews and interests are now collapsed by default and can be expanded. (
+  Resolves [#27](https://github.com/Bumblebee202111/doubean-public/issues/27))
+- **Improved:** Increased the number of displayed photos in subject details to 18. (Partially
+  resolves [#24](https://github.com/Bumblebee202111/doubean-public/issues/24))
+- **UI:** Refined overall app shapes (corner radii) and shortened navigation bar for a sleeker,
+  less "bubbly" Material 3 look.
+- **UI:** Minor layout and text optimizations on the Login screen.
+
 ## Version 0.10.1
 
 - **Fixed:** Resolved a critical crash (`SIGSEGV`) that occurred when scrolling away from topics
