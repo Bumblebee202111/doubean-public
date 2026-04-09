@@ -166,7 +166,7 @@ private fun LoginSection(
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.primary
     )
-
+    Spacer(modifier = Modifier.height(16.dp))
     OutlinedTextField(
         value = phoneNumber,
         onValueChange = updatePhoneNumber,
@@ -174,7 +174,7 @@ private fun LoginSection(
         label = { Text(stringResource(R.string.login_phone_label)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
     )
-
+    Spacer(modifier = Modifier.height(16.dp))
     OutlinedTextField(
         value = password,
         onValueChange = updatePassword,
@@ -183,6 +183,7 @@ private fun LoginSection(
         visualTransformation = PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
     )
+    Spacer(modifier = Modifier.height(24.dp))
     DoubeanButton(
         onClick = login,
         modifier = Modifier.fillMaxWidth(),
@@ -201,19 +202,26 @@ private fun SessionImportSection(
     val keyboardController = LocalSoftwareKeyboardController.current
     Text(
         text = stringResource(R.string.login_session_import_title),
-        style = MaterialTheme.typography.titleMedium
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.primary
     )
+    Spacer(modifier = Modifier.height(8.dp))
     Text(
         text = stringResource(R.string.login_session_import_note),
-        style = MaterialTheme.typography.bodyMedium
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
     )
+    Spacer(modifier = Modifier.height(8.dp))
     DoubeanTextButton(onClick = triggerAutoImport, modifier = Modifier.fillMaxWidth()) {
         Text(stringResource(R.string.login_session_import_auto_button))
     }
+    Spacer(modifier = Modifier.height(16.dp))
     Text(
         text = stringResource(R.string.login_session_import_manual_note),
-        style = MaterialTheme.typography.bodyMedium
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
     )
+    Spacer(modifier = Modifier.height(8.dp))
     var pref by remember { mutableStateOf("") }
     OutlinedTextField(
         value = pref,
@@ -222,11 +230,12 @@ private fun SessionImportSection(
             .fillMaxWidth(),
         label = { Text(stringResource(R.string.login_session_import_textfield_label)) },
         supportingText = {
-            Column {
+            Column(modifier = Modifier.padding(top = 4.dp)) {
                 val path =
                     "/data/data/com.douban.frodo/shared_prefs/com.douban.frodo_preferences.xml"
                 val format = "<string name=\"key_current_account_info\">...</string>"
                 Text(stringResource(R.string.label_path, path))
+                Spacer(modifier = Modifier.height(2.dp))
                 Text(stringResource(R.string.label_format, format))
             }
         },
@@ -238,6 +247,7 @@ private fun SessionImportSection(
             }
         ),
     )
+    Spacer(modifier = Modifier.height(16.dp))
     DoubeanButton(
         onClick = {
             keyboardController?.hide()
@@ -253,6 +263,7 @@ private fun SessionImportSection(
 private fun FinalReminderText() {
     Text(
         text = stringResource(R.string.login_final_reminder),
-        style = MaterialTheme.typography.bodySmall
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.outline
     )
 }

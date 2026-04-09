@@ -24,12 +24,13 @@ fun DoubeanButton(
     colors: ButtonColors = ButtonDefaults.buttonColors(),
     border: BorderStroke? = null,
     content: @Composable RowScope.() -> Unit,
+
     ) {
     Button(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
-        shape = MaterialTheme.shapes.small,
+        shape = MaterialTheme.shapes.medium,
         colors = colors,
         border = border,
         content = content
@@ -50,7 +51,7 @@ fun DoubeanTonalButton(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
-        shape = MaterialTheme.shapes.small,
+        shape = MaterialTheme.shapes.medium,
         colors = colors,
         border = border,
         content = content
@@ -71,7 +72,7 @@ fun DoubeanOutlinedButton(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
-        shape = MaterialTheme.shapes.small,
+        shape = MaterialTheme.shapes.medium,
         colors = colors,
         border = border,
         content = content
@@ -92,7 +93,7 @@ fun DoubeanTextButton(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
-        shape = MaterialTheme.shapes.small,
+        shape = MaterialTheme.shapes.medium,
         colors = colors,
         border = border,
         content = content
@@ -104,6 +105,6 @@ fun DoubeanTextButton(
 fun SegmentedButtonDefaults.doubeanItemShape(
     index: Int,
     count: Int,
-    baseShape: CornerBasedShape = MaterialTheme.shapes.small,
+    baseShape: CornerBasedShape = MaterialTheme.shapes.medium,
 ): Shape =
     itemShape(index, count, baseShape)

@@ -140,6 +140,7 @@ Primarily for personal tracking.
     - Friends' Interests/Reviews: View interests/reviews from followed
       users ([#26](https://github.com/Bumblebee202111/doubean-public/issues/26))
     - Celebrities: Add photos ([#24](https://github.com/Bumblebee202111/doubean-public/issues/24))
+    - Trailers: Support loading more ([#24](https://github.com/Bumblebee202111/doubean-public/issues/24))
   - Review: Render content using the same HTML/WebView approach as topics
   - Color schemes
   - More
