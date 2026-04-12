@@ -18,18 +18,22 @@ class ImageViewerViewModel @AssistedInject constructor(
     private val snackbarManager: SnackbarManager,
     @Assisted val imageUrl: String,
 ) : ViewModel() {
+
     fun saveImage() {
         viewModelScope.launch {
             imageRepository.saveImage(imageUrl)
-                .onSuccess {
+                .onSuccess { savedPath ->
                     snackbarManager.showMessage(
-                        R.string.image_saved_to.toUiMessage(it.absolutePath)
+                        R.string.image_saved_to.toUiMessage(savedPath)
                     )
                 }
-                .onFailure {
-                    snackbarManager.showMessage(
+                .onFailure { error ->
+                    val message = if (error is NoSuchElementException) {
                         R.string.image_not_found_in_cache.toUiMessage()
-                    )
+                    } else {
+                        R.string.error_saving_image.toUiMessage(error.message ?: "Unknown error")
+                    }
+                    snackbarManager.showMessage(message)
                 }
         }
     }
