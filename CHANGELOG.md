@@ -3,6 +3,9 @@ Change Log
 
 ## Version 0.10.3
 
+- **Fixed:** Image saving now works correctly on Android 10 devices. (
+  Resolves [#35](https://github.com/Bumblebee202111/doubean-public/issues/35))
+
 ## Version 0.10.2
 
 - **Improved:** Movie and TV details now display richer celebrity information, including actor
