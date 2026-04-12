@@ -98,7 +98,7 @@ This repository contains a curated subset of code from a private project. It is 
 Upcoming features, bug fixes, libraries, and environment changes (roughly in chronological order).
 Primarily for personal tracking.
 
-### Current Release (0.10.2)
+### Current Release (0.10.3)
 
 ### Next Release (0..)
 

@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.10.3
+
 ## Version 0.10.2
 
 - **Improved:** Movie and TV details now display richer celebrity information, including actor
