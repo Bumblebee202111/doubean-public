@@ -98,11 +98,11 @@ This repository contains a curated subset of code from a private project. It is 
 Upcoming features, bug fixes, libraries, and environment changes (roughly in chronological order).
 Primarily for personal tracking.
 
-### Current Release (0.10.3)
-
-### Next Release (0.11.0)
+### Current Release (0.11.0)
 
 - Rating subjects ([#31](https://github.com/Bumblebee202111/doubean-public/issues/31))
+
+### Next Release (0..)
 
 <details>
 <summary>Future Plans (Click to expand)</summary>

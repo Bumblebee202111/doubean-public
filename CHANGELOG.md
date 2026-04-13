@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.11.0-beta1
+
 ## Version 0.10.3
 
 - **Fixed:** Image saving now works correctly on Android 10 devices. (
