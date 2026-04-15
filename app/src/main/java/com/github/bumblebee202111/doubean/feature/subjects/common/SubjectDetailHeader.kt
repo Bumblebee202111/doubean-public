@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.PlayCircle
 import androidx.compose.material3.Icon
@@ -27,9 +29,12 @@ import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.subjects.BookDetail
 import com.github.bumblebee202111.doubean.model.subjects.MovieDetail
+import com.github.bumblebee202111.doubean.model.subjects.Rating
 import com.github.bumblebee202111.doubean.model.subjects.SubjectDetail
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.TvDetail
+import com.github.bumblebee202111.doubean.ui.component.DoubeanRatingBar
+import com.github.bumblebee202111.doubean.ui.component.DoubeanRatingBarSize
 import com.github.bumblebee202111.doubean.ui.component.InlineLoginPrompt
 
 @Composable
@@ -38,7 +43,7 @@ fun SubjectDetailHeader(
     isLoggedIn: Boolean,
     modifier: Modifier = Modifier,
     onLoginClick: () -> Unit,
-    onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
+    onUpdateStatus: (newStatus: SubjectInterestStatus, rating: Int?) -> Unit,
     onImageClick: (url: String) -> Unit,
 ) {
     Row(
@@ -65,11 +70,17 @@ fun SubjectDetailHeader(
             Column {
                 TitleText(subject = subject)
                 SubtitleText(subject = subject)
-
             }
+
             SubjectRatingBar(rating = subject.rating, size = SubjectRatingBarSize.Expanded)
+
+            if (isLoggedIn) {
+                MyPersonalRating(subject = subject)
+            }
+
             MetaInfoText(subject = subject)
             VendorsSection(subject = subject)
+
             if (isLoggedIn) {
                 SubjectInterestButtons(
                     subject = subject,
@@ -152,6 +163,28 @@ private fun SubtitleText(subject: SubjectDetail) {
         )
     }
 
+}
+
+@Composable
+private fun MyPersonalRating(subject: SubjectDetail) {
+    val myRating = subject.interest?.rating
+    if (myRating is Rating.NonNull && myRating.value > 0) {
+        
+        val normalizedRating = (myRating.value / myRating.max * 5).coerceIn(0f, 5f)
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = stringResource(R.string.my_rating_label),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            DoubeanRatingBar(
+                rating = normalizedRating,
+                size = DoubeanRatingBarSize.Small
+            )
+        }
+    }
 }
 
 @Composable

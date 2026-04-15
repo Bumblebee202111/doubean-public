@@ -100,7 +100,7 @@ Primarily for personal tracking.
 
 ### Current Release (0.11.0)
 
-- Rating subjects ([#31](https://github.com/Bumblebee202111/doubean-public/issues/31))
+- Rate subjects ([#31](https://github.com/Bumblebee202111/doubean-public/issues/31))
 
 ### Next Release (0..)
 

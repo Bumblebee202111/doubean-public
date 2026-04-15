@@ -195,7 +195,7 @@ class TvViewModel @AssistedInject constructor(
         }
     }
 
-    fun updateStatus(newStatus: SubjectInterestStatus) {
+    fun updateStatus(newStatus: SubjectInterestStatus, rating: Int? = null) {
         val currentSuccessState = _uiState.value as? TvUiState.Success ?: return
 
         if (!currentSuccessState.isLoggedIn) {
@@ -213,7 +213,8 @@ class TvViewModel @AssistedInject constructor(
                     userSubjectRepository.addSubjectToInterests(
                         type = originalTv.type,
                         id = originalTv.id,
-                        newStatus = newStatus
+                        newStatus = newStatus,
+                        rating = rating
                     )
             }
 

@@ -4,8 +4,9 @@ data class SubjectWithRankAndInterest<T : Subject>(
     val subject: T,
     val rankValue: Int,
     override val interest: SubjectInterest = SubjectInterest(
-        null,
-        SubjectInterestStatus.MARK_STATUS_UNMARK
+        comment = null,
+        rating = null,
+        status = SubjectInterestStatus.MARK_STATUS_UNMARK
     ),
 ) : MarkableSubject {
     override val id: String

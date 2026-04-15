@@ -33,15 +33,15 @@ fun <T : Subject> MySubjectItem(
     subject: SubjectWithInterest<T>,
     isLoggedIn: Boolean,
     onClick: () -> Unit,
-    onUpdateStatus: (subject: SubjectWithInterest<T>, newStatus: SubjectInterestStatus) -> Unit,
+    onUpdateStatus: (subject: SubjectWithInterest<T>, newStatus: SubjectInterestStatus, Int?) -> Unit,
 ) {
     var showActionsBottomSheet by remember { mutableStateOf(false) }
 
     if (showActionsBottomSheet && isLoggedIn) {
         MySubjectActionsBottomSheet(
             subject = subject,
-            onUpdateStatus = { newStatus ->
-                onUpdateStatus(subject, newStatus)
+            onUpdateStatus = { newStatus, rating ->
+                onUpdateStatus(subject, newStatus, rating)
             },
             onDismissRequest = { showActionsBottomSheet = false }
         )

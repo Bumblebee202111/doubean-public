@@ -137,7 +137,7 @@ class BookViewModel @AssistedInject constructor(
         }
     }
 
-    fun updateStatus(newStatus: SubjectInterestStatus) {
+    fun updateStatus(newStatus: SubjectInterestStatus, rating: Int? = null) {
         val currentSuccessState = _uiState.value as? BookUiState.Success ?: return
 
         if (!currentSuccessState.isLoggedIn) {
@@ -155,7 +155,8 @@ class BookViewModel @AssistedInject constructor(
                     userSubjectRepository.addSubjectToInterests(
                         type = originalBook.type,
                         id = originalBook.id,
-                        newStatus = newStatus
+                        newStatus = newStatus,
+                        rating = rating
                     )
             }
 

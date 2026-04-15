@@ -80,7 +80,7 @@ fun InterestsScreen(
     onMovieClick: (movieId: String) -> Unit,
     onTvClick: (tvId: String) -> Unit,
     onBookClick: (bookId: String) -> Unit,
-    onUpdateInterestStatus: (subject: SubjectWithInterest<*>, newStatus: SubjectInterestStatus) -> Unit,
+    onUpdateInterestStatus: (subject: SubjectWithInterest<*>, newStatus: SubjectInterestStatus, rating: Int?) -> Unit,
     onRetryClick: () -> Unit,
 ) {
 

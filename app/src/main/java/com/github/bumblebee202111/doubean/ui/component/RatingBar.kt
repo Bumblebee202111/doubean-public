@@ -14,6 +14,8 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.github.bumblebee202111.doubean.ui.theme.RatingActiveColor
+import com.github.bumblebee202111.doubean.ui.theme.RatingInactiveColor
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -33,6 +35,8 @@ fun DoubeanRatingBar(
     rating: Float,
     modifier: Modifier = Modifier,
     size: DoubeanRatingBarSize = DoubeanRatingBarSize.Small,
+    activeColor: Color = RatingActiveColor,
+    inactiveColor: Color = RatingInactiveColor,
 ) {
     val clampedRating = rating.coerceIn(0f, 5f)
     val activeColor = Color(0xFFFFC107)

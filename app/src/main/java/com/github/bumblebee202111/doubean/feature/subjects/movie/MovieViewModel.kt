@@ -199,7 +199,7 @@ class MovieViewModel @AssistedInject constructor(
         }
     }
 
-    fun updateStatus(newStatus: SubjectInterestStatus) {
+    fun updateStatus(newStatus: SubjectInterestStatus, rating: Int? = null) {
         val currentSuccessState = _uiState.value as? MovieUiState.Success ?: return
 
         if (!currentSuccessState.isLoggedIn) {
@@ -217,7 +217,8 @@ class MovieViewModel @AssistedInject constructor(
                     userSubjectRepository.addSubjectToInterests(
                         type = originalMovie.type,
                         id = originalMovie.id,
-                        newStatus = newStatus
+                        newStatus = newStatus,
+                        rating = rating
                     )
             }
 

@@ -15,16 +15,16 @@ import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
 @Composable
 fun <T : Subject> MySubjectActionsBottomSheet(
     subject: SubjectWithInterest<T>,
-    onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
+    onUpdateStatus: (newStatus: SubjectInterestStatus, Int?) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     ModalBottomSheet(onDismissRequest = onDismissRequest) {
         Column(modifier = Modifier.padding(16.dp)) {
             SubjectInterestButtons(
                 subject = subject,
-                onUpdateStatus = { newStatus ->
+                onUpdateStatus = { newStatus, rating ->
                     onDismissRequest()
-                    onUpdateStatus(newStatus)
+                    onUpdateStatus(newStatus, rating)
                 }
             )
         }

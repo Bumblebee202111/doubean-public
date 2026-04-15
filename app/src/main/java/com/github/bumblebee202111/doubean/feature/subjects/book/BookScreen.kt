@@ -69,7 +69,7 @@ fun BookScreen(
     showCreateDouListDialog: Boolean,
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
-    onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
+    onUpdateStatus: (newStatus: SubjectInterestStatus, rating: Int?) -> Unit,
     onImageClick: (url: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
     onRecommendSubjectClick: (subject: RecommendSubject) -> Unit,

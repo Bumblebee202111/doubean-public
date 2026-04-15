@@ -11,6 +11,10 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -18,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.model.subjects.MarkableSubject
+import com.github.bumblebee202111.doubean.model.subjects.Rating
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectCurrentStatusIconVector
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusActionIconsMap
@@ -25,12 +30,31 @@ import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusActionT
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusTextResIdsMap
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton
 import com.github.bumblebee202111.doubean.ui.component.doubeanItemShape
+import kotlin.math.roundToInt
 
 @Composable
 fun SubjectInterestButtons(
     subject: MarkableSubject,
-    onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
+    onUpdateStatus: (newStatus: SubjectInterestStatus, rating: Int?) -> Unit,
 ) {
+    var pendingStatus by remember { mutableStateOf<SubjectInterestStatus?>(null) }
+
+    if (pendingStatus != null) {
+        
+        val currentRating = subject.interest?.rating?.let {
+            if (it is Rating.NonNull) (it.value / it.max * 5).roundToInt() else 0
+        } ?: 0
+
+        SubjectRatingDialog(
+            initialRating = currentRating,
+            onDismissRequest = { pendingStatus = null },
+            onConfirm = { rating ->
+                onUpdateStatus(pendingStatus!!, rating)
+                pendingStatus = null
+            }
+        )
+    }
+
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
@@ -40,13 +64,20 @@ fun SubjectInterestButtons(
                     SegmentedButton(
                         selected = status == subject.interest?.status,
                         onClick = {
-                            onUpdateStatus(status)
+                            if (status in setOf(
+                                    SubjectInterestStatus.MARK_STATUS_DOING,
+                                    SubjectInterestStatus.MARK_STATUS_DONE
+                                )
+                            ) {
+                                pendingStatus = status
+                            } else {
+                                onUpdateStatus(status, null)
+                            }
                         },
                         shape = SegmentedButtonDefaults.doubeanItemShape(
                             index = index,
                             count = interestStatuses.size
                         ),
-                        enabled = status != subject.interest?.status,
                         icon = {
                             val icon =
                                 if (subject.interest?.status == status) SubjectCurrentStatusIconVector
@@ -55,8 +86,6 @@ fun SubjectInterestButtons(
                                 imageVector = icon,
                                 contentDescription = null
                             )
-
-
                         }
                     ) {
                         val textResId = if (subject.interest?.status == status) {
@@ -80,10 +109,10 @@ fun SubjectInterestButtons(
 @Composable
 fun SubjectInterestUnmarkButton(
     subject: MarkableSubject,
-    onUpdateStatus: (newStatus: SubjectInterestStatus) -> Unit,
+    onUpdateStatus: (newStatus: SubjectInterestStatus, rating: Int?) -> Unit,
 ) {
     DoubeanTextButton(onClick = {
-        onUpdateStatus(SubjectInterestStatus.MARK_STATUS_UNMARK)
+        onUpdateStatus(SubjectInterestStatus.MARK_STATUS_UNMARK, null)
     }) {
         SubjectSingleInterestButtonContent(
             iconVector = SubjectStatusActionIconsMap.getValue(SubjectInterestStatus.MARK_STATUS_UNMARK)

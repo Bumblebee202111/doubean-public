@@ -136,6 +136,7 @@ class InterestsViewModel @AssistedInject constructor(
     fun onUpdateInterestStatus(
         subjectWithInterest: SubjectWithInterest<*>,
         status: SubjectInterestStatus,
+        rating: Int?,
     ) {
         viewModelScope.launch {
             val result: AppResult<Any> = when (status) {
@@ -148,8 +149,10 @@ class InterestsViewModel @AssistedInject constructor(
 
                 else -> {
                     userSubjectRepository.addSubjectToInterests(
-                        subjectWithInterest.type, subjectWithInterest.id,
-                        newStatus = status
+                        type = subjectWithInterest.type,
+                        id = subjectWithInterest.id,
+                        newStatus = status,
+                        rating = rating
                     )
                 }
             }

@@ -78,12 +78,14 @@ class UserSubjectRepository @Inject constructor(private val apiService: ApiServi
         type: SubjectType,
         id: String,
         newStatus: SubjectInterestStatus,
+        rating: Int? = null,
     ): AppResult<SubjectWithInterest<Subject>> = makeApiCall(
         apiCall = {
             apiService.addSubjectToInterests(
                 type = type.toNetworkSubjectType().value,
                 id = id,
-                newStatus = newStatus.toNetworkStatus().value
+                newStatus = newStatus.toNetworkStatus().value,
+                rating = rating
             )
         },
         mapSuccess = NetworkSubjectInterestWithSubject::toSubjectWithInterest
