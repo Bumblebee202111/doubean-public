@@ -1,7 +1,13 @@
 Change Log
 ==========
 
-## Version 0.11.0-beta1
+## Version 0.11.0
+
+**Important changes since 0.10.x**
+
+- **New:** Rate subjects (Movies, Books, TVs) when marking them as "Doing" or "Done", and view your
+  personal rating directly in the subject
+  header. ([#31](https://github.com/Bumblebee202111/doubean-public/issues/31))
 
 ## Version 0.11.0-beta1
 
