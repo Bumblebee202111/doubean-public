@@ -74,19 +74,19 @@ fun SubjectDetailHeader(
 
             SubjectRatingBar(rating = subject.rating, size = SubjectRatingBarSize.Expanded)
 
-            if (isLoggedIn) {
-                MyPersonalRating(subject = subject)
-            }
-
             MetaInfoText(subject = subject)
             VendorsSection(subject = subject)
 
             if (isLoggedIn) {
+                Spacer(modifier = Modifier.height(4.dp))
+
+                MyPersonalRating(subject = subject)
                 SubjectInterestButtons(
                     subject = subject,
                     onUpdateStatus = onUpdateStatus
                 )
             } else {
+                Spacer(modifier = Modifier.height(4.dp))
                 InlineLoginPrompt(
                     promptText = stringResource(R.string.login_prompt_mark_subject),
                     onLoginClick = onLoginClick
@@ -162,17 +162,19 @@ private fun SubtitleText(subject: SubjectDetail) {
             fontWeight = FontWeight.Bold
         )
     }
-
 }
 
 @Composable
 private fun MyPersonalRating(subject: SubjectDetail) {
     val myRating = subject.interest?.rating
     if (myRating is Rating.NonNull && myRating.value > 0) {
-        
         val normalizedRating = (myRating.value / myRating.max * 5).coerceIn(0f, 5f)
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 text = stringResource(R.string.my_rating_label),
                 style = MaterialTheme.typography.bodySmall,
