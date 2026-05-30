@@ -14,7 +14,7 @@ import com.github.bumblebee202111.doubean.data.paging.GroupTagTopicRemoteMediato
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
 import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
-import com.github.bumblebee202111.doubean.network.ApiService
+import com.github.bumblebee202111.doubean.network.api.GroupApiService
 import com.github.bumblebee202111.doubean.network.model.toCachedGroupEntity
 import com.github.bumblebee202111.doubean.network.model.toGroupDetail
 import com.github.bumblebee202111.doubean.network.model.toGroupItemWithMemberInfo
@@ -32,7 +32,7 @@ import javax.inject.Singleton
 @Singleton
 class GroupRepository @Inject constructor(
     private val appDatabase: AppDatabase,
-    private val ApiService: ApiService,
+    private val apiService: GroupApiService,
 ) {
     private val groupDao = appDatabase.groupDao()
 
@@ -41,11 +41,11 @@ class GroupRepository @Inject constructor(
             getCache = { groupDao.getCachedGroup(id) },
             mapCacheToCacheDomain = { it.toSimpleGroupWithColor() },
             fetchRemote = {
-                ApiService.getGroup(id)
+                apiService.getGroup(id)
             },
             saveCache = {
                 groupDao.insertCachedGroup(it.toCachedGroupEntity())
-                groupDao.insertGroupTabs(it.tabs.map { it.toGroupTabEntity(id) })
+                groupDao.insertGroupTabs(it.tabs.map { tab -> tab.toGroupTabEntity(id) })
             },
             mapResponseToDomain = {
                 it.toGroupDetail()
@@ -61,7 +61,7 @@ class GroupRepository @Inject constructor(
         ),
         pagingSourceFactory = {
             GroupSearchResultItemPagingSource(
-            query = query, service = ApiService, appDatabase = appDatabase
+                query = query, apiService = apiService, appDatabase = appDatabase
             )
         }
     ).flow
@@ -76,7 +76,7 @@ class GroupRepository @Inject constructor(
         remoteMediator = GroupTagTopicRemoteMediator(
             groupId = groupId,
             tagId = tagId,
-            sortBy = sortBy, service = ApiService, appDatabase = appDatabase
+            sortBy = sortBy, apiService = apiService, appDatabase = appDatabase
         ),
         pagingSourceFactory = {
             groupDao.groupTagTopicPagingSource(
@@ -90,23 +90,18 @@ class GroupRepository @Inject constructor(
     suspend fun getDayRanking(): AppResult<List<GroupItemWithIntroInfo>> {
         return makeApiCall(
             apiCall = {
-                ApiService.getDayRanking()
+                apiService.getDayRanking()
             },
             mapSuccess = { data ->
                 groupDao.upsertSimpleCachedGroups(data.items.map { it.group.toSimpleCachedGroupPartialEntity() })
                 data.items.map {
                     it.group.toGroupItemWithMemberInfo()
                 }
-            },
-
-            )
+            }
+        )
     }
 
     companion object {
         const val RESULT_TOPICS_PAGE_SIZE = 40
     }
 }
-
-
-
-

@@ -3,17 +3,17 @@ package com.github.bumblebee202111.doubean.data.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
-import com.github.bumblebee202111.doubean.network.ApiService
+import com.github.bumblebee202111.doubean.network.api.UserApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkSubjectInterestWithSubject
 import com.github.bumblebee202111.doubean.network.model.toNetworkSubjectType
 
 class UserSubjectInterestItemPagingSource(
-    private val backend: ApiService,
+    private val apiService: UserApiService,
     val userId: String,
     val subjectType: SubjectType,
     val initialStart: Int = 0,
-) :
-    PagingSource<Int, NetworkSubjectInterestWithSubject>() {
+) : PagingSource<Int, NetworkSubjectInterestWithSubject>() {
+
     override fun getRefreshKey(state: PagingState<Int, NetworkSubjectInterestWithSubject>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             state.closestPageToPosition(anchorPosition)?.prevKey?.plus(state.config.pageSize)
@@ -26,7 +26,7 @@ class UserSubjectInterestItemPagingSource(
             val start = params.key ?: initialStart
             val count = params.loadSize
 
-            val response = backend.getUserSubjectInterests(
+            val response = apiService.getUserSubjectInterests(
                 userId = userId,
                 type = subjectType.toNetworkSubjectType().value,
                 start = start,
@@ -46,5 +46,4 @@ class UserSubjectInterestItemPagingSource(
             )
         }
     }
-
 }

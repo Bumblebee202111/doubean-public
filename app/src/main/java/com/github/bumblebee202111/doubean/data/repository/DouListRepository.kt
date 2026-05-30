@@ -3,7 +3,7 @@ package com.github.bumblebee202111.doubean.data.repository
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.common.DouListPostItem
 import com.github.bumblebee202111.doubean.model.doulists.DouList
-import com.github.bumblebee202111.doubean.network.ApiService
+import com.github.bumblebee202111.doubean.network.api.DouListApiService
 import com.github.bumblebee202111.doubean.network.model.common.toDouListPosts
 import com.github.bumblebee202111.doubean.network.model.doulists.toDouList
 import com.github.bumblebee202111.doubean.network.util.makeApiCall
@@ -11,7 +11,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DouListRepository @Inject constructor(private val apiService: ApiService) {
+class DouListRepository @Inject constructor(private val apiService: DouListApiService) {
     suspend fun getDouList(douListId: String): AppResult<DouList> = makeApiCall(
         apiCall = {
             apiService.getDouList(douListId)

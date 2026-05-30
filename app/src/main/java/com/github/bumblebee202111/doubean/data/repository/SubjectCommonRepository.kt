@@ -6,7 +6,7 @@ import com.github.bumblebee202111.doubean.model.subjects.RecommendSubject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectModule
 import com.github.bumblebee202111.doubean.model.subjects.SubjectReviewList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
-import com.github.bumblebee202111.doubean.network.ApiService
+import com.github.bumblebee202111.doubean.network.api.SubjectApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkSubjectModules
 import com.github.bumblebee202111.doubean.network.model.NetworkSubjectReviewList
 import com.github.bumblebee202111.doubean.network.model.subject.NetworkRecommend
@@ -20,7 +20,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SubjectCommonRepository @Inject constructor(private val service: ApiService) {
+class SubjectCommonRepository @Inject constructor(private val service: SubjectApiService) {
 
     suspend fun getSubjectCreditList(
         subjectType: SubjectType,

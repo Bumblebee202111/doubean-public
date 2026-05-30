@@ -1,6 +1,6 @@
 package com.github.bumblebee202111.doubean.data.repository
 
-import com.github.bumblebee202111.doubean.network.ApiService
+import com.github.bumblebee202111.doubean.network.api.SubjectApiService
 import com.github.bumblebee202111.doubean.network.model.subject.NetworkBookDetail
 import com.github.bumblebee202111.doubean.network.model.subject.toBookDetail
 import com.github.bumblebee202111.doubean.network.util.makeApiCall
@@ -9,7 +9,7 @@ import javax.inject.Singleton
 
 @Singleton
 class BookRepository @Inject constructor(
-    private val apiService: ApiService,
+    private val apiService: SubjectApiService,
 ) {
     suspend fun getBook(bookId: String) =
         makeApiCall(

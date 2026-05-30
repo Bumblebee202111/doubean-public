@@ -5,7 +5,7 @@ import com.github.bumblebee202111.doubean.model.groups.PollId
 import com.github.bumblebee202111.doubean.model.groups.QuestionId
 import com.github.bumblebee202111.doubean.model.groups.TopicContentEntity
 import com.github.bumblebee202111.doubean.model.groups.TopicContentEntityId
-import com.github.bumblebee202111.doubean.network.ApiService
+import com.github.bumblebee202111.doubean.network.api.PollApiService
 import com.github.bumblebee202111.doubean.network.model.toPoll
 import com.github.bumblebee202111.doubean.network.model.toQuestion
 import com.github.bumblebee202111.doubean.network.util.makeApiCall
@@ -16,7 +16,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PollRepository @Inject constructor(private val ApiService: ApiService) {
+class PollRepository @Inject constructor(private val apiService: PollApiService) {
     suspend fun getPollsAndQuestions(pollIds: List<TopicContentEntityId>): AppResult<List<TopicContentEntity>> {
         val results = coroutineScope {
             pollIds.map { id ->
@@ -24,14 +24,14 @@ class PollRepository @Inject constructor(private val ApiService: ApiService) {
                     when (id) {
                         is PollId -> {
                             makeApiCall(
-                                apiCall = { ApiService.getPoll(id.s) },
+                                apiCall = { apiService.getPoll(id.s) },
                                 mapSuccess = { it.toPoll() }
                             )
                         }
 
                         is QuestionId -> {
                             makeApiCall(
-                                apiCall = { ApiService.getQuestion(id.s) },
+                                apiCall = { apiService.getQuestion(id.s) },
                                 mapSuccess = { it.toQuestion() }
                             )
                         }

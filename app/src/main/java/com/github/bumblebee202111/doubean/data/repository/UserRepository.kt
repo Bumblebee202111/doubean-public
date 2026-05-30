@@ -5,7 +5,7 @@ import com.github.bumblebee202111.doubean.data.db.model.toUser
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.fangorns.UserDetail
 import com.github.bumblebee202111.doubean.model.profile.ProfileCommunityContribution
-import com.github.bumblebee202111.doubean.network.ApiService
+import com.github.bumblebee202111.doubean.network.api.UserApiService
 import com.github.bumblebee202111.doubean.network.model.fangorns.toUserDetail
 import com.github.bumblebee202111.doubean.network.model.fangorns.toUserEntity
 import com.github.bumblebee202111.doubean.network.model.profile.toProfileCommunityContribution
@@ -16,14 +16,14 @@ import javax.inject.Singleton
 
 @Singleton
 class UserRepository @Inject constructor(
-    private val service: ApiService,
+    private val apiService: UserApiService,
     private val appDatabase: AppDatabase,
 ) {
     private val userDao = appDatabase.userDao()
     suspend fun fetchUser(userId: String): AppResult<Unit> {
         return makeApiCall(
             apiCall = {
-                service.getUserBasicOnly(userId)
+                apiService.getUserBasicOnly(userId)
             },
             mapSuccess = {
                 userDao.insertUser(it.toUserEntity())
@@ -36,7 +36,7 @@ class UserRepository @Inject constructor(
     suspend fun getUserDetail(userId: String): AppResult<UserDetail> {
         return makeApiCall(
             apiCall = {
-                service.getUser(userId)
+                apiService.getUser(userId)
             },
             mapSuccess = {
                 it.toUserDetail()
@@ -47,7 +47,7 @@ class UserRepository @Inject constructor(
     suspend fun getUserCommunityContributions(userId: String): AppResult<ProfileCommunityContribution> {
         return makeApiCall(
             apiCall = {
-                service.getUserCommunityContribution(userId)
+                apiService.getUserCommunityContribution(userId)
             },
             mapSuccess = {
                 it.toProfileCommunityContribution()

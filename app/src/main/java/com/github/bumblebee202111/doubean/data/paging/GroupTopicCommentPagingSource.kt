@@ -2,11 +2,11 @@ package com.github.bumblebee202111.doubean.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.github.bumblebee202111.doubean.network.ApiService
+import com.github.bumblebee202111.doubean.network.api.GroupApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkGroupTopicComment
 
 class GroupTopicCommentPagingSource(
-    private val apiService: ApiService,
+    private val apiService: GroupApiService,
     private val topicId: String,
     private val spmId: String? = null,
     private val onlyOp: Boolean = false,

@@ -13,7 +13,7 @@ import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItem
 import com.github.bumblebee202111.doubean.data.db.model.UserEntity
 import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 import com.github.bumblebee202111.doubean.model.groups.getRequestParamString
-import com.github.bumblebee202111.doubean.network.ApiService
+import com.github.bumblebee202111.doubean.network.api.GroupApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkTopicItem
 import com.github.bumblebee202111.doubean.network.model.asPartialEntity
 import com.github.bumblebee202111.doubean.network.model.fangorns.toUserEntity
@@ -25,7 +25,7 @@ class GroupTagTopicRemoteMediator(
     private val groupId: String,
     private val tagId: String?,
     private val sortBy: TopicSortBy,
-    private val service: ApiService,
+    private val apiService: GroupApiService,
     private val appDatabase: AppDatabase,
 ) : RemoteMediator<Int, PopulatedTopicItem>() {
     private val groupDao = appDatabase.groupDao()
@@ -33,6 +33,7 @@ class GroupTagTopicRemoteMediator(
     private val userDao = appDatabase.userDao()
     private val remoteKeyDao = appDatabase.groupTopicRemoteKeyDao()
     private val tagIdColumnValue = tagId ?: COLUMN_VALUE_GROUP_TAG_ID_ALL
+
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, PopulatedTopicItem>,
@@ -51,7 +52,7 @@ class GroupTagTopicRemoteMediator(
                 )
             }
 
-            val response = service.getGroupTopics(
+            val response = apiService.getGroupTopics(
                 groupId = groupId,
                 topicTagId = tagId,
                 sortBy = sortBy.getRequestParamString(),

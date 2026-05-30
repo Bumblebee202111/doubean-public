@@ -13,7 +13,8 @@ import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUser
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
 import com.github.bumblebee202111.doubean.model.subjects.toNetworkStatus
-import com.github.bumblebee202111.doubean.network.ApiService
+import com.github.bumblebee202111.doubean.network.api.SubjectApiService
+import com.github.bumblebee202111.doubean.network.api.UserApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkSubjectInterest
 import com.github.bumblebee202111.doubean.network.model.NetworkSubjectInterestWithSubject
 import com.github.bumblebee202111.doubean.network.model.NetworkSubjectInterestWithSubjectList
@@ -30,11 +31,14 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class UserSubjectRepository @Inject constructor(private val apiService: ApiService) {
+class UserSubjectRepository @Inject constructor(
+    private val subjectApiService: SubjectApiService,
+    private val userApiService: UserApiService,
+) {
 
     
     suspend fun getUserSubjects(userId: String): AppResult<List<MySubject>> = makeApiCall(
-        apiCall = { apiService.getUserProfileSubjects(userId) },
+        apiCall = { userApiService.getUserProfileSubjects(userId) },
         mapSuccess = NetworkUserProfileSubjects::toMySubjects
     )
 
@@ -43,7 +47,7 @@ class UserSubjectRepository @Inject constructor(private val apiService: ApiServi
         subjectType: SubjectType,
     ): AppResult<List<SubjectWithInterest<Subject>>> = makeApiCall(
         apiCall = {
-            apiService.getUserSubjectInterests(
+            userApiService.getUserSubjectInterests(
                 userId = userId,
                 type = subjectType.toNetworkSubjectType().value,
                 count = USER_SUBJECT_COUNT
@@ -65,7 +69,7 @@ class UserSubjectRepository @Inject constructor(private val apiService: ApiServi
             ),
             pagingSourceFactory = {
                 UserSubjectInterestItemPagingSource(
-                    backend = apiService,
+                    apiService = userApiService,
                     userId = userId,
                     subjectType = subjectType,
                     initialStart = if (skipFirstPage) USER_SUBJECT_COUNT else 0
@@ -81,7 +85,7 @@ class UserSubjectRepository @Inject constructor(private val apiService: ApiServi
         rating: Int? = null,
     ): AppResult<SubjectWithInterest<Subject>> = makeApiCall(
         apiCall = {
-            apiService.addSubjectToInterests(
+            subjectApiService.addSubjectToInterests(
                 type = type.toNetworkSubjectType().value,
                 id = id,
                 newStatus = newStatus.toNetworkStatus().value,
@@ -94,7 +98,7 @@ class UserSubjectRepository @Inject constructor(private val apiService: ApiServi
     suspend fun unmarkSubject(type: SubjectType, id: String): AppResult<SubjectInterest> =
         makeApiCall(
             apiCall = {
-                apiService.unmarkSubject(
+                subjectApiService.unmarkSubject(
                     type = type.toNetworkSubjectType().value,
                     id = id
                 )
@@ -109,7 +113,7 @@ class UserSubjectRepository @Inject constructor(private val apiService: ApiServi
     ): AppResult<SubjectInterestWithUserList> {
         return makeApiCall(
             apiCall = {
-                apiService.getSubjectFollowingHotInterests(
+                subjectApiService.getSubjectFollowingHotInterests(
                     type = type.toNetworkSubjectType().value,
                     id = id,
                     status = status.toNetworkStatus().value
@@ -128,7 +132,7 @@ class UserSubjectRepository @Inject constructor(private val apiService: ApiServi
     ): AppResult<SubjectInterestWithUserList> {
         return makeApiCall(
             apiCall = {
-                apiService.getSubjectHotInterests(
+                subjectApiService.getSubjectHotInterests(
                     type = type.toNetworkSubjectType().value,
                     id = id,
                     status = status.toNetworkStatus().value

@@ -27,7 +27,7 @@ import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 import com.github.bumblebee202111.doubean.model.groups.getRequestParamString
 import com.github.bumblebee202111.doubean.model.groups.toGroupNotificationTargetPartialEntity
 import com.github.bumblebee202111.doubean.model.groups.toGroupTabNotificationTargetPartialEntity
-import com.github.bumblebee202111.doubean.network.ApiService
+import com.github.bumblebee202111.doubean.network.api.GroupApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkGroupTopicTag
 import com.github.bumblebee202111.doubean.network.model.NetworkRecentTopicsFeedItem
 import com.github.bumblebee202111.doubean.network.model.NetworkTopicItem
@@ -54,7 +54,7 @@ import javax.inject.Singleton
 @Singleton
 class UserGroupRepository @Inject constructor(
     private val appDatabase: AppDatabase,
-    private val apiService: ApiService,
+    private val apiService: GroupApiService,
     private val notifier: Notifier,
 ) {
     private val userGroupDao = appDatabase.userGroupDao()

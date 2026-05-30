@@ -2,16 +2,17 @@ package com.github.bumblebee202111.doubean.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.github.bumblebee202111.doubean.network.ApiService
+import com.github.bumblebee202111.doubean.network.api.GroupApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkReshareItem
 
 class GroupTopicReshareItemPagingSource(
-    private val apiService: ApiService,
+    private val apiService: GroupApiService,
     private val topicId: String,
 ) :
     PagingSource<Int, NetworkReshareItem>() {
 
     override val jumpingSupported: Boolean = true
+
     override fun getRefreshKey(state: PagingState<Int, NetworkReshareItem>): Int {
         return ((state.anchorPosition ?: 0) - state.config.initialLoadSize / 2).coerceAtLeast(0)
     }

@@ -21,7 +21,7 @@ Source: `app/src/main/java/com/github/bumblebee202111/doubean`
 - `ui`: Main app shell (`DoubeanApp`, `MainNavScreen`), Screens, components (`common`, `component`), and `theme`.
 - `data`: Repositories (`repository`), Room (`db`), DataStore (`prefs`).
 - `model`: Entities (`auth`, `groups`, `subjects`, `statuses`, `doulists`).
-- `network`: Ktor APIs (`ApiService`, `DoubanWebService`).
+- `network`: Ktor APIs (`ApiClient`, `*ApiService`, `DoubanWebService`).
 - `feature`:
     - `groups`: Discussions and topics.
     - `subjects`: Books, Movies, TVs.

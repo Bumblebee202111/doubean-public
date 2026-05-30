@@ -14,7 +14,7 @@ import com.github.bumblebee202111.doubean.model.fangorns.ReactionType
 import com.github.bumblebee202111.doubean.model.groups.GroupTopicCommentReshareItem
 import com.github.bumblebee202111.doubean.model.groups.TopicComment
 import com.github.bumblebee202111.doubean.model.groups.TopicDetail
-import com.github.bumblebee202111.doubean.network.ApiService
+import com.github.bumblebee202111.doubean.network.api.GroupApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkGroupTopicComment
 import com.github.bumblebee202111.doubean.network.model.NetworkReshareItem
 import com.github.bumblebee202111.doubean.network.model.asExternalModel
@@ -41,7 +41,7 @@ data class TopicCommentsResult(
 @Singleton
 class GroupTopicRepository @Inject constructor(
     private val appDatabase: AppDatabase,
-    private val apiService: ApiService,
+    private val apiService: GroupApiService,
 ) {
 
     private val groupDao = appDatabase.groupDao()

@@ -3,14 +3,14 @@ package com.github.bumblebee202111.doubean.data.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithRankAndInterest
-import com.github.bumblebee202111.doubean.network.ApiService
+import com.github.bumblebee202111.doubean.network.api.SubjectApiService
 import com.github.bumblebee202111.doubean.network.model.toSubjectWithRankAndInterest
 
 class SubjectCollectionItemPagingSource(
-    private val backend: ApiService,
+    private val apiService: SubjectApiService,
     val collectionId: String,
-) :
-    PagingSource<Int, SubjectWithRankAndInterest<*>>() {
+) : PagingSource<Int, SubjectWithRankAndInterest<*>>() {
+
     override fun getRefreshKey(state: PagingState<Int, SubjectWithRankAndInterest<*>>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             state.closestPageToPosition(anchorPosition)?.prevKey?.plus(state.config.pageSize)
@@ -23,7 +23,7 @@ class SubjectCollectionItemPagingSource(
             val start = params.key ?: 0
             val count = params.loadSize
 
-            val response = backend.getSubjectCollectionItems(
+            val response = apiService.getSubjectCollectionItems(
                 collectionId = collectionId,
                 start = start,
                 count = count
