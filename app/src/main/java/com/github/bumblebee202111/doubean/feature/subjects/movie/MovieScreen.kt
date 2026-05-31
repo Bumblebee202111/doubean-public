@@ -35,9 +35,7 @@ fun MovieScreen(
     onLoginClick: () -> Unit,
     onImageClick: (url: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
-    onMovieClick: (movieId: String) -> Unit,
-    onTvClick: (tvId: String) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
     viewModel: MovieViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -54,9 +52,7 @@ fun MovieScreen(
         onImageClick = onImageClick,
         onUserClick = onUserClick,
         onRecommendSubjectClick = rememberRecommendSubjectClickHandler(
-            onMovieClick = onMovieClick,
-            onTvClick = onTvClick,
-            onBookClick = onBookClick
+            onSubjectClick = onSubjectClick
         ),
         onCollectClick = viewModel::collect,
         onDismissCollectDialog = viewModel::dismissCollectDialog,

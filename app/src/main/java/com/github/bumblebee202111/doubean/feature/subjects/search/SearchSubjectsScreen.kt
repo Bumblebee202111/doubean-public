@@ -46,9 +46,7 @@ import com.github.bumblebee202111.doubean.util.OpenInUtils
 @Composable
 fun SearchSubjectsScreen(
     onBackClick: () -> Unit,
-    onMovieClick: (movieId: String) -> Unit,
-    onTvClick: (tvId: String) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
     viewModel: SearchSubjectsViewModel = hiltViewModel(),
 ) {
     val searchResultUiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -63,9 +61,7 @@ fun SearchSubjectsScreen(
         onDeleteHistoryItem = viewModel::onDeleteHistoryItem,
         onClearHistory = viewModel::onClearHistory,
         onTypeSelected = viewModel::onTypeSelected,
-        onMovieClick = onMovieClick,
-        onTvClick = onTvClick,
-        onBookClick = onBookClick
+        onSubjectClick = onSubjectClick
     )
 }
 
@@ -80,9 +76,7 @@ fun SearchSubjectsScreen(
     onDeleteHistoryItem: (String) -> Unit,
     onClearHistory: () -> Unit,
     onTypeSelected: (SubjectsSearchType) -> Unit,
-    onMovieClick: (movieId: String) -> Unit,
-    onTvClick: (tvId: String) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
 ) {
     var isSearchFocused by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -168,9 +162,7 @@ fun SearchSubjectsScreen(
                         type = uiState.selectedType,
                         searchResultSubjects = items,
                         contentPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding() + 12.dp),
-                        onMovieClick = onMovieClick,
-                        onTvClick = onTvClick,
-                        onBookClick = onBookClick
+                        onSubjectClick = onSubjectClick
                     )
                 }
             }
@@ -204,9 +196,7 @@ private fun SearchResultBody(
     type: SubjectsSearchType?,
     searchResultSubjects: List<SearchResultSubjectItem>,
     contentPadding: PaddingValues,
-    onMovieClick: (movieId: String) -> Unit,
-    onTvClick: (tvId: String) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -223,27 +213,13 @@ private fun SearchResultBody(
                     )
                 },
                 onClick = {
-                    when (subject.type) {
-                        SubjectType.MOVIE -> {
-                            onMovieClick(subject.id)
-                        }
-
-                        SubjectType.TV -> {
-                            onTvClick(subject.id)
-                        }
-
-                        SubjectType.BOOK -> {
-                            onBookClick(subject.id)
-                        }
-
-                        SubjectType.UNSUPPORTED -> {
-                            OpenInUtils.openInDouban(context, subject.uri)
-                        }
+                    if (subject.type == SubjectType.UNSUPPORTED) {
+                        OpenInUtils.openInDouban(context, subject.uri)
+                    } else {
+                        onSubjectClick(subject.id, subject.type)
                     }
                 },
-
-                )
+            )
         }
     }
 }
-

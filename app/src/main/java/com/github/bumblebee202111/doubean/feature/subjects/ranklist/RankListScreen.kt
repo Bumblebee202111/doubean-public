@@ -14,6 +14,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.common.rankList
 import com.github.bumblebee202111.doubean.model.subjects.Subject
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithRankAndInterest
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
@@ -23,9 +24,7 @@ import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicato
 @Composable
 fun RankListScreen(
     onBackClick: () -> Unit,
-    onMovieClick: (movieId: String) -> Unit,
-    onTvClick: (tvId: String) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
     viewModel: RankListViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.rankListUiState.collectAsStateWithLifecycle()
@@ -35,9 +34,7 @@ fun RankListScreen(
         items = items,
         onMarkSubject = viewModel::onMarkSubject,
         onBackClick = onBackClick,
-        onMovieClick = onMovieClick,
-        onTvClick = onTvClick,
-        onBookClick = onBookClick,
+        onSubjectClick = onSubjectClick,
         onRetryClick = viewModel::retry
     )
 }
@@ -48,9 +45,7 @@ fun RankListScreen(
     items: LazyPagingItems<SubjectWithRankAndInterest<out Subject>>,
     onMarkSubject: (subject: SubjectWithRankAndInterest<*>) -> Unit,
     onBackClick: () -> Unit,
-    onMovieClick: (movieId: String) -> Unit,
-    onTvClick: (tvId: String) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onRetryClick: () -> Unit,
 ) {
     Scaffold(topBar = {
@@ -76,9 +71,7 @@ fun RankListScreen(
                             subjectCollection = rankList,
                             subjectCollectionItems = items,
                             isLoggedIn = isLoggedIn,
-                            onMovieClick = onMovieClick,
-                            onTvClick = onTvClick,
-                            onBookClick = onBookClick,
+                            onSubjectClick = onSubjectClick,
                             onMarkClick = onMarkSubject
                         )
                     }

@@ -5,6 +5,7 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.subjects.book.BookScreen
 import com.github.bumblebee202111.doubean.feature.subjects.book.BookViewModel
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.navigation.Navigator
 import kotlinx.serialization.Serializable
 
@@ -16,9 +17,7 @@ fun EntryProviderScope<NavKey>.bookEntry(
     onLoginClick: () -> Unit,
     onImageClick: (url: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
-    onMovieClick: (movieId: String) -> Unit,
-    onTvClick: (tvId: String) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
 ) {
     entry<BookNavKey> { key ->
         BookScreen(
@@ -26,9 +25,7 @@ fun EntryProviderScope<NavKey>.bookEntry(
             onLoginClick = onLoginClick,
             onImageClick = onImageClick,
             onUserClick = onUserClick,
-            onMovieClick = onMovieClick,
-            onTvClick = onTvClick,
-            onBookClick = onBookClick,
+            onSubjectClick = onSubjectClick,
             viewModel = hiltViewModel<BookViewModel, BookViewModel.Factory>(
                 creationCallback = { factory ->
                     factory.create(key.bookId)

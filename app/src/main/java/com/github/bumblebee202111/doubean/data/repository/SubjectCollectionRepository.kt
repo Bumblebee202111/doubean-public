@@ -26,7 +26,7 @@ class SubjectCollectionRepository @Inject constructor(private val apiService: Su
         ),
         pagingSourceFactory = {
             SubjectCollectionItemPagingSource(
-                backend = apiService,
+                apiService = apiService,
                 collectionId = collectionId,
             )
         }

@@ -46,9 +46,7 @@ fun SubjectsScreen(
     onLoginClick: () -> Unit,
     onSearchClick: () -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
-    onMovieClick: (movieId: String) -> Unit,
-    onTvClick: (tvId: String) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
     viewModel: SubjectsViewModel = hiltViewModel(),
 ) {
     val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
@@ -59,9 +57,7 @@ fun SubjectsScreen(
         onLoginClick = onLoginClick,
         onSearchClick = onSearchClick,
         onRankListClick = onRankListClick,
-        onMovieClick = onMovieClick,
-        onTvClick = onTvClick,
-        onBookClick = onBookClick
+        onSubjectClick = onSubjectClick
     )
 }
 
@@ -73,9 +69,7 @@ fun SubjectsScreen(
     onLoginClick: () -> Unit,
     onSearchClick: () -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
-    onMovieClick: (movieId: String) -> Unit,
-    onTvClick: (tvId: String) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -102,9 +96,7 @@ fun SubjectsScreen(
                 onSubjectStatusClick = onSubjectStatusClick,
                 onLoginClick = onLoginClick,
                 onRankListClick = onRankListClick,
-                onMovieClick = onMovieClick,
-                onTvClick = onTvClick,
-                onBookClick = onBookClick
+                onSubjectClick = onSubjectClick
             )
         }
     }
@@ -164,9 +156,7 @@ private fun SubjectsPager(
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onLoginClick: () -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
-    onMovieClick: (movieId: String) -> Unit,
-    onTvClick: (tvId: String) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
 ) {
     HorizontalPager(state = state, userScrollEnabled = false) { page ->
         val modifier = Modifier.fillMaxSize()
@@ -176,7 +166,7 @@ private fun SubjectsPager(
                     onLoginClick = onLoginClick,
                     onSubjectStatusClick = onSubjectStatusClick,
                     onRankListClick = onRankListClick,
-                    onMovieClick = onMovieClick,
+                    onMovieClick = { onSubjectClick(it, SubjectType.MOVIE) },
                     modifier = modifier
                 )
             }
@@ -186,7 +176,7 @@ private fun SubjectsPager(
                     onSubjectStatusClick = onSubjectStatusClick,
                     onLoginClick = onLoginClick,
                     onRankListClick = onRankListClick,
-                    onTvClick = onTvClick,
+                    onTvClick = { onSubjectClick(it, SubjectType.TV) },
                     modifier = modifier,
                 )
             }
@@ -196,7 +186,7 @@ private fun SubjectsPager(
                     onSubjectStatusClick = onSubjectStatusClick,
                     onLoginClick = onLoginClick,
                     onRankListClick = onRankListClick,
-                    onBookClick = onBookClick,
+                    onBookClick = { onSubjectClick(it, SubjectType.BOOK) },
                     modifier = modifier,
                 )
             }

@@ -11,15 +11,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.feature.doulists.common.douListPostItems
 import com.github.bumblebee202111.doubean.feature.doulists.common.rememberFeedItemClickHandler
 import com.github.bumblebee202111.doubean.model.subjects.MarkableSubject
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
 import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicator
 
 @Composable
 fun MyCollectedItemsScreen(
     onTopicClick: (String) -> Unit,
-    onBookClick: (String) -> Unit,
-    onMovieClick: (String) -> Unit,
-    onTvClick: (String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onUserClick: (String) -> Unit,
     onImageClick: (String) -> Unit,
     onDouListClick: (String) -> Unit,
@@ -33,9 +32,7 @@ fun MyCollectedItemsScreen(
         uiState = uiState,
         isLoggedIn = isLoggedIn,
         onTopicClick = onTopicClick,
-        onBookClick = onBookClick,
-        onMovieClick = onMovieClick,
-        onTvClick = onTvClick,
+        onSubjectClick = onSubjectClick,
         onUserClick = onUserClick,
         onImageClick = onImageClick,
         onMarkSubject = viewModel::markSubject,
@@ -50,9 +47,7 @@ fun MyCollectedItemsScreen(
     uiState: MyCollectedItemsUiState,
     isLoggedIn: Boolean,
     onTopicClick: (String) -> Unit,
-    onBookClick: (String) -> Unit,
-    onMovieClick: (String) -> Unit,
-    onTvClick: (String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onUserClick: (String) -> Unit,
     onImageClick: (String) -> Unit,
     onMarkSubject: (MarkableSubject) -> Unit,
@@ -60,13 +55,6 @@ fun MyCollectedItemsScreen(
     onRetryClick: () -> Unit,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
-    val onItemClick = rememberFeedItemClickHandler(
-        onTopicClick = onTopicClick,
-        onBookClick = onBookClick,
-        onMovieClick = onMovieClick,
-        onTvClick = onTvClick
-    )
-
     when {
         uiState.errorMessage != null -> {
             FullScreenErrorWithRetry(
@@ -81,6 +69,11 @@ fun MyCollectedItemsScreen(
         }
 
         else -> {
+            val onItemClick = rememberFeedItemClickHandler(
+                onTopicClick = onTopicClick,
+                onSubjectClick = onSubjectClick
+            )
+
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = contentPadding

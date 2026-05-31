@@ -35,12 +35,10 @@ import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.common.MySubjectItem
 import com.github.bumblebee202111.doubean.feature.subjects.common.MySubjectItemMore
-import com.github.bumblebee202111.doubean.model.subjects.Book
-import com.github.bumblebee202111.doubean.model.subjects.Movie
 import com.github.bumblebee202111.doubean.model.subjects.Subject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
-import com.github.bumblebee202111.doubean.model.subjects.Tv
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemImage
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusActionTextResIdsMap
 import com.github.bumblebee202111.doubean.ui.component.BackButton
@@ -52,9 +50,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun InterestsScreen(
     onBackClick: () -> Unit,
-    onMovieClick: (movieId: String) -> Unit,
-    onTvClick: (tvId: String) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
     viewModel: InterestsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.interestsUiState.collectAsStateWithLifecycle()
@@ -63,9 +59,7 @@ fun InterestsScreen(
         uiState = uiState,
         moreInterestPagingItems = moreInterestPagingItems,
         onBackClick = onBackClick,
-        onMovieClick = onMovieClick,
-        onTvClick = onTvClick,
-        onBookClick = onBookClick,
+        onSubjectClick = onSubjectClick,
         onUpdateInterestStatus = viewModel::onUpdateInterestStatus,
         onRetryClick = viewModel::retry
     )
@@ -77,9 +71,7 @@ fun InterestsScreen(
     uiState: InterestsUiState,
     moreInterestPagingItems: LazyPagingItems<SubjectWithInterest<Subject>>,
     onBackClick: () -> Unit,
-    onMovieClick: (movieId: String) -> Unit,
-    onTvClick: (tvId: String) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onUpdateInterestStatus: (subject: SubjectWithInterest<*>, newStatus: SubjectInterestStatus, rating: Int?) -> Unit,
     onRetryClick: () -> Unit,
 ) {
@@ -100,13 +92,9 @@ fun InterestsScreen(
 
                 val lazyListState = rememberLazyListState()
                 val coroutineScope = rememberCoroutineScope()
-                val onSubjectClick: (SubjectWithInterest<*>) -> Unit = {
-                    when (it.subject) {
-                        is Movie -> onMovieClick(it.subject.id)
-                        is Tv -> onTvClick(it.subject.id)
-                        is Book -> onBookClick(it.subject.id)
-                        is Subject.Unsupported -> {
-                        }
+                val onSubjectClickAction: (SubjectWithInterest<*>) -> Unit = {
+                    if (it.subject.type != SubjectType.UNSUPPORTED) {
+                        onSubjectClick(it.subject.id, it.subject.type)
                     }
                 }
                 val onMoreClick: () -> Unit = {
@@ -135,7 +123,7 @@ fun InterestsScreen(
                                 MySubjectItem(
                                     subject = it,
                                     isLoggedIn = uiState.isLoggedIn,
-                                    onClick = { onSubjectClick(it) },
+                                    onClick = { onSubjectClickAction(it) },
                                     onUpdateStatus = onUpdateInterestStatus
                                 )
                             }
@@ -165,7 +153,9 @@ fun InterestsScreen(
                             count = moreInterestPagingItems.itemCount,
                             key = moreInterestPagingItems.itemKey { it.id }) { index ->
                             moreInterestPagingItems[index]?.let {
-                                SubjectArchiveItem(subject = it, onClick = { onSubjectClick(it) })
+                                SubjectArchiveItem(
+                                    subject = it,
+                                    onClick = { onSubjectClickAction(it) })
                             }
                         }
                     }

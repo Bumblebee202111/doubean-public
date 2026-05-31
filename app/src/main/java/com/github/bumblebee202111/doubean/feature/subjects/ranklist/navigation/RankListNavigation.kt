@@ -5,6 +5,7 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.subjects.ranklist.RankListScreen
 import com.github.bumblebee202111.doubean.feature.subjects.ranklist.RankListViewModel
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.navigation.Navigator
 import kotlinx.serialization.Serializable
 
@@ -15,16 +16,12 @@ data class RankListNavKey(
 
 fun EntryProviderScope<NavKey>.rankListEntry(
     onBackClick: () -> Unit,
-    onMovieClick: (movieId: String) -> Unit,
-    onTvClick: (tvId: String) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
 ) {
     entry<RankListNavKey> { key ->
         RankListScreen(
             onBackClick = onBackClick,
-            onMovieClick = onMovieClick,
-            onTvClick = onTvClick,
-            onBookClick = onBookClick,
+            onSubjectClick = onSubjectClick,
             viewModel = hiltViewModel<RankListViewModel, RankListViewModel.Factory>(
                 creationCallback = { factory ->
                     factory.create(key.collectionId)
@@ -35,7 +32,3 @@ fun EntryProviderScope<NavKey>.rankListEntry(
 }
 
 fun Navigator.navigateToRankList(collectionId: String) = navigate(RankListNavKey(collectionId))
-
-
-
-

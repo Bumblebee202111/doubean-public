@@ -6,28 +6,21 @@ import androidx.compose.ui.platform.LocalContext
 import com.github.bumblebee202111.doubean.model.common.BaseFeedableItem
 import com.github.bumblebee202111.doubean.model.common.FeedItem
 import com.github.bumblebee202111.doubean.model.common.SubjectFeedContent
-import com.github.bumblebee202111.doubean.model.subjects.Book
-import com.github.bumblebee202111.doubean.model.subjects.Movie
-import com.github.bumblebee202111.doubean.model.subjects.Subject
-import com.github.bumblebee202111.doubean.model.subjects.Tv
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 
 @Composable
 fun rememberFeedItemClickHandler(
     onTopicClick: (String) -> Unit,
-    onBookClick: (String) -> Unit,
-    onMovieClick: (String) -> Unit,
-    onTvClick: (String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
 ): (FeedItem<*>) -> Unit {
     val context = LocalContext.current
-    return remember(context, onTopicClick, onBookClick, onMovieClick, onTvClick) {
+    return remember(context, onTopicClick, onSubjectClick) {
         { feedItem ->
             val handledInternally = attemptInternalNavigation(
                 feedItem = feedItem,
                 onTopicClick = onTopicClick,
-                onBookClick = onBookClick,
-                onMovieClick = onMovieClick,
-                onTvClick = onTvClick
+                onSubjectClick = onSubjectClick
             )
 
             if (!handledInternally) {
@@ -43,9 +36,7 @@ fun rememberFeedItemClickHandler(
 private fun attemptInternalNavigation(
     feedItem: FeedItem<*>,
     onTopicClick: (String) -> Unit,
-    onBookClick: (String) -> Unit,
-    onMovieClick: (String) -> Unit,
-    onTvClick: (String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
 ): Boolean {
     return when (feedItem.type) {
         BaseFeedableItem.TYPE_TOPIC -> {
@@ -59,25 +50,12 @@ private fun attemptInternalNavigation(
                 else -> {
                     val subject = content.subject.subject
                     val subjectId = subject.id
-                    when (subject) {
-                        is Book -> {
-                            onBookClick(subjectId)
-                            true
-                        }
-
-                        is Movie -> {
-                            onMovieClick(subjectId)
-                            true
-                        }
-
-                        is Tv -> {
-                            onTvClick(subjectId)
-                            true
-                        }
-
-                        is Subject.Unsupported -> { 
-                            false
-                        }
+                    val type = content.subject.type
+                    if (type != SubjectType.UNSUPPORTED) {
+                        onSubjectClick(subjectId, type)
+                        true
+                    } else {
+                        false
                     }
                 }
             }

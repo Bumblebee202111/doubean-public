@@ -15,9 +15,7 @@ fun EntryProviderScope<NavKey>.subjectsEntry(
     onLoginClick: () -> Unit,
     onSearchClick: () -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
-    onMovieClick: (movieId: String) -> Unit,
-    onTvClick: (tvId: String) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
 ) {
     entry<SubjectsNavKey> {
         SubjectsScreen(
@@ -26,9 +24,7 @@ fun EntryProviderScope<NavKey>.subjectsEntry(
             onLoginClick = onLoginClick,
             onSearchClick = onSearchClick,
             onRankListClick = onRankListClick,
-            onMovieClick = onMovieClick,
-            onTvClick = onTvClick,
-            onBookClick = onBookClick
+            onSubjectClick = onSubjectClick
         )
     }
 }

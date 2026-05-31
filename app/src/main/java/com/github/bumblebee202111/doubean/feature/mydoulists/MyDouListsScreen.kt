@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import kotlinx.coroutines.launch
 
@@ -30,9 +31,7 @@ import kotlinx.coroutines.launch
 fun MyDouListsScreen(
     onBackClick: () -> Unit,
     onTopicClick: (String) -> Unit,
-    onBookClick: (String) -> Unit,
-    onMovieClick: (String) -> Unit,
-    onTvClick: (String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onUserClick: (String) -> Unit,
     onImageClick: (String) -> Unit,
     onDouListClick: (String) -> Unit,
@@ -90,9 +89,7 @@ fun MyDouListsScreen(
                     when (page) {
                         0 -> MyCollectedItemsScreen(
                             onTopicClick = onTopicClick,
-                            onBookClick = onBookClick,
-                            onMovieClick = onMovieClick,
-                            onTvClick = onTvClick,
+                            onSubjectClick = onSubjectClick,
                             onUserClick = onUserClick,
                             onImageClick = onImageClick,
                             onDouListClick = onDouListClick,

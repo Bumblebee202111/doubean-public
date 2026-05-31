@@ -9,20 +9,15 @@ import com.github.bumblebee202111.doubean.util.OpenInUtils
 
 @Composable
 fun rememberRecommendSubjectClickHandler(
-    onMovieClick: (String) -> Unit,
-    onTvClick: (String) -> Unit,
-    onBookClick: (String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
 ): (RecommendSubject) -> Unit {
     val context = LocalContext.current
-    return remember(context, onMovieClick, onTvClick, onBookClick) {
+    return remember(context, onSubjectClick) {
         { recommendSubject ->
-            when (recommendSubject.type) {
-                SubjectType.MOVIE -> onMovieClick(recommendSubject.id)
-                SubjectType.TV -> onTvClick(recommendSubject.id)
-                SubjectType.BOOK -> onBookClick(recommendSubject.id)
-                else -> {
-                    OpenInUtils.openInDouban(context, recommendSubject.uri)
-                }
+            if (recommendSubject.type == SubjectType.UNSUPPORTED) {
+                OpenInUtils.openInDouban(context, recommendSubject.uri)
+            } else {
+                onSubjectClick(recommendSubject.id, recommendSubject.type)
             }
         }
     }

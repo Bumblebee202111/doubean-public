@@ -21,16 +21,12 @@ fun Navigator.navigateToInterests(userId: String, subjectType: SubjectType) {
 
 fun EntryProviderScope<NavKey>.interestsEntry(
     onBackClick: () -> Unit,
-    onMovieClick: (movieId: String) -> Unit,
-    onTvClick: (tvId: String) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
 ) {
     entry<InterestsNavKey> { key ->
         InterestsScreen(
             onBackClick = onBackClick,
-            onMovieClick = onMovieClick,
-            onTvClick = onTvClick,
-            onBookClick = onBookClick,
+            onSubjectClick = onSubjectClick,
             viewModel = hiltViewModel<InterestsViewModel, InterestsViewModel.Factory>(
                 creationCallback = { factory ->
                     factory.create(userId = key.userId, subjectType = key.subjectType)

@@ -32,6 +32,7 @@ import com.github.bumblebee202111.doubean.feature.doulists.common.rememberFeedIt
 import com.github.bumblebee202111.doubean.model.common.DouListPostItem
 import com.github.bumblebee202111.doubean.model.doulists.DouList
 import com.github.bumblebee202111.doubean.model.subjects.MarkableSubject
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
@@ -43,9 +44,7 @@ import com.github.bumblebee202111.doubean.ui.component.MoreButton
 fun DouListScreen(
     onBackClick: () -> Unit,
     onTopicClick: (String) -> Unit,
-    onBookClick: (String) -> Unit,
-    onMovieClick: (String) -> Unit,
-    onTvClick: (String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onUserClick: (String) -> Unit,
     onImageClick: (String) -> Unit,
     viewModel: DouListViewModel = hiltViewModel(),
@@ -62,9 +61,7 @@ fun DouListScreen(
         onDismissEditDialog = viewModel::onDismissEditDialog,
         onUpdateTitle = viewModel::updateTitle,
         onTopicClick = onTopicClick,
-        onBookClick = onBookClick,
-        onMovieClick = onMovieClick,
-        onTvClick = onTvClick,
+        onSubjectClick = onSubjectClick,
         onUserClick = onUserClick,
         onImageClick = onImageClick,
         onMarkSubject = viewModel::markSubject,
@@ -82,9 +79,7 @@ fun DouListScreen(
     onDismissEditDialog: () -> Unit,
     onUpdateTitle: (String) -> Unit,
     onTopicClick: (String) -> Unit,
-    onBookClick: (String) -> Unit,
-    onMovieClick: (String) -> Unit,
-    onTvClick: (String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onUserClick: (String) -> Unit,
     onImageClick: (String) -> Unit,
     onMarkSubject: (MarkableSubject) -> Unit,
@@ -122,9 +117,7 @@ fun DouListScreen(
                     isLoggedIn = isLoggedIn,
                     scaffoldPadding = innerPadding,
                     onTopicClick = onTopicClick,
-                    onBookClick = onBookClick,
-                    onMovieClick = onMovieClick,
-                    onTvClick = onTvClick,
+                    onSubjectClick = onSubjectClick,
                     onUserClick = onUserClick,
                     onImageClick = onImageClick,
                     onMarkSubject = onMarkSubject
@@ -214,18 +207,14 @@ fun DouListContent(
     scaffoldPadding: PaddingValues,
     isLoggedIn: Boolean,
     onTopicClick: (String) -> Unit,
-    onBookClick: (String) -> Unit,
-    onMovieClick: (String) -> Unit,
-    onTvClick: (String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onUserClick: (String) -> Unit,
     onImageClick: (String) -> Unit,
     onMarkSubject: (MarkableSubject) -> Unit,
 ) {
     val onItemClick = rememberFeedItemClickHandler(
         onTopicClick = onTopicClick,
-        onBookClick = onBookClick,
-        onMovieClick = onMovieClick,
-        onTvClick = onTvClick
+        onSubjectClick = onSubjectClick
     )
 
     LazyColumn(

@@ -43,6 +43,7 @@ import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.navigat
 import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.tvEntry
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.navigateToUserProfile
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.userProfileEntry
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 
 fun createDoubeanEntryProvider(
     navigator: Navigator,
@@ -59,6 +60,16 @@ fun createDoubeanEntryProvider(
         }
     }
 
+    val navigateToSubject = { id: String, type: SubjectType ->
+        when (type) {
+            SubjectType.MOVIE -> navigator.navigateToMovie(id)
+            SubjectType.TV -> navigator.navigateToTv(id)
+            SubjectType.BOOK -> navigator.navigateToBook(id)
+            SubjectType.UNSUPPORTED -> { 
+            }
+        }
+    }
+
     
     statusesEntry(onAvatarClick = onAvatarClick)
 
@@ -68,9 +79,7 @@ fun createDoubeanEntryProvider(
         onLoginClick = navigator::navigateToLogin,
         onSearchClick = navigator::navigateToSearchSubjects,
         onRankListClick = navigator::navigateToRankList,
-        onMovieClick = navigator::navigateToMovie,
-        onTvClick = navigator::navigateToTv,
-        onBookClick = navigator::navigateToBook
+        onSubjectClick = navigateToSubject
     )
 
     groupsHomeEntry(
@@ -141,48 +150,36 @@ fun createDoubeanEntryProvider(
     )
     interestsEntry(
         onBackClick = navigator::goBack,
-        onMovieClick = navigator::navigateToMovie,
-        onTvClick = navigator::navigateToTv,
-        onBookClick = navigator::navigateToBook
+        onSubjectClick = navigateToSubject
     )
     searchSubjectsEntry(
         onBackClick = navigator::goBack,
-        onMovieClick = navigator::navigateToMovie,
-        onTvClick = navigator::navigateToTv,
-        onBookClick = navigator::navigateToBook,
+        onSubjectClick = navigateToSubject
     )
     movieEntry(
         onBackClick = navigator::goBack,
         onLoginClick = navigator::navigateToLogin,
         onImageClick = navigator::navigateToImageViewer,
         onUserClick = navigator::navigateToUserProfile,
-        onMovieClick = navigator::navigateToMovie,
-        onTvClick = navigator::navigateToTv,
-        onBookClick = navigator::navigateToBook
+        onSubjectClick = navigateToSubject
     )
     tvEntry(
         onBackClick = navigator::goBack,
         onLoginClick = navigator::navigateToLogin,
         onImageClick = navigator::navigateToImageViewer,
         onUserClick = navigator::navigateToUserProfile,
-        onMovieClick = navigator::navigateToMovie,
-        onTvClick = navigator::navigateToTv,
-        onBookClick = navigator::navigateToBook
+        onSubjectClick = navigateToSubject
     )
     bookEntry(
         onBackClick = navigator::goBack,
         onLoginClick = navigator::navigateToLogin,
         onImageClick = navigator::navigateToImageViewer,
         onUserClick = navigator::navigateToUserProfile,
-        onMovieClick = navigator::navigateToMovie,
-        onTvClick = navigator::navigateToTv,
-        onBookClick = navigator::navigateToBook
+        onSubjectClick = navigateToSubject
     )
     rankListEntry(
         onBackClick = navigator::goBack,
-        onMovieClick = navigator::navigateToMovie,
-        onTvClick = navigator::navigateToTv,
-        onBookClick = navigator::navigateToBook
+        onSubjectClick = navigateToSubject
     )
     createdDouListsEntry(
         onBackClick = navigator::goBack,
@@ -191,18 +188,14 @@ fun createDoubeanEntryProvider(
     douListEntry(
         onBackClick = navigator::goBack,
         onTopicClick = { navigateToUri(it) },
-        onBookClick = navigator::navigateToBook,
-        onMovieClick = navigator::navigateToMovie,
-        onTvClick = navigator::navigateToTv,
+        onSubjectClick = navigateToSubject,
         onUserClick = navigator::navigateToUserProfile,
         onImageClick = navigator::navigateToImageViewer
     )
     myDouListsEntry(
         onBackClick = navigator::goBack,
         onTopicClick = { navigateToUri(it) },
-        onBookClick = navigator::navigateToBook,
-        onMovieClick = navigator::navigateToMovie,
-        onTvClick = navigator::navigateToTv,
+        onSubjectClick = navigateToSubject,
         onUserClick = navigator::navigateToUserProfile,
         onImageClick = navigator::navigateToImageViewer,
         onDouListClick = navigator::navigateToDouList

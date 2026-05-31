@@ -17,12 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
-import com.github.bumblebee202111.doubean.model.subjects.Book
-import com.github.bumblebee202111.doubean.model.subjects.Movie
-import com.github.bumblebee202111.doubean.model.subjects.Subject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectCollection
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithRankAndInterest
-import com.github.bumblebee202111.doubean.model.subjects.Tv
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItem
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemBasicContent
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemRank
@@ -35,9 +32,7 @@ fun LazyListScope.rankList(
     subjectCollection: SubjectCollection,
     subjectCollectionItems: LazyPagingItems<SubjectWithRankAndInterest<*>>,
     isLoggedIn: Boolean,
-    onMovieClick: (movieId: String) -> Unit,
-    onTvClick: (tvId: String) -> Unit,
-    onBookClick: (bookId: String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onMarkClick: (SubjectWithRankAndInterest<*>) -> Unit,
 ) {
     item(key = "rank_list_header") {
@@ -70,24 +65,11 @@ fun LazyListScope.rankList(
             },
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             onClick = {
-                when (subject.subject) {
-                    is Movie -> {
-                        onMovieClick(subject.subject.id)
-                    }
-
-                    is Tv -> {
-                        onTvClick(subject.subject.id)
-                    }
-
-                    is Book -> {
-                        onBookClick(subject.subject.id)
-                    }
-
-                    is Subject.Unsupported -> {
-                        OpenInUtils.openInDouban(context, subject.subject.uri)
-                    }
+                if (subject.subject.type == SubjectType.UNSUPPORTED) {
+                    OpenInUtils.openInDouban(context, subject.subject.uri)
+                } else {
+                    onSubjectClick(subject.subject.id, subject.subject.type)
                 }
-
             },
             rankContent = {
                 SubjectItemRank(rankValue = subject.rankValue, listSize = subjectCollection.total)
