@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.subjects.tv
+package com.github.bumblebee202111.doubean.feature.subjects.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,18 +6,20 @@ import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.DouListRepository
 import com.github.bumblebee202111.doubean.data.repository.ItemDouListRepository
 import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
-import com.github.bumblebee202111.doubean.data.repository.TvRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.common.CollectionHandler
 import com.github.bumblebee202111.doubean.feature.subjects.common.InterestSortType
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.common.CollectType
 import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
+import com.github.bumblebee202111.doubean.model.subjects.BookDetail
+import com.github.bumblebee202111.doubean.model.subjects.MovieDetail
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterest
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUserList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
+import com.github.bumblebee202111.doubean.model.subjects.TvDetail
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.assisted.Assisted
@@ -33,19 +35,20 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-@HiltViewModel(assistedFactory = TvViewModel.Factory::class)
-class TvViewModel @AssistedInject constructor(
-    private val tvRepository: TvRepository,
-    private val userSubjectRepository: UserSubjectRepository,
+@HiltViewModel(assistedFactory = SubjectViewModel.Factory::class)
+class SubjectViewModel @AssistedInject constructor(
     private val subjectCommonRepository: SubjectCommonRepository,
+    private val userSubjectRepository: UserSubjectRepository,
     private val authRepository: AuthRepository,
     itemDouListRepository: ItemDouListRepository,
     douListRepository: DouListRepository,
     private val snackbarManager: SnackbarManager,
-    @Assisted val tvId: String,
+    @Assisted val subjectId: String,
+    @Assisted val subjectType: SubjectType,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<TvUiState>(TvUiState.Loading)
-    val uiState: StateFlow<TvUiState> = _uiState.asStateFlow()
+
+    private val _uiState = MutableStateFlow<SubjectUiState>(SubjectUiState.Loading)
+    val uiState: StateFlow<SubjectUiState> = _uiState.asStateFlow()
 
     private var loadDataJob: Job? = null
 
@@ -74,67 +77,69 @@ class TvViewModel @AssistedInject constructor(
     private fun triggerDataLoad(isLoggedIn: Boolean) {
         loadDataJob?.cancel()
         loadDataJob = viewModelScope.launch {
-            _uiState.value = TvUiState.Loading
+            _uiState.value = SubjectUiState.Loading
 
-            val tvResult = tvRepository.getTv(tvId)
+            val detailResultDeferred =
+                async { subjectCommonRepository.getSubjectDetail(subjectType, subjectId) }
+            val recommendationsDeferred =
+                async { subjectCommonRepository.getSubjectRelatedItems(subjectType, subjectId) }
+            val reviewsResultDeferred =
+                async { subjectCommonRepository.getSubjectReviews(subjectType, subjectId) }
 
-            if (tvResult is AppResult.Error) {
-                val uiMessage = tvResult.error.asUiMessage()
+            val photosResultDeferred =
+                if (subjectType == SubjectType.MOVIE || subjectType == SubjectType.TV) {
+                    async { subjectCommonRepository.getSubjectPhotos(subjectType, subjectId) }
+                } else null
+
+            val creditListResultDeferred =
+                if (subjectType == SubjectType.MOVIE || subjectType == SubjectType.TV) {
+                    async { subjectCommonRepository.getSubjectCreditList(subjectType, subjectId) }
+                } else null
+
+            val detailResult = detailResultDeferred.await()
+            if (detailResult is AppResult.Error) {
+                val uiMessage = detailResult.error.asUiMessage()
                 snackbarManager.showMessage(uiMessage)
-                _uiState.value = TvUiState.Error(uiMessage)
+                _uiState.value = SubjectUiState.Error(uiMessage)
                 return@launch
             }
 
-            val tv = (tvResult as AppResult.Success).data
-
-            val interestStatus = if (tv.isReleased) {
-                SubjectInterestStatus.MARK_STATUS_DONE
-            } else {
-                SubjectInterestStatus.MARK_STATUS_MARK
-            }
+            val subject = (detailResult as AppResult.Success).data
+            val interestStatus =
+                if (subject.isReleased) SubjectInterestStatus.MARK_STATUS_DONE else SubjectInterestStatus.MARK_STATUS_MARK
 
             val interestsResultDeferred = async {
-                fetchInterests(SubjectType.TV, tvId, currentInterestSortType, interestStatus)
-            }
-            val photosResultDeferred = async { tvRepository.getPhotos(tvId) }
-            val recommendationsDeferred = async {
-                subjectCommonRepository.getSubjectRelatedItems(SubjectType.TV, tvId)
-            }
-            val reviewsResultDeferred = async {
-                subjectCommonRepository.getSubjectReviews(
-                    subjectType = SubjectType.TV,
-                    subjectId = tvId
+                fetchInterests(
+                    subjectType,
+                    subjectId,
+                    currentInterestSortType,
+                    interestStatus
                 )
-            }
-
-            val creditListResultDeferred = async {
-                subjectCommonRepository.getSubjectCreditList(SubjectType.TV, tvId)
             }
 
             val interestResult = interestsResultDeferred.await()
-            val photosResult = photosResultDeferred.await()
             val recommendationsResult = recommendationsDeferred.await()
             val reviewsResult = reviewsResultDeferred.await()
-            val creditListResult = creditListResultDeferred.await()
+            val photosResult = photosResultDeferred?.await()
+            val creditListResult = creditListResultDeferred?.await()
 
-            val results =
-                listOf(
-                    interestResult, photosResult, recommendationsResult, reviewsResult,
-                    creditListResult
-                )
+            val results = listOfNotNull(
+                interestResult, recommendationsResult, reviewsResult, photosResult, creditListResult
+            )
 
             val firstError = results.filterIsInstance<AppResult.Error>().firstOrNull()
 
             if (firstError != null) {
                 val uiMessage = firstError.error.asUiMessage()
                 snackbarManager.showMessage(uiMessage)
-                _uiState.value = TvUiState.Error(uiMessage)
+                _uiState.value = SubjectUiState.Error(uiMessage)
             } else {
-                _uiState.value = TvUiState.Success(
-                    tv = tv,
-                    creditList = (creditListResult as AppResult.Success).data,
-                    photos = (photosResult as AppResult.Success).data,
+                _uiState.value = SubjectUiState.Success(
+                    subject = subject,
+                    creditList = (creditListResult as? AppResult.Success)?.data,
+                    photos = (photosResult as? AppResult.Success)?.data,
                     interests = (interestResult as AppResult.Success).data,
+                    interestSortType = currentInterestSortType,
                     recommendations = (recommendationsResult as AppResult.Success).data,
                     reviews = (reviewsResult as AppResult.Success).data,
                     isLoggedIn = isLoggedIn
@@ -162,19 +167,16 @@ class TvViewModel @AssistedInject constructor(
 
     fun toggleInterestSortType(sortType: InterestSortType) {
         val currentState = _uiState.value
-        if (currentState !is TvUiState.Success || currentInterestSortType == sortType) return
+        if (currentState !is SubjectUiState.Success || currentInterestSortType == sortType) return
 
         viewModelScope.launch {
             currentInterestSortType = sortType
 
-            val tv = currentState.tv
-            val interestStatus = if (tv.isReleased) {
-                SubjectInterestStatus.MARK_STATUS_DONE
-            } else {
-                SubjectInterestStatus.MARK_STATUS_MARK
-            }
+            val subject = currentState.subject
+            val interestStatus =
+                if (subject.isReleased) SubjectInterestStatus.MARK_STATUS_DONE else SubjectInterestStatus.MARK_STATUS_MARK
 
-            val result = fetchInterests(SubjectType.TV, tvId, sortType, interestStatus)
+            val result = fetchInterests(subjectType, subjectId, sortType, interestStatus)
 
             if (result is AppResult.Success) {
                 _uiState.value = currentState.copy(
@@ -196,23 +198,20 @@ class TvViewModel @AssistedInject constructor(
     }
 
     fun updateStatus(newStatus: SubjectInterestStatus, rating: Int? = null) {
-        val currentSuccessState = _uiState.value as? TvUiState.Success ?: return
+        val currentSuccessState = _uiState.value as? SubjectUiState.Success ?: return
+        if (!currentSuccessState.isLoggedIn) return
 
-        if (!currentSuccessState.isLoggedIn) {
-            return
-        }
-
-        val originalTv = currentSuccessState.tv
+        val originalSubject = currentSuccessState.subject
 
         viewModelScope.launch {
             val result: AppResult<Any> = when (newStatus) {
                 SubjectInterestStatus.MARK_STATUS_UNMARK ->
-                    userSubjectRepository.unmarkSubject(originalTv.type, originalTv.id)
+                    userSubjectRepository.unmarkSubject(originalSubject.type, originalSubject.id)
 
                 else ->
                     userSubjectRepository.addSubjectToInterests(
-                        type = originalTv.type,
-                        id = originalTv.id,
+                        type = originalSubject.type,
+                        id = originalSubject.id,
                         newStatus = newStatus,
                         rating = rating
                     )
@@ -223,14 +222,16 @@ class TvViewModel @AssistedInject constructor(
                     val confirmedInterest: SubjectInterest? = when (val data = result.data) {
                         is SubjectInterest -> data
                         is SubjectWithInterest<*> -> data.interest
-                        else -> {
-                            
-                            originalTv.interest
-                        }
+                        else -> originalSubject.interest
                     }
-                    _uiState.value = currentSuccessState.copy(
-                        tv = originalTv.copy(interest = confirmedInterest)
-                    )
+
+                    val updatedSubject = when (originalSubject) {
+                        is MovieDetail -> originalSubject.copy(interest = confirmedInterest)
+                        is TvDetail -> originalSubject.copy(interest = confirmedInterest)
+                        is BookDetail -> originalSubject.copy(interest = confirmedInterest)
+                    }
+
+                    _uiState.value = currentSuccessState.copy(subject = updatedSubject)
                 }
 
                 is AppResult.Error -> {
@@ -240,38 +241,34 @@ class TvViewModel @AssistedInject constructor(
         }
     }
 
-    fun collect() {
-        collectionHandler.showCollectDialog(CollectType.TV, tvId)
-    }
-
+    fun collect() = collectionHandler.showCollectDialog(subjectType.toCollectType(), subjectId)
     fun dismissCollectDialog() = collectionHandler.dismissCollectDialog()
-
     fun showCreateDialog() = collectionHandler.showCreateDialog()
-
     fun dismissCreateDialog() = collectionHandler.dismissCreateDialog()
 
     fun createAndCollect(title: String) {
         viewModelScope.launch {
-            collectionHandler.createAndCollect(
-                title = title,
-                type = CollectType.TV,
-                id = tvId
-            )
+            collectionHandler.createAndCollect(title, subjectType.toCollectType(), subjectId)
         }
     }
 
     fun toggleCollection(douList: ItemDouList) {
         viewModelScope.launch {
-            collectionHandler.toggleCollection(
-                type = CollectType.TV,
-                id = tvId,
-                douList = douList
-            )
+            collectionHandler.toggleCollection(subjectType.toCollectType(), subjectId, douList)
+        }
+    }
+
+    private fun SubjectType.toCollectType(): CollectType {
+        return when (this) {
+            SubjectType.MOVIE -> CollectType.MOVIE
+            SubjectType.TV -> CollectType.TV
+            SubjectType.BOOK -> CollectType.BOOK
+            else -> throw IllegalArgumentException()
         }
     }
 
     @AssistedFactory
     interface Factory {
-        fun create(tvId: String): TvViewModel
+        fun create(subjectId: String, subjectType: SubjectType): SubjectViewModel
     }
 }

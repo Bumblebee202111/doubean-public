@@ -28,19 +28,15 @@ import com.github.bumblebee202111.doubean.feature.settings.navigation.navigateTo
 import com.github.bumblebee202111.doubean.feature.settings.navigation.navigateToSettings
 import com.github.bumblebee202111.doubean.feature.settings.navigation.settingsEntry
 import com.github.bumblebee202111.doubean.feature.statuses.navigation.statusesEntry
-import com.github.bumblebee202111.doubean.feature.subjects.book.navigation.bookEntry
-import com.github.bumblebee202111.doubean.feature.subjects.book.navigation.navigateToBook
+import com.github.bumblebee202111.doubean.feature.subjects.detail.navigation.navigateToSubjectDetail
+import com.github.bumblebee202111.doubean.feature.subjects.detail.navigation.subjectDetailEntry
 import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.interestsEntry
 import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.navigateToInterests
-import com.github.bumblebee202111.doubean.feature.subjects.movie.navigation.movieEntry
-import com.github.bumblebee202111.doubean.feature.subjects.movie.navigation.navigateToMovie
 import com.github.bumblebee202111.doubean.feature.subjects.navigation.subjectsEntry
 import com.github.bumblebee202111.doubean.feature.subjects.ranklist.navigation.navigateToRankList
 import com.github.bumblebee202111.doubean.feature.subjects.ranklist.navigation.rankListEntry
 import com.github.bumblebee202111.doubean.feature.subjects.search.navigation.navigateToSearchSubjects
 import com.github.bumblebee202111.doubean.feature.subjects.search.navigation.searchSubjectsEntry
-import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.navigateToTv
-import com.github.bumblebee202111.doubean.feature.subjects.tv.navigation.tvEntry
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.navigateToUserProfile
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.userProfileEntry
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
@@ -62,11 +58,10 @@ fun createDoubeanEntryProvider(
 
     val navigateToSubject = { id: String, type: SubjectType ->
         when (type) {
-            SubjectType.MOVIE -> navigator.navigateToMovie(id)
-            SubjectType.TV -> navigator.navigateToTv(id)
-            SubjectType.BOOK -> navigator.navigateToBook(id)
             SubjectType.UNSUPPORTED -> { 
             }
+
+            else -> navigator.navigateToSubjectDetail(id, type)
         }
     }
 
@@ -156,21 +151,7 @@ fun createDoubeanEntryProvider(
         onBackClick = navigator::goBack,
         onSubjectClick = navigateToSubject
     )
-    movieEntry(
-        onBackClick = navigator::goBack,
-        onLoginClick = navigator::navigateToLogin,
-        onImageClick = navigator::navigateToImageViewer,
-        onUserClick = navigator::navigateToUserProfile,
-        onSubjectClick = navigateToSubject
-    )
-    tvEntry(
-        onBackClick = navigator::goBack,
-        onLoginClick = navigator::navigateToLogin,
-        onImageClick = navigator::navigateToImageViewer,
-        onUserClick = navigator::navigateToUserProfile,
-        onSubjectClick = navigateToSubject
-    )
-    bookEntry(
+    subjectDetailEntry(
         onBackClick = navigator::goBack,
         onLoginClick = navigator::navigateToLogin,
         onImageClick = navigator::navigateToImageViewer,

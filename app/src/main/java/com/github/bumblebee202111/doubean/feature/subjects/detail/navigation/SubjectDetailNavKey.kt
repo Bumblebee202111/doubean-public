@@ -1,38 +1,39 @@
-package com.github.bumblebee202111.doubean.feature.subjects.book.navigation
+package com.github.bumblebee202111.doubean.feature.subjects.detail.navigation
 
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.github.bumblebee202111.doubean.feature.subjects.book.BookScreen
-import com.github.bumblebee202111.doubean.feature.subjects.book.BookViewModel
+import com.github.bumblebee202111.doubean.feature.subjects.detail.SubjectScreen
+import com.github.bumblebee202111.doubean.feature.subjects.detail.SubjectViewModel
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BookNavKey(val bookId: String) : NavKey
+data class SubjectDetailNavKey(val id: String, val type: SubjectType) : NavKey
 
-fun EntryProviderScope<NavKey>.bookEntry(
+fun EntryProviderScope<NavKey>.subjectDetailEntry(
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onImageClick: (url: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
 ) {
-    entry<BookNavKey> { key ->
-        BookScreen(
+    entry<SubjectDetailNavKey> { key ->
+        SubjectScreen(
             onBackClick = onBackClick,
             onLoginClick = onLoginClick,
             onImageClick = onImageClick,
             onUserClick = onUserClick,
             onSubjectClick = onSubjectClick,
-            viewModel = hiltViewModel<BookViewModel, BookViewModel.Factory>(
+            viewModel = hiltViewModel<SubjectViewModel, SubjectViewModel.Factory>(
                 creationCallback = { factory ->
-                    factory.create(key.bookId)
+                    factory.create(key.id, key.type)
                 }
             )
         )
     }
 }
 
-fun Navigator.navigateToBook(bookId: String) = navigate(BookNavKey(bookId))
+fun Navigator.navigateToSubjectDetail(id: String, type: SubjectType) =
+    navigate(SubjectDetailNavKey(id, type))

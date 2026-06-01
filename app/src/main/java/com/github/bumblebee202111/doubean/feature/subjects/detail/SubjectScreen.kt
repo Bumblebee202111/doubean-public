@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.subjects.tv
+package com.github.bumblebee202111.doubean.feature.subjects.detail
 
 import android.content.Intent
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,9 +20,12 @@ import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoInt
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoRecommendModuleItem
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoTrailersModuleItem
 import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
+import com.github.bumblebee202111.doubean.model.subjects.BookDetail
+import com.github.bumblebee202111.doubean.model.subjects.MovieDetail
 import com.github.bumblebee202111.doubean.model.subjects.RecommendSubject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.model.subjects.TvDetail
 import com.github.bumblebee202111.doubean.ui.common.CollectDialogUiState
 import com.github.bumblebee202111.doubean.ui.common.CreateDouListDialog
 import com.github.bumblebee202111.doubean.ui.common.DouListDialog
@@ -30,19 +33,19 @@ import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
 import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicator
 
 @Composable
-fun TvScreen(
+fun SubjectScreen(
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     onImageClick: (url: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
-    viewModel: TvViewModel = hiltViewModel(),
+    viewModel: SubjectViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val collectDialogUiState by viewModel.collectDialogUiState.collectAsStateWithLifecycle()
     val showCreateDouListDialog by viewModel.showCreateDouListDialog.collectAsStateWithLifecycle()
 
-    TvScreen(
+    SubjectScreen(
         uiState = uiState,
         collectDialogUiState = collectDialogUiState,
         showCreateDouListDialog = showCreateDouListDialog,
@@ -66,8 +69,8 @@ fun TvScreen(
 }
 
 @Composable
-fun TvScreen(
-    uiState: TvUiState,
+fun SubjectScreen(
+    uiState: SubjectUiState,
     collectDialogUiState: CollectDialogUiState?,
     showCreateDouListDialog: Boolean,
     onBackClick: () -> Unit,
@@ -105,47 +108,81 @@ fun TvScreen(
 
     SubjectScaffold(
         reviewsSheetContent = {
-            if (uiState is TvUiState.Success) {
+            if (uiState is SubjectUiState.Success) {
                 SubjectReviewsSheetContent(
-                    subjectType = SubjectType.TV,
+                    subjectType = uiState.subject.type,
                     reviews = uiState.reviews,
-                    onUserClick = onUserClick,
+                    onUserClick = onUserClick
                 )
-
             }
         },
         topBar = {
-            TvTopBar(uiState = uiState, onBackClick = onBackClick, onCollectClick = onCollectClick)
+            SubjectTopBar(
+                subjectType = (uiState as? SubjectUiState.Success)?.subject?.type
+                    ?: SubjectType.UNSUPPORTED,
+                subject = (uiState as? SubjectUiState.Success)?.subject,
+                isLoggedIn = (uiState as? SubjectUiState.Success)?.isLoggedIn == true,
+                onBackClick = onBackClick,
+                onCollectClick = onCollectClick
+            )
         }
     ) { innerPadding ->
         when (uiState) {
-            is TvUiState.Success -> {
+            is SubjectUiState.Success -> {
                 LazyColumn(contentPadding = innerPadding) {
                     with(uiState) {
                         item {
                             SubjectDetailHeader(
-                                subject = tv,
+                                subject = subject,
                                 isLoggedIn = isLoggedIn,
                                 onLoginClick = onLoginClick,
                                 onUpdateStatus = onUpdateStatus,
                                 onImageClick = onImageClick
                             )
                         }
-                        subjectInfoIntroModuleItem(intro = tv.intro)
-                        subjectInfoCelebritiesModuleItem(
-                            creditList = creditList
-                        )
-                        subjectInfoTrailersModuleItem(
-                            trailers = tv.trailers,
-                            photoList = photos,
-                            onImageClick = onImageClick,
-                            onTrailerClick = { trailer ->
-                                val intent = Intent(Intent.ACTION_VIEW).apply {
-                                    setDataAndType(trailer.videoUrl.toUri(), "video/*")
+                        subjectInfoIntroModuleItem(intro = subject.intro)
+
+                        
+                        when (subject) {
+                            is MovieDetail -> {
+                                creditList?.let { subjectInfoCelebritiesModuleItem(it) }
+                                photos?.let {
+                                    subjectInfoTrailersModuleItem(
+                                        trailers = subject.trailers,
+                                        photoList = it,
+                                        onImageClick = onImageClick,
+                                        onTrailerClick = { trailer ->
+                                            val intent = Intent(Intent.ACTION_VIEW).apply {
+                                                setDataAndType(trailer.videoUrl.toUri(), "video/*")
+                                            }
+                                            context.startActivity(intent)
+                                        }
+                                    )
                                 }
-                                context.startActivity(intent)
                             }
-                        )
+
+                            is TvDetail -> {
+                                creditList?.let { subjectInfoCelebritiesModuleItem(it) }
+                                photos?.let {
+                                    subjectInfoTrailersModuleItem(
+                                        trailers = subject.trailers,
+                                        photoList = it,
+                                        onImageClick = onImageClick,
+                                        onTrailerClick = { trailer ->
+                                            val intent = Intent(Intent.ACTION_VIEW).apply {
+                                                setDataAndType(trailer.videoUrl.toUri(), "video/*")
+                                            }
+                                            context.startActivity(intent)
+                                        }
+                                    )
+                                }
+                            }
+
+                            is BookDetail -> {
+                                
+                            }
+                        }
+
                         subjectInfoInterestsModuleItem(
                             interestList = interests,
                             onUserClick = onUserClick,
@@ -153,7 +190,7 @@ fun TvScreen(
                             onSortChange = onToggleInterestSort
                         )
                         subjectInfoRecommendModuleItem(
-                            subjectType = SubjectType.TV,
+                            subjectType = subject.type,
                             recommendations = recommendations,
                             onRecommendSubjectClick = onRecommendSubjectClick
                         )
@@ -161,11 +198,11 @@ fun TvScreen(
                 }
             }
 
-            is TvUiState.Loading -> {
+            is SubjectUiState.Loading -> {
                 FullScreenLoadingIndicator(contentPadding = innerPadding)
             }
 
-            is TvUiState.Error -> {
+            is SubjectUiState.Error -> {
                 FullScreenErrorWithRetry(
                     message = uiState.message.getString(),
                     onRetryClick = onRetryClick,
@@ -174,15 +211,4 @@ fun TvScreen(
             }
         }
     }
-}
-
-@Composable
-private fun TvTopBar(uiState: TvUiState, onBackClick: () -> Unit, onCollectClick: () -> Unit) {
-    SubjectTopBar(
-        subjectType = SubjectType.TV,
-        subject = (uiState as? TvUiState.Success)?.tv,
-        isLoggedIn = (uiState as? TvUiState.Success)?.isLoggedIn == true,
-        onBackClick = onBackClick,
-        onCollectClick = onCollectClick
-    )
 }
