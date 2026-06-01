@@ -26,8 +26,6 @@ import com.github.bumblebee202111.doubean.model.subjects.Rating
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectCurrentStatusIconVector
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusActionIconsMap
-import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusActionTextResIdsMap
-import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusTextResIdsMap
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton
 import com.github.bumblebee202111.doubean.ui.component.doubeanItemShape
 import kotlin.math.roundToInt
@@ -89,11 +87,9 @@ fun SubjectInterestButtons(
                         }
                     ) {
                         val textResId = if (subject.interest?.status == status) {
-                            SubjectStatusTextResIdsMap.getValue(subject.type)
-                                .getValue(status)
+                            subject.type.statusTextResIds.getValue(status)
                         } else {
-                            SubjectStatusActionTextResIdsMap.getValue(subject.type)
-                                .getValue(status)
+                            subject.type.statusActionTextResIds.getValue(status)
                         }
                         Text(text = stringResource(id = textResId), overflow = TextOverflow.Clip)
                     }
@@ -117,8 +113,7 @@ fun SubjectInterestUnmarkButton(
         SubjectSingleInterestButtonContent(
             iconVector = SubjectStatusActionIconsMap.getValue(SubjectInterestStatus.MARK_STATUS_UNMARK)
                 .asVector(),
-            textResId = SubjectStatusActionTextResIdsMap.getValue(subject.type)
-                .getValue(SubjectInterestStatus.MARK_STATUS_UNMARK)
+            textResId = subject.type.statusActionTextResIds.getValue(SubjectInterestStatus.MARK_STATUS_UNMARK)
         )
     }
 }
@@ -137,4 +132,3 @@ fun SubjectSingleInterestButtonContent(iconVector: ImageVector, textResId: Int) 
         )
     }
 }
-

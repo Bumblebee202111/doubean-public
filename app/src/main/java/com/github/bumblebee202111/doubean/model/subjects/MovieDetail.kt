@@ -1,5 +1,8 @@
 package com.github.bumblebee202111.doubean.model.subjects
 
+import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.ui.model.UiMessage
+
 data class MovieDetail(
     override val id: String,
     override val rating: Rating,
@@ -22,4 +25,24 @@ data class MovieDetail(
     val directorNames: List<String>,
 ) : SubjectDetail {
     override val type: SubjectType = SubjectType.MOVIE
+
+    override val displayTitle: UiMessage
+        get() = originalTitle?.let { UiMessage.Direct(title) }
+            ?: UiMessage.Resource(R.string.subject_title_year, listOf(title, year))
+
+    override val displaySubtitle: UiMessage?
+        get() = originalTitle?.let {
+            UiMessage.Resource(
+                R.string.subject_title_year,
+                listOf(it, year)
+            )
+        }
+
+    override val displayMetaInfo: String
+        get() = buildList {
+            countries.toMetaInfoSegment()?.let { add(it) }
+            genres.toMetaInfoSegment(n = 3, separator = " ")?.let { add(it) }
+            pubdate.toMetaInfoSegment(postfix = "上映")?.let { add(it) }
+            durations.toMetaInfoSegment(n = 2, prefix = "片长")?.let { add(it) }
+        }.joinToString(" / ")
 }

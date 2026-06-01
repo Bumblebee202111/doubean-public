@@ -65,7 +65,6 @@ import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUser
 import com.github.bumblebee202111.doubean.model.subjects.SubjectReview
 import com.github.bumblebee202111.doubean.model.subjects.SubjectReviewList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
-import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusActionTextResIdsMap
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.ExpandCollapseText
 import com.github.bumblebee202111.doubean.ui.component.ListItemCount
@@ -465,8 +464,7 @@ private fun ReviewHeader(
         ) {
             VerticalDivider(Modifier.padding(horizontal = 4.dp))
             val ratingActionResId =
-                SubjectStatusActionTextResIdsMap.getValue(review.subjectType)
-                    .getValue(SubjectInterestStatus.MARK_STATUS_DONE)
+                review.subjectType.statusActionTextResIds.getValue(SubjectInterestStatus.MARK_STATUS_DONE)
             Text(
                 text = stringResource(id = ratingActionResId),
                 style = MaterialTheme.typography.bodySmall,
@@ -550,23 +548,12 @@ private fun SortText(
 
 @Composable
 private fun getTypeUnit(type: SubjectType): String {
-    val resId = when (type) {
-        SubjectType.MOVIE, SubjectType.TV -> R.string.unit_for_movie
-        SubjectType.BOOK -> R.string.unit_for_book
-        else -> R.string.unit_for_generic_subject
-    }
-    return stringResource(resId)
+    return type.unitResId?.let { stringResource(it) } ?: ""
 }
 
 @Composable
 private fun getTypeTitle(type: SubjectType): String {
-    val resId = when (type) {
-        SubjectType.MOVIE -> R.string.title_movie
-        SubjectType.TV -> R.string.title_tv
-        SubjectType.BOOK -> R.string.title_book
-        SubjectType.UNSUPPORTED -> return ""
-    }
-    return stringResource(resId)
+    return type.titleNameResId?.let { stringResource(it) } ?: ""
 }
 
 @Composable
@@ -583,12 +570,7 @@ fun SubjectInfoReviewsModuleItemContent(
     modifier: Modifier = Modifier,
     onUserClick: (userId: String) -> Unit,
 ) {
-    val titleResId = when (subjectType) {
-        SubjectType.MOVIE -> R.string.title_review_movie
-        SubjectType.TV -> R.string.title_review_tv
-        SubjectType.BOOK -> R.string.title_review_book
-        SubjectType.UNSUPPORTED -> throw IllegalArgumentException()
-    }
+    val titleResId = subjectType.reviewTitleResId ?: throw IllegalArgumentException()
     SubjectModuleContainer(
         titleResId = titleResId,
         body = {

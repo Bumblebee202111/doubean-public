@@ -40,7 +40,6 @@ import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemImage
-import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusActionTextResIdsMap
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
@@ -204,8 +203,7 @@ private fun SubjectArchiveItem(subject: SubjectWithInterest<*>, onClick: () -> U
             
             Text(
                 text = stringResource(
-                    SubjectStatusActionTextResIdsMap.getValue(subject.type)
-                        .getValue(subject.interest.status)
+                    subject.type.statusActionTextResIds.getValue(subject.interest.status)
                 ),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
