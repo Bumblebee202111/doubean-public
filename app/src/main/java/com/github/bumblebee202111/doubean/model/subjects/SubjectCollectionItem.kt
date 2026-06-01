@@ -7,6 +7,6 @@ data class SubjectCollectionItem(
     val type: String,
     val name: String,
     val items: List<SubjectWithRank<*>>,
-    val headerBgImage: String,
+    val headerBgImage: String?,
     val colorScheme: BackgroundColorScheme,
 )
