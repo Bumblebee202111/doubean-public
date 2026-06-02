@@ -98,9 +98,10 @@ This repository contains a curated subset of code from a private project. It is 
 Upcoming features, bug fixes, libraries, and environment changes (roughly in chronological order).
 Primarily for personal tracking.
 
-### Current Release (0.11.0)
+### Current Release (0.12.0)
 
-- Rate subjects ([#31](https://github.com/Bumblebee202111/doubean-public/issues/31))
+- Music Support: Browse and view music
+  details ([#26](https://github.com/Bumblebee202111/doubean-public/issues/26))
 
 ### Next Release (0..)
 
@@ -136,7 +137,6 @@ Primarily for personal tracking.
   - Implement content blocking
   - Reddit-style list item expand/collapse
 - Subjects
-  - Music Support: Browse and view music details ([#26](https://github.com/Bumblebee202111/doubean-public/issues/26))
   - Subject Detail
     - Ratings histogram
     - Friends' Interests/Reviews: View interests/reviews from followed

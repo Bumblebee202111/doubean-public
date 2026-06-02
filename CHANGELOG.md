@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+### 0.12.0-beta1
+
+- **Improvements:** Major under-the-hood rewrite of the subject screens (movies, TVs, books) to lay
+  the groundwork for upcoming music support.
+- **Fixes:** Resolved a crash when viewing celebrities with multiple roles, and fixed data parsing
+  issues in subject home tabs.
+
 ## Version 0.11.0
 
 **Important changes since 0.10.x**
