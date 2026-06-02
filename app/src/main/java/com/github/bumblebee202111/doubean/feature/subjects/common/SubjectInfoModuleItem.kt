@@ -124,7 +124,11 @@ fun LazyListScope.subjectInfoCelebritiesModuleItem(
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(items = creditList.items, key = { it.id }) { celebrity ->
+                
+                items(
+                    items = creditList.items,
+                    key = { "${it.id}_${it.character}" }
+                ) { celebrity ->
                     SubjectInfoCelebrity(celebrity = celebrity)
                 }
             }
