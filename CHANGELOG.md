@@ -1,12 +1,12 @@
 Change Log
 ==========
 
-### 0.12.0-beta1
+### Version 0.12.0-beta1
 
 - **Improvements:** Major under-the-hood rewrite of the subject screens (movies, TVs, books) to lay
   the groundwork for upcoming music support.
 - **Fixes:** Resolved a crash when viewing celebrities with multiple roles, and fixed data parsing
-  issues in subject home tabs.
+  issues in subject home tabs. (Fixes https://github.com/Bumblebee202111/doubean-public/issues/37)
 
 ## Version 0.11.0
 

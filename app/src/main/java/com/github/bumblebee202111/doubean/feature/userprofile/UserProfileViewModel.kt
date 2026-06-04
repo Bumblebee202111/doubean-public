@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.UserRepository
+import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.model.AppResult
+import com.github.bumblebee202111.doubean.model.fangorns.HiddenTypeInProfile
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.model.toUiMessage
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
@@ -26,6 +28,7 @@ import kotlinx.coroutines.launch
 class UserProfileViewModel @AssistedInject constructor(
     authRepository: AuthRepository,
     private val userRepository: UserRepository,
+    private val userSubjectRepository: UserSubjectRepository,
     private val snackbarManager: SnackbarManager,
     @Assisted private val navigatedUserId: String?,
 ) : ViewModel() {
@@ -61,6 +64,7 @@ class UserProfileViewModel @AssistedInject constructor(
                             isLoading = false,
                             user = null,
                             communityContribution = null,
+                            profileSubjects = null,
                             errorMessage = null
                         )
                     }
@@ -77,6 +81,7 @@ class UserProfileViewModel @AssistedInject constructor(
                         isLoading = true,
                         user = null,
                         communityContribution = null,
+                        profileSubjects = null,
                         errorMessage = null
                     )
                 }
@@ -93,10 +98,20 @@ class UserProfileViewModel @AssistedInject constructor(
                             errorMessage = null
                         )
                     }
+
                     if (fetchedUser.hasCommunityContribution) {
                         fetchUserContributions(userIdToFetch)
                     } else {
-                        _uiState.update { it.copy(isLoading = false, communityContribution = null) }
+                        _uiState.update { it.copy(communityContribution = null) }
+                    }
+
+                    
+                    val isInterestHidden =
+                        fetchedUser.hiddenTypesInProfile.contains(HiddenTypeInProfile.INTEREST)
+                    if (!isInterestHidden) {
+                        fetchUserSubjects(userIdToFetch)
+                    } else {
+                        _uiState.update { it.copy(profileSubjects = null, isLoading = false) }
                     }
                 }
 
@@ -108,6 +123,7 @@ class UserProfileViewModel @AssistedInject constructor(
                             isLoading = false,
                             user = if (_uiState.value.user?.id == userIdToFetch) _uiState.value.user else null,
                             communityContribution = null,
+                            profileSubjects = null,
                             errorMessage = errorMessage
                         )
                     }
@@ -121,21 +137,37 @@ class UserProfileViewModel @AssistedInject constructor(
             when (val contributionsResult = userRepository.getUserCommunityContributions(userId)) {
                 is AppResult.Success -> {
                     _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            communityContribution = contributionsResult.data
-                        )
+                        it.copy(communityContribution = contributionsResult.data)
                     }
                 }
 
                 is AppResult.Error -> {
                     snackbarManager.showMessage(contributionsResult.error.asUiMessage())
                     _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            communityContribution = null
-                        )
+                        it.copy(communityContribution = null)
                     }
+                }
+            }
+        }
+    }
+
+    private fun fetchUserSubjects(userId: String) {
+        viewModelScope.launch {
+            when (val result = userSubjectRepository.getUserSubjects(userId)) {
+                is AppResult.Success -> {
+                    val subjects = result.data
+                    val isCurrentUser = _uiState.value.isTargetingCurrentUser
+
+                    
+                    if (subjects.isEmpty() && !isCurrentUser) {
+                        _uiState.update { it.copy(profileSubjects = null, isLoading = false) }
+                    } else {
+                        _uiState.update { it.copy(profileSubjects = subjects, isLoading = false) }
+                    }
+                }
+
+                is AppResult.Error -> {
+                    _uiState.update { it.copy(profileSubjects = null, isLoading = false) }
                 }
             }
         }

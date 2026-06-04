@@ -70,8 +70,6 @@ fun createDoubeanEntryProvider(
 
     subjectsEntry(
         onAvatarClick = onAvatarClick,
-        onSubjectStatusClick = navigator::navigateToInterests,
-        onLoginClick = navigator::navigateToLogin,
         onSearchClick = navigator::navigateToSearchSubjects,
         onRankListClick = navigator::navigateToRankList,
         onSubjectClick = navigateToSubject
@@ -90,7 +88,8 @@ fun createDoubeanEntryProvider(
         onBackClick = navigator::goBack,
         onSettingsClick = navigator::navigateToSettings,
         onLoginClick = navigator::navigateToLogin,
-        onStatItemUriClick = navigateToUri
+        onStatItemUriClick = navigateToUri,
+        onSubjectStatusClick = navigator::navigateToInterests
     )
 
     

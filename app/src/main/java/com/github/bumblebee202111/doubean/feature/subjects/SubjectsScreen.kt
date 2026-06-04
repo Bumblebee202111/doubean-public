@@ -1,6 +1,7 @@
 package com.github.bumblebee202111.doubean.feature.subjects
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,8 +43,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun SubjectsScreen(
     onAvatarClick: () -> Unit,
-    onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
-    onLoginClick: () -> Unit,
     onSearchClick: () -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
@@ -53,8 +52,6 @@ fun SubjectsScreen(
     SubjectsScreen(
         currentUser = currentUser,
         onAvatarClick = onAvatarClick,
-        onSubjectStatusClick = onSubjectStatusClick,
-        onLoginClick = onLoginClick,
         onSearchClick = onSearchClick,
         onRankListClick = onRankListClick,
         onSubjectClick = onSubjectClick
@@ -65,8 +62,6 @@ fun SubjectsScreen(
 fun SubjectsScreen(
     currentUser: User?,
     onAvatarClick: () -> Unit,
-    onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
-    onLoginClick: () -> Unit,
     onSearchClick: () -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
@@ -93,8 +88,7 @@ fun SubjectsScreen(
             SubjectsTabRow(pagerState = pagerState)
             SubjectsPager(
                 state = pagerState,
-                onSubjectStatusClick = onSubjectStatusClick,
-                onLoginClick = onLoginClick,
+                contentPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding()),
                 onRankListClick = onRankListClick,
                 onSubjectClick = onSubjectClick
             )
@@ -153,8 +147,7 @@ private fun SubjectsTabRow(pagerState: PagerState) {
 @Composable
 private fun SubjectsPager(
     state: PagerState,
-    onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
-    onLoginClick: () -> Unit,
+    contentPadding: PaddingValues,
     onRankListClick: (collectionId: String) -> Unit,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
 ) {
@@ -163,31 +156,28 @@ private fun SubjectsPager(
         when (SubjectsTab.entries[page]) {
             SubjectsTab.MOVIES -> {
                 MoviesScreen(
-                    onLoginClick = onLoginClick,
-                    onSubjectStatusClick = onSubjectStatusClick,
                     onRankListClick = onRankListClick,
                     onMovieClick = { onSubjectClick(it, SubjectType.MOVIE) },
-                    modifier = modifier
+                    modifier = modifier,
+                    contentPadding = contentPadding
                 )
             }
 
             SubjectsTab.TVS -> {
                 TvsScreen(
-                    onSubjectStatusClick = onSubjectStatusClick,
-                    onLoginClick = onLoginClick,
                     onRankListClick = onRankListClick,
                     onTvClick = { onSubjectClick(it, SubjectType.TV) },
                     modifier = modifier,
+                    contentPadding = contentPadding
                 )
             }
 
             SubjectsTab.BOOKS -> {
                 BooksScreen(
-                    onSubjectStatusClick = onSubjectStatusClick,
-                    onLoginClick = onLoginClick,
                     onRankListClick = onRankListClick,
                     onBookClick = { onSubjectClick(it, SubjectType.BOOK) },
                     modifier = modifier,
+                    contentPadding = contentPadding
                 )
             }
         }

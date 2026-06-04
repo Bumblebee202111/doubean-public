@@ -1,20 +1,25 @@
 package com.github.bumblebee202111.doubean.feature.userprofile
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -22,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -33,19 +39,25 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.fangorns.HiddenTypeInProfile
 import com.github.bumblebee202111.doubean.model.fangorns.UserDetail
 import com.github.bumblebee202111.doubean.model.profile.ProfileCommunityContribution
 import com.github.bumblebee202111.doubean.model.profile.ProfileStatItemTypes
+import com.github.bumblebee202111.doubean.model.subjects.MySubject
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.ui.common.ApplyStatusBarIconAppearance
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanButton
@@ -65,6 +77,7 @@ fun UserProfileScreen(
     onBackClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
+    onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     viewModel: UserProfileViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -75,6 +88,7 @@ fun UserProfileScreen(
         onLoginClick = onLoginClick,
         onHiddenTypeClick = viewModel::showInfoMessage,
         onStatItemUriClick = onStatItemUriClick,
+        onSubjectStatusClick = onSubjectStatusClick,
         onRetryClick = viewModel::retry
     )
 }
@@ -88,6 +102,7 @@ fun UserProfileScreen(
     onLoginClick: () -> Unit,
     onHiddenTypeClick: (String) -> Unit,
     onStatItemUriClick: (uri: String) -> Boolean,
+    onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onRetryClick: () -> Unit,
 ) {
     val scrollBehavior =
@@ -125,6 +140,7 @@ fun UserProfileScreen(
                 uiState = uiState,
                 innerPadding = innerPadding,
                 onLoginClick = onLoginClick,
+                onSubjectStatusClick = onSubjectStatusClick,
                 onRetryClick = onRetryClick
             )
         }
@@ -228,6 +244,7 @@ private fun UserProfileContentArea(
     uiState: UserProfileUiState,
     innerPadding: PaddingValues,
     onLoginClick: () -> Unit,
+    onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onRetryClick: () -> Unit,
 ) {
 
@@ -247,6 +264,8 @@ private fun UserProfileContentArea(
         uiState.user != null -> {
             UserProfileMainContent(
                 user = uiState.user,
+                uiState = uiState,
+                onSubjectStatusClick = onSubjectStatusClick,
                 contentPadding = innerPadding
             )
         }
@@ -263,13 +282,155 @@ private fun UserProfileContentArea(
 }
 
 @Composable
-private fun UserProfileMainContent(user: UserDetail, contentPadding: PaddingValues) {
+private fun UserProfileMainContent(
+    user: UserDetail,
+    uiState: UserProfileUiState,
+    onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
+    contentPadding: PaddingValues,
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        if (uiState.profileSubjects != null) {
+            item {
+                ProfileSubjectsSection(
+                    subjects = uiState.profileSubjects,
+                    isCurrentUser = uiState.isTargetingCurrentUser,
+                    onSubjectClick = { type ->
+                        onSubjectStatusClick(user.id, type)
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ProfileSubjectsSection(
+    subjects: List<MySubject>,
+    isCurrentUser: Boolean,
+    onSubjectClick: (SubjectType) -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .background(
+                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                MaterialTheme.shapes.medium
+            )
+            .padding(vertical = 16.dp)
+    ) {
         
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(R.string.title_hitmap),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Icon(
+                imageVector = Icons.Default.ChevronRight,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        Spacer(Modifier.height(12.dp))
+
+        if (subjects.isEmpty() && isCurrentUser) {
+            Text(
+                text = stringResource(R.string.login_prompt_mark_subject), 
+                modifier = Modifier.padding(horizontal = 16.dp),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        } else {
+            
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(subjects, key = { it.type.name }) { subject ->
+                    ProfileSubjectCard(
+                        subject = subject,
+                        onClick = { onSubjectClick(subject.type) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ProfileSubjectCard(subject: MySubject, onClick: () -> Unit) {
+    OutlinedCard(onClick = onClick, modifier = Modifier.width(140.dp)) {
+        Column(Modifier.padding(12.dp)) {
+            Text(
+                text = subject.name,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            
+            val covers = subject.interests.mapNotNull { it.subjectCoverUrl }.take(3)
+            if (covers.isNotEmpty()) {
+                Row(horizontalArrangement = Arrangement.spacedBy((-16).dp)) {
+                    covers.forEachIndexed { index, url ->
+                        AsyncImage(
+                            model = url,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(
+                                    width = 48.dp,
+                                    height = 68.dp
+                                ) 
+                                .zIndex(covers.size - index.toFloat())
+                                .clip(MaterialTheme.shapes.extraSmall)
+                                .border(
+                                    width = 1.5.dp,
+                                    color = MaterialTheme.colorScheme.surfaceContainerLow,
+                                    shape = MaterialTheme.shapes.extraSmall
+                                ),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
+                Spacer(Modifier.height(12.dp))
+            }
+
+            
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                subject.interests.forEach { interest ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = interest.title,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = interest.count.toString(),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 

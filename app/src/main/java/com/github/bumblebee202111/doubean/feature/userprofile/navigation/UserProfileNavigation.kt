@@ -5,6 +5,7 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.userprofile.UserProfileScreen
 import com.github.bumblebee202111.doubean.feature.userprofile.UserProfileViewModel
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.navigation.Navigator
 import kotlinx.serialization.Serializable
 
@@ -13,6 +14,7 @@ data class UserProfileNavKey(val userId: String? = null) : NavKey
 
 fun EntryProviderScope<NavKey>.userProfileEntry(
     onStatItemUriClick: (uri: String) -> Boolean,
+    onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
     onBackClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
@@ -20,6 +22,7 @@ fun EntryProviderScope<NavKey>.userProfileEntry(
     entry<UserProfileNavKey> { key ->
         UserProfileScreen(
             onStatItemUriClick = onStatItemUriClick,
+            onSubjectStatusClick = onSubjectStatusClick,
             onBackClick = onBackClick,
             onSettingsClick = onSettingsClick,
             onLoginClick = onLoginClick,

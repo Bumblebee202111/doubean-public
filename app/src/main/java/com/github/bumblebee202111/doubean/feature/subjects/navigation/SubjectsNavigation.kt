@@ -11,8 +11,6 @@ data object SubjectsNavKey : NavKey
 
 fun EntryProviderScope<NavKey>.subjectsEntry(
     onAvatarClick: () -> Unit,
-    onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
-    onLoginClick: () -> Unit,
     onSearchClick: () -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
@@ -20,8 +18,6 @@ fun EntryProviderScope<NavKey>.subjectsEntry(
     entry<SubjectsNavKey> {
         SubjectsScreen(
             onAvatarClick = onAvatarClick,
-            onSubjectStatusClick = onSubjectStatusClick,
-            onLoginClick = onLoginClick,
             onSearchClick = onSearchClick,
             onRankListClick = onRankListClick,
             onSubjectClick = onSubjectClick
