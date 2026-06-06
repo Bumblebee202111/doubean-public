@@ -78,9 +78,33 @@ enum class SubjectType(
             SubjectInterestStatus.MARK_STATUS_MARK to R.string.status_mark_book
         ),
         statusActionTextResIds = mapOf(
-            SubjectInterestStatus.MARK_STATUS_MARK to R.string.action_mark_book,
             SubjectInterestStatus.MARK_STATUS_DOING to R.string.status_action_doing_book,
             SubjectInterestStatus.MARK_STATUS_DONE to R.string.status_action_done_book,
+            SubjectInterestStatus.MARK_STATUS_MARK to R.string.action_mark_book,
+            SubjectInterestStatus.MARK_STATUS_UNMARK to R.string.status_action_unmark
+        )
+    ),
+    MUSIC(
+        statuses = listOf(
+            SubjectInterestStatus.MARK_STATUS_DOING,
+            SubjectInterestStatus.MARK_STATUS_DONE,
+            SubjectInterestStatus.MARK_STATUS_MARK,
+            SubjectInterestStatus.MARK_STATUS_UNMARK
+        ),
+        typeNameResId = R.string.title_music,
+        titleNameResId = R.string.title_music,
+        unitResId = R.string.unit_for_music,
+        reviewTitleResId = R.string.title_review_music,
+        vendorTitleResId = null,
+        statusTextResIds = mapOf(
+            SubjectInterestStatus.MARK_STATUS_DOING to R.string.status_doing_music,
+            SubjectInterestStatus.MARK_STATUS_DONE to R.string.status_done_music,
+            SubjectInterestStatus.MARK_STATUS_MARK to R.string.status_mark_music
+        ),
+        statusActionTextResIds = mapOf(
+            SubjectInterestStatus.MARK_STATUS_DOING to R.string.status_action_doing_music,
+            SubjectInterestStatus.MARK_STATUS_DONE to R.string.status_action_done_music,
+            SubjectInterestStatus.MARK_STATUS_MARK to R.string.action_mark_music,
             SubjectInterestStatus.MARK_STATUS_UNMARK to R.string.status_action_unmark
         )
     ),

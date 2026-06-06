@@ -10,7 +10,25 @@ sealed interface SubjectModule {
     ) : SubjectModule {
         data class SubjectUnion(
             val title: String,
-            val items: List<SubjectWithInterest<*>>,
+            val collections: List<SubjectWithInterest<*>>,
         )
     }
+
+    
+    data class SubjectUnion(
+        val title: String,
+        val collections: List<SubjectUnionCollection>,
+    ) : SubjectModule
+
+    data class SubjectUnionCollection(
+        val title: String,
+        val items: List<SubjectWithInterest<*>>,
+    )
+
+    
+    data class CollectionBoard(
+        val id: String,
+        val title: String,
+        val items: List<SubjectWithInterest<*>>,
+    ) : SubjectModule
 }

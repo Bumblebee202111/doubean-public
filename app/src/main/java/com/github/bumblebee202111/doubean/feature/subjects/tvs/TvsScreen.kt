@@ -87,6 +87,8 @@ fun TvsScreen(
                                     }
                                 )
                             }
+
+                        else -> Unit
                     }
                 }
             }

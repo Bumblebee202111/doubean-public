@@ -38,7 +38,7 @@ class SubjectCommonRepository @Inject constructor(private val service: SubjectAp
                     SubjectType.MOVIE -> service.getMovie(subjectId).toMovieDetail()
                     SubjectType.TV -> service.getTv(subjectId).toTvDetail()
                     SubjectType.BOOK -> service.getBook(subjectId).toBookDetail()
-                    SubjectType.UNSUPPORTED -> throw IllegalArgumentException("Unsupported subject type")
+                    else -> throw IllegalArgumentException("Unsupported subject type") 
                 }
             },
             mapSuccess = { it }

@@ -75,7 +75,7 @@ fun BooksScreen(
                             }
                         }
 
-                        is SubjectModule.SubjectUnions -> Unit 
+                        else -> Unit
                     }
                 }
             }

@@ -246,7 +246,7 @@ fun LazyListScope.subjectInfoRecommendModuleItem(
             ) {
                 items(items = recommendations, key = { it.id }) { subject ->
                     Box(modifier = Modifier.clickable { onRecommendSubjectClick(subject) }) {
-                        SimpleSubjectRowItemContent(
+                        SimpleSubjectItemContent(
                             imageUrl = subject.imageUrl,
                             title = subject.title,
                             rating = subject.rating

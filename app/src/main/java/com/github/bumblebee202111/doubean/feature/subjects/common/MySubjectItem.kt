@@ -52,7 +52,7 @@ fun <T : Subject> MySubjectItem(
             .width(100.dp)
             .clickable(onClick = onClick)
     ) {
-        SimpleSubjectRowItemContent(subject = subject.subject)
+        SimpleSubjectItemContent(subject = subject.subject)
         if (isLoggedIn) {
             IconButton(
                 onClick = { showActionsBottomSheet = true },

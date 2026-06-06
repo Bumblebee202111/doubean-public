@@ -88,6 +88,7 @@ fun MoviesScreen(
                                     }
                                 )
                             }
+                        else -> Unit
                     }
                 }
             }

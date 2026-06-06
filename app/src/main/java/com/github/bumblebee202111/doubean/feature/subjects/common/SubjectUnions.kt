@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.model.subjects.SubjectModule
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
@@ -40,7 +41,7 @@ fun SubjectUnions(
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
             .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Bottom,
     ) {
         module.subjectUnions.forEachIndexed { index, union ->
             val isSelected = pagerState.currentPage == index
@@ -49,40 +50,46 @@ fun SubjectUnions(
             } else {
                 MaterialTheme.colorScheme.onSurfaceVariant
             }
+            val textStyle = if (isSelected) {
+                MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+            } else {
+                MaterialTheme.typography.titleMedium
+            }
+
             Text(
                 text = union.title,
                 color = textColor,
                 modifier = Modifier
                     .clickable {
                         coroutineScope.launch {
-                            pagerState.scrollToPage(index)
+                            pagerState.animateScrollToPage(index)
                         }
                     },
-                style = MaterialTheme.typography.titleMedium
+                style = textStyle
             )
 
             if (index != module.subjectUnions.lastIndex) {
                 VerticalDivider(
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                 )
             }
         }
     }
     HorizontalPager(
         state = pagerState,
-        modifier = Modifier.padding(top = 8.dp),
+        modifier = Modifier.padding(top = 12.dp),
         userScrollEnabled = false,
         key = { module.subjectUnions[it].title }
     ) { page ->
-        val items = module.subjectUnions[page].items
+        val items = module.subjectUnions[page].collections
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Top
         ) {
             items(items = items, key = { it.id }) { subject ->
                 Box(Modifier.clickable { onSubjectClick(subject) }) {
-                    SimpleSubjectRowItemContent(subject.subject)
+                    SimpleSubjectItemContent(subject.subject)
                 }
             }
         }

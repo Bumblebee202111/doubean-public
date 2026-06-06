@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,11 +34,7 @@ fun LazyListScope.rankList(
     onMarkClick: (SubjectWithRankAndInterest<*>) -> Unit,
 ) {
     item(key = "rank_list_header") {
-        Text(
-            text = subjectCollection.title,
-            modifier = Modifier.padding(horizontal = 16.dp),
-            style = MaterialTheme.typography.displayMedium
-        )
+        SubjectModuleTitle(subjectCollection.title)
         Spacer(modifier = Modifier.size(4.dp))
     }
 

@@ -10,6 +10,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Audiotrack
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Search
@@ -33,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.books.BooksScreen
 import com.github.bumblebee202111.doubean.feature.subjects.movies.MoviesScreen
+import com.github.bumblebee202111.doubean.feature.subjects.music.MusicScreen
 import com.github.bumblebee202111.doubean.feature.subjects.tvs.TvsScreen
 import com.github.bumblebee202111.doubean.model.fangorns.User
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
@@ -180,6 +182,15 @@ private fun SubjectsPager(
                     contentPadding = contentPadding
                 )
             }
+
+            SubjectsTab.MUSIC -> {
+                MusicScreen(
+                    onRankListClick = onRankListClick,
+                    onMusicClick = { onSubjectClick(it, SubjectType.MUSIC) },
+                    modifier = modifier,
+                    contentPadding = contentPadding
+                )
+            }
         }
     }
 }
@@ -199,5 +210,9 @@ private enum class SubjectsTab(
     BOOKS(
         textResId = R.string.title_books,
         iconVector = Icons.Filled.Book
+    ),
+    MUSIC(
+        textResId = R.string.title_music,
+        iconVector = Icons.Filled.Audiotrack
     ),
 }
