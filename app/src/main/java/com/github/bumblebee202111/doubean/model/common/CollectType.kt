@@ -7,6 +7,7 @@ enum class CollectType {
     MOVIE,
     TV,
     BOOK,
+    MUSIC
 }
 
 fun CollectType.toRequestPath(): String {
@@ -15,5 +16,6 @@ fun CollectType.toRequestPath(): String {
         CollectType.MOVIE -> CollectTypeRequestPaths.MOVIE
         CollectType.TV -> CollectTypeRequestPaths.TV
         CollectType.BOOK -> CollectTypeRequestPaths.BOOK
+        CollectType.MUSIC -> CollectTypeRequestPaths.MUSIC
     }
 }

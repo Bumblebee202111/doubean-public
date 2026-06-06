@@ -14,6 +14,7 @@ import com.github.bumblebee202111.doubean.model.common.CollectType
 import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
 import com.github.bumblebee202111.doubean.model.subjects.BookDetail
 import com.github.bumblebee202111.doubean.model.subjects.MovieDetail
+import com.github.bumblebee202111.doubean.model.subjects.MusicDetail
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterest
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUserList
@@ -229,6 +230,7 @@ class SubjectViewModel @AssistedInject constructor(
                         is MovieDetail -> originalSubject.copy(interest = confirmedInterest)
                         is TvDetail -> originalSubject.copy(interest = confirmedInterest)
                         is BookDetail -> originalSubject.copy(interest = confirmedInterest)
+                        is MusicDetail -> originalSubject.copy(interest = confirmedInterest)
                     }
 
                     _uiState.value = currentSuccessState.copy(subject = updatedSubject)
@@ -263,6 +265,7 @@ class SubjectViewModel @AssistedInject constructor(
             SubjectType.MOVIE -> CollectType.MOVIE
             SubjectType.TV -> CollectType.TV
             SubjectType.BOOK -> CollectType.BOOK
+            SubjectType.MUSIC -> CollectType.MUSIC
             else -> throw IllegalArgumentException()
         }
     }

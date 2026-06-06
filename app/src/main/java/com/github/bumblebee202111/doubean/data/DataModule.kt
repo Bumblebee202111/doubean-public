@@ -60,6 +60,9 @@ internal object DataModule {
                 polymorphicDefaultDeserializer(NetworkSubjectModule::class) {
                     NetworkSubjectModule.SubjectOtherModule.serializer()
                 }
+                polymorphicDefaultDeserializer(NetworkFeedContent.Subject.Subject::class) {
+                    NetworkFeedContent.Subject.UnknownSubject.serializer()
+                }
             }
         }
 

@@ -15,6 +15,7 @@ import com.github.bumblebee202111.doubean.network.model.subject.NetworkRecommend
 import com.github.bumblebee202111.doubean.network.model.subject.toBookDetail
 import com.github.bumblebee202111.doubean.network.model.subject.toCreditList
 import com.github.bumblebee202111.doubean.network.model.subject.toMovieDetail
+import com.github.bumblebee202111.doubean.network.model.subject.toMusicDetail
 import com.github.bumblebee202111.doubean.network.model.subject.toRecommendSubject
 import com.github.bumblebee202111.doubean.network.model.subject.toTvDetail
 import com.github.bumblebee202111.doubean.network.model.toNetworkSubjectType
@@ -38,7 +39,8 @@ class SubjectCommonRepository @Inject constructor(private val service: SubjectAp
                     SubjectType.MOVIE -> service.getMovie(subjectId).toMovieDetail()
                     SubjectType.TV -> service.getTv(subjectId).toTvDetail()
                     SubjectType.BOOK -> service.getBook(subjectId).toBookDetail()
-                    else -> throw IllegalArgumentException("Unsupported subject type") 
+                    SubjectType.MUSIC -> service.getMusic(subjectId).toMusicDetail()
+                    else -> throw IllegalArgumentException("Unsupported subject type")
                 }
             },
             mapSuccess = { it }

@@ -42,10 +42,10 @@ data class TvDetail(
 
     override val displayMetaInfo: String
         get() = buildList {
-            countries.toMetaInfoSegment()?.let { add(it) }
-            genres.toMetaInfoSegment(n = 3, separator = " ")?.let { add(it) }
-            pubdate.toMetaInfoSegment(postfix = "首播")?.let { add(it) }
-            add("共${episodesCount}集")
-            durations.toMetaInfoSegment(n = 2, prefix = "单集片长")?.let { add(it) }
+            countries.firstOrNull()?.let { add(it) }
+            genres.take(3).joinToString(" ").takeIf { it.isNotEmpty() }?.let { add(it) }
+            pubdate.firstOrNull()?.let { add("${it}首播") }
+            if (episodesCount > 0) add("共${episodesCount}集")
+            durations.firstOrNull()?.let { add("单集片长$it") }
         }.joinToString(" / ")
 }

@@ -40,9 +40,9 @@ data class MovieDetail(
 
     override val displayMetaInfo: String
         get() = buildList {
-            countries.toMetaInfoSegment()?.let { add(it) }
-            genres.toMetaInfoSegment(n = 3, separator = " ")?.let { add(it) }
-            pubdate.toMetaInfoSegment(postfix = "上映")?.let { add(it) }
-            durations.toMetaInfoSegment(n = 2, prefix = "片长")?.let { add(it) }
+            countries.firstOrNull()?.let { add(it) }
+            genres.take(3).joinToString(" ").takeIf { it.isNotEmpty() }?.let { add(it) }
+            pubdate.firstOrNull()?.let { add("${it}上映") }
+            durations.joinToString("").takeIf { it.isNotEmpty() }?.let { add("片长$it") }
         }.joinToString(" / ")
 }

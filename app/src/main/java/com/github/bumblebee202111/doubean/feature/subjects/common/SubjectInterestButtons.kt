@@ -119,16 +119,17 @@ fun SubjectInterestUnmarkButton(
 }
 
 @Composable
-fun SubjectSingleInterestButtonContent(iconVector: ImageVector, textResId: Int) {
+fun SubjectSingleInterestButtonContent(iconVector: ImageVector, textResId: Int?) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
             imageVector = iconVector,
             contentDescription = null
         )
-
-        Text(
-            text = stringResource(id = textResId),
-            style = MaterialTheme.typography.labelMedium
-        )
+        if (textResId != null) {
+            Text(
+                text = stringResource(id = textResId),
+                style = MaterialTheme.typography.labelMedium
+            )
+        }
     }
 }

@@ -91,7 +91,7 @@ enum class SubjectType(
             SubjectInterestStatus.MARK_STATUS_MARK,
             SubjectInterestStatus.MARK_STATUS_UNMARK
         ),
-        typeNameResId = R.string.title_music,
+        typeNameResId = R.string.music_album,
         titleNameResId = R.string.title_music,
         unitResId = R.string.unit_for_music,
         reviewTitleResId = R.string.title_review_music,
@@ -125,6 +125,7 @@ enum class SubjectType(
                 "movie" -> MOVIE
                 "tv" -> TV
                 "book" -> BOOK
+                "music" -> MUSIC
                 else -> UNSUPPORTED
             }
         }

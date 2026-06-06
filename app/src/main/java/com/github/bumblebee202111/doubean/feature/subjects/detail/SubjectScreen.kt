@@ -18,10 +18,12 @@ import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoCel
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoInterestsModuleItem
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoIntroModuleItem
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoRecommendModuleItem
+import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoSongsModuleItem
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoTrailersModuleItem
 import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
 import com.github.bumblebee202111.doubean.model.subjects.BookDetail
 import com.github.bumblebee202111.doubean.model.subjects.MovieDetail
+import com.github.bumblebee202111.doubean.model.subjects.MusicDetail
 import com.github.bumblebee202111.doubean.model.subjects.RecommendSubject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
@@ -179,7 +181,10 @@ fun SubjectScreen(
                             }
 
                             is BookDetail -> {
-                                
+                            }
+
+                            is MusicDetail -> {
+                                subjectInfoSongsModuleItem(subject.tracks)
                             }
                         }
 

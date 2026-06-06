@@ -11,6 +11,7 @@ import com.github.bumblebee202111.doubean.model.common.DouListPostItem
 import com.github.bumblebee202111.doubean.model.doulists.DouList
 import com.github.bumblebee202111.doubean.model.subjects.MarkableSubject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.model.UiMessage
 import com.github.bumblebee202111.doubean.ui.stateInUi
@@ -97,26 +98,28 @@ class DouListViewModel @AssistedInject constructor(
     }
 
     fun markSubject(subject: MarkableSubject) {
-        viewModelScope.launch {
-            when (val result = userSubjectRepository.addSubjectToInterests(
-                type = subject.type,
-                id = subject.id,
-                newStatus = SubjectInterestStatus.MARK_STATUS_MARK
-            )) {
-                is AppResult.Success -> {
-                    val updatedSubjectWithInterest = result.data
-                    _uiState.update { currentUiState ->
-                        currentUiState.copy(
-                            items = DouListStateHelper.getUpdatedListWithNewInterest(
-                                currentItems = currentUiState.items,
-                                updatedSubjectWithInterest = updatedSubjectWithInterest
-                            ),
-                        )
+        if (subject.type != SubjectType.UNSUPPORTED) {
+            viewModelScope.launch {
+                when (val result = userSubjectRepository.addSubjectToInterests(
+                    type = subject.type,
+                    id = subject.id,
+                    newStatus = SubjectInterestStatus.MARK_STATUS_MARK
+                )) {
+                    is AppResult.Success -> {
+                        val updatedSubjectWithInterest = result.data
+                        _uiState.update { currentUiState ->
+                            currentUiState.copy(
+                                items = DouListStateHelper.getUpdatedListWithNewInterest(
+                                    currentItems = currentUiState.items,
+                                    updatedSubjectWithInterest = updatedSubjectWithInterest
+                                ),
+                            )
+                        }
                     }
-                }
 
-                is AppResult.Error -> {
-                    snackbarManager.showMessage(result.error.asUiMessage())
+                    is AppResult.Error -> {
+                        snackbarManager.showMessage(result.error.asUiMessage())
+                    }
                 }
             }
         }

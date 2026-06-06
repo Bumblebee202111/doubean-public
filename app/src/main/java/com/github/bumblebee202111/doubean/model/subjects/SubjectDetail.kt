@@ -21,13 +21,3 @@ sealed interface SubjectDetail : MarkableSubject {
     val displaySubtitle: UiMessage?
     val displayMetaInfo: String
 }
-
-fun <T> List<T>.toMetaInfoSegment(
-    n: Int = 1,
-    separator: String = "",
-    prefix: String = "",
-    postfix: String = "",
-): String? {
-    return take(n).takeIf(List<T>::isNotEmpty)
-        ?.joinToString(separator = separator, prefix = prefix, postfix = postfix)
-}

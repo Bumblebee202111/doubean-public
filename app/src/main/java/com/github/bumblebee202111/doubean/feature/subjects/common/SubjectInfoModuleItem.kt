@@ -112,6 +112,21 @@ fun LazyListScope.subjectInfoIntroModuleItem(intro: String) {
     )
 }
 
+fun LazyListScope.subjectInfoSongsModuleItem(songs: List<String>) {
+    if (songs.isEmpty()) return
+
+    subjectGenericModuleItem(
+        titleResId = R.string.subject_item_title_music_album_items,
+        body = {
+            Text(
+                text = songs.take(4).joinToString(" "),
+                modifier = Modifier.padding(horizontal = 16.dp),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    )
+}
+
 fun LazyListScope.subjectInfoCelebritiesModuleItem(
     creditList: CreditList,
 ) {
