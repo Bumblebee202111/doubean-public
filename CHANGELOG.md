@@ -1,7 +1,21 @@
 Change Log
 ==========
 
-### Version 0.12.0-beta1
+## Version 0.12.0-beta2
+
+### Features
+
+- **Music:** Add basic support for Music. You can now browse the Music screen and view music
+  details. *(Note: Music support is still limited for now).*
+- **Profile:** Move Subject Archives from the Subjects screen to the User Profile.
+
+### Improvements & Fixes
+
+- Adjust the info text format for Movies, TVs, and Books to better match the official app.
+- Fix app crashes caused by unknown subject types.
+- Disable marking and collecting actions for unsupported subject types.
+
+## Version 0.12.0-beta1
 
 - **Improvements:** Major under-the-hood rewrite of the subject screens (movies, TVs, books) to lay
   the groundwork for upcoming music support.
