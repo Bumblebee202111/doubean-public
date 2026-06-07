@@ -17,12 +17,12 @@ import com.github.bumblebee202111.doubean.model.groups.TopicDetail
 import com.github.bumblebee202111.doubean.network.api.GroupApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkGroupTopicComment
 import com.github.bumblebee202111.doubean.network.model.asExternalModel
-import com.github.bumblebee202111.doubean.network.model.fangorns.asExternalModel
 import com.github.bumblebee202111.doubean.network.model.fangorns.toGroupTopicTagEntity
 import com.github.bumblebee202111.doubean.network.model.fangorns.toNetworkReactionType
 import com.github.bumblebee202111.doubean.network.model.fangorns.toTopicReactionPartialEntity
 import com.github.bumblebee202111.doubean.network.model.fangorns.toUserEntity
 import com.github.bumblebee202111.doubean.network.model.structure.NetworkReshareItem
+import com.github.bumblebee202111.doubean.network.model.structure.toReshareItem
 import com.github.bumblebee202111.doubean.network.model.tagCrossRefs
 import com.github.bumblebee202111.doubean.network.model.toCachedGroupEntity
 import com.github.bumblebee202111.doubean.network.model.toTopicItemPartialEntity
@@ -119,7 +119,7 @@ class GroupTopicRepository @Inject constructor(
             pagingSourceFactory = {
                 GroupTopicReshareItemPagingSource(apiService, topicId)
             }
-        ).flow.map { it.map(NetworkReshareItem::asExternalModel) }
+        ).flow.map { it.map(NetworkReshareItem::toReshareItem) }
     }
 
     suspend fun react(

@@ -4,7 +4,7 @@ import androidx.annotation.Keep
 
 @Keep
 enum class SubjectsSearchType(val apiValue: String) {
-    MOVIES_AND_TVS("movie"), BOOKS("book");
+    MOVIES_AND_TVS("movie"), BOOKS("book"), MUSIC("music");
 }
 
 fun SubjectsSearchType.toApiSubjectsSearchType(): String = this.apiValue
