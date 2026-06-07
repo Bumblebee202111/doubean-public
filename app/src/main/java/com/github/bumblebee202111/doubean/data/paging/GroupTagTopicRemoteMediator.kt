@@ -16,9 +16,9 @@ import com.github.bumblebee202111.doubean.model.groups.getRequestParamString
 import com.github.bumblebee202111.doubean.network.api.GroupApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkTopicItem
 import com.github.bumblebee202111.doubean.network.model.asPartialEntity
+import com.github.bumblebee202111.doubean.network.model.fangorns.toGroupTopicTagEntity
 import com.github.bumblebee202111.doubean.network.model.fangorns.toUserEntity
 import com.github.bumblebee202111.doubean.network.model.tagCrossRefs
-import com.github.bumblebee202111.doubean.network.model.toGroupTopicTagEntity
 
 @OptIn(ExperimentalPagingApi::class)
 class GroupTagTopicRemoteMediator(

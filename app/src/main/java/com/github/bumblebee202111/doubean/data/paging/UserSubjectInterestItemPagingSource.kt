@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.network.api.UserApiService
-import com.github.bumblebee202111.doubean.network.model.NetworkSubjectInterestWithSubject
+import com.github.bumblebee202111.doubean.network.model.subject.NetworkSubjectInterestWithSubject
 import com.github.bumblebee202111.doubean.network.model.toNetworkSubjectType
 
 class UserSubjectInterestItemPagingSource(

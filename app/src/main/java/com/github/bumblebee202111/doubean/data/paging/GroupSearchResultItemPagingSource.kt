@@ -7,8 +7,8 @@ import com.github.bumblebee202111.doubean.data.db.AppDatabase
 import com.github.bumblebee202111.doubean.model.AppErrorException
 import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
 import com.github.bumblebee202111.doubean.network.api.GroupApiService
-import com.github.bumblebee202111.doubean.network.model.toGroupItemWithIntroInfo
-import com.github.bumblebee202111.doubean.network.model.toSimpleCachedGroupPartialEntity
+import com.github.bumblebee202111.doubean.network.model.search.toGroupItemWithIntroInfo
+import com.github.bumblebee202111.doubean.network.model.search.toSimpleCachedGroupPartialEntity
 import com.github.bumblebee202111.doubean.network.util.handleError
 import kotlin.coroutines.cancellation.CancellationException
 

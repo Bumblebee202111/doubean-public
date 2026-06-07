@@ -3,7 +3,7 @@ package com.github.bumblebee202111.doubean.data.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.github.bumblebee202111.doubean.network.api.GroupApiService
-import com.github.bumblebee202111.doubean.network.model.NetworkReshareItem
+import com.github.bumblebee202111.doubean.network.model.structure.NetworkReshareItem
 
 class GroupTopicReshareItemPagingSource(
     private val apiService: GroupApiService,
