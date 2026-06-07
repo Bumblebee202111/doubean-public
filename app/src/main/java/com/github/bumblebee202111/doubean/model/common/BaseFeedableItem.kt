@@ -13,6 +13,7 @@ interface BaseFeedableItem : BaseShareObject {
         const val TYPE_TOPIC = "topic"
         const val TYPE_BOOK = "book"
         const val TYPE_MOVIE = "movie"
+        const val TYPE_MUSIC = "music"
         const val TYPE_REVIEW = "review"
 
     }

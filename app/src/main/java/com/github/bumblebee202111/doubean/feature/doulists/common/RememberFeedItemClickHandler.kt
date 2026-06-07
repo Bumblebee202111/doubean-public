@@ -44,7 +44,7 @@ private fun attemptInternalNavigation(
             true
         }
 
-        BaseFeedableItem.TYPE_MOVIE, BaseFeedableItem.TYPE_BOOK -> {
+        BaseFeedableItem.TYPE_MOVIE, BaseFeedableItem.TYPE_BOOK, BaseFeedableItem.TYPE_MUSIC -> {
             when (val content = feedItem.content) {
                 !is SubjectFeedContent -> false
                 else -> {
