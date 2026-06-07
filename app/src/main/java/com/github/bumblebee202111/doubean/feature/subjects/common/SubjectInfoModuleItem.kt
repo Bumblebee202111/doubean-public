@@ -571,15 +571,15 @@ private fun getTypeUnit(type: SubjectType): String {
 }
 
 @Composable
-private fun getTypeTitle(type: SubjectType): String {
-    return type.titleNameResId?.let { stringResource(it) } ?: ""
+private fun getTypeName(type: SubjectType): String {
+    return type.typeNameResId?.let { stringResource(it) } ?: ""
 }
 
 @Composable
 private fun getLikeRecommendTitle(subjectType: SubjectType): String {
     val unit = getTypeUnit(subjectType)
-    val typeTitle = getTypeTitle(subjectType)
-    return stringResource(R.string.like_recommend, unit + typeTitle)
+    val typeName = getTypeName(subjectType)
+    return stringResource(R.string.like_recommend, unit + typeName)
 }
 
 @Composable
