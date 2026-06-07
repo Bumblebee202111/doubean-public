@@ -36,7 +36,6 @@ class UserSubjectRepository @Inject constructor(
     private val userApiService: UserApiService,
 ) {
 
-    
     suspend fun getUserSubjects(userId: String): AppResult<List<MySubject>> = makeApiCall(
         apiCall = { userApiService.getUserProfileSubjects(userId) },
         mapSuccess = NetworkUserProfileSubjects::toMySubjects

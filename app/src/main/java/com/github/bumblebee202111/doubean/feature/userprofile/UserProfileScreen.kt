@@ -297,7 +297,6 @@ private fun UserProfileMainContent(
             item {
                 ProfileSubjectsSection(
                     subjects = uiState.profileSubjects,
-                    isCurrentUser = uiState.isTargetingCurrentUser,
                     onSubjectClick = { type ->
                         onSubjectStatusClick(user.id, type)
                     }
@@ -310,7 +309,6 @@ private fun UserProfileMainContent(
 @Composable
 fun ProfileSubjectsSection(
     subjects: List<MySubject>,
-    isCurrentUser: Boolean,
     onSubjectClick: (SubjectType) -> Unit,
 ) {
     Column(
@@ -346,14 +344,7 @@ fun ProfileSubjectsSection(
 
         Spacer(Modifier.height(12.dp))
 
-        if (subjects.isEmpty() && isCurrentUser) {
-            Text(
-                text = stringResource(R.string.login_prompt_mark_subject), 
-                modifier = Modifier.padding(horizontal = 16.dp),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        } else {
+        if (subjects.isNotEmpty()) {
             
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 16.dp),

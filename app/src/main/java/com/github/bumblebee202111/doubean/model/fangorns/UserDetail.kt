@@ -10,6 +10,7 @@ data class UserDetail(
     val registerTime: LocalDateTime,
     val movieCollectedCount: Int,
     val bookCollectedCount: Int,
+    val musicCollectedCount: Int,
     val hasCommunityContribution: Boolean,
     val ipLocation: String?,
     val hometown: String?,
