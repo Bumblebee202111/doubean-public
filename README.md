@@ -1,8 +1,9 @@
 doubean
 =======
 
-An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and exploring Subjects (Books/Movies/TVs)
-([豆瓣][douban]非官方app，支持[小组][douban-groups]浏览和书影探索)
+An unofficial [Douban][douban] app for browsing [Groups][douban-groups] and exploring Subjects (
+Books/Movies/Music/TVs)
+([豆瓣][douban]非官方app，支持[小组][douban-groups]浏览和书影音探索)
 
 **Disclaimer:** This is a continuously evolving project focused on core features using Jetpack
 Compose. Some features are works in progress (WIP), and you may encounter bugs.
@@ -12,11 +13,11 @@ Compose. Some features are works in progress (WIP), and you may encounter bugs.
 
 ## Features
 
-- Subjects (Books/Movies/TVs):
+- Subjects (Books/Movies/Music/TVs):
   - Home feed with personal statuses, subject unions, and rank lists
   - View subject interests
-  - Search for subjects
-  - View subject details, including metadata, intros, and user interactions
+  - Search for subjects across all supported media types
+  - View subject details, including metadata, intros, song lists (for music), and user interactions
   - Browse rank lists
 - Groups:
   - Browse my groups and topics
@@ -33,7 +34,7 @@ Compose. Some features are works in progress (WIP), and you may encounter bugs.
 - General:
   - Ad-free and lightweight (~3MB)
   - Customizable bottom navigation (hide tabs & set startup tab)
-  - Login support & session reuse (advanced, root required)
+  - Password login support & session reuse (advanced, root required for auto-import)
   - Partial deep linking
   - Direct official API calls
   - Basic Material Design 3 (MD3) theming
@@ -54,7 +55,6 @@ Compose. Some features are works in progress (WIP), and you may encounter bugs.
 - Requires Android 8.1+
 - Feel free to [file issues](https://github.com/Bumblebee202111/doubean-public/issues)
 - Keep the official app installed: Recommended for full platform functionality
-- Troubleshooting: If the app crashes after an update, try clearing the app data
 
 [latest-release]: https://github.com/Bumblebee202111/doubean-public/releases/latest
 
@@ -100,9 +100,6 @@ Primarily for personal tracking.
 
 ### Current Release (0.12.0)
 
-- Music Support: Browse and view music
-  details ([#26](https://github.com/Bumblebee202111/doubean-public/issues/26))
-
 ### Next Release (0..)
 
 <details>
@@ -144,7 +141,7 @@ Primarily for personal tracking.
   - Review: Render content using the same HTML/WebView approach as topics
   - Color schemes
   - More
-- UserProfile: My subjects, My groups
+- UserProfile: My groups
 - i18n
   - Language selection
   - AI translation support

@@ -1,6 +1,21 @@
 Change Log
 ==========
 
+## Version 0.12.0
+
+- feat: support music subjects in user profile, feed timeline, and search results
+- fix: fix music "like recommend" title in Subject screen
+- feat: update Chinese translations for subjects
+- refactor: reorganize internal network models to match Douban
+
+### Important changes since 0.11.x
+
+- **Music:** Added basic support for Music. You can now browse the Music screen, search for music,
+  view details and tracks, and see music items in your timeline and profile.
+- **Improvements:** Adjusted info text format for Movies, TVs, and Books to better match the
+  official app. Fixed crashes caused by unknown subject types and disabled actions for unsupported
+  types.
+
 ## Version 0.12.0-beta2
 
 ### Features
