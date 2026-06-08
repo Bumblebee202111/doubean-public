@@ -23,7 +23,7 @@ android {
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 120003
-        versionName = "0.12.0-beta3"
+        versionName = "0.12.0"
 
         setProperty("archivesBaseName", "doubean_$versionName")
 
