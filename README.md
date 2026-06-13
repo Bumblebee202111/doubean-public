@@ -98,7 +98,7 @@ This repository contains a curated subset of code from a private project. It is 
 Upcoming features, bug fixes, libraries, and environment changes (roughly in chronological order).
 Primarily for personal tracking.
 
-### Current Release (0.12.0)
+### Current Release (0.12.1)
 
 ### Next Release (0..)
 
@@ -127,7 +127,10 @@ Primarily for personal tracking.
   - Tab
     - Track topic read status
     - Dynamic topic sorting options
-  - Group Detail: Auto-collapse header for subscribed/pinned groups/tabs
+  - Group Detail
+    - Auto-collapse header for subscribed/pinned groups/tabs
+    - Fix messy color system
+    - "Open in Douban to Comment" FAB
   - Topic:
     - Render content using *dynamic* HTML/WebView
   - Default hide officially-flagged "unfriendly" content
@@ -142,6 +145,13 @@ Primarily for personal tracking.
   - Color schemes
   - More
 - UserProfile: My groups
+- Statuses
+  - Remove maintenance banner
+  - Fix subject cover being too tall
+  - Additional card types
+  - Pagination
+  - Click support
+  - Show text for unsupported
 - i18n
   - Language selection
   - AI translation support
@@ -156,9 +166,6 @@ Primarily for personal tracking.
 - Widgets: Calendar today
 - QR
 - (Rooted users) Optional sync of more existing preferences for API request consistency
-- Statuses (maintenance mode)
-  - Additional card types
-  - Pagination
 
 #### Ongoing Improvements
 
