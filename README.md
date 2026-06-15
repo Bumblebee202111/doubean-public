@@ -100,7 +100,15 @@ Primarily for personal tracking.
 
 ### Current Release (0.12.1)
 
-### Next Release (0..)
+### Next Release (0.13.0)
+
+- **Refactor Statuses tab**
+  - Unify data logic with Doulist feeds and drop legacy timeline code.
+  - Add pagination and click support.
+  - Focus on supporting Subjects, Groups, and Doulists, with graceful fallbacks for other types.
+  - Keep the timeline UI distinct, lively, and aligned with Material 3 Expressive (M3E).
+  - Fix oversized subject covers.
+  - Remove the maintenance banner.
 
 <details>
 <summary>Future Plans (Click to expand)</summary>
@@ -145,13 +153,6 @@ Primarily for personal tracking.
   - Color schemes
   - More
 - UserProfile: My groups
-- Statuses
-  - Remove maintenance banner
-  - Fix subject cover being too tall
-  - Additional card types
-  - Pagination
-  - Click support
-  - Show text for unsupported
 - i18n
   - Language selection
   - AI translation support

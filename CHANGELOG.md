@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+## 0.12.1
+
+### Bug Fixes
+
+* Fix app crash when opening Music archives from the User Profile.
+
 ## Version 0.12.0
 
 - feat: support music subjects in user profile, feed timeline, and search results
