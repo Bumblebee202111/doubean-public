@@ -1,11 +1,15 @@
 Change Log
 ==========
 
-## 0.12.1
+## Version 0.12.2
 
-### Bug Fixes
+- **Fixes**: Fix data parsing error in Music tab. (
+  Resolves https://github.com/Bumblebee202111/doubean-public/issues/40)
 
-* Fix app crash when opening Music archives from the User Profile.
+## Version 0.12.1
+
+- **Fixes**: Fix app crash when opening Music archives from the User Profile. (
+  Resolves https://github.com/Bumblebee202111/doubean-public/issues/39)
 
 ## Version 0.12.0
 
