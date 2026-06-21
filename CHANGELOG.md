@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.12.3
+
 ## Version 0.12.2
 
 - **Fixes**: Fix data parsing error in Music tab. (
