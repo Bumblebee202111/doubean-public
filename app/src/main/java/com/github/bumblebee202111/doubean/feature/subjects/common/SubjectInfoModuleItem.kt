@@ -99,6 +99,8 @@ fun LazyListScope.subjectGenericModuleItem(
 }
 
 fun LazyListScope.subjectInfoIntroModuleItem(intro: String) {
+    if (intro.isBlank()) return
+
     subjectGenericModuleItem(
         titleResId = R.string.subject_module_title_intro,
         body = {
@@ -158,6 +160,8 @@ fun LazyListScope.subjectInfoTrailersModuleItem(
     onImageClick: (url: String) -> Unit,
     onTrailerClick: (trailer: MovieTrailer) -> Unit,
 ) {
+    if (trailers.isEmpty() && photoList.photos.isEmpty()) return
+
     subjectGenericModuleItem(
         titleResId = R.string.subject_module_title_trailers,
         body = {

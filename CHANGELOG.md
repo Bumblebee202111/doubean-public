@@ -3,6 +3,10 @@ Change Log
 
 ## Version 0.12.3
 
+### Bug Fixes
+- Fix an issue where an error UI is shown for subjects without celebrity information (https://github.com/Bumblebee202111/doubean-public/issues/41).
+- Hide empty intro and trailer sections on the subject details screen.
+
 ## Version 0.12.2
 
 - **Fixes**: Fix data parsing error in Music tab. (
