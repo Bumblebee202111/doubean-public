@@ -1,9 +1,9 @@
 package com.github.bumblebee202111.doubean.model.common
 
 import com.github.bumblebee202111.doubean.model.Photo
+import com.github.bumblebee202111.doubean.model.SizedImage
 import com.github.bumblebee202111.doubean.model.fangorns.User
 import com.github.bumblebee202111.doubean.model.statuses.SubjectStatusCard
-import com.github.bumblebee202111.doubean.model.statuses.UserStatus
 import com.github.bumblebee202111.doubean.model.subjects.Rating
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
 
@@ -42,7 +42,9 @@ data class ReviewFeedContent(
 
 data class StatusFeedContent(
     override val type: String,
-    val status: UserStatus,
+    val text: String?,
+    val images: List<SizedImage>?,
+    val card: SubjectStatusCard<*>?,
 ) : FeedContent
 
 data class NoteFeedContent(

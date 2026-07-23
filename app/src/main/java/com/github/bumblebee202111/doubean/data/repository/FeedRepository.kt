@@ -1,7 +1,7 @@
 package com.github.bumblebee202111.doubean.data.repository
 
 import com.github.bumblebee202111.doubean.network.api.FeedApiService
-import com.github.bumblebee202111.doubean.network.model.common.toUserStatuses
+import com.github.bumblebee202111.doubean.network.model.common.toFeedItems
 import com.github.bumblebee202111.doubean.network.util.makeApiCall
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -15,7 +15,7 @@ class FeedRepository @Inject constructor(
             apiService.getTimeline()
         },
         mapSuccess = {
-            it.toUserStatuses()
+            it.toFeedItems()
         }
     )
 }

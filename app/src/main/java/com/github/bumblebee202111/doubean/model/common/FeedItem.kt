@@ -16,8 +16,8 @@ data class FeedItem<T : FeedContent>(
     override val reactionsCount: Int,
     override val commentsCount: Int,
     override val resharesCount: Int,
+    val resharer: User? = null,
     val content: T,
 ) : BaseTimelineItem {
     override val url: String get() = alt
 }
-
