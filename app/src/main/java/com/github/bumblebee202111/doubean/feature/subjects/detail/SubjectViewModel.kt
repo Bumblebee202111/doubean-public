@@ -92,11 +92,6 @@ class SubjectViewModel @AssistedInject constructor(
                     async { subjectCommonRepository.getSubjectPhotos(subjectType, subjectId) }
                 } else null
 
-            val creditListResultDeferred =
-                if (subjectType == SubjectType.MOVIE || subjectType == SubjectType.TV) {
-                    async { subjectCommonRepository.getSubjectCreditList(subjectType, subjectId) }
-                } else null
-
             val detailResult = detailResultDeferred.await()
             if (detailResult is AppResult.Error) {
                 val uiMessage = detailResult.error.asUiMessage()
@@ -106,6 +101,18 @@ class SubjectViewModel @AssistedInject constructor(
             }
 
             val subject = (detailResult as AppResult.Success).data
+
+            val hasCelebrities = when (subject) {
+                is MovieDetail -> subject.actorNames.isNotEmpty() || subject.directorNames.isNotEmpty()
+                is TvDetail -> subject.actorNames.isNotEmpty() || subject.directorNames.isNotEmpty()
+                else -> false
+            }
+
+            val creditListResultDeferred =
+                if (hasCelebrities) {
+                    async { subjectCommonRepository.getSubjectCreditList(subjectType, subjectId) }
+                } else null
+
             val interestStatus =
                 if (subject.isReleased) SubjectInterestStatus.MARK_STATUS_DONE else SubjectInterestStatus.MARK_STATUS_MARK
 
