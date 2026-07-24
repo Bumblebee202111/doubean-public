@@ -21,6 +21,7 @@ import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.Preferenc
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_LAST_REFRESH_TIME
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_RECEIVE_NOTIFICATIONS
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_REFRESH_TOKEN
+import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_TIMELINE_LAST_VISIT_ID
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_UDID
 import com.github.bumblebee202111.doubean.data.repository.DoubanPrefCurrentAccountInfo
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
@@ -62,6 +63,7 @@ class PreferenceStorage(
         val PREF_REFRESH_TOKEN = stringPreferencesKey("refresh_token")
         val PREF_DOUBAN_USER_ID = stringPreferencesKey("douban_user_id")
         val PREF_LAST_REFRESH_TIME = longPreferencesKey("last_refresh_time")
+        val PREF_TIMELINE_LAST_VISIT_ID = stringPreferencesKey("timeline_last_visit_id")
     }
 
     suspend fun preferToReceiveNotifications(prefer: Boolean) {
@@ -170,6 +172,16 @@ class PreferenceStorage(
 
     val lastRefreshTime = dataStore.data.map { p ->
         p[PREF_LAST_REFRESH_TIME]
+    }
+
+    suspend fun setTimelineLastVisitId(id: String) {
+        dataStore.edit {
+            it[PREF_TIMELINE_LAST_VISIT_ID] = id
+        }
+    }
+
+    val timelineLastVisitId = dataStore.data.map { p ->
+        p[PREF_TIMELINE_LAST_VISIT_ID]
     }
 
     suspend fun saveSession(
