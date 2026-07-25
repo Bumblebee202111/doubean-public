@@ -101,7 +101,6 @@ Primarily for personal tracking.
 ### Current Release (0.13.0)
 
 - **Refactor Statuses tab**
-  - Add pagination and click support.
   - Focus on supporting Subjects, Groups, and Doulists, with graceful fallbacks for other types.
   - Keep the timeline UI distinct, lively, and aligned with Material 3 Expressive (M3E).
   - Fix oversized subject covers.

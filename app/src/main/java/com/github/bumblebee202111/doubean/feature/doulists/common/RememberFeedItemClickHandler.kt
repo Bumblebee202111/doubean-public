@@ -3,7 +3,6 @@ package com.github.bumblebee202111.doubean.feature.doulists.common
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import com.github.bumblebee202111.doubean.model.common.BaseFeedableItem
 import com.github.bumblebee202111.doubean.model.common.FeedItem
 import com.github.bumblebee202111.doubean.model.common.SubjectFeedContent
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
@@ -11,60 +10,31 @@ import com.github.bumblebee202111.doubean.util.OpenInUtils
 
 @Composable
 fun rememberFeedItemClickHandler(
-    onTopicClick: (String) -> Unit,
+    onOpenDeepLinkUrl: (String) -> Boolean,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
 ): (FeedItem<*>) -> Unit {
     val context = LocalContext.current
-    return remember(context, onTopicClick, onSubjectClick) {
+    return remember(context, onOpenDeepLinkUrl, onSubjectClick) {
         { feedItem ->
-            val handledInternally = attemptInternalNavigation(
-                feedItem = feedItem,
-                onTopicClick = onTopicClick,
-                onSubjectClick = onSubjectClick
-            )
+            
+            var handled = onOpenDeepLinkUrl(feedItem.uri)
 
-            if (!handledInternally) {
+            
+            if (!handled) {
+                val content = feedItem.content
+                if (content is SubjectFeedContent && content.subject.type != SubjectType.UNSUPPORTED) {
+                    onSubjectClick(content.subject.subject.id, content.subject.type)
+                    handled = true
+                }
+            }
+
+            
+            if (!handled) {
                 val openedInDoubanApp = OpenInUtils.openInDouban(context, feedItem.uri).isSuccess
-                if (!openedInDoubanApp) {
+                if (!openedInDoubanApp && feedItem.url.isNotBlank()) {
                     OpenInUtils.openInBrowser(context, feedItem.url)
                 }
             }
         }
-    }
-}
-
-private fun attemptInternalNavigation(
-    feedItem: FeedItem<*>,
-    onTopicClick: (String) -> Unit,
-    onSubjectClick: (id: String, type: SubjectType) -> Unit,
-): Boolean {
-    return when (feedItem.type) {
-        BaseFeedableItem.TYPE_TOPIC -> {
-            onTopicClick(feedItem.uri)
-            true
-        }
-
-        BaseFeedableItem.TYPE_MOVIE, BaseFeedableItem.TYPE_BOOK, BaseFeedableItem.TYPE_MUSIC -> {
-            when (val content = feedItem.content) {
-                !is SubjectFeedContent -> false
-                else -> {
-                    val subject = content.subject.subject
-                    val subjectId = subject.id
-                    val type = content.subject.type
-                    if (type != SubjectType.UNSUPPORTED) {
-                        onSubjectClick(subjectId, type)
-                        true
-                    } else {
-                        false
-                    }
-                }
-            }
-        }
-
-        BaseFeedableItem.TYPE_REVIEW -> {
-            false
-        }
-
-        else -> false
     }
 }

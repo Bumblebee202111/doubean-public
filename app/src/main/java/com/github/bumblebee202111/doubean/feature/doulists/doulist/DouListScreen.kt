@@ -43,7 +43,7 @@ import com.github.bumblebee202111.doubean.ui.component.MoreButton
 @Composable
 fun DouListScreen(
     onBackClick: () -> Unit,
-    onTopicClick: (String) -> Unit,
+    onTopicClick: (String) -> Boolean,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onUserClick: (String) -> Unit,
     onImageClick: (String) -> Unit,
@@ -78,7 +78,7 @@ fun DouListScreen(
     onShowEditDialog: () -> Unit,
     onDismissEditDialog: () -> Unit,
     onUpdateTitle: (String) -> Unit,
-    onTopicClick: (String) -> Unit,
+    onTopicClick: (String) -> Boolean,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onUserClick: (String) -> Unit,
     onImageClick: (String) -> Unit,
@@ -206,14 +206,14 @@ fun DouListContent(
     isLoadingMore: Boolean,
     scaffoldPadding: PaddingValues,
     isLoggedIn: Boolean,
-    onTopicClick: (String) -> Unit,
+    onTopicClick: (String) -> Boolean,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onUserClick: (String) -> Unit,
     onImageClick: (String) -> Unit,
     onMarkSubject: (MarkableSubject) -> Unit,
 ) {
     val onItemClick = rememberFeedItemClickHandler(
-        onTopicClick = onTopicClick,
+        onOpenDeepLinkUrl = onTopicClick,
         onSubjectClick = onSubjectClick
     )
 

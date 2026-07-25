@@ -17,7 +17,7 @@ import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicato
 
 @Composable
 fun MyCollectedItemsScreen(
-    onTopicClick: (String) -> Unit,
+    onTopicClick: (String) -> Boolean,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onUserClick: (String) -> Unit,
     onImageClick: (String) -> Unit,
@@ -46,7 +46,7 @@ fun MyCollectedItemsScreen(
 fun MyCollectedItemsScreen(
     uiState: MyCollectedItemsUiState,
     isLoggedIn: Boolean,
-    onTopicClick: (String) -> Unit,
+    onTopicClick: (String) -> Boolean,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onUserClick: (String) -> Unit,
     onImageClick: (String) -> Unit,
@@ -70,7 +70,7 @@ fun MyCollectedItemsScreen(
 
         else -> {
             val onItemClick = rememberFeedItemClickHandler(
-                onTopicClick = onTopicClick,
+                onOpenDeepLinkUrl = onTopicClick,
                 onSubjectClick = onSubjectClick
             )
 

@@ -18,7 +18,7 @@ fun Navigator.navigateToDouList(douListId: String) {
 
 fun EntryProviderScope<NavKey>.douListEntry(
     onBackClick: () -> Unit,
-    onTopicClick: (String) -> Unit,
+    onOpenDeepLinkUrl: (String) -> Boolean,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onUserClick: (String) -> Unit,
     onImageClick: (String) -> Unit,
@@ -26,7 +26,7 @@ fun EntryProviderScope<NavKey>.douListEntry(
     entry<DouListNavKey> { key ->
         DouListScreen(
             onBackClick = onBackClick,
-            onTopicClick = onTopicClick,
+            onTopicClick = onOpenDeepLinkUrl,
             onSubjectClick = onSubjectClick,
             onUserClick = onUserClick,
             onImageClick = onImageClick,

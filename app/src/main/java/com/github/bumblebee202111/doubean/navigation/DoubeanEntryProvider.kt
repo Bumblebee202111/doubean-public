@@ -66,7 +66,12 @@ fun createDoubeanEntryProvider(
     }
 
     
-    statusesEntry(onAvatarClick = onAvatarClick)
+    statusesEntry(
+        onAvatarClick = onAvatarClick,
+        onUserClick = navigator::navigateToUserProfile,
+        onImageClick = navigator::navigateToImageViewer,
+        onOpenDeepLinkUrl = navigateToUri
+    )
 
     subjectsEntry(
         onAvatarClick = onAvatarClick,
@@ -167,14 +172,14 @@ fun createDoubeanEntryProvider(
     )
     douListEntry(
         onBackClick = navigator::goBack,
-        onTopicClick = { navigateToUri(it) },
+        onOpenDeepLinkUrl = { navigateToUri(it) },
         onSubjectClick = navigateToSubject,
         onUserClick = navigator::navigateToUserProfile,
         onImageClick = navigator::navigateToImageViewer
     )
     myDouListsEntry(
         onBackClick = navigator::goBack,
-        onTopicClick = { navigateToUri(it) },
+        onOpenDeepLinkUrl = { navigateToUri(it) },
         onSubjectClick = navigateToSubject,
         onUserClick = navigator::navigateToUserProfile,
         onImageClick = navigator::navigateToImageViewer,

@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MyDouListsScreen(
     onBackClick: () -> Unit,
-    onTopicClick: (String) -> Unit,
+    onTopicClick: (String) -> Boolean,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onUserClick: (String) -> Unit,
     onImageClick: (String) -> Unit,

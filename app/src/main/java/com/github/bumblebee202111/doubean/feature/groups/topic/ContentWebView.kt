@@ -193,18 +193,12 @@ private fun handleUrlLoading(
     } else {
         Log.i(
             CONTENT_WEB_VIEW_TAG,
-            "Internal navigation failed (Snackbar shown), attempting to open externally: $url"
+            "Internal navigation failed, attempting to open externally: $url"
         )
-        try {
-            OpenInUtils.viewInActivity(context, url)
-            return true
-        } catch (e: Exception) {
-            Log.e(
-                CONTENT_WEB_VIEW_TAG,
-                "Failed to open externally after internal navigation attempt failed for: $url",
-                e
-            )
-            return false
+        val openedInDouban = OpenInUtils.openInDouban(context, url).isSuccess
+        if (!openedInDouban) {
+            OpenInUtils.openInBrowser(context, url)
         }
+        return true
     }
 }
