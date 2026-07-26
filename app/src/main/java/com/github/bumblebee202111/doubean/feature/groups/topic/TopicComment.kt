@@ -54,6 +54,8 @@ import java.time.LocalDateTime
 fun TopicComment(
     comment: TopicComment,
     topic: TopicDetail,
+    canReply: Boolean,
+    onReplyClick: (TopicComment) -> Unit,
     onUserClick: (id: String) -> Unit,
     onImageClick: (url: String) -> Unit,
 ) {
@@ -63,6 +65,8 @@ fun TopicComment(
         TopicCommentActionsBottomSheet(
             comment = comment,
             topic = topic,
+            canReply = canReply,
+            onReplyClick = onReplyClick,
             onDismissRequest = { showActionsBottomSheet = false }
         )
     }

@@ -28,6 +28,8 @@ import com.github.bumblebee202111.doubean.ui.util.toUiMessage
 fun LazyListScope.popularComments(
     comments: List<TopicComment>,
     topic: TopicDetail,
+    canReply: Boolean,
+    onReplyClick: (TopicComment) -> Unit,
     onUserClick: (id: String) -> Unit,
     onImageClick: (url: String) -> Unit,
 ) {
@@ -38,6 +40,8 @@ fun LazyListScope.popularComments(
         TopicComment(
             comment = comments[index],
             topic = topic,
+            canReply = canReply,
+            onReplyClick = onReplyClick,
             onUserClick = onUserClick,
             onImageClick = onImageClick
         )
@@ -49,6 +53,8 @@ fun LazyListScope.popularComments(
 fun LazyListScope.allComments(
     comments: LazyPagingItems<TopicComment>,
     topic: TopicDetail,
+    canReply: Boolean,
+    onReplyClick: (TopicComment) -> Unit,
     onUserClick: (id: String) -> Unit,
     onImageClick: (url: String) -> Unit,
 ) {
@@ -74,6 +80,8 @@ fun LazyListScope.allComments(
                     TopicComment(
                         comment = comment,
                         topic = topic,
+                        canReply = canReply,
+                        onReplyClick = onReplyClick,
                         onUserClick = onUserClick,
                         onImageClick = onImageClick
                     )
