@@ -1,0 +1,159 @@
+name: Release
+
+# Builds the release APK and publishes it to a GitHub Release.
+#
+# Triggers:
+#   - Pushing a tag that starts with "v" (e.g. v0.13.0-beta1).
+#   - Manually via the "Run workflow" button (workflow_dispatch), which
+#     creates/updates a release for the tag you provide.
+#
+# APK signing is optional. If the signing secrets below are configured the
+# APK is signed with your release keystore; otherwise an unsigned APK is
+# published so the workflow still succeeds.
+#
+# Required repository secrets for signing:
+#   SIGNING_KEYSTORE_BASE64 - base64 of your .jks/.keystore file
+#                             (`base64 -w0 my-release.jks` on Linux).
+#   SIGNING_KEYSTORE_PASSWORD - keystore password.
+#   SIGNING_KEY_ALIAS         - key alias.
+#   SIGNING_KEY_PASSWORD      - key/alias password.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build and release (e.g. v0.13.0-beta1)'
+        required: true
+      prerelease:
+        description: 'Mark the release as a pre-release'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build & release APK
+    runs-on: ubuntu-latest
+    env:
+      # Mapped from secrets so they can be referenced in `if:` conditions.
+      SIGNING_KEYSTORE_BASE64: ${{ secrets.SIGNING_KEYSTORE_BASE64 }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Resolve release tag
+        id: meta
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          else
+            TAG="${GITHUB_REF_NAME}"
+          fi
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "Resolved tag: ${TAG}"
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build release APK
+        run: ./gradlew :app:assembleRelease --stacktrace
+
+      - name: Locate built APK
+        id: apk
+        run: |
+          APK="$(find app/build/outputs/apk/release -name '*.apk' | head -n 1)"
+          if [ -z "$APK" ]; then
+            echo "::error::No APK found under app/build/outputs/apk/release"
+            exit 1
+          fi
+          echo "path=${APK}" >> "$GITHUB_OUTPUT"
+          echo "Found APK: ${APK}"
+
+      - name: Sign APK
+        id: sign
+        if: env.SIGNING_KEYSTORE_BASE64 != ''
+        env:
+          SIGNING_KEYSTORE_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          BUILD_TOOLS="$(ls -d "$ANDROID_SDK_ROOT"/build-tools/* | sort -V | tail -n 1)"
+          echo "Using build-tools: ${BUILD_TOOLS}"
+
+          echo "$SIGNING_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.jks"
+
+          UNSIGNED="${{ steps.apk.outputs.path }}"
+          ALIGNED="$RUNNER_TEMP/aligned.apk"
+          SIGNED="$RUNNER_TEMP/${{ steps.meta.outputs.tag }}-signed.apk"
+
+          "$BUILD_TOOLS/zipalign" -p -f 4 "$UNSIGNED" "$ALIGNED"
+          "$BUILD_TOOLS/apksigner" sign \
+            --ks "$RUNNER_TEMP/release.jks" \
+            --ks-key-alias "$SIGNING_KEY_ALIAS" \
+            --ks-pass "pass:$SIGNING_KEYSTORE_PASSWORD" \
+            --key-pass "pass:$SIGNING_KEY_PASSWORD" \
+            --out "$SIGNED" \
+            "$ALIGNED"
+          "$BUILD_TOOLS/apksigner" verify "$SIGNED"
+
+          echo "path=${SIGNED}" >> "$GITHUB_OUTPUT"
+
+      - name: Select release asset
+        id: asset
+        run: |
+          if [ -n "${{ steps.sign.outputs.path }}" ]; then
+            echo "path=${{ steps.sign.outputs.path }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Signing secrets not configured; publishing the unsigned APK."
+            echo "path=${{ steps.apk.outputs.path }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: doubean-${{ steps.meta.outputs.tag }}
+          path: ${{ steps.asset.outputs.path }}
+          if-no-files-found: error
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="${{ steps.meta.outputs.tag }}"
+          PRERELEASE_FLAG=""
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            if [ "${{ github.event.inputs.prerelease }}" = "true" ]; then
+              PRERELEASE_FLAG="--prerelease"
+            fi
+          else
+            # Tags containing a hyphen (e.g. -beta1, -rc1) are treated as pre-releases.
+            case "$TAG" in
+              *-*) PRERELEASE_FLAG="--prerelease" ;;
+            esac
+          fi
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "${{ steps.asset.outputs.path }}" --clobber
+          else
+            gh release create "$TAG" "${{ steps.asset.outputs.path }}" \
+              --title "$TAG" \
+              --generate-notes \
+              $PRERELEASE_FLAG
+          fi
