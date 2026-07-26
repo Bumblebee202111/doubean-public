@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Strings for the topic comment / reply feature.
+  Kept in a dedicated file with feature-prefixed names so they don't collide
+  with other string resources.
+-->
+<resources>
+    <string name="topic_comment_hint">写下你的评论…</string>
+    <string name="topic_comment_reply_hint">回复…</string>
+    <string name="topic_comment_reply">回复</string>
+    <string name="topic_comment_send">发送</string>
+    <string name="topic_comment_cancel_reply">取消回复</string>
+    <string name="topic_comment_replying_to">回复 @%1$s</string>
+    <string name="topic_comment_posted">评论已发布</string>
+</resources>

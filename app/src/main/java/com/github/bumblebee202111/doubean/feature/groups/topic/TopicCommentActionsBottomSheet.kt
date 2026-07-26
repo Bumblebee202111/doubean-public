@@ -3,6 +3,7 @@ package com.github.bumblebee202111.doubean.feature.groups.topic
 import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Reply
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -38,11 +39,28 @@ private fun TopicComment.createShareText(
 fun TopicCommentActionsBottomSheet(
     comment: TopicComment,
     topic: TopicDetail,
+    canReply: Boolean,
+    onReplyClick: (TopicComment) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     val context = LocalContext.current
 
     ModalBottomSheet(onDismissRequest = onDismissRequest) {
+        if (canReply) {
+            ListItem(
+                headlineContent = { Text(stringResource(id = R.string.topic_comment_reply)) },
+                leadingContent = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Outlined.Reply,
+                        contentDescription = null
+                    )
+                },
+                modifier = Modifier.clickable {
+                    onReplyClick(comment)
+                    onDismissRequest()
+                }
+            )
+        }
         ListItem(
             headlineContent = { Text(stringResource(id = R.string.share)) },
             leadingContent = {

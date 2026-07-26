@@ -9,6 +9,7 @@ import com.github.bumblebee202111.doubean.data.db.AppDatabase
 import com.github.bumblebee202111.doubean.data.db.model.toTopicDetail
 import com.github.bumblebee202111.doubean.data.paging.GroupTopicCommentPagingSource
 import com.github.bumblebee202111.doubean.data.paging.GroupTopicReshareItemPagingSource
+import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.model.fangorns.ReactionType
 import com.github.bumblebee202111.doubean.model.groups.GroupTopicCommentReshareItem
@@ -131,6 +132,25 @@ class GroupTopicRepository @Inject constructor(
         mapSuccess = {
             groupTopicDao.insertTopicReaction(it.toTopicReactionPartialEntity(topicId))
         }
+    )
+
+    /**
+     * Posts a comment on a topic. When [refCommentId] is provided, the comment is
+     * created as a reply to that existing comment.
+     */
+    suspend fun postComment(
+        topicId: String,
+        content: String,
+        refCommentId: String? = null,
+    ): AppResult<TopicComment> = makeApiCall(
+        apiCall = {
+            apiService.addGroupTopicComment(
+                topicId = topicId,
+                content = content,
+                refCommentId = refCommentId
+            )
+        },
+        mapSuccess = NetworkGroupTopicComment::asExternalModel
     )
 
     suspend fun updateTopicIsCollected(topicId: String, isCollected: Boolean) {

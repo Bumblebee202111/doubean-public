@@ -85,6 +85,14 @@ fun TopicScreen(
     val collectDialogUiState by viewModel.collectDialogUiState.collectAsStateWithLifecycle()
     val showCreateDouListDialog by viewModel.showCreateDouListDialog.collectAsStateWithLifecycle()
     val authorOnlyMode by viewModel.authorOnlyMode.collectAsStateWithLifecycle()
+    val composerUiState by viewModel.composerUiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.commentPostedEvent.collect {
+            viewModel.updateCommentsSortBy(TopicCommentSortBy.ALL)
+            allCommentLazyPagingItems.refresh()
+        }
+    }
 
     TopicScreen(
         topicResult = topicResult,
@@ -98,6 +106,7 @@ fun TopicScreen(
         collectDialogUiState = collectDialogUiState,
         showCreateDouListDialog = showCreateDouListDialog,
         authorOnlyMode = authorOnlyMode,
+        composerUiState = composerUiState,
         updateCommentSortBy = viewModel::updateCommentsSortBy,
         updateAuthorOnlyMode = viewModel::updateAuthorOnlyMode,
         displayInvalidImageUrl = viewModel::displayInvalidImageUrl,
@@ -122,6 +131,10 @@ fun TopicScreen(
         onCreateDouList = viewModel::showCreateDialog,
         onDismissCreateDialog = viewModel::dismissCreateDialog,
         onCreateAndCollect = viewModel::createAndCollect,
+        onCommentTextChange = viewModel::updateCommentText,
+        onReplyClick = viewModel::startReply,
+        onCancelReply = viewModel::cancelReply,
+        onSendComment = viewModel::sendComment,
     )
 }
 
@@ -140,6 +153,7 @@ fun TopicScreen(
     collectDialogUiState: CollectDialogUiState?,
     showCreateDouListDialog: Boolean,
     authorOnlyMode: Boolean,
+    composerUiState: CommentComposerUiState,
     updateCommentSortBy: (TopicCommentSortBy) -> Unit,
     updateAuthorOnlyMode: (Boolean) -> Unit,
     displayInvalidImageUrl: () -> Unit,
@@ -158,6 +172,10 @@ fun TopicScreen(
     onCreateDouList: () -> Unit,
     onDismissCreateDialog: () -> Unit,
     onCreateAndCollect: (title: String) -> Unit,
+    onCommentTextChange: (String) -> Unit,
+    onReplyClick: (TopicComment) -> Unit,
+    onCancelReply: () -> Unit,
+    onSendComment: () -> Unit,
 ) {
     val context = LocalContext.current
     var shouldShowDialog by rememberSaveable { mutableStateOf(false) }
@@ -214,6 +232,16 @@ fun TopicScreen(
                 onWebViewClick = onWebViewClick,
                 onOpenInDoubanClick = { OpenInUtils.openInDouban(context, it) }
             )
+        },
+        bottomBar = {
+            if (isLoggedIn && topicResult is CachedAppResult.Success) {
+                TopicCommentComposer(
+                    uiState = composerUiState,
+                    onTextChange = onCommentTextChange,
+                    onSend = onSendComment,
+                    onCancelReply = onCancelReply
+                )
+            }
         },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
@@ -292,6 +320,8 @@ fun TopicScreen(
                                     popularComments(
                                         comments = popularComments,
                                         topic = topic,
+                                        canReply = isLoggedIn,
+                                        onReplyClick = onReplyClick,
                                         onUserClick = onUserClick,
                                         onImageClick = onImageClick
                                     )
@@ -317,6 +347,8 @@ fun TopicScreen(
                                     allComments(
                                         comments = allCommentLazyPagingItems,
                                         topic = topic,
+                                        canReply = isLoggedIn,
+                                        onReplyClick = onReplyClick,
                                         onUserClick = onUserClick,
                                         onImageClick = onImageClick
                                     )

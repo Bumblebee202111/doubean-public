@@ -7,6 +7,7 @@ import androidx.core.text.htmlEncode
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.DouListRepository
 import com.github.bumblebee202111.doubean.data.repository.GroupTopicRepository
@@ -23,6 +24,7 @@ import com.github.bumblebee202111.doubean.model.groups.Poll
 import com.github.bumblebee202111.doubean.model.groups.PollId
 import com.github.bumblebee202111.doubean.model.groups.Question
 import com.github.bumblebee202111.doubean.model.groups.QuestionId
+import com.github.bumblebee202111.doubean.model.groups.TopicComment
 import com.github.bumblebee202111.doubean.model.groups.TopicCommentSortBy
 import com.github.bumblebee202111.doubean.model.groups.TopicContentEntityId
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
@@ -34,14 +36,36 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.RoundingMode
+
+/**
+ * Identifies the comment a reply is being composed for.
+ */
+data class ReplyTarget(
+    val commentId: String,
+    val authorName: String,
+)
+
+/**
+ * UI state for the topic comment composer / reply box.
+ */
+data class CommentComposerUiState(
+    val text: String = "",
+    val replyTo: ReplyTarget? = null,
+    val isSubmitting: Boolean = false,
+) {
+    val canSend: Boolean get() = text.isNotBlank() && !isSubmitting
+}
 
 @HiltViewModel(assistedFactory = TopicViewModel.Factory::class)
 class TopicViewModel @AssistedInject constructor(
@@ -153,6 +177,55 @@ class TopicViewModel @AssistedInject constructor(
             )
             if (result is AppResult.Error) {
                 snackbarManager.showMessage(result.error.asUiMessage())
+            }
+        }
+    }
+
+    private val _composerUiState = MutableStateFlow(CommentComposerUiState())
+    val composerUiState = _composerUiState.asStateFlow()
+
+    private val _commentPostedEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+
+    /** Emitted after a comment is successfully posted so the screen can refresh the list. */
+    val commentPostedEvent = _commentPostedEvent.asSharedFlow()
+
+    fun updateCommentText(text: String) {
+        _composerUiState.update { it.copy(text = text) }
+    }
+
+    fun startReply(comment: TopicComment) {
+        _composerUiState.update {
+            it.copy(replyTo = ReplyTarget(comment.id, comment.author.name))
+        }
+    }
+
+    fun cancelReply() {
+        _composerUiState.update { it.copy(replyTo = null) }
+    }
+
+    fun sendComment() {
+        val current = _composerUiState.value
+        val content = current.text.trim()
+        if (content.isEmpty() || current.isSubmitting) return
+
+        viewModelScope.launch {
+            _composerUiState.update { it.copy(isSubmitting = true) }
+            val result = topicRepository.postComment(
+                topicId = topicId,
+                content = content,
+                refCommentId = current.replyTo?.commentId
+            )
+            when (result) {
+                is AppResult.Success -> {
+                    _composerUiState.value = CommentComposerUiState()
+                    snackbarManager.showMessage(R.string.topic_comment_posted.toUiMessage())
+                    _commentPostedEvent.emit(Unit)
+                }
+
+                is AppResult.Error -> {
+                    _composerUiState.update { it.copy(isSubmitting = false) }
+                    snackbarManager.showMessage(result.error.asUiMessage())
+                }
             }
         }
     }
