@@ -13,6 +13,7 @@ sealed interface FeedContent {
 
 data class TopicFeedContent(
     override val type: String,
+    val subtype: String,
     val uri: String,
     val alt: String,
     val title: String,
@@ -47,12 +48,10 @@ data class StatusFeedContent(
     val card: SubjectStatusCard<*>?,
 ) : FeedContent
 
-data class NoteFeedContent(
+data class UnknownFeedContent(
     override val type: String,
-    val author: User,
-    val title: String,
-    val abstract: String,
-    val photos: List<Photo>,
+    val title: String? = null,
+    val abstractString: String? = null,
+    val photos: List<Photo>? = null,
+    val author: User? = null,
 ) : FeedContent
-
-data class UnknownFeedContent(override val type: String) : FeedContent

@@ -8,6 +8,7 @@ data class FeedItem<T : FeedContent>(
     override val uri: String,
     override val alt: String,
     override val type: String,
+    val typeCn: String,
     override val layout: FeedItemLayout,
     override val createTime: LocalDateTime?,
     override val owner: User?,
