@@ -40,7 +40,7 @@ Compose. Some features are works in progress (WIP), and you may encounter bugs.
   - Basic Material Design 3 (MD3) theming
   - Basic image viewer
   - User profile screen
-  - View statuses feed (legacy)
+  - View statuses feed (home timeline)
   - Mobile-optimized pure Web screens (legacy)
 
 ## Screenshots
@@ -101,12 +101,6 @@ Primarily for personal tracking.
 ### Current Release (0.13.0)
 
 - **Refactor Statuses tab**
-  - Unify data logic with Doulist feeds and drop legacy timeline code.
-  - Add pagination and click support.
-  - Focus on supporting Subjects, Groups, and Doulists, with graceful fallbacks for other types.
-  - Keep the timeline UI distinct, lively, and aligned with Material 3 Expressive (M3E).
-  - Fix oversized subject covers.
-  - Remove the maintenance banner.
 
 ### Next Release (0.13.1)
 
