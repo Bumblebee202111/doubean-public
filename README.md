@@ -100,8 +100,6 @@ Primarily for personal tracking.
 
 ### Current Release (0.13.0)
 
-- **Refactor Statuses tab**
-
 ### Next Release (0.13.1)
 
 <details>

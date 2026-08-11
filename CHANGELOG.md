@@ -1,6 +1,20 @@
 Change Log
 ==========
 
+## Version 0.13.0
+
+- Support hidden or deleted status items and hide title of fallback statue content
+
+### Important changes since 0.12.3
+
+The Statuses tab is back online. It is still a work in progress, but the core experience is now much
+more stable.
+
+- **Restored:** Pull-to-refresh and infinite scrolling for the home timeline.
+- **Smoother Navigation:** Tapping avatars, images, and links now routes seamlessly.
+- **Cleaner UI:** Fixed oversized subject covers and added clean web/Douban previews for unsupported
+  content types.
+
 ## Version 0.13.0-beta1
 
 The Statuses tab is back online. It is still a work in progress, but the core experience is now much
