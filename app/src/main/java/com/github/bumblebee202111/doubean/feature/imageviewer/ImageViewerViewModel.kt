@@ -3,7 +3,7 @@ package com.github.bumblebee202111.doubean.feature.imageviewer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.data.repository.ImageRepository
+import com.github.bumblebee202111.doubean.feature.imageviewer.data.ImageRepository
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.model.toUiMessage
 import dagger.assisted.Assisted

@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.DouListRepository
 import com.github.bumblebee202111.doubean.data.repository.ItemDouListRepository
-import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.common.CollectionHandler
 import com.github.bumblebee202111.doubean.feature.subjects.common.InterestSortType
+import com.github.bumblebee202111.doubean.feature.subjects.data.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.common.CollectType
 import com.github.bumblebee202111.doubean.model.doulists.ItemDouList

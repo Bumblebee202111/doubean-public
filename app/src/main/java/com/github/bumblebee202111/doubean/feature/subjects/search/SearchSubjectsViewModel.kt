@@ -5,7 +5,7 @@ package com.github.bumblebee202111.doubean.feature.subjects.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.repository.SearchHistoryRepository
-import com.github.bumblebee202111.doubean.data.repository.SearchSubjectsRepository
+import com.github.bumblebee202111.doubean.feature.subjects.data.SearchSubjectsRepository
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.search.SearchType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectsSearchType

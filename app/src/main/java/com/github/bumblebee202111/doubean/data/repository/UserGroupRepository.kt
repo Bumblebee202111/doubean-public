@@ -18,7 +18,7 @@ import com.github.bumblebee202111.doubean.data.db.model.asExternalModel
 import com.github.bumblebee202111.doubean.data.db.model.toGroupNotificationPreferences
 import com.github.bumblebee202111.doubean.data.db.model.toPinnedTabItem
 import com.github.bumblebee202111.doubean.data.db.model.toSimpleGroup
-import com.github.bumblebee202111.doubean.data.repository.GroupRepository.Companion.RESULT_TOPICS_PAGE_SIZE
+import com.github.bumblebee202111.doubean.feature.groups.data.GroupRepository.Companion.RESULT_TOPICS_PAGE_SIZE
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.groups.PinnedTabItem

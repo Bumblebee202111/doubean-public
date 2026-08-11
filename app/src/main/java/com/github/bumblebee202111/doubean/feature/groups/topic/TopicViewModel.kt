@@ -9,10 +9,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.DouListRepository
-import com.github.bumblebee202111.doubean.data.repository.GroupTopicRepository
 import com.github.bumblebee202111.doubean.data.repository.ItemDouListRepository
-import com.github.bumblebee202111.doubean.data.repository.PollRepository
 import com.github.bumblebee202111.doubean.feature.common.CollectionHandler
+import com.github.bumblebee202111.doubean.feature.groups.data.GroupTopicRepository
+import com.github.bumblebee202111.doubean.feature.groups.data.PollRepository
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.model.common.CollectType

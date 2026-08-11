@@ -2,8 +2,8 @@ package com.github.bumblebee202111.doubean.feature.subjects.music
 
 import androidx.lifecycle.ViewModel
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
-import com.github.bumblebee202111.doubean.data.repository.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.feature.subjects.SubjectModulesUiState
+import com.github.bumblebee202111.doubean.feature.subjects.data.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.ui.stateInUi
