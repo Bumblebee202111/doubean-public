@@ -46,6 +46,7 @@ data class StatusFeedContent(
     val text: String?,
     val images: List<SizedImage>?,
     val card: SubjectStatusCard<*>?,
+    val isTombstone: Boolean = false,
 ) : FeedContent
 
 data class UnknownFeedContent(
