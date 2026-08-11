@@ -1,11 +1,13 @@
 Change Log
 ==========
 
+## Version 0.13.1
+
 ## Version 0.13.0
 
-- Support hidden or deleted status items and hide title of fallback statue content
+- Support hidden or deleted status items and hide title of fallback status content if blank
 
-### Important changes since 0.12.3
+### Important changes since 0.12.x
 
 The Statuses tab is back online. It is still a work in progress, but the core experience is now much
 more stable.
