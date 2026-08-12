@@ -1,7 +1,8 @@
-package com.github.bumblebee202111.doubean.data.paging
+package com.github.bumblebee202111.doubean.feature.groups.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.github.bumblebee202111.doubean.data.paging.safePagingLoad
 import com.github.bumblebee202111.doubean.network.api.GroupApiService
 import com.github.bumblebee202111.doubean.network.model.structure.NetworkReshareItem
 
@@ -19,8 +20,8 @@ class GroupTopicReshareItemPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, NetworkReshareItem> {
         return safePagingLoad {
-        val start = params.key ?: 0
-        val count = params.loadSize
+            val start = params.key ?: 0
+            val count = params.loadSize
             val response = apiService.getGroupTopicResharesStatuses(
                 topicId = topicId,
                 start = start,

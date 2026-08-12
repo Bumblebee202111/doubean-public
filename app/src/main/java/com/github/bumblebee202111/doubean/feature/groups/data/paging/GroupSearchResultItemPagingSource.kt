@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.data.paging
+package com.github.bumblebee202111.doubean.feature.groups.data.paging
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingSource

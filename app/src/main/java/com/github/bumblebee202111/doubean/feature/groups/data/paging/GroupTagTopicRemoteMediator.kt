@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.data.paging
+package com.github.bumblebee202111.doubean.feature.groups.data.paging
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
@@ -11,6 +11,7 @@ import com.github.bumblebee202111.doubean.data.db.model.GroupTabTopicRemoteKey
 import com.github.bumblebee202111.doubean.data.db.model.GroupTagTopicItemEntity
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItem
 import com.github.bumblebee202111.doubean.data.db.model.UserEntity
+import com.github.bumblebee202111.doubean.data.paging.safeMediatorLoad
 import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 import com.github.bumblebee202111.doubean.model.groups.getRequestParamString
 import com.github.bumblebee202111.doubean.network.api.GroupApiService

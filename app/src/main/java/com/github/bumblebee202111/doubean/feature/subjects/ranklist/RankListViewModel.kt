@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.github.bumblebee202111.doubean.data.repository.AuthRepository
-import com.github.bumblebee202111.doubean.data.repository.SubjectCollectionRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
+import com.github.bumblebee202111.doubean.feature.subjects.data.SubjectCollectionRepository
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
