@@ -3,7 +3,7 @@ package com.github.bumblebee202111.doubean.data.db.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.github.bumblebee202111.doubean.model.groups.GroupTopicTag
+import com.github.bumblebee202111.doubean.feature.groups.model.GroupTopicTag
 
 @Entity("group_topic_tags")
 data class GroupTopicTagEntity(

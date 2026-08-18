@@ -3,7 +3,7 @@ package com.github.bumblebee202111.doubean.feature.subjects.common
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import com.github.bumblebee202111.doubean.model.subjects.RecommendSubject
+import com.github.bumblebee202111.doubean.feature.subjects.model.RecommendSubject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 

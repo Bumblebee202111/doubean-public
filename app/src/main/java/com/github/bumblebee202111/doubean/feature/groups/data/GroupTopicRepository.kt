@@ -7,11 +7,11 @@ import androidx.paging.map
 import androidx.room.withTransaction
 import com.github.bumblebee202111.doubean.data.db.AppDatabase
 import com.github.bumblebee202111.doubean.data.db.model.toTopicDetail
+import com.github.bumblebee202111.doubean.feature.groups.model.GroupTopicCommentReshareItem
+import com.github.bumblebee202111.doubean.feature.groups.model.TopicComment
+import com.github.bumblebee202111.doubean.feature.groups.model.TopicDetail
 import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.model.fangorns.ReactionType
-import com.github.bumblebee202111.doubean.model.groups.GroupTopicCommentReshareItem
-import com.github.bumblebee202111.doubean.model.groups.TopicComment
-import com.github.bumblebee202111.doubean.model.groups.TopicDetail
 import com.github.bumblebee202111.doubean.network.api.GroupApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkGroupTopicComment
 import com.github.bumblebee202111.doubean.network.model.asExternalModel

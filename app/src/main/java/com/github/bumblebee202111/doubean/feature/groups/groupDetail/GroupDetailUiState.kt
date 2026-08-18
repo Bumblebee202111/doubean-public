@@ -1,6 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupdetail
 
-import com.github.bumblebee202111.doubean.model.groups.GroupDetail
+import com.github.bumblebee202111.doubean.feature.groups.model.GroupDetail
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.groups.SimpleGroupWithColor
 import com.github.bumblebee202111.doubean.ui.model.UiMessage

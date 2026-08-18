@@ -27,8 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectDetail
 import com.github.bumblebee202111.doubean.model.subjects.Rating
-import com.github.bumblebee202111.doubean.model.subjects.SubjectDetail
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.ui.component.DoubeanRatingBar
 import com.github.bumblebee202111.doubean.ui.component.DoubeanRatingBarSize

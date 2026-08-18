@@ -19,8 +19,8 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.groups.TopicComment
-import com.github.bumblebee202111.doubean.model.groups.TopicDetail
+import com.github.bumblebee202111.doubean.feature.groups.model.TopicComment
+import com.github.bumblebee202111.doubean.feature.groups.model.TopicDetail
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton
 import com.github.bumblebee202111.doubean.ui.component.SectionErrorWithRetry
 import com.github.bumblebee202111.doubean.ui.util.toUiMessage

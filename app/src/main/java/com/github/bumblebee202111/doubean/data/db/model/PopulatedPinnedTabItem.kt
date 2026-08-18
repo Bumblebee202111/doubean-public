@@ -1,7 +1,7 @@
 package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.ColumnInfo
-import com.github.bumblebee202111.doubean.model.groups.PinnedTabItem
+import com.github.bumblebee202111.doubean.feature.groups.model.PinnedTabItem
 import java.util.Calendar
 
 data class PopulatedPinnedTabItem(

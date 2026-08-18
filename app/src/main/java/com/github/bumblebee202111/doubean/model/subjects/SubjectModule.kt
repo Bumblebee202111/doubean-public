@@ -1,5 +1,7 @@
 package com.github.bumblebee202111.doubean.model.subjects
 
+import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectCollectionItem
+
 sealed interface SubjectModule {
     data class SelectedCollections(
         val selectedCollections: List<SubjectCollectionItem>,

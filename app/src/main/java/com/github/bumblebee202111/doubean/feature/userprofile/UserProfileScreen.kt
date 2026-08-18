@@ -52,10 +52,10 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.feature.userprofile.model.ProfileCommunityContribution
+import com.github.bumblebee202111.doubean.feature.userprofile.model.ProfileStatItemTypes
 import com.github.bumblebee202111.doubean.model.fangorns.HiddenTypeInProfile
 import com.github.bumblebee202111.doubean.model.fangorns.UserDetail
-import com.github.bumblebee202111.doubean.model.profile.ProfileCommunityContribution
-import com.github.bumblebee202111.doubean.model.profile.ProfileStatItemTypes
 import com.github.bumblebee202111.doubean.model.subjects.MySubject
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.ui.common.ApplyStatusBarIconAppearance

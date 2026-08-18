@@ -28,9 +28,9 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.feature.groups.model.GroupTopicCommentReshareItem
 import com.github.bumblebee202111.doubean.feature.groups.shared.TopicActivityItemUserProfileImage
 import com.github.bumblebee202111.doubean.feature.statuses.UserNameText
-import com.github.bumblebee202111.doubean.model.groups.GroupTopicCommentReshareItem
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar

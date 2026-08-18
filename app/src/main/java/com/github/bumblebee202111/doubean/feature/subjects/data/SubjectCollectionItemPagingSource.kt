@@ -1,0 +1,49 @@
+package com.github.bumblebee202111.doubean.feature.subjects.data
+
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
+import com.github.bumblebee202111.doubean.data.paging.safePagingLoad
+import com.github.bumblebee202111.doubean.model.subjects.SubjectWithRankAndInterest
+import com.github.bumblebee202111.doubean.network.api.SubjectApiService
+import com.github.bumblebee202111.doubean.network.model.toSubjectWithRankAndInterest
+
+class SubjectCollectionItemPagingSource(
+    private val apiService: SubjectApiService,
+    val collectionId: String,
+) : PagingSource<Int, SubjectWithRankAndInterest<*>>() {
+
+    override fun getRefreshKey(state: PagingState<Int, SubjectWithRankAndInterest<*>>): Int? {
+        return state.anchorPosition?.let { anchorPosition ->
+            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(state.config.pageSize)
+                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(state.config.pageSize)
+        }
+    }
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SubjectWithRankAndInterest<*>> {
+        return safePagingLoad {
+            val start = params.key ?: 0
+            val count = params.loadSize
+
+            val response = apiService.getSubjectCollectionItems(
+                collectionId = collectionId,
+                start = start,
+                count = count
+            )
+
+            val nextKey = when {
+                response.total > 0 -> if (start + count < response.total) start + count else null
+                response.items.size < count -> null
+                else -> start + count
+            }
+
+            LoadResult.Page(
+                data = response.items.mapIndexed { index, item ->
+                    item.toSubjectWithRankAndInterest(start + index + 1)
+                },
+                prevKey = if (start == 0) null else start - count,
+                nextKey = nextKey
+            )
+        }
+    }
+
+}

@@ -26,8 +26,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import com.github.bumblebee202111.doubean.feature.groups.model.TopicDetail
 import com.github.bumblebee202111.doubean.model.SizedImage
-import com.github.bumblebee202111.doubean.model.groups.TopicDetail
 import com.github.bumblebee202111.doubean.ui.component.DoubeanWebView
 import com.github.bumblebee202111.doubean.ui.component.DoubeanWebViewClient
 import com.github.bumblebee202111.doubean.util.AppAndDeviceInfoProvider

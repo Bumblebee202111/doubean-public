@@ -4,10 +4,10 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.map
 import com.github.bumblebee202111.doubean.data.paging.UserSubjectInterestItemPagingSource
+import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectInterest
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.subjects.MySubject
 import com.github.bumblebee202111.doubean.model.subjects.Subject
-import com.github.bumblebee202111.doubean.model.subjects.SubjectInterest
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUserList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType

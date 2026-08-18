@@ -2,13 +2,13 @@ package com.github.bumblebee202111.doubean.data.repository
 
 import com.github.bumblebee202111.doubean.data.db.AppDatabase
 import com.github.bumblebee202111.doubean.data.db.model.toUser
+import com.github.bumblebee202111.doubean.feature.userprofile.mapper.toProfileCommunityContribution
+import com.github.bumblebee202111.doubean.feature.userprofile.model.ProfileCommunityContribution
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.fangorns.UserDetail
-import com.github.bumblebee202111.doubean.model.profile.ProfileCommunityContribution
 import com.github.bumblebee202111.doubean.network.api.UserApiService
 import com.github.bumblebee202111.doubean.network.model.fangorns.toUserDetail
 import com.github.bumblebee202111.doubean.network.model.fangorns.toUserEntity
-import com.github.bumblebee202111.doubean.network.model.profile.toProfileCommunityContribution
 import com.github.bumblebee202111.doubean.network.util.makeApiCall
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

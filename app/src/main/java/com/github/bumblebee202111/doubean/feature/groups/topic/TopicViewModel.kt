@@ -13,6 +13,7 @@ import com.github.bumblebee202111.doubean.data.repository.ItemDouListRepository
 import com.github.bumblebee202111.doubean.feature.common.CollectionHandler
 import com.github.bumblebee202111.doubean.feature.groups.data.GroupTopicRepository
 import com.github.bumblebee202111.doubean.feature.groups.data.PollRepository
+import com.github.bumblebee202111.doubean.feature.groups.model.TopicCommentSortBy
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.model.common.CollectType
@@ -23,7 +24,6 @@ import com.github.bumblebee202111.doubean.model.groups.Poll
 import com.github.bumblebee202111.doubean.model.groups.PollId
 import com.github.bumblebee202111.doubean.model.groups.Question
 import com.github.bumblebee202111.doubean.model.groups.QuestionId
-import com.github.bumblebee202111.doubean.model.groups.TopicCommentSortBy
 import com.github.bumblebee202111.doubean.model.groups.TopicContentEntityId
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.model.toUiMessage

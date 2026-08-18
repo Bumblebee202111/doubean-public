@@ -28,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectCollectionItem
 import com.github.bumblebee202111.doubean.model.subjects.Subject
-import com.github.bumblebee202111.doubean.model.subjects.SubjectCollectionItem
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItem
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemBasicContent
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemRank

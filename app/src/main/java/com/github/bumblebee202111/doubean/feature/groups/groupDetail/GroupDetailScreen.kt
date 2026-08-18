@@ -56,13 +56,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.groupdetail.tab.GroupTab
+import com.github.bumblebee202111.doubean.feature.groups.model.GroupDetail
+import com.github.bumblebee202111.doubean.feature.groups.model.GroupMemberRole
+import com.github.bumblebee202111.doubean.feature.groups.model.GroupTab
 import com.github.bumblebee202111.doubean.feature.groups.shared.GroupNotificationPreferencesDialog
 import com.github.bumblebee202111.doubean.feature.groups.shared.LargeGroupAvatar
 import com.github.bumblebee202111.doubean.feature.groups.shared.groupTopAppBarColor
-import com.github.bumblebee202111.doubean.model.groups.GroupDetail
-import com.github.bumblebee202111.doubean.model.groups.GroupMemberRole
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
-import com.github.bumblebee202111.doubean.model.groups.GroupTab
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanOutlinedButton

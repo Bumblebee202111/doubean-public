@@ -1,12 +1,12 @@
 package com.github.bumblebee202111.doubean.feature.subjects.detail
 
 import com.github.bumblebee202111.doubean.feature.subjects.common.InterestSortType
+import com.github.bumblebee202111.doubean.feature.subjects.model.CreditList
+import com.github.bumblebee202111.doubean.feature.subjects.model.RecommendSubject
+import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectDetail
+import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectReviewList
 import com.github.bumblebee202111.doubean.model.PhotoList
-import com.github.bumblebee202111.doubean.model.subjects.CreditList
-import com.github.bumblebee202111.doubean.model.subjects.RecommendSubject
-import com.github.bumblebee202111.doubean.model.subjects.SubjectDetail
 import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUserList
-import com.github.bumblebee202111.doubean.model.subjects.SubjectReviewList
 import com.github.bumblebee202111.doubean.ui.model.UiMessage
 
 sealed interface SubjectUiState {

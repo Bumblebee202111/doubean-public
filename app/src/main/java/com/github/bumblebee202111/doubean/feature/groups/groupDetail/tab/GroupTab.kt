@@ -50,15 +50,15 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.feature.groups.model.GroupDetail
+import com.github.bumblebee202111.doubean.feature.groups.model.toSimpleGroup
 import com.github.bumblebee202111.doubean.feature.groups.shared.GroupNotificationPreferencesDialog
 import com.github.bumblebee202111.doubean.feature.groups.shared.SortTopicsByDropDownMenu
 import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItem
 import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItemDisplayMode
-import com.github.bumblebee202111.doubean.model.groups.GroupDetail
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.groups.TopicItem
 import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
-import com.github.bumblebee202111.doubean.model.groups.toSimpleGroup
 import com.github.bumblebee202111.doubean.ui.component.FullScreenCenteredContent
 import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
 import com.github.bumblebee202111.doubean.ui.component.InfoButton

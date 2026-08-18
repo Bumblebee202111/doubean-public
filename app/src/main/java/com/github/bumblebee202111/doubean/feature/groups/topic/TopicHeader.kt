@@ -55,9 +55,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.feature.groups.model.TopicDetail
 import com.github.bumblebee202111.doubean.feature.groups.shared.SmallGroupAvatar
 import com.github.bumblebee202111.doubean.model.fangorns.ReactionType
-import com.github.bumblebee202111.doubean.model.groups.TopicDetail
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
 import com.github.bumblebee202111.doubean.util.DateTimeStyle

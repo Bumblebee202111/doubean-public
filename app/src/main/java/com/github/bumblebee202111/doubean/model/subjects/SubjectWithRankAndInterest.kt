@@ -1,5 +1,7 @@
 package com.github.bumblebee202111.doubean.model.subjects
 
+import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectInterest
+
 data class SubjectWithRankAndInterest<T : Subject>(
     val subject: T,
     val rankValue: Int,

@@ -14,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.groups.TopicComment
-import com.github.bumblebee202111.doubean.model.groups.TopicDetail
+import com.github.bumblebee202111.doubean.feature.groups.model.TopicComment
+import com.github.bumblebee202111.doubean.feature.groups.model.TopicDetail
 import com.github.bumblebee202111.doubean.util.ShareUtil
 
 private fun TopicComment.createShareText(

@@ -1,5 +1,7 @@
 package com.github.bumblebee202111.doubean.model.subjects
 
+import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectInterest
+
 data class SubjectWithInterest<T : Subject>(
     val subject: T,
     override val interest: SubjectInterest = SubjectInterest(

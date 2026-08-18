@@ -34,13 +34,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.feature.groups.model.TopicComment
+import com.github.bumblebee202111.doubean.feature.groups.model.TopicDetail
+import com.github.bumblebee202111.doubean.feature.groups.model.TopicRefComment
 import com.github.bumblebee202111.doubean.feature.groups.shared.TopicActivityItemUserProfileImage
 import com.github.bumblebee202111.doubean.model.SizedImage
 import com.github.bumblebee202111.doubean.model.SizedPhoto
 import com.github.bumblebee202111.doubean.model.fangorns.User
-import com.github.bumblebee202111.doubean.model.groups.TopicComment
-import com.github.bumblebee202111.doubean.model.groups.TopicDetail
-import com.github.bumblebee202111.doubean.model.groups.TopicRefComment
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.ListItemCount
 import com.github.bumblebee202111.doubean.ui.component.ListItemImages

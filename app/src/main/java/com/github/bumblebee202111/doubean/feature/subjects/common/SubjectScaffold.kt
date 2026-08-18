@@ -6,7 +6,7 @@ import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import com.github.bumblebee202111.doubean.model.subjects.SubjectReviewList
+import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectReviewList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 
 @OptIn(ExperimentalMaterial3Api::class)
