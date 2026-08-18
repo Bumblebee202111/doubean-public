@@ -2,42 +2,38 @@
 
 ## Overview
 
-Doubean is an unofficial Android app for [Douban](https://www.douban.com/) (Groups, Books, Movies,
-TVs), built with Jetpack Compose.
+Doubean is an unofficial Android app for Douban (Groups, Books, Movies, TVs).
 
 ## Tech Stack
-- **Kotlin** & **Compose** (Material 3)
-- **Architecture**: Pragmatic Clean Architecture (Vertical Slicing), MVVM (ViewModel, Flow,
-  Navigation 3, Paging)
-- **Data**: Room, DataStore, Ktor, Serialization
+
+- **UI**: Kotlin, Compose Material 3, Navigation 3, Coil
+- **Architecture**: Pragmatic Vertical Slicing + Shared Core, MVVM (ViewModel, Flow, Paging)
+- **Data**: Room, DataStore, Ktor, Kotlinx Serialization
 - **DI**: Hilt
-- **Image**: Coil
-- **Other**: libsu (Root), Accompanist
+- **Other**: libsu (Root)
 
 ## Structure
 Source: `app/src/main/java/com/github/bumblebee202111/doubean`
 
-- `feature`: Vertically sliced features (`groups`, `subjects`, `statuses`, `doulists`, `search`,
-  `imageviewer`, `login`, `settings`, `userprofile`). Each feature owns its specific `data` (
-  Repositories), `domain` (Logic), and `ui` (Screens, ViewModels, and Domain-aware components).
-- `data`: Globally shared data sources (Room `db`, DataStore `prefs`, and shared repos like
-  `AuthRepository`).
-- `network`: Ktor APIs and DTOs (Anti-Corruption Layer matching Douban's backend).
-- `model`: Shared domain models.
-- `ui`: Generic, domain-agnostic UI components and theme.
-- `navigation`: Navigation 3 state and routing.
-- `security`, `coroutines`, `util`: Top-level foundational infrastructure.
+- `feature/`: Vertically sliced features. Each owns its specific `data` (Repositories, Mappers,
+  Paging) and `ui` (Screens, ViewModels).
+- `data/`: Shared data layer. Contains global Room setup (`db`), DataStore (`prefs`), and
+  cross-feature Repositories (`repository/`).
+- `network/`: Anti-Corruption Layer acting as the "Douban SDK". Mirrors Douban's decompiled backend
+  models. **Do not vertically slice.**
+- `model/`: Shared domain models (ubiquitous language).
+- `ui/`: Generic, domain-agnostic UI components and theme.
+- `navigation/`, `security/`, `coroutines/`, `util/`: Top-level foundational infrastructure.
 
 ## Workflow
 - **Build**: `./gradlew assembleDebug`
 - **Test**: `./gradlew test`
-- **Env**: JDK 17+, Android SDK 35.
+- **Env**: JDK 17+, Android SDK 35
 
 ## Guidelines
 
-- **Architecture**: We use Vertical Slicing. Place feature-specific Repositories, Workers, and
-  domain-aware UI components inside their respective `feature/<name>/` packages. Do not create
-  monolithic `core` or `data` dumping grounds.
+- **Architecture**: Features are isolated. If a Repository is used by >1 feature, place it in
+  `data/repository/`. Otherwise, keep it in `feature/<name>/data/`.
 - **UI**: Compose only. Use `DoubeanTheme`. We use a slightly refined Material 3 style (crisper,
   less bubbly).
 - **Navigation**: Navigation 3. Use `@Serializable NavKey` for routes. Manage routing via `Navigator` and `NavDisplay`. Deep links are parsed manually into keys.
