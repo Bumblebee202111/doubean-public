@@ -15,19 +15,18 @@ Doubean is an unofficial Android app for Douban (Groups, Books, Movies, TVs).
 ## Structure
 Source: `app/src/main/java/com/github/bumblebee202111/doubean`
 
-- `feature/`: Vertically sliced features. Each owns its specific `data` (Repositories, Mappers,
-  Paging) and `ui` (Screens, ViewModels).
+- `feature/`: Vertically sliced features. Each owns its specific `data` (Repositories, Sync Workers,
+  Mappers) and `ui` (Screens, ViewModels).
 - `data/`: Shared data layer. Contains global Room setup (`db`), DataStore (`prefs`), and
   cross-feature Repositories (`repository/`).
 - `network/`: Anti-Corruption Layer acting as the "Douban SDK". Mirrors Douban's decompiled backend
   models. **Do not vertically slice.**
 - `model/`: Shared domain models (ubiquitous language).
-- `ui/`: Generic, domain-agnostic UI components and theme.
+- `ui/`: Generic, domain-agnostic UI components and theme. Shared UI logic/state handlers go in
+  `ui/common/`.
 - `navigation/`, `security/`, `coroutines/`, `util/`: Top-level foundational infrastructure.
 
 ## Workflow
-- **Build**: `./gradlew assembleDebug`
-- **Test**: `./gradlew test`
 - **Env**: JDK 17+, Android SDK 35
 
 ## Guidelines
