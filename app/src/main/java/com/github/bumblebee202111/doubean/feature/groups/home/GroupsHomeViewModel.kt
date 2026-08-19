@@ -5,6 +5,7 @@ import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
 import com.github.bumblebee202111.doubean.domain.usecase.ObserveCurrentUserUseCase
 import com.github.bumblebee202111.doubean.feature.groups.data.GroupRepository
+import com.github.bumblebee202111.doubean.feature.groups.data.GroupTopicRepository
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
@@ -27,6 +28,7 @@ import javax.inject.Inject
 class GroupsHomeViewModel @Inject constructor(
     groupRepository: GroupRepository,
     userGroupRepository: UserGroupRepository,
+    topicRepository: GroupTopicRepository,
     authRepository: AuthRepository,
     observeCurrentUserUseCase: ObserveCurrentUserUseCase,
     private val snackbarManager: SnackbarManager,
@@ -68,7 +70,7 @@ class GroupsHomeViewModel @Inject constructor(
     }.stateInUi(JoinedGroupsUiState())
 
     val pinnedTabs =
-        userGroupRepository.getPinnedTabs().stateInUi()
+        groupRepository.getPinnedTabs().stateInUi()
 
     private val isLoggedIn: Flow<Boolean> = authRepository.isLoggedIn()
 
@@ -105,7 +107,7 @@ class GroupsHomeViewModel @Inject constructor(
         recentTopicsFeedRetryTrigger
     ) { isLoggedIn, _ -> isLoggedIn }.flatMapLatest { isLoggedIn ->
         when (isLoggedIn) {
-            true -> userGroupRepository.getRecentTopicsFeed()
+            true -> topicRepository.getRecentTopicsFeed()
                 .map { result ->
                     when (result) {
                         is CachedAppResult.Loading -> RecentTopicsFeedUiState(

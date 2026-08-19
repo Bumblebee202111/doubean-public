@@ -6,6 +6,8 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import androidx.room.withTransaction
 import com.github.bumblebee202111.doubean.data.db.AppDatabase
+import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItemWithGroup
+import com.github.bumblebee202111.doubean.data.db.model.asExternalModel
 import com.github.bumblebee202111.doubean.data.db.model.toTopicDetail
 import com.github.bumblebee202111.doubean.feature.groups.model.GroupTopicCommentReshareItem
 import com.github.bumblebee202111.doubean.feature.groups.model.TopicComment
@@ -14,6 +16,8 @@ import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.model.fangorns.ReactionType
 import com.github.bumblebee202111.doubean.network.api.GroupApiService
 import com.github.bumblebee202111.doubean.network.model.NetworkGroupTopicComment
+import com.github.bumblebee202111.doubean.network.model.NetworkRecentTopicsFeedItem
+import com.github.bumblebee202111.doubean.network.model.NetworkTopicItemWithGroup
 import com.github.bumblebee202111.doubean.network.model.asExternalModel
 import com.github.bumblebee202111.doubean.network.model.fangorns.toGroupTopicTagEntity
 import com.github.bumblebee202111.doubean.network.model.fangorns.toNetworkReactionType
@@ -23,7 +27,10 @@ import com.github.bumblebee202111.doubean.network.model.structure.NetworkReshare
 import com.github.bumblebee202111.doubean.network.model.structure.toReshareItem
 import com.github.bumblebee202111.doubean.network.model.tagCrossRefs
 import com.github.bumblebee202111.doubean.network.model.toCachedGroupEntity
+import com.github.bumblebee202111.doubean.network.model.toEntity
+import com.github.bumblebee202111.doubean.network.model.toSimpleCachedGroupPartialEntity
 import com.github.bumblebee202111.doubean.network.model.toTopicItemPartialEntity
+import com.github.bumblebee202111.doubean.network.model.toTopicPartialEntity
 import com.github.bumblebee202111.doubean.network.util.makeApiCall
 import com.github.bumblebee202111.doubean.network.util.networkBoundResource
 import kotlinx.coroutines.flow.Flow
@@ -44,8 +51,10 @@ class GroupTopicRepository @Inject constructor(
 ) {
 
     private val groupDao = appDatabase.groupDao()
+    private val userGroupDao = appDatabase.userGroupDao()
     private val groupTopicDao = appDatabase.groupTopicDao()
     private val userDao = appDatabase.userDao()
+    private val topicDao = appDatabase.groupTopicDao()
 
     fun getTopic(
         id: String,
@@ -134,6 +143,50 @@ class GroupTopicRepository @Inject constructor(
     suspend fun updateTopicIsCollected(topicId: String, isCollected: Boolean) {
         groupTopicDao.updateIsCollected(topicId, isCollected)
     }
+
+    fun getRecentTopicsFeed() = networkBoundResource(
+        queryDb = {
+            userGroupDao.getTopicsFeed()
+        },
+        fetchRemote = {
+            apiService.getGroupUserRecentTopicsFeed()
+        },
+        saveRemoteResponseToDb = { response ->
+            val networkTopics = response.feeds
+                .map(NetworkRecentTopicsFeedItem::topic)
+                .filterIsInstance<NetworkTopicItemWithGroup>()
+            val feedItemEntities = networkTopics.map(NetworkTopicItemWithGroup::toEntity)
+
+            val topicPartialEntities = networkTopics.map { it.toTopicPartialEntity() }
+            val groups = networkTopics.map { it.group.toSimpleCachedGroupPartialEntity() }
+            val userEntities = networkTopics.map { it.author.toUserEntity() }
+            val topicTagEntities =
+                networkTopics.flatMap { topic ->
+                    topic.topicTags.map {
+                        it.toGroupTopicTagEntity(
+                            topic.group.id
+                        )
+                    }
+                }
+                    .distinctBy { it.id }
+
+            appDatabase.withTransaction {
+                userGroupDao.apply {
+                    deleteTopicsFeed()
+                    insertTopicsFeed(feedItemEntities)
+                }
+                topicDao.upsertTopicItems(topicPartialEntities)
+                userDao.insertUsers(userEntities)
+                groupDao.apply {
+                    upsertSimpleCachedGroups(groups)
+                    insertTopicTags(topicTagEntities)
+                }
+            }
+        },
+        mapDbEntityToDomain = { entity ->
+            entity.map(PopulatedTopicItemWithGroup::asExternalModel)
+        }
+    )
 
     companion object {
         const val RESULT_COMMENTS_PAGE_SIZE = 40

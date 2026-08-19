@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.feature.common
+package com.github.bumblebee202111.doubean.ui.common.collection
 
 import com.github.bumblebee202111.doubean.data.repository.DouListRepository
 import com.github.bumblebee202111.doubean.data.repository.ItemDouListRepository

@@ -45,7 +45,7 @@ class GroupDetailViewModel @AssistedInject constructor(
     }
 
     private val notificationPreferences =
-        userGroupRepository.getGroupNotificationPreferences(groupId)
+        groupRepository.getGroupNotificationPreferences(groupId)
     private val defaultNotificationPreferences =
         preferenceStorage.defaultGroupNotificationPreferences.stateInUi()
 
@@ -153,7 +153,7 @@ class GroupDetailViewModel @AssistedInject constructor(
     ) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                userGroupRepository.updateGroupNotificationPreferences(
+                groupRepository.updateGroupNotificationPreferences(
                     groupId = groupId,
                     preference = preference
                 )

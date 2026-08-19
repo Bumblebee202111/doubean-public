@@ -6,7 +6,6 @@ import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.data.repository.DouListRepository
 import com.github.bumblebee202111.doubean.data.repository.ItemDouListRepository
 import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
-import com.github.bumblebee202111.doubean.feature.common.CollectionHandler
 import com.github.bumblebee202111.doubean.feature.subjects.common.InterestSortType
 import com.github.bumblebee202111.doubean.feature.subjects.data.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.feature.subjects.model.BookDetail
@@ -22,6 +21,7 @@ import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUser
 import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
+import com.github.bumblebee202111.doubean.ui.common.collection.CollectionHandler
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory

@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
-import com.github.bumblebee202111.doubean.data.repository.UserGroupRepository
 import com.github.bumblebee202111.doubean.feature.groups.data.GroupRepository
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
@@ -31,7 +30,6 @@ class GroupTabViewModel @AssistedInject constructor(
     @Assisted("groupId") val groupId: String,
     @Assisted("tabId") val tabId: String?,
     private val groupRepository: GroupRepository,
-    private val userGroupRepository: UserGroupRepository,
     private val preferenceStorage: PreferenceStorage,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
@@ -56,11 +54,11 @@ class GroupTabViewModel @AssistedInject constructor(
     }
 
     val isPinned =
-        (tabId?.let { userGroupRepository.isTabPinned(it) } ?: emptyFlow()).stateInUi()
+        (tabId?.let { groupRepository.isTabPinned(it) } ?: emptyFlow()).stateInUi()
 
     val topicNotificationPreferences = (tabId?.let {
         combine(
-            userGroupRepository.getTabNotificationPreferences(it),
+            groupRepository.getTabNotificationPreferences(it),
             defaultNotificationPreferences
         ) { created, default ->
             return@combine created ?: default
@@ -70,7 +68,7 @@ class GroupTabViewModel @AssistedInject constructor(
     fun pinTab() {
         val tabId = tabId ?: return
         viewModelScope.launch {
-            userGroupRepository.pinTab(
+            groupRepository.pinTab(
                 groupId = groupId,
                 tabId = tabId,
             )
@@ -81,7 +79,7 @@ class GroupTabViewModel @AssistedInject constructor(
     fun unpinTab() {
         val tabId = tabId ?: return
         viewModelScope.launch {
-            userGroupRepository.unpinTab(tabId)
+            groupRepository.unpinTab(tabId)
             snackbarManager.showMessage(R.string.tab_unpinned.toUiMessage())
         }
     }
@@ -92,7 +90,7 @@ class GroupTabViewModel @AssistedInject constructor(
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 if (tabId != null) {
-                    userGroupRepository.updateTabNotificationPreferences(
+                    groupRepository.updateTabNotificationPreferences(
                         groupId = groupId,
                         tabId = tabId,
                         preference = preferences
