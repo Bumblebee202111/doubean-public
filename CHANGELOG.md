@@ -3,6 +3,16 @@ Change Log
 
 ## Version 0.13.1
 
+### ✨ Features
+
+* **Subjects:** Added "Book Series" (丛书系列) and "Other Versions" (本书的其他版本) to the Book
+  detail screen (https://github.com/Bumblebee202111/doubean-public/issues/30).
+
+### 🛠️ Refactoring & Under the Hood
+
+* Migrated various domain models, mappers, paging sources, and repositories into feature-specific
+  packages for better architectural cohesion.
+
 ## Version 0.13.0
 
 - Support hidden or deleted status items and hide title of fallback status content if blank
