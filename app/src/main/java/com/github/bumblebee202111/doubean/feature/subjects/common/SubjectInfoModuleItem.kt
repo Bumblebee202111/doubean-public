@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Reply
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.outlined.CollectionsBookmark
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.Card
@@ -50,6 +51,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.feature.subjects.model.BookSeries
+import com.github.bumblebee202111.doubean.feature.subjects.model.BookVersions
 import com.github.bumblebee202111.doubean.feature.subjects.model.Celebrity
 import com.github.bumblebee202111.doubean.feature.subjects.model.CreditList
 import com.github.bumblebee202111.doubean.feature.subjects.model.MovieTrailer
@@ -241,6 +244,85 @@ fun LazyListScope.subjectInfoInterestsModuleItem(
             )
         }
     }
+}
+
+fun LazyListScope.subjectInfoBookSeriesModuleItem(
+    series: BookSeries,
+    onClick: () -> Unit,
+) {
+    item {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .clickable(onClick = onClick),
+            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+        ) {
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.CollectionsBookmark,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = series.title,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = series.publisherBasic,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = stringResource(R.string.book_series_total_count, series.totalNumber),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+}
+
+fun LazyListScope.subjectInfoBookVersionsModuleItem(
+    versions: BookVersions,
+    onBookClick: (String) -> Unit,
+) {
+    if (versions.versions.isEmpty()) return
+    subjectGenericModuleItem(
+        titleResId = R.string.title_book_all_versions,
+        total = versions.total,
+        body = {
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(items = versions.versions, key = { it.id }) { version ->
+                    Box(modifier = Modifier.clickable { onBookClick(version.id) }) {
+                        SimpleSubjectItemContent(
+                            imageUrl = version.imageUrl,
+                            title = version.title,
+                            rating = version.rating,
+                            subtitle = version.cardSubtitle.split("/").lastOrNull()?.trim()
+                        )
+                    }
+                }
+            }
+        }
+    )
 }
 
 fun LazyListScope.subjectInfoRecommendModuleItem(

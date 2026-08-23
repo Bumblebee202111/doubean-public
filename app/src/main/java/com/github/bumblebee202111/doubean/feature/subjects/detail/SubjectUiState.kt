@@ -1,6 +1,7 @@
 package com.github.bumblebee202111.doubean.feature.subjects.detail
 
 import com.github.bumblebee202111.doubean.feature.subjects.common.InterestSortType
+import com.github.bumblebee202111.doubean.feature.subjects.model.BookVersions
 import com.github.bumblebee202111.doubean.feature.subjects.model.CreditList
 import com.github.bumblebee202111.doubean.feature.subjects.model.RecommendSubject
 import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectDetail
@@ -18,6 +19,7 @@ sealed interface SubjectUiState {
         val interestSortType: InterestSortType = InterestSortType.DEFAULT,
         val recommendations: List<RecommendSubject>,
         val reviews: SubjectReviewList,
+        val bookVersions: BookVersions?,
         val isLoggedIn: Boolean,
     ) : SubjectUiState
 

@@ -1,11 +1,13 @@
 package com.github.bumblebee202111.doubean.feature.subjects.mapper
 
 import com.github.bumblebee202111.doubean.feature.subjects.model.BookDetail
+import com.github.bumblebee202111.doubean.feature.subjects.model.BookSeries
 import com.github.bumblebee202111.doubean.feature.subjects.model.MovieDetail
 import com.github.bumblebee202111.doubean.feature.subjects.model.MovieTrailer
 import com.github.bumblebee202111.doubean.feature.subjects.model.MusicDetail
 import com.github.bumblebee202111.doubean.feature.subjects.model.TvDetail
 import com.github.bumblebee202111.doubean.network.model.subject.NetworkBookDetail
+import com.github.bumblebee202111.doubean.network.model.subject.NetworkBookSeries
 import com.github.bumblebee202111.doubean.network.model.subject.NetworkMovieDetail
 import com.github.bumblebee202111.doubean.network.model.subject.NetworkMovieTrailer
 import com.github.bumblebee202111.doubean.network.model.subject.NetworkMusicDetail
@@ -63,6 +65,14 @@ fun NetworkTvDetail.toTvDetail() = TvDetail(
     directorNames = directors.map(NetworkSimpleCelebrity::name)
 )
 
+fun NetworkBookSeries.toBookSeries() = BookSeries(
+    title = title,
+    totalNumber = totalNumber,
+    publisherBasic = publisherBasic,
+    uri = uri,
+    url = url
+)
+
 fun NetworkBookDetail.toBookDetail() = BookDetail(
     id = id,
     rating = Pair(rating, nullRatingReason).toRating(),
@@ -79,6 +89,7 @@ fun NetworkBookDetail.toBookDetail() = BookDetail(
     producers = producers,
     press = press,
     pages = pages,
+    bookSeries = bookSeries?.toBookSeries()
 )
 
 fun NetworkMusicDetail.toMusicDetail() = MusicDetail(

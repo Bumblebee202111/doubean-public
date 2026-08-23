@@ -7,6 +7,7 @@ import com.github.bumblebee202111.doubean.feature.subjects.mapper.toMusicDetail
 import com.github.bumblebee202111.doubean.feature.subjects.mapper.toRecommendSubject
 import com.github.bumblebee202111.doubean.feature.subjects.mapper.toSubjectReviewList
 import com.github.bumblebee202111.doubean.feature.subjects.mapper.toTvDetail
+import com.github.bumblebee202111.doubean.feature.subjects.model.BookVersions
 import com.github.bumblebee202111.doubean.feature.subjects.model.CreditList
 import com.github.bumblebee202111.doubean.feature.subjects.model.RecommendSubject
 import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectDetail
@@ -20,6 +21,7 @@ import com.github.bumblebee202111.doubean.network.model.NetworkSubjectModules
 import com.github.bumblebee202111.doubean.network.model.fangorns.toPhotoList
 import com.github.bumblebee202111.doubean.network.model.subject.NetworkRecommend
 import com.github.bumblebee202111.doubean.network.model.subject.NetworkSubjectReviewList
+import com.github.bumblebee202111.doubean.network.model.toBook
 import com.github.bumblebee202111.doubean.network.model.toNetworkSubjectType
 import com.github.bumblebee202111.doubean.network.model.toSubjectModules
 import com.github.bumblebee202111.doubean.network.util.makeApiCall
@@ -122,5 +124,16 @@ class SubjectCommonRepository @Inject constructor(private val service: SubjectAp
                 service.getSubjectModules(subjectType = subjectType.toNetworkSubjectType().value)
             },
             mapSuccess = NetworkSubjectModules::toSubjectModules
+        )
+
+    suspend fun getBookVersions(subjectId: String): AppResult<BookVersions> =
+        makeApiCall(
+            apiCall = { service.getBookVersions(subjectId) },
+            mapSuccess = { response ->
+                BookVersions(
+                    total = response.total,
+                    versions = response.books.map { it.toBook() }
+                )
+            }
         )
 }

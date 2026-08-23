@@ -92,6 +92,11 @@ class SubjectViewModel @AssistedInject constructor(
                     async { subjectCommonRepository.getSubjectPhotos(subjectType, subjectId) }
                 } else null
 
+            val bookVersionsDeferred =
+                if (subjectType == SubjectType.BOOK) {
+                    async { subjectCommonRepository.getBookVersions(subjectId) }
+                } else null
+
             val detailResult = detailResultDeferred.await()
             if (detailResult is AppResult.Error) {
                 val uiMessage = detailResult.error.asUiMessage()
@@ -130,6 +135,7 @@ class SubjectViewModel @AssistedInject constructor(
             val reviewsResult = reviewsResultDeferred.await()
             val photosResult = photosResultDeferred?.await()
             val creditListResult = creditListResultDeferred?.await()
+            val bookVersionsResult = bookVersionsDeferred?.await()
 
             val results = listOfNotNull(
                 interestResult, recommendationsResult, reviewsResult, photosResult, creditListResult
@@ -150,6 +156,7 @@ class SubjectViewModel @AssistedInject constructor(
                     interestSortType = currentInterestSortType,
                     recommendations = (recommendationsResult as AppResult.Success).data,
                     reviews = (reviewsResult as AppResult.Success).data,
+                    bookVersions = (bookVersionsResult as? AppResult.Success)?.data,
                     isLoggedIn = isLoggedIn
                 )
             }

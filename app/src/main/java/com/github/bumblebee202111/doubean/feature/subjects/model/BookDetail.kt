@@ -21,6 +21,7 @@ data class BookDetail(
     val producers: List<String>,
     val press: List<String>,
     val pages: List<String>,
+    val bookSeries: BookSeries?,
 ) : SubjectDetail {
     override val type: SubjectType = SubjectType.BOOK
 

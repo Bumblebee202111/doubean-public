@@ -16,7 +16,6 @@ import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItemWithGr
 import com.github.bumblebee202111.doubean.data.db.model.TopicNotificationEntity
 import com.github.bumblebee202111.doubean.data.db.model.asExternalModel
 import com.github.bumblebee202111.doubean.data.db.model.toGroupNotificationPreferences
-import com.github.bumblebee202111.doubean.data.db.model.toPinnedTabItem
 import com.github.bumblebee202111.doubean.data.db.model.toSimpleGroupWithColor
 import com.github.bumblebee202111.doubean.feature.groups.model.PinnedTabItem
 import com.github.bumblebee202111.doubean.model.AppResult

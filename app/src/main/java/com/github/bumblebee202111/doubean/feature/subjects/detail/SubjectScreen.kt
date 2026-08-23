@@ -14,6 +14,8 @@ import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectReviews
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectScaffold
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectTopBar
 import com.github.bumblebee202111.doubean.feature.subjects.common.rememberRecommendSubjectClickHandler
+import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoBookSeriesModuleItem
+import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoBookVersionsModuleItem
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoCelebritiesModuleItem
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoInterestsModuleItem
 import com.github.bumblebee202111.doubean.feature.subjects.common.subjectInfoIntroModuleItem
@@ -33,6 +35,7 @@ import com.github.bumblebee202111.doubean.ui.common.CreateDouListDialog
 import com.github.bumblebee202111.doubean.ui.common.DouListDialog
 import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
 import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicator
+import com.github.bumblebee202111.doubean.util.OpenInUtils
 
 @Composable
 fun SubjectScreen(
@@ -56,6 +59,7 @@ fun SubjectScreen(
         onUpdateStatus = viewModel::updateStatus,
         onImageClick = onImageClick,
         onUserClick = onUserClick,
+        onSubjectClick = onSubjectClick,
         onRecommendSubjectClick = rememberRecommendSubjectClickHandler(
             onSubjectClick = onSubjectClick
         ),
@@ -80,6 +84,7 @@ fun SubjectScreen(
     onUpdateStatus: (newStatus: SubjectInterestStatus, rating: Int?) -> Unit,
     onImageClick: (url: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
+    onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onRecommendSubjectClick: (subject: RecommendSubject) -> Unit,
     onCollectClick: () -> Unit,
     onDismissCollectDialog: () -> Unit,
@@ -144,7 +149,6 @@ fun SubjectScreen(
                         }
                         subjectInfoIntroModuleItem(intro = subject.intro)
 
-                        
                         when (subject) {
                             is MovieDetail -> {
                                 creditList?.let { subjectInfoCelebritiesModuleItem(it) }
@@ -180,8 +184,7 @@ fun SubjectScreen(
                                 }
                             }
 
-                            is BookDetail -> {
-                            }
+                            is BookDetail -> Unit
 
                             is MusicDetail -> {
                                 subjectInfoSongsModuleItem(subject.tracks)
@@ -194,6 +197,32 @@ fun SubjectScreen(
                             sortType = interestSortType,
                             onSortChange = onToggleInterestSort
                         )
+
+                        if (subject is BookDetail) {
+                            subject.bookSeries?.let { series ->
+                                subjectInfoBookSeriesModuleItem(
+                                    series = series,
+                                    onClick = {
+                                        OpenInUtils.openInDouban(context, series.uri).onFailure {
+                                            OpenInUtils.openInBrowser(context, series.url)
+                                        }
+                                    }
+                                )
+                            }
+
+                            if (bookVersions != null && bookVersions.versions.isNotEmpty()) {
+                                subjectInfoBookVersionsModuleItem(
+                                    versions = bookVersions,
+                                    onBookClick = { versionId ->
+                                        onSubjectClick(
+                                            versionId,
+                                            SubjectType.BOOK
+                                        )
+                                    }
+                                )
+                            }
+                        }
+
                         subjectInfoRecommendModuleItem(
                             subjectType = subject.type,
                             recommendations = recommendations,
