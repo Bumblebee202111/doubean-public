@@ -2,6 +2,7 @@ package com.github.bumblebee202111.doubean.feature.subjects.mapper
 
 import com.github.bumblebee202111.doubean.feature.subjects.model.BookDetail
 import com.github.bumblebee202111.doubean.feature.subjects.model.MovieDetail
+import com.github.bumblebee202111.doubean.feature.subjects.model.MovieTrailer
 import com.github.bumblebee202111.doubean.feature.subjects.model.MusicDetail
 import com.github.bumblebee202111.doubean.feature.subjects.model.TvDetail
 import com.github.bumblebee202111.doubean.network.model.subject.NetworkBookDetail
@@ -12,7 +13,6 @@ import com.github.bumblebee202111.doubean.network.model.subject.NetworkSimpleCel
 import com.github.bumblebee202111.doubean.network.model.subject.NetworkSong
 import com.github.bumblebee202111.doubean.network.model.subject.NetworkTvDetail
 import com.github.bumblebee202111.doubean.network.model.subject.NetworkVendor
-import com.github.bumblebee202111.doubean.network.model.subject.toMovieTrailer
 import com.github.bumblebee202111.doubean.network.model.subject.toSubjectInterest
 import com.github.bumblebee202111.doubean.network.model.toRating
 
@@ -63,7 +63,6 @@ fun NetworkTvDetail.toTvDetail() = TvDetail(
     directorNames = directors.map(NetworkSimpleCelebrity::name)
 )
 
-
 fun NetworkBookDetail.toBookDetail() = BookDetail(
     id = id,
     rating = Pair(rating, nullRatingReason).toRating(),
@@ -97,3 +96,12 @@ fun NetworkMusicDetail.toMusicDetail() = MusicDetail(
     singer = singer.map(NetworkSimpleCelebrity::name),
     tracks = songs.map(NetworkSong::title),
 )
+
+fun NetworkMovieTrailer.toMovieTrailer() =
+    MovieTrailer(
+        id = id,
+        coverUrl = coverUrl,
+        videoUrl = videoUrl,
+        title = title,
+        runtime = runtime
+    )

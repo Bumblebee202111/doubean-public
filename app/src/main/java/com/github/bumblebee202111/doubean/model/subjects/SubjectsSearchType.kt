@@ -6,8 +6,3 @@ import androidx.annotation.Keep
 enum class SubjectsSearchType(val apiValue: String) {
     MOVIES_AND_TVS("movie"), BOOKS("book"), MUSIC("music");
 }
-
-fun SubjectsSearchType.toApiSubjectsSearchType(): String = this.apiValue
-
-fun String.toApiSubjectsSearchType(): SubjectsSearchType? =
-    SubjectsSearchType.entries.find { it.apiValue == this }

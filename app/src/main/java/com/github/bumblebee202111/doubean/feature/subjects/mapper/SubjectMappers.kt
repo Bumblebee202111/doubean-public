@@ -77,7 +77,7 @@ fun NetworkSubjectReview.toSubjectReview() = SubjectReview(
     createTime = createTime,
     resharesCount = resharesCount,
     id = id,
-    subjectType = NetworkSubjectType.Companion.of(subject.type).toSubjectType()
+    subjectType = NetworkSubjectType.of(subject.type).toSubjectType()
 )
 
 
