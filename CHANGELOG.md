@@ -3,6 +3,9 @@ Change Log
 
 ## Version 0.13.2
 
+- Fixed an error that prevented loading details for subjects with no credit
+  information (https://github.com/Bumblebee202111/doubean-public/issues/48).
+
 ## Version 0.13.1
 
 ### ✨ Features

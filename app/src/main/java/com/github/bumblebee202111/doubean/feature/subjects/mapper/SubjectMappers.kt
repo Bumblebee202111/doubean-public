@@ -28,8 +28,8 @@ import com.github.bumblebee202111.doubean.network.model.toSubjectType
 import com.github.bumblebee202111.doubean.network.model.toSubjectWithRank
 
 fun NetworkCreditList.toCreditList() = CreditList(
-    items = items.map(NetworkCelebrity::toCelebrity),
-    total = total
+    items = items?.map(NetworkCelebrity::toCelebrity) ?: emptyList(),
+    total = total ?: 0
 )
 
 fun NetworkCelebrity.toCelebrity() = Celebrity(
