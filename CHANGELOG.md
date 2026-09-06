@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+## Version 0.13.2
+
 ## Version 0.13.1
 
 ### ✨ Features
