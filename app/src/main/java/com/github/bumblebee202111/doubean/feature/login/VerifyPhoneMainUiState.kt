@@ -1,8 +1,8 @@
 package com.github.bumblebee202111.doubean.feature.login
 
 import com.github.bumblebee202111.doubean.model.AppError
-import com.github.bumblebee202111.doubean.model.auth.CaptchaSolution
-import com.github.bumblebee202111.doubean.model.auth.JCaptcha
+import com.github.bumblebee202111.doubean.shared.auth.model.CaptchaSolution
+import com.github.bumblebee202111.doubean.shared.auth.model.JCaptcha
 
 sealed interface VerifyPhoneMainUiState {
     data class Active(

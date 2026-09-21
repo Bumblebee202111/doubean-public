@@ -3,8 +3,8 @@ package com.github.bumblebee202111.doubean.feature.mydoulists.navigation
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.mydoulists.MyDouListsScreen
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.navigation.Navigator
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
 import kotlinx.serialization.Serializable
 
 @Serializable

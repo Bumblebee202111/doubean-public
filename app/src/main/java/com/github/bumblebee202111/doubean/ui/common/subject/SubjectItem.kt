@@ -24,10 +24,10 @@ import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectRatingB
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectRatingBarSize
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectRoundedCornerShape
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectTypeLabel
-import com.github.bumblebee202111.doubean.model.subjects.Book
-import com.github.bumblebee202111.doubean.model.subjects.Rating
-import com.github.bumblebee202111.doubean.model.subjects.Subject
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.shared.subject.model.Book
+import com.github.bumblebee202111.doubean.shared.subject.model.Rating
+import com.github.bumblebee202111.doubean.shared.subject.model.Subject
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
 
 @Composable
 fun SubjectItem(

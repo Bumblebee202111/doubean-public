@@ -10,8 +10,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.feature.doulists.common.douListPostItems
 import com.github.bumblebee202111.doubean.feature.doulists.common.rememberFeedItemClickHandler
-import com.github.bumblebee202111.doubean.model.subjects.MarkableSubject
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.shared.subject.model.MarkableSubject
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
 import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
 import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicator
 

@@ -1,11 +1,11 @@
 package com.github.bumblebee202111.doubean.feature.subjects.music
 
 import androidx.lifecycle.ViewModel
-import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.feature.subjects.SubjectModulesUiState
 import com.github.bumblebee202111.doubean.feature.subjects.data.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.shared.auth.data.AuthRepository
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -2,9 +2,9 @@ package com.github.bumblebee202111.doubean.feature.subjects.data
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import com.github.bumblebee202111.doubean.core.network.api.SubjectApiService
+import com.github.bumblebee202111.doubean.core.network.util.makeApiCall
 import com.github.bumblebee202111.doubean.feature.subjects.mapper.toSubjectCollection
-import com.github.bumblebee202111.doubean.network.api.SubjectApiService
-import com.github.bumblebee202111.doubean.network.util.makeApiCall
 import javax.inject.Inject
 import javax.inject.Singleton
 

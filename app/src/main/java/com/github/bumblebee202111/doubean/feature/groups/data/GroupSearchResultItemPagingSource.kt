@@ -3,11 +3,11 @@ package com.github.bumblebee202111.doubean.feature.groups.data
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.github.bumblebee202111.doubean.core.network.api.GroupApiService
+import com.github.bumblebee202111.doubean.core.network.util.handleError
 import com.github.bumblebee202111.doubean.data.db.AppDatabase
 import com.github.bumblebee202111.doubean.model.AppErrorException
 import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
-import com.github.bumblebee202111.doubean.network.api.GroupApiService
-import com.github.bumblebee202111.doubean.network.util.handleError
 import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalPagingApi::class)

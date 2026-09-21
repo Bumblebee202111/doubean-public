@@ -33,7 +33,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
+import com.github.bumblebee202111.doubean.shared.doulist.model.ItemDouList
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton
 import com.github.bumblebee202111.doubean.ui.component.SelectionDialog
 

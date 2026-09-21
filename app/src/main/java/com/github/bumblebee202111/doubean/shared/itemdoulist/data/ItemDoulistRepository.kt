@@ -1,0 +1,41 @@
+package com.github.bumblebee202111.doubean.shared.itemdoulist.data
+
+import com.github.bumblebee202111.doubean.core.network.api.DouListApiService
+import com.github.bumblebee202111.doubean.core.network.model.doulists.toDouListItem
+import com.github.bumblebee202111.doubean.core.network.model.doulists.toItemDouLists
+import com.github.bumblebee202111.doubean.core.network.model.structure.toCollectionItem
+import com.github.bumblebee202111.doubean.core.network.util.makeApiCall
+import com.github.bumblebee202111.doubean.shared.itemdoulist.model.CollectType
+import com.github.bumblebee202111.doubean.shared.itemdoulist.model.toRequestPath
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class ItemDouListRepository @Inject constructor(private val apiService: DouListApiService) {
+    suspend fun getItemAvailableDouLists(type: CollectType, id: String) = makeApiCall(
+        apiCall = { apiService.getItemAvailableDouLists(type = type.toRequestPath(), id = id) },
+        mapSuccess = { it.toItemDouLists() }
+    )
+
+    suspend fun collectItem(type: CollectType, id: String, douListId: String) = makeApiCall(
+        apiCall = {
+            apiService.collectItem(
+                type = type.toRequestPath(),
+                id = id,
+                douListId = douListId
+            )
+        },
+        mapSuccess = { it.toDouListItem() }
+    )
+
+    suspend fun uncollectItem(type: CollectType, id: String, douListId: String) = makeApiCall(
+        apiCall = {
+            apiService.uncollectItem(
+                type = type.toRequestPath(),
+                id = id,
+                douListId = douListId
+            )
+        },
+        mapSuccess = { it.toCollectionItem() }
+    )
+}

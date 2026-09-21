@@ -5,6 +5,12 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
+import com.github.bumblebee202111.doubean.core.network.api.GroupApiService
+import com.github.bumblebee202111.doubean.core.network.model.NetworkTopicItem
+import com.github.bumblebee202111.doubean.core.network.model.asPartialEntity
+import com.github.bumblebee202111.doubean.core.network.model.fangorns.toGroupTopicTagEntity
+import com.github.bumblebee202111.doubean.core.network.model.fangorns.toUserEntity
+import com.github.bumblebee202111.doubean.core.network.model.tagCrossRefs
 import com.github.bumblebee202111.doubean.data.db.AppDatabase
 import com.github.bumblebee202111.doubean.data.db.COLUMN_VALUE_GROUP_TAG_ID_ALL
 import com.github.bumblebee202111.doubean.data.db.model.GroupTabTopicRemoteKey
@@ -14,12 +20,6 @@ import com.github.bumblebee202111.doubean.data.db.model.UserEntity
 import com.github.bumblebee202111.doubean.data.paging.safeMediatorLoad
 import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 import com.github.bumblebee202111.doubean.model.groups.getRequestParamString
-import com.github.bumblebee202111.doubean.network.api.GroupApiService
-import com.github.bumblebee202111.doubean.network.model.NetworkTopicItem
-import com.github.bumblebee202111.doubean.network.model.asPartialEntity
-import com.github.bumblebee202111.doubean.network.model.fangorns.toGroupTopicTagEntity
-import com.github.bumblebee202111.doubean.network.model.fangorns.toUserEntity
-import com.github.bumblebee202111.doubean.network.model.tagCrossRefs
 
 @OptIn(ExperimentalPagingApi::class)
 class GroupTagTopicRemoteMediator(

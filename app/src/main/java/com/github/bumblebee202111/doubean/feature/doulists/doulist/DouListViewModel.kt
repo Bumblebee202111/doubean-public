@@ -2,16 +2,16 @@ package com.github.bumblebee202111.doubean.feature.doulists.doulist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.bumblebee202111.doubean.data.repository.AuthRepository
-import com.github.bumblebee202111.doubean.data.repository.DouListRepository
-import com.github.bumblebee202111.doubean.data.repository.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.doulists.common.DouListStateHelper
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.model.common.DouListPostItem
-import com.github.bumblebee202111.doubean.model.doulists.DouList
-import com.github.bumblebee202111.doubean.model.subjects.MarkableSubject
-import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.shared.auth.data.AuthRepository
+import com.github.bumblebee202111.doubean.shared.doulist.data.DouListRepository
+import com.github.bumblebee202111.doubean.shared.doulist.model.DouList
+import com.github.bumblebee202111.doubean.shared.doulist.model.DouListPostItem
+import com.github.bumblebee202111.doubean.shared.subject.model.MarkableSubject
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
+import com.github.bumblebee202111.doubean.shared.usersubject.UserSubjectRepository
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.model.UiMessage
 import com.github.bumblebee202111.doubean.ui.stateInUi

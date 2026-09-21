@@ -16,8 +16,8 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectCollection
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithRankAndInterest
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItem
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemBasicContent
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemRank

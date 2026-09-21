@@ -1,6 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.doulists.userdoulists
 
-import com.github.bumblebee202111.doubean.model.doulists.DouLists
+import com.github.bumblebee202111.doubean.shared.doulist.model.DouLists
 import com.github.bumblebee202111.doubean.ui.model.UiMessage
 
 sealed interface UserDouListsUiState {

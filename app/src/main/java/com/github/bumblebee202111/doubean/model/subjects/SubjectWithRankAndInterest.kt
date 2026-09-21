@@ -1,6 +1,10 @@
 package com.github.bumblebee202111.doubean.model.subjects
 
-import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectInterest
+import com.github.bumblebee202111.doubean.shared.subject.model.MarkableSubject
+import com.github.bumblebee202111.doubean.shared.subject.model.Subject
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectInterest
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
 
 data class SubjectWithRankAndInterest<T : Subject>(
     val subject: T,

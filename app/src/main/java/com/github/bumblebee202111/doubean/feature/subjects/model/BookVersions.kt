@@ -1,6 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.subjects.model
 
-import com.github.bumblebee202111.doubean.model.subjects.Book
+import com.github.bumblebee202111.doubean.shared.subject.model.Book
 
 data class BookVersions(
     val total: Int,

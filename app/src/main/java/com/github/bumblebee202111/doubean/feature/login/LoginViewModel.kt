@@ -6,10 +6,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.model.ApiError
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.model.auth.LoginResult
+import com.github.bumblebee202111.doubean.shared.auth.data.AuthRepository
+import com.github.bumblebee202111.doubean.shared.auth.model.LoginResult
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.model.toUiMessage
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage

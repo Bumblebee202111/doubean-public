@@ -13,10 +13,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.github.bumblebee202111.doubean.model.subjects.Music
-import com.github.bumblebee202111.doubean.model.subjects.Rating
-import com.github.bumblebee202111.doubean.model.subjects.Subject
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.shared.subject.model.Music
+import com.github.bumblebee202111.doubean.shared.subject.model.Rating
+import com.github.bumblebee202111.doubean.shared.subject.model.Subject
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
 
 @Composable
 fun SimpleSubjectItemContent(subject: Subject) {

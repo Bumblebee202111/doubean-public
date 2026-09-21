@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.coroutines.AppDispatchers
 import com.github.bumblebee202111.doubean.coroutines.Dispatcher
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
-import com.github.bumblebee202111.doubean.data.repository.AuthRepository
-import com.github.bumblebee202111.doubean.data.repository.UserRepository
 import com.github.bumblebee202111.doubean.domain.usecase.ObserveCurrentUserUseCase
 import com.github.bumblebee202111.doubean.model.AppResult
+import com.github.bumblebee202111.doubean.shared.auth.data.AuthRepository
+import com.github.bumblebee202111.doubean.shared.user.data.UserRepository
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage

@@ -36,8 +36,8 @@ import com.github.bumblebee202111.doubean.feature.subjects.books.BooksScreen
 import com.github.bumblebee202111.doubean.feature.subjects.movies.MoviesScreen
 import com.github.bumblebee202111.doubean.feature.subjects.music.MusicScreen
 import com.github.bumblebee202111.doubean.feature.subjects.tvs.TvsScreen
-import com.github.bumblebee202111.doubean.model.fangorns.User
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
+import com.github.bumblebee202111.doubean.shared.user.model.User
 import com.github.bumblebee202111.doubean.ui.common.AppBarNavigationAvatar
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import kotlinx.coroutines.launch

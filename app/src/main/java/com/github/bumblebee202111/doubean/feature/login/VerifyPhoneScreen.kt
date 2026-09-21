@@ -29,8 +29,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.auth.CaptchaSolution
-import com.github.bumblebee202111.doubean.model.auth.JCaptcha
+import com.github.bumblebee202111.doubean.shared.auth.model.CaptchaSolution
+import com.github.bumblebee202111.doubean.shared.auth.model.JCaptcha
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar

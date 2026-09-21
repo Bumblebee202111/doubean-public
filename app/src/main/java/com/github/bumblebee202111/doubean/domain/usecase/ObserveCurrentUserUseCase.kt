@@ -1,8 +1,8 @@
 package com.github.bumblebee202111.doubean.domain.usecase
 
-import com.github.bumblebee202111.doubean.data.repository.AuthRepository
-import com.github.bumblebee202111.doubean.data.repository.UserRepository
-import com.github.bumblebee202111.doubean.model.fangorns.User
+import com.github.bumblebee202111.doubean.shared.auth.data.AuthRepository
+import com.github.bumblebee202111.doubean.shared.user.data.UserRepository
+import com.github.bumblebee202111.doubean.shared.user.model.User
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest

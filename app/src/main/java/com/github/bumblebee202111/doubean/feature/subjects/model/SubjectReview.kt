@@ -1,9 +1,9 @@
 package com.github.bumblebee202111.doubean.feature.subjects.model
 
 import com.github.bumblebee202111.doubean.model.SizedPhoto
-import com.github.bumblebee202111.doubean.model.fangorns.User
-import com.github.bumblebee202111.doubean.model.subjects.Rating
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.shared.subject.model.Rating
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
+import com.github.bumblebee202111.doubean.shared.user.model.User
 import java.time.LocalDateTime
 
 data class SubjectReview(

@@ -6,8 +6,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
-import com.github.bumblebee202111.doubean.ui.theme.DoubeanTheme
+import com.github.bumblebee202111.doubean.core.theme.DoubeanTheme
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
 
 @Composable
 fun SubjectTypeLabel(type: SubjectType) {

@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.github.bumblebee202111.doubean.model.fangorns.User
+import com.github.bumblebee202111.doubean.shared.user.model.User
 
 @Composable
 fun UserDrawerHeader(

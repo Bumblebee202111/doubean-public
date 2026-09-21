@@ -1,5 +1,14 @@
 package com.github.bumblebee202111.doubean.feature.subjects.data
 
+import com.github.bumblebee202111.doubean.core.network.api.SubjectApiService
+import com.github.bumblebee202111.doubean.core.network.model.NetworkSubjectModules
+import com.github.bumblebee202111.doubean.core.network.model.fangorns.toPhotoList
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkRecommend
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkSubjectReviewList
+import com.github.bumblebee202111.doubean.core.network.model.toBook
+import com.github.bumblebee202111.doubean.core.network.model.toNetworkSubjectType
+import com.github.bumblebee202111.doubean.core.network.model.toSubjectModules
+import com.github.bumblebee202111.doubean.core.network.util.makeApiCall
 import com.github.bumblebee202111.doubean.feature.subjects.mapper.toBookDetail
 import com.github.bumblebee202111.doubean.feature.subjects.mapper.toCreditList
 import com.github.bumblebee202111.doubean.feature.subjects.mapper.toMovieDetail
@@ -15,16 +24,7 @@ import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectReviewLi
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.PhotoList
 import com.github.bumblebee202111.doubean.model.subjects.SubjectModule
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
-import com.github.bumblebee202111.doubean.network.api.SubjectApiService
-import com.github.bumblebee202111.doubean.network.model.NetworkSubjectModules
-import com.github.bumblebee202111.doubean.network.model.fangorns.toPhotoList
-import com.github.bumblebee202111.doubean.network.model.subject.NetworkRecommend
-import com.github.bumblebee202111.doubean.network.model.subject.NetworkSubjectReviewList
-import com.github.bumblebee202111.doubean.network.model.toBook
-import com.github.bumblebee202111.doubean.network.model.toNetworkSubjectType
-import com.github.bumblebee202111.doubean.network.model.toSubjectModules
-import com.github.bumblebee202111.doubean.network.util.makeApiCall
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
 import javax.inject.Inject
 import javax.inject.Singleton
 

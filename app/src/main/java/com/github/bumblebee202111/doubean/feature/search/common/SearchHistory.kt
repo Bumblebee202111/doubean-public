@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.search.SearchHistory
+import com.github.bumblebee202111.doubean.shared.search.model.SearchHistory
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton
 
 fun LazyListScope.searchHistory(

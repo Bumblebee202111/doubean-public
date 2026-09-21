@@ -38,7 +38,7 @@ import com.github.bumblebee202111.doubean.feature.groups.shared.SearchResultGrou
 import com.github.bumblebee202111.doubean.feature.groups.shared.dayRankingItems
 import com.github.bumblebee202111.doubean.feature.search.common.searchHistory
 import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
-import com.github.bumblebee202111.doubean.model.search.SearchHistory
+import com.github.bumblebee202111.doubean.shared.search.model.SearchHistory
 import com.github.bumblebee202111.doubean.ui.component.DoubeanAppBarWithSearch
 import com.github.bumblebee202111.doubean.ui.component.FullScreenCenteredContent
 import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry

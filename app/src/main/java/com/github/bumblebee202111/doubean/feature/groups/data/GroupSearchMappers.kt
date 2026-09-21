@@ -1,8 +1,8 @@
 package com.github.bumblebee202111.doubean.feature.groups.data
 
+import com.github.bumblebee202111.doubean.core.network.model.search.NetworkGroupSearchResultGroupItem
 import com.github.bumblebee202111.doubean.data.db.model.SimpleCachedGroupPartialEntity
 import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
-import com.github.bumblebee202111.doubean.network.model.search.NetworkGroupSearchResultGroupItem
 
 fun NetworkGroupSearchResultGroupItem.toSimpleCachedGroupPartialEntity() =
     SimpleCachedGroupPartialEntity(

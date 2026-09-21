@@ -63,11 +63,11 @@ import com.github.bumblebee202111.doubean.model.ImageItem
 import com.github.bumblebee202111.doubean.model.PhotoList
 import com.github.bumblebee202111.doubean.model.SizedImage
 import com.github.bumblebee202111.doubean.model.SizedPhoto
-import com.github.bumblebee202111.doubean.model.fangorns.User
-import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
-import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUser
-import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUserList
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectInterestWithUser
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectInterestWithUserList
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
+import com.github.bumblebee202111.doubean.shared.user.model.User
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.ExpandCollapseText
 import com.github.bumblebee202111.doubean.ui.component.ListItemCount

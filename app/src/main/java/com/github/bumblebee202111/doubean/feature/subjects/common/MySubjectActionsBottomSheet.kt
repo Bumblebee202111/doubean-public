@@ -7,9 +7,9 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.bumblebee202111.doubean.model.subjects.Subject
-import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
-import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
+import com.github.bumblebee202111.doubean.shared.subject.model.Subject
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectWithInterest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

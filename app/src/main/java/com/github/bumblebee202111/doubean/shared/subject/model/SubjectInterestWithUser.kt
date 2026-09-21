@@ -1,0 +1,13 @@
+package com.github.bumblebee202111.doubean.shared.subject.model
+
+import com.github.bumblebee202111.doubean.shared.user.model.User
+import java.time.LocalDateTime
+
+data class SubjectInterestWithUser(
+    val comment: String?,
+    val rating: Rating.NonNull?,
+    val status: SubjectInterestStatus,
+    val voteCount: Int,
+    val createTime: LocalDateTime,
+    val user: User,
+)

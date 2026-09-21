@@ -1,0 +1,21 @@
+package com.github.bumblebee202111.doubean.shared.itemdoulist.model
+
+import com.github.bumblebee202111.doubean.core.network.model.common.CollectTypeRequestPaths
+
+enum class CollectType {
+    GROUP_TOPIC,
+    MOVIE,
+    TV,
+    BOOK,
+    MUSIC
+}
+
+fun CollectType.toRequestPath(): String {
+    return when (this) {
+        CollectType.GROUP_TOPIC -> CollectTypeRequestPaths.GROUP_TOPIC
+        CollectType.MOVIE -> CollectTypeRequestPaths.MOVIE
+        CollectType.TV -> CollectTypeRequestPaths.TV
+        CollectType.BOOK -> CollectTypeRequestPaths.BOOK
+        CollectType.MUSIC -> CollectTypeRequestPaths.MUSIC
+    }
+}

@@ -5,7 +5,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.github.bumblebee202111.doubean.model.common.FeedItem
 import com.github.bumblebee202111.doubean.model.common.SubjectFeedContent
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 
 @Composable

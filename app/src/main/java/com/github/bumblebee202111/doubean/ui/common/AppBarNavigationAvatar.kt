@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.github.bumblebee202111.doubean.model.fangorns.User
+import com.github.bumblebee202111.doubean.shared.user.model.User
 
 @Composable
 fun AppBarNavigationAvatar(

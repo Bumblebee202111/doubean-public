@@ -1,12 +1,12 @@
 package com.github.bumblebee202111.doubean.feature.subjects.mapper
 
+import com.github.bumblebee202111.doubean.core.network.model.search.NetworkSubjectSearchResults
+import com.github.bumblebee202111.doubean.core.network.model.search.NetworkSubjectSubTag
+import com.github.bumblebee202111.doubean.core.network.model.search.toSearchResultSubjectItems
 import com.github.bumblebee202111.doubean.model.subjects.SubjectSearchResult
 import com.github.bumblebee202111.doubean.model.subjects.SubjectSubTag
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectsSearchType
-import com.github.bumblebee202111.doubean.network.model.search.NetworkSubjectSearchResults
-import com.github.bumblebee202111.doubean.network.model.search.NetworkSubjectSubTag
-import com.github.bumblebee202111.doubean.network.model.search.toSearchResultSubjectItems
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
 
 fun NetworkSubjectSubTag.toSubjectSubTag() = type.toApiSubjectsSearchType()?.let {
     SubjectSubTag(

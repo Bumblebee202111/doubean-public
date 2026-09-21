@@ -23,9 +23,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.subjects.Subject
-import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
-import com.github.bumblebee202111.doubean.model.subjects.SubjectWithInterest
+import com.github.bumblebee202111.doubean.shared.subject.model.Subject
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectWithInterest
 import com.github.bumblebee202111.doubean.ui.component.DoubeanOutlinedButton
 
 @Composable

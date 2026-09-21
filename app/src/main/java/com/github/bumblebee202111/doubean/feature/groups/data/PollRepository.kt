@@ -1,14 +1,14 @@
 package com.github.bumblebee202111.doubean.feature.groups.data
 
+import com.github.bumblebee202111.doubean.core.network.api.PollApiService
+import com.github.bumblebee202111.doubean.core.network.model.toPoll
+import com.github.bumblebee202111.doubean.core.network.model.toQuestion
+import com.github.bumblebee202111.doubean.core.network.util.makeApiCall
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.groups.PollId
 import com.github.bumblebee202111.doubean.model.groups.QuestionId
 import com.github.bumblebee202111.doubean.model.groups.TopicContentEntity
 import com.github.bumblebee202111.doubean.model.groups.TopicContentEntityId
-import com.github.bumblebee202111.doubean.network.api.PollApiService
-import com.github.bumblebee202111.doubean.network.model.toPoll
-import com.github.bumblebee202111.doubean.network.model.toQuestion
-import com.github.bumblebee202111.doubean.network.util.makeApiCall
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope

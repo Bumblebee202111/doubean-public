@@ -28,7 +28,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.github.bumblebee202111.doubean.feature.doulists.common.getDouListSubtitle
 import com.github.bumblebee202111.doubean.feature.doulists.common.getSystemPrivateAnnotatedText
-import com.github.bumblebee202111.doubean.model.doulists.DouList
+import com.github.bumblebee202111.doubean.shared.doulist.model.DouList
 
 @Composable
 fun DouListHeader(douList: DouList, modifier: Modifier = Modifier) {

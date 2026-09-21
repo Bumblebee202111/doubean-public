@@ -39,7 +39,7 @@ import com.github.bumblebee202111.doubean.feature.subjects.search.navigation.nav
 import com.github.bumblebee202111.doubean.feature.subjects.search.navigation.searchSubjectsEntry
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.navigateToUserProfile
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.userProfileEntry
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
 
 fun createDoubeanEntryProvider(
     navigator: Navigator,

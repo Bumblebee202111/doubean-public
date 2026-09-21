@@ -22,10 +22,10 @@ import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.
 import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.ReshareStatusesNavKey
 import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.TopicNavKey
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.UserProfileNavKey
-import com.github.bumblebee202111.doubean.model.fangorns.User
 import com.github.bumblebee202111.doubean.navigation.Navigator
 import com.github.bumblebee202111.doubean.navigation.TopLevelDestination
 import com.github.bumblebee202111.doubean.navigation.rememberNavigationState
+import com.github.bumblebee202111.doubean.shared.user.model.User
 import com.github.bumblebee202111.doubean.ui.common.ApplyStatusBarIconAppearance
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 

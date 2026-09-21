@@ -4,11 +4,11 @@ package com.github.bumblebee202111.doubean.feature.subjects.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.bumblebee202111.doubean.data.repository.SearchHistoryRepository
 import com.github.bumblebee202111.doubean.feature.subjects.data.SearchSubjectsRepository
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.model.search.SearchType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectsSearchType
+import com.github.bumblebee202111.doubean.shared.search.data.SearchHistoryRepository
+import com.github.bumblebee202111.doubean.shared.search.model.SearchType
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.model.toUiMessage
 import com.github.bumblebee202111.doubean.ui.stateInUi

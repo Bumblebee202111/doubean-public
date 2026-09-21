@@ -22,9 +22,9 @@ import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.common.DouListPostItem
 import com.github.bumblebee202111.doubean.model.common.FeedItem
-import com.github.bumblebee202111.doubean.model.subjects.MarkableSubject
+import com.github.bumblebee202111.doubean.shared.doulist.model.DouListPostItem
+import com.github.bumblebee202111.doubean.shared.subject.model.MarkableSubject
 import com.github.bumblebee202111.doubean.ui.common.feed.FeedItem
 import com.github.bumblebee202111.doubean.util.DateTimeStyle
 import com.github.bumblebee202111.doubean.util.toRelativeString

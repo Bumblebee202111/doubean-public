@@ -21,9 +21,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.github.bumblebee202111.doubean.model.subjects.MarkableSubject
-import com.github.bumblebee202111.doubean.model.subjects.Rating
-import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.shared.subject.model.MarkableSubject
+import com.github.bumblebee202111.doubean.shared.subject.model.Rating
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectCurrentStatusIconVector
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectStatusActionIconsMap
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton

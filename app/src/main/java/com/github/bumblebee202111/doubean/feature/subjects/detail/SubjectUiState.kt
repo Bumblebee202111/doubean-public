@@ -7,7 +7,7 @@ import com.github.bumblebee202111.doubean.feature.subjects.model.RecommendSubjec
 import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectDetail
 import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectReviewList
 import com.github.bumblebee202111.doubean.model.PhotoList
-import com.github.bumblebee202111.doubean.model.subjects.SubjectInterestWithUserList
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectInterestWithUserList
 import com.github.bumblebee202111.doubean.ui.model.UiMessage
 
 sealed interface SubjectUiState {

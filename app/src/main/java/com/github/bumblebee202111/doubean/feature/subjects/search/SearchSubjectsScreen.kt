@@ -33,11 +33,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.search.common.searchHistory
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectItemBasicContent
-import com.github.bumblebee202111.doubean.model.search.SearchHistory
 import com.github.bumblebee202111.doubean.model.subjects.SearchResultSubjectItem
 import com.github.bumblebee202111.doubean.model.subjects.SubjectSubTag
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.model.subjects.SubjectsSearchType
+import com.github.bumblebee202111.doubean.shared.search.model.SearchHistory
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItem
 import com.github.bumblebee202111.doubean.ui.component.DoubeanAppBarWithSearch
 import com.github.bumblebee202111.doubean.ui.component.SectionErrorWithRetry

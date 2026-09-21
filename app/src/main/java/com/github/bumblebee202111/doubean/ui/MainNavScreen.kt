@@ -37,7 +37,6 @@ import com.github.bumblebee202111.doubean.feature.login.navigation.navigateToLog
 import com.github.bumblebee202111.doubean.feature.mydoulists.navigation.navigateToMyDouLists
 import com.github.bumblebee202111.doubean.feature.settings.navigation.navigateToSettings
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.navigateToUserProfile
-import com.github.bumblebee202111.doubean.model.fangorns.User
 import com.github.bumblebee202111.doubean.navigation.BottomNavSceneStrategy
 import com.github.bumblebee202111.doubean.navigation.NavigationState
 import com.github.bumblebee202111.doubean.navigation.Navigator
@@ -45,6 +44,7 @@ import com.github.bumblebee202111.doubean.navigation.TopLevelDestination
 import com.github.bumblebee202111.doubean.navigation.UserDrawerHeader
 import com.github.bumblebee202111.doubean.navigation.createDoubeanEntryProvider
 import com.github.bumblebee202111.doubean.navigation.toEntries
+import com.github.bumblebee202111.doubean.shared.user.model.User
 import kotlinx.coroutines.launch
 
 @Composable

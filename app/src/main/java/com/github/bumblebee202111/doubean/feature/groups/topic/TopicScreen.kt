@@ -52,7 +52,7 @@ import com.github.bumblebee202111.doubean.feature.groups.model.TopicCommentSortB
 import com.github.bumblebee202111.doubean.feature.groups.model.TopicDetail
 import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.model.data
-import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
+import com.github.bumblebee202111.doubean.shared.doulist.model.ItemDouList
 import com.github.bumblebee202111.doubean.ui.common.CollectDialogUiState
 import com.github.bumblebee202111.doubean.ui.common.CreateDouListDialog
 import com.github.bumblebee202111.doubean.ui.common.DouListDialog

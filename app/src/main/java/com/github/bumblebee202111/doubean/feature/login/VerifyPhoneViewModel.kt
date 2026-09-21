@@ -2,12 +2,12 @@ package com.github.bumblebee202111.doubean.feature.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.model.AppError
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.model.auth.CaptchaSolution
-import com.github.bumblebee202111.doubean.model.auth.RequestPhoneCodeResult
-import com.github.bumblebee202111.doubean.model.auth.VerifyPhoneCodeResult
+import com.github.bumblebee202111.doubean.shared.auth.data.AuthRepository
+import com.github.bumblebee202111.doubean.shared.auth.model.CaptchaSolution
+import com.github.bumblebee202111.doubean.shared.auth.model.RequestPhoneCodeResult
+import com.github.bumblebee202111.doubean.shared.auth.model.VerifyPhoneCodeResult
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.model.toUiMessage
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel(assistedFactory = VerifyPhoneViewModel.Factory::class)
 class VerifyPhoneViewModel @AssistedInject constructor(

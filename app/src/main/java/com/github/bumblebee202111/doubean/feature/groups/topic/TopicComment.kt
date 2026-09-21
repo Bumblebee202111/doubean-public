@@ -40,7 +40,7 @@ import com.github.bumblebee202111.doubean.feature.groups.model.TopicRefComment
 import com.github.bumblebee202111.doubean.feature.groups.shared.TopicActivityItemUserProfileImage
 import com.github.bumblebee202111.doubean.model.SizedImage
 import com.github.bumblebee202111.doubean.model.SizedPhoto
-import com.github.bumblebee202111.doubean.model.fangorns.User
+import com.github.bumblebee202111.doubean.shared.user.model.User
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.ListItemCount
 import com.github.bumblebee202111.doubean.ui.component.ListItemImages

@@ -1,8 +1,9 @@
 package com.github.bumblebee202111.doubean.feature.subjects.model
 
-import com.github.bumblebee202111.doubean.model.subjects.MarkableSubject
-import com.github.bumblebee202111.doubean.model.subjects.Rating
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.shared.subject.model.MarkableSubject
+import com.github.bumblebee202111.doubean.shared.subject.model.Rating
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectInterest
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
 import com.github.bumblebee202111.doubean.ui.model.UiMessage
 
 sealed interface SubjectDetail : MarkableSubject {

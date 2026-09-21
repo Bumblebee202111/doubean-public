@@ -2,9 +2,9 @@ package com.github.bumblebee202111.doubean.feature.groups.data
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.github.bumblebee202111.doubean.core.network.api.GroupApiService
+import com.github.bumblebee202111.doubean.core.network.model.NetworkGroupTopicComment
 import com.github.bumblebee202111.doubean.data.paging.safePagingLoad
-import com.github.bumblebee202111.doubean.network.api.GroupApiService
-import com.github.bumblebee202111.doubean.network.model.NetworkGroupTopicComment
 
 class GroupTopicCommentPagingSource(
     private val apiService: GroupApiService,

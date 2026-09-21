@@ -2,10 +2,10 @@ package com.github.bumblebee202111.doubean.feature.subjects.data
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.github.bumblebee202111.doubean.core.network.api.SubjectApiService
+import com.github.bumblebee202111.doubean.core.network.model.toSubjectWithRankAndInterest
 import com.github.bumblebee202111.doubean.data.paging.safePagingLoad
 import com.github.bumblebee202111.doubean.model.subjects.SubjectWithRankAndInterest
-import com.github.bumblebee202111.doubean.network.api.SubjectApiService
-import com.github.bumblebee202111.doubean.network.model.toSubjectWithRankAndInterest
 
 class SubjectCollectionItemPagingSource(
     private val apiService: SubjectApiService,

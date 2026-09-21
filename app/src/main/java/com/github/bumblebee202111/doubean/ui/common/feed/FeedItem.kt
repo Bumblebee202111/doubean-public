@@ -40,9 +40,9 @@ import com.github.bumblebee202111.doubean.model.common.ReviewFeedContent
 import com.github.bumblebee202111.doubean.model.common.SubjectFeedContent
 import com.github.bumblebee202111.doubean.model.common.TopicFeedContent
 import com.github.bumblebee202111.doubean.model.common.UnknownFeedContent
-import com.github.bumblebee202111.doubean.model.fangorns.User
-import com.github.bumblebee202111.doubean.model.subjects.MarkableSubject
 import com.github.bumblebee202111.doubean.navigation.toNavKeyOrNull
+import com.github.bumblebee202111.doubean.shared.subject.model.MarkableSubject
+import com.github.bumblebee202111.doubean.shared.user.model.User
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItem
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemBasicContent
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectSimpleInterestButton

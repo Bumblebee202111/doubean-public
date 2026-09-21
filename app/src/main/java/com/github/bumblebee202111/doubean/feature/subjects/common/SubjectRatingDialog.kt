@@ -25,8 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.ui.theme.RatingActiveColor
-import com.github.bumblebee202111.doubean.ui.theme.RatingInactiveColor
+import com.github.bumblebee202111.doubean.core.theme.RatingActiveColor
+import com.github.bumblebee202111.doubean.core.theme.RatingInactiveColor
 
 @Composable
 fun SubjectRatingDialog(

@@ -5,8 +5,8 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.subjects.ranklist.RankListScreen
 import com.github.bumblebee202111.doubean.feature.subjects.ranklist.RankListViewModel
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
 import com.github.bumblebee202111.doubean.navigation.Navigator
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
 import kotlinx.serialization.Serializable
 
 @Serializable

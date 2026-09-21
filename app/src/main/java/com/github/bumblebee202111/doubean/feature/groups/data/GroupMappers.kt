@@ -1,5 +1,7 @@
 package com.github.bumblebee202111.doubean.feature.groups.data
 
+import com.github.bumblebee202111.doubean.core.network.model.fangorns.NetworkGroupDetail
+import com.github.bumblebee202111.doubean.core.network.model.fangorns.NetworkGroupTab
 import com.github.bumblebee202111.doubean.data.db.model.CachedGroupEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTabEntity
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedPinnedTabItem
@@ -7,8 +9,6 @@ import com.github.bumblebee202111.doubean.feature.groups.model.GroupDetail
 import com.github.bumblebee202111.doubean.feature.groups.model.GroupMemberRole
 import com.github.bumblebee202111.doubean.feature.groups.model.GroupTab
 import com.github.bumblebee202111.doubean.feature.groups.model.PinnedTabItem
-import com.github.bumblebee202111.doubean.network.model.fangorns.NetworkGroupDetail
-import com.github.bumblebee202111.doubean.network.model.fangorns.NetworkGroupTab
 
 internal fun NetworkGroupDetail.toGroupDetail() = GroupDetail(
     id = id,

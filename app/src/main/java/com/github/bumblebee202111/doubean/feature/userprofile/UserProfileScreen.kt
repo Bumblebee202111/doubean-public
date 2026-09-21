@@ -55,9 +55,9 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.userprofile.model.ProfileCommunityContribution
 import com.github.bumblebee202111.doubean.feature.userprofile.model.ProfileStatItemTypes
 import com.github.bumblebee202111.doubean.model.fangorns.HiddenTypeInProfile
-import com.github.bumblebee202111.doubean.model.fangorns.UserDetail
-import com.github.bumblebee202111.doubean.model.subjects.MySubject
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.shared.subject.model.MySubject
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
+import com.github.bumblebee202111.doubean.shared.user.model.UserDetail
 import com.github.bumblebee202111.doubean.ui.common.ApplyStatusBarIconAppearance
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanButton

@@ -29,10 +29,10 @@ import com.github.bumblebee202111.doubean.feature.doulists.common.douListPostIte
 import com.github.bumblebee202111.doubean.feature.doulists.common.getDouListLabel
 import com.github.bumblebee202111.doubean.feature.doulists.common.getDouListSubtitle
 import com.github.bumblebee202111.doubean.feature.doulists.common.rememberFeedItemClickHandler
-import com.github.bumblebee202111.doubean.model.common.DouListPostItem
-import com.github.bumblebee202111.doubean.model.doulists.DouList
-import com.github.bumblebee202111.doubean.model.subjects.MarkableSubject
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
+import com.github.bumblebee202111.doubean.shared.doulist.model.DouList
+import com.github.bumblebee202111.doubean.shared.doulist.model.DouListPostItem
+import com.github.bumblebee202111.doubean.shared.subject.model.MarkableSubject
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar

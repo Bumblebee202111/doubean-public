@@ -17,14 +17,14 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.github.bumblebee202111.doubean.data.repository.AuthRepository
+import com.github.bumblebee202111.doubean.core.theme.DoubeanTheme
 import com.github.bumblebee202111.doubean.feature.groups.workers.TopicNotificationsWorker
 import com.github.bumblebee202111.doubean.feature.groups.workers.TopicNotificationsWorker.Companion.WORK_NAME
 import com.github.bumblebee202111.doubean.navigation.TopLevelDestination
 import com.github.bumblebee202111.doubean.navigation.toNavKeyOrNull
+import com.github.bumblebee202111.doubean.shared.auth.data.AuthRepository
 import com.github.bumblebee202111.doubean.ui.DoubeanApp
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
-import com.github.bumblebee202111.doubean.ui.theme.DoubeanTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch

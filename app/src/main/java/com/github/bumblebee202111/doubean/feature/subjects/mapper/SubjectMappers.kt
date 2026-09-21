@@ -1,5 +1,22 @@
 package com.github.bumblebee202111.doubean.feature.subjects.mapper
 
+import com.github.bumblebee202111.doubean.core.network.model.NetworkSubjectCollection
+import com.github.bumblebee202111.doubean.core.network.model.NetworkSubjectCollectionWithItems
+import com.github.bumblebee202111.doubean.core.network.model.NetworkSubjectType
+import com.github.bumblebee202111.doubean.core.network.model.fangorns.asEntityAndExternalModel
+import com.github.bumblebee202111.doubean.core.network.model.fangorns.toUser
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkCelebrity
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkCreditList
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkRecommendSubject
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkSubjectReview
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkSubjectReviewList
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkVendor
+import com.github.bumblebee202111.doubean.core.network.model.subject.toSubjectInterest
+import com.github.bumblebee202111.doubean.core.network.model.toBackgroundColorScheme
+import com.github.bumblebee202111.doubean.core.network.model.toNonNullRating
+import com.github.bumblebee202111.doubean.core.network.model.toRating
+import com.github.bumblebee202111.doubean.core.network.model.toSubjectType
+import com.github.bumblebee202111.doubean.core.network.model.toSubjectWithRank
 import com.github.bumblebee202111.doubean.feature.subjects.model.Celebrity
 import com.github.bumblebee202111.doubean.feature.subjects.model.CreditList
 import com.github.bumblebee202111.doubean.feature.subjects.model.RecommendSubject
@@ -8,24 +25,7 @@ import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectCollecti
 import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectReview
 import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectReviewList
 import com.github.bumblebee202111.doubean.feature.subjects.model.Vendor
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
-import com.github.bumblebee202111.doubean.network.model.NetworkSubjectCollection
-import com.github.bumblebee202111.doubean.network.model.NetworkSubjectCollectionWithItems
-import com.github.bumblebee202111.doubean.network.model.NetworkSubjectType
-import com.github.bumblebee202111.doubean.network.model.fangorns.asEntityAndExternalModel
-import com.github.bumblebee202111.doubean.network.model.fangorns.toUser
-import com.github.bumblebee202111.doubean.network.model.subject.NetworkCelebrity
-import com.github.bumblebee202111.doubean.network.model.subject.NetworkCreditList
-import com.github.bumblebee202111.doubean.network.model.subject.NetworkRecommendSubject
-import com.github.bumblebee202111.doubean.network.model.subject.NetworkSubjectReview
-import com.github.bumblebee202111.doubean.network.model.subject.NetworkSubjectReviewList
-import com.github.bumblebee202111.doubean.network.model.subject.NetworkVendor
-import com.github.bumblebee202111.doubean.network.model.subject.toSubjectInterest
-import com.github.bumblebee202111.doubean.network.model.toBackgroundColorScheme
-import com.github.bumblebee202111.doubean.network.model.toNonNullRating
-import com.github.bumblebee202111.doubean.network.model.toRating
-import com.github.bumblebee202111.doubean.network.model.toSubjectType
-import com.github.bumblebee202111.doubean.network.model.toSubjectWithRank
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
 
 fun NetworkCreditList.toCreditList() = CreditList(
     items = items?.map(NetworkCelebrity::toCelebrity) ?: emptyList(),

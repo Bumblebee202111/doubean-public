@@ -1,13 +1,13 @@
 package com.github.bumblebee202111.doubean.feature.groups.home
 
 import androidx.lifecycle.ViewModel
-import com.github.bumblebee202111.doubean.data.repository.AuthRepository
 import com.github.bumblebee202111.doubean.domain.usecase.ObserveCurrentUserUseCase
 import com.github.bumblebee202111.doubean.feature.groups.data.GroupRepository
 import com.github.bumblebee202111.doubean.feature.groups.data.GroupTopicRepository
 import com.github.bumblebee202111.doubean.feature.groups.data.UserGroupRepository
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.CachedAppResult
+import com.github.bumblebee202111.doubean.shared.auth.data.AuthRepository
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage

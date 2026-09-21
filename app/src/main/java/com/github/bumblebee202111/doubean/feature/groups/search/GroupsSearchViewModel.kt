@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.github.bumblebee202111.doubean.data.repository.SearchHistoryRepository
 import com.github.bumblebee202111.doubean.feature.groups.data.GroupRepository
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.model.search.SearchType
+import com.github.bumblebee202111.doubean.shared.search.data.SearchHistoryRepository
+import com.github.bumblebee202111.doubean.shared.search.model.SearchType
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage

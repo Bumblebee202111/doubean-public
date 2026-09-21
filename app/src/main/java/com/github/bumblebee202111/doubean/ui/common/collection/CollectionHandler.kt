@@ -1,12 +1,12 @@
 package com.github.bumblebee202111.doubean.ui.common.collection
 
-import com.github.bumblebee202111.doubean.data.repository.DouListRepository
-import com.github.bumblebee202111.doubean.data.repository.ItemDouListRepository
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.model.common.CollectType
-import com.github.bumblebee202111.doubean.model.doulists.DouListItem
-import com.github.bumblebee202111.doubean.model.doulists.ItemDouList
 import com.github.bumblebee202111.doubean.model.structure.CollectionItem
+import com.github.bumblebee202111.doubean.shared.doulist.data.DouListRepository
+import com.github.bumblebee202111.doubean.shared.doulist.model.DouListItem
+import com.github.bumblebee202111.doubean.shared.doulist.model.ItemDouList
+import com.github.bumblebee202111.doubean.shared.itemdoulist.data.ItemDouListRepository
+import com.github.bumblebee202111.doubean.shared.itemdoulist.model.CollectType
 import com.github.bumblebee202111.doubean.ui.common.CollectDialogUiState
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage

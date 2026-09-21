@@ -3,8 +3,8 @@ package com.github.bumblebee202111.doubean.data.paging
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingSource.LoadResult
 import androidx.paging.RemoteMediator.MediatorResult
+import com.github.bumblebee202111.doubean.core.network.util.handleError
 import com.github.bumblebee202111.doubean.model.AppErrorException
-import com.github.bumblebee202111.doubean.network.util.handleError
 import kotlin.coroutines.cancellation.CancellationException
 
 

@@ -1,6 +1,6 @@
 package com.github.bumblebee202111.doubean.model.common
 
-import com.github.bumblebee202111.doubean.model.fangorns.User
+import com.github.bumblebee202111.doubean.shared.user.model.User
 import java.time.LocalDateTime
 
 interface BaseTimelineItem : BaseFeedableItem {

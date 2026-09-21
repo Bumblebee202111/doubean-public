@@ -23,10 +23,10 @@ import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.Preferenc
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_REFRESH_TOKEN
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_TIMELINE_LAST_VISIT_ID
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_UDID
-import com.github.bumblebee202111.doubean.data.repository.DoubanPrefCurrentAccountInfo
 import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
 import com.github.bumblebee202111.doubean.navigation.TopLevelDestination
+import com.github.bumblebee202111.doubean.shared.auth.model.DoubanPrefCurrentAccountInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json

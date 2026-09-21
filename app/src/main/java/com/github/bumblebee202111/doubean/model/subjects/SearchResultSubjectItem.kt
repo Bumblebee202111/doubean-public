@@ -1,5 +1,8 @@
 package com.github.bumblebee202111.doubean.model.subjects
 
+import com.github.bumblebee202111.doubean.shared.subject.model.Rating
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
+
 data class SearchResultSubjectItem(
     val hasLinewatch: Boolean?,
     val controversyReason: String,

@@ -2,10 +2,10 @@ package com.github.bumblebee202111.doubean.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.github.bumblebee202111.doubean.model.subjects.SubjectType
-import com.github.bumblebee202111.doubean.network.api.UserApiService
-import com.github.bumblebee202111.doubean.network.model.subject.NetworkSubjectInterestWithSubject
-import com.github.bumblebee202111.doubean.network.model.toNetworkSubjectType
+import com.github.bumblebee202111.doubean.core.network.api.UserApiService
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkSubjectInterestWithSubject
+import com.github.bumblebee202111.doubean.core.network.model.toNetworkSubjectType
+import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
 
 class UserSubjectInterestItemPagingSource(
     private val apiService: UserApiService,

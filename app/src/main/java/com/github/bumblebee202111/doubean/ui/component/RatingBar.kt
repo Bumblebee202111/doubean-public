@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.bumblebee202111.doubean.ui.theme.RatingActiveColor
-import com.github.bumblebee202111.doubean.ui.theme.RatingInactiveColor
+import com.github.bumblebee202111.doubean.core.theme.RatingActiveColor
+import com.github.bumblebee202111.doubean.core.theme.RatingInactiveColor
 import kotlin.math.cos
 import kotlin.math.sin
 
