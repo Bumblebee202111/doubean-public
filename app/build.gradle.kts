@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
@@ -25,21 +24,11 @@ android {
         versionCode = 130005
         versionName = "0.13.3"
 
-        setProperty("archivesBaseName", "doubean_$versionName")
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         ndk {
             abiFilters += listOf("arm64-v8a", "x86_64")
         }
-    }
-
-    hilt {
-        
-    }
-
-    room {
-        schemaDirectory("$projectDir/schemas")
     }
 
     buildTypes {
@@ -56,10 +45,22 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     namespace = "com.github.bumblebee202111.doubean"
+}
+
+hilt {
+    
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
+base {
+    archivesName.set("doubean_${android.defaultConfig.versionName}")
 }
 
 dependencies {
@@ -126,7 +127,7 @@ dependencies {
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
+        jvmTarget.set(JvmTarget.JVM_21)
         freeCompilerArgs.addAll(
             listOf(
                 "-Xcontext-parameters",
