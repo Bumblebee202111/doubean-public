@@ -12,6 +12,26 @@ class Navigator(val state: NavigationState) {
         }
     }
 
+    fun navigate(backStack: List<NavKey>) {
+        if (backStack.isEmpty()) return
+        val topLevelTarget = backStack.firstOrNull { it in state.backStacks.keys }
+        if (topLevelTarget != null) {
+            state.topLevelRoute = topLevelTarget
+            val targetStack = state.backStacks[topLevelTarget] ?: return
+            val targetIndex = backStack.indexOf(topLevelTarget)
+            val subKeys = backStack.subList(targetIndex + 1, backStack.size)
+            for (key in subKeys) {
+                if (targetStack.lastOrNull() != key) {
+                    targetStack.add(key)
+                }
+            }
+        } else {
+            for (key in backStack) {
+                navigate(key)
+            }
+        }
+    }
+
     fun goBack() {
         val currentStack = state.backStacks[state.topLevelRoute]
             ?: error("Stack for ${state.topLevelRoute} not found")

@@ -1,5 +1,6 @@
 package com.github.bumblebee202111.doubean
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -9,6 +10,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation3.runtime.NavKey
@@ -44,6 +47,8 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var snackbarManager: SnackbarManager
 
+    private var pendingDeepLinkKey by mutableStateOf<NavKey?>(null)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -57,7 +62,7 @@ class MainActivity : ComponentActivity() {
             window.isNavigationBarContrastEnforced = false
         }
 
-        val initialDeepLinkKey: NavKey? = intent.data?.toString()?.toNavKeyOrNull()
+        pendingDeepLinkKey = intent.data?.toString()?.toNavKeyOrNull()
 
         setContent {
             DoubeanTheme {
@@ -77,7 +82,8 @@ class MainActivity : ComponentActivity() {
                         startRoute = startRoute as NavKey,
                         topLevelDestinations = topLevelDestinations,
                         currentUser = currentUser,
-                        initialDeepLinkKey = initialDeepLinkKey
+                        pendingDeepLinkKey = pendingDeepLinkKey,
+                        onDeepLinkConsumed = { pendingDeepLinkKey = null }
                     )
                 }
             }
@@ -94,6 +100,15 @@ class MainActivity : ComponentActivity() {
 
         }
 
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        val deepLinkKey = intent.data?.toString()?.toNavKeyOrNull()
+        if (deepLinkKey != null) {
+            pendingDeepLinkKey = deepLinkKey
+        }
     }
 
     private fun syncDoubanSession() {

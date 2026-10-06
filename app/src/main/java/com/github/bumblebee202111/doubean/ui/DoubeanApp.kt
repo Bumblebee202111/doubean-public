@@ -35,7 +35,8 @@ fun DoubeanApp(
     startRoute: NavKey,
     topLevelDestinations: List<TopLevelDestination>,
     currentUser: User?,
-    initialDeepLinkKey: NavKey? = null,
+    pendingDeepLinkKey: NavKey? = null,
+    onDeepLinkConsumed: () -> Unit = {},
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -89,7 +90,8 @@ fun DoubeanApp(
             navigator = navigator,
             topLevelDestinations = topLevelDestinations,
             topLevelRoutes = topLevelRoutes,
-            initialDeepLinkKey = initialDeepLinkKey,
+            pendingDeepLinkKey = pendingDeepLinkKey,
+            onDeepLinkConsumed = onDeepLinkConsumed,
             currentUser = currentUser,
             modifier = Modifier.fillMaxSize()
         )

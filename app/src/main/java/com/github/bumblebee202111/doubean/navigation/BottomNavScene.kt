@@ -39,7 +39,7 @@ class BottomNavScene(
                     ShortNavigationBarItem(
                         icon = { Icon(destination.iconVector, contentDescription = null) },
                         label = { Text(stringResource(destination.labelResId)) },
-                        selected = entry.contentKey == destination.route.toString(),
+                        selected = destination.route == navigator.state.topLevelRoute,
                         onClick = { navigator.navigate(destination.route as NavKey) }
                     )
                 }
@@ -55,12 +55,13 @@ class BottomNavSceneStrategy(
     private val navigator: Navigator,
 ) : SceneStrategy<NavKey> {
 
-    private val topLevelContentKeys = topLevelRoutes.map { it.toString() }.toSet()
-
     override fun SceneStrategyScope<NavKey>.calculateScene(entries: List<NavEntry<NavKey>>): Scene<NavKey>? {
         val currentEntry = entries.lastOrNull() ?: return null
 
-        val isTopLevel = currentEntry.contentKey in topLevelContentKeys
+        val currentStack = navigator.state.backStacks[navigator.state.topLevelRoute]
+        val currentRoute = currentStack?.lastOrNull() ?: navigator.state.topLevelRoute
+
+        val isTopLevel = currentRoute in topLevelRoutes
 
         if (isTopLevel) {
             return BottomNavScene(

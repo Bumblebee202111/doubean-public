@@ -2,48 +2,54 @@ package com.github.bumblebee202111.doubean.navigation
 
 import androidx.core.net.toUri
 import androidx.navigation3.runtime.NavKey
-import com.example.nav3recipes.deeplink.basic.util.DeepLinkMatcher
-import com.example.nav3recipes.deeplink.basic.util.DeepLinkPattern
-import com.example.nav3recipes.deeplink.basic.util.DeepLinkRequest
-import com.example.nav3recipes.deeplink.basic.util.KeyDecoder
+import androidx.navigation3.runtime.deeplink.DeepLinkMatcher
+import androidx.navigation3.runtime.deeplink.DeepLinkRequest
+import androidx.navigation3.runtime.deeplink.UriDeepLinkMatcher
 import com.github.bumblebee202111.doubean.feature.doulists.createddoulists.navigation.CreatedDouListsNavKey
 import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.GroupDetailNavKey
 import com.github.bumblebee202111.doubean.feature.groups.home.navigation.GroupsHomeNavKey
 import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.TopicNavKey
 import com.github.bumblebee202111.doubean.feature.login.navigation.VerifyPhoneNavKey
+import kotlinx.serialization.serializer
 
-private val doubeanDeepLinkPatterns: List<DeepLinkPattern<out NavKey>> = listOf(
+private val doubeanDeepLinkMatchers: List<DeepLinkMatcher<NavKey, *>> = listOf(
     
-    DeepLinkPattern(GroupsHomeNavKey.serializer(), "https:
-    DeepLinkPattern(GroupsHomeNavKey.serializer(), "https:
-
-    
-    DeepLinkPattern(GroupDetailNavKey.serializer(), "https:
-    DeepLinkPattern(
-        GroupDetailNavKey.serializer(),
+    UriDeepLinkMatcher("https:
+    UriDeepLinkMatcher(
         "https:
+        serializer<GroupsHomeNavKey>()
     ),
 
     
-    DeepLinkPattern(
-        TopicNavKey.serializer(),
+    UriDeepLinkMatcher(
         "https:
+        serializer<GroupDetailNavKey>()
     ),
-    DeepLinkPattern(
-        TopicNavKey.serializer(),
-        "douban:
-    ),
-
-    
-    DeepLinkPattern(
-        CreatedDouListsNavKey.serializer(),
-        "douban:
+    UriDeepLinkMatcher(
+        "https:
+        serializer<GroupDetailNavKey>()
     ),
 
     
-    DeepLinkPattern(
-        VerifyPhoneNavKey.serializer(),
+    UriDeepLinkMatcher(
+        "https:
+        serializer<TopicNavKey>()
+    ),
+    UriDeepLinkMatcher(
         "douban:
+        serializer<TopicNavKey>()
+    ),
+
+    
+    UriDeepLinkMatcher(
+        "douban:
+        serializer<CreatedDouListsNavKey>()
+    ),
+
+    
+    UriDeepLinkMatcher(
+        "douban:
+        serializer<VerifyPhoneNavKey>()
     )
 )
 
@@ -55,11 +61,9 @@ fun String.toNavKeyOrNull(): NavKey? {
     }
 
     val request = DeepLinkRequest(uri)
-    val match = doubeanDeepLinkPatterns.firstNotNullOfOrNull { pattern ->
-        DeepLinkMatcher(request, pattern).match()
-    }
+    val matchResult = doubeanDeepLinkMatchers.mapNotNull { matcher ->
+        matcher.match(request)
+    }.maxOrNull()
 
-    return match?.let {
-        KeyDecoder(match.args).decodeSerializableValue(match.serializer)
-    }
+    return matchResult?.key
 }

@@ -54,15 +54,17 @@ fun MainNavScreen(
     topLevelDestinations: List<TopLevelDestination>,
     topLevelRoutes: Set<NavKey>,
     modifier: Modifier = Modifier,
-    initialDeepLinkKey: NavKey? = null,
+    pendingDeepLinkKey: NavKey? = null,
+    onDeepLinkConsumed: () -> Unit = {},
     currentUser: User?,
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(initialDeepLinkKey) {
-        if (initialDeepLinkKey != null) {
-            navigator.navigate(initialDeepLinkKey)
+    LaunchedEffect(pendingDeepLinkKey) {
+        if (pendingDeepLinkKey != null) {
+            navigator.navigate(pendingDeepLinkKey)
+            onDeepLinkConsumed()
         }
     }
 
@@ -87,12 +89,9 @@ fun MainNavScreen(
         }
     }
 
+    val dialogStrategy = remember { DialogSceneStrategy<NavKey>() }
     val bottomNavStrategy = remember(topLevelRoutes, navigator, topLevelDestinations) {
         BottomNavSceneStrategy(topLevelRoutes, topLevelDestinations, navigator)
-    }
-
-    val sceneStrategy = remember(bottomNavStrategy) {
-        DialogSceneStrategy<NavKey>() then bottomNavStrategy
     }
 
     BackHandler(enabled = drawerState.isOpen) {
@@ -133,7 +132,7 @@ fun MainNavScreen(
                 }
             ),
             onBack = { navigator.goBack() },
-            sceneStrategy = sceneStrategy,
+            sceneStrategies = listOf(dialogStrategy, bottomNavStrategy),
             modifier = modifier.fillMaxSize()
         )
     }
