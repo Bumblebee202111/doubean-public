@@ -1,8 +1,8 @@
 package com.github.bumblebee202111.doubean.feature.userprofile
 
-import com.github.bumblebee202111.doubean.feature.userprofile.model.ProfileCommunityContribution
-import com.github.bumblebee202111.doubean.shared.subject.model.MySubject
-import com.github.bumblebee202111.doubean.shared.user.model.UserDetail
+import com.github.bumblebee202111.doubean.model.subject.MySubject
+import com.github.bumblebee202111.doubean.model.user.ProfileCommunityContribution
+import com.github.bumblebee202111.doubean.model.user.UserDetail
 import com.github.bumblebee202111.doubean.ui.model.UiMessage
 
 data class UserProfileUiState(

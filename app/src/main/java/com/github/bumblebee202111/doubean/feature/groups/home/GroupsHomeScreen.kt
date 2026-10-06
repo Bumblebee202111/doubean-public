@@ -16,8 +16,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.bumblebee202111.doubean.feature.groups.model.PinnedTabItem
-import com.github.bumblebee202111.doubean.shared.user.model.User
+import com.github.bumblebee202111.doubean.model.group.PinnedTabItem
+import com.github.bumblebee202111.doubean.model.user.User
 import com.github.bumblebee202111.doubean.ui.common.AppBarNavigationAvatar
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 

@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
+import com.github.bumblebee202111.doubean.model.group.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton
 import com.github.bumblebee202111.doubean.ui.component.InfoButton
 import com.github.bumblebee202111.doubean.ui.component.InfoDialog

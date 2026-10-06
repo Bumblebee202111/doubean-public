@@ -1,0 +1,118 @@
+package com.github.bumblebee202111.doubean.data.subject
+
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkBookDetail
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkBookSeries
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkMovieDetail
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkMovieTrailer
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkMusicDetail
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkSimpleCelebrity
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkSong
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkTvDetail
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkVendor
+import com.github.bumblebee202111.doubean.core.network.model.subject.toSubjectInterest
+import com.github.bumblebee202111.doubean.core.network.model.toRating
+import com.github.bumblebee202111.doubean.model.subject.BookDetail
+import com.github.bumblebee202111.doubean.model.subject.BookSeries
+import com.github.bumblebee202111.doubean.model.subject.MovieDetail
+import com.github.bumblebee202111.doubean.model.subject.MovieTrailer
+import com.github.bumblebee202111.doubean.model.subject.MusicDetail
+import com.github.bumblebee202111.doubean.model.subject.TvDetail
+
+
+fun NetworkMovieDetail.toMovieDetail() = MovieDetail(
+    id = id,
+    rating = Pair(rating, nullRatingReason).toRating(),
+    cardSubtitle = cardSubtitle,
+    title = title,
+    coverUrl = coverUrl,
+    uri = uri,
+    intro = intro,
+    interest = interest?.toSubjectInterest(),
+    isReleased = isReleased,
+    vendors = vendors.map(NetworkVendor::toVendor),
+    pubdate = pubdate,
+    year = year,
+    genres = genres,
+    actorNames = actors.map(NetworkSimpleCelebrity::name),
+    durations = durations,
+    trailers = trailers.map(NetworkMovieTrailer::toMovieTrailer),
+    countries = countries,
+    originalTitle = originalTitle.takeIf(String::isNotEmpty),
+    directorNames = directors.map(NetworkSimpleCelebrity::name)
+)
+
+fun NetworkTvDetail.toTvDetail() = TvDetail(
+    id = id,
+    rating = Pair(rating, nullRatingReason).toRating(),
+    cardSubtitle = cardSubtitle,
+    title = title,
+    coverUrl = coverUrl,
+    uri = uri,
+    intro = intro,
+    interest = interest?.toSubjectInterest(),
+    isReleased = isReleased,
+    vendors = vendors.map(NetworkVendor::toVendor),
+    pubdate = pubdate,
+    year = year,
+    languages = languages,
+    genres = genres,
+    actorNames = actors.map(NetworkSimpleCelebrity::name),
+    episodesCount = episodesCount,
+    durations = durations,
+    trailers = trailers.map(NetworkMovieTrailer::toMovieTrailer),
+    countries = countries,
+    originalTitle = originalTitle.takeIf(String::isNotEmpty),
+    directorNames = directors.map(NetworkSimpleCelebrity::name)
+)
+
+fun NetworkBookSeries.toBookSeries() = BookSeries(
+    title = title,
+    totalNumber = totalNumber,
+    publisherBasic = publisherBasic,
+    uri = uri,
+    url = url
+)
+
+fun NetworkBookDetail.toBookDetail() = BookDetail(
+    id = id,
+    rating = Pair(rating, nullRatingReason).toRating(),
+    cardSubtitle = cardSubtitle,
+    title = title,
+    coverUrl = coverUrl,
+    uri = uri,
+    intro = intro,
+    interest = interest?.toSubjectInterest(),
+    isReleased = isReleased,
+    pubdate = pubdate,
+    author = author,
+    subtitle = bookSubtitle.takeIf(String::isNotEmpty),
+    producers = producers,
+    press = press,
+    pages = pages,
+    bookSeries = bookSeries?.toBookSeries()
+)
+
+fun NetworkMusicDetail.toMusicDetail() = MusicDetail(
+    id = id,
+    rating = Pair(rating, nullRatingReason).toRating(),
+    cardSubtitle = cardSubtitle,
+    title = title,
+    coverUrl = coverUrl,
+    uri = uri,
+    intro = intro,
+    interest = interest?.toSubjectInterest(),
+    isReleased = isReleased,
+    pubdate = pubdate,
+    genres = genres,
+    singer = singer.map(NetworkSimpleCelebrity::name),
+    tracks = songs.map(NetworkSong::title),
+)
+
+fun NetworkMovieTrailer.toMovieTrailer() =
+    MovieTrailer(
+        id = id,
+        coverUrl = coverUrl,
+        videoUrl = videoUrl,
+        title = title,
+        runtime = runtime
+    )

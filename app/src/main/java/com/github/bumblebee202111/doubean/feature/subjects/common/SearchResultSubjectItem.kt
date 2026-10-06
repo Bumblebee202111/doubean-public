@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.bumblebee202111.doubean.model.subjects.SearchResultSubjectItem
+import com.github.bumblebee202111.doubean.model.subject.SearchResultSubjectItem
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemColumn
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemImage
 

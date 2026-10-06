@@ -12,8 +12,8 @@ import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigat
 import com.github.bumblebee202111.doubean.feature.groups.search.navigation.groupsSearchEntry
 import com.github.bumblebee202111.doubean.feature.groups.search.navigation.navigateToSearch
 import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.topicEntry
-import com.github.bumblebee202111.doubean.feature.groups.webView.navigation.navigateToWebView
-import com.github.bumblebee202111.doubean.feature.groups.webView.navigation.webViewEntry
+import com.github.bumblebee202111.doubean.feature.groups.webview.navigation.navigateToWebView
+import com.github.bumblebee202111.doubean.feature.groups.webview.navigation.webViewEntry
 import com.github.bumblebee202111.doubean.feature.imageviewer.navigation.imageViewerEntry
 import com.github.bumblebee202111.doubean.feature.imageviewer.navigation.navigateToImageViewer
 import com.github.bumblebee202111.doubean.feature.login.navigation.LoginNavKey
@@ -39,7 +39,7 @@ import com.github.bumblebee202111.doubean.feature.subjects.search.navigation.nav
 import com.github.bumblebee202111.doubean.feature.subjects.search.navigation.searchSubjectsEntry
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.navigateToUserProfile
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.userProfileEntry
-import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
+import com.github.bumblebee202111.doubean.model.subject.SubjectType
 
 fun createDoubeanEntryProvider(
     navigator: Navigator,

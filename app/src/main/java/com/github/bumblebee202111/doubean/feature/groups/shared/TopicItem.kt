@@ -32,9 +32,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.groups.AbstractTopicItem
-import com.github.bumblebee202111.doubean.model.groups.SimpleGroup
-import com.github.bumblebee202111.doubean.model.groups.TopicItemWithGroup
+import com.github.bumblebee202111.doubean.model.group.AbstractTopicItem
+import com.github.bumblebee202111.doubean.model.group.SimpleGroup
+import com.github.bumblebee202111.doubean.model.group.TopicItemWithGroup
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.ListItemCount
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage

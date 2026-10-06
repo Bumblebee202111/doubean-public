@@ -1,6 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.subjects.ranklist
 
-import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectCollection
+import com.github.bumblebee202111.doubean.model.subject.SubjectCollection
 import com.github.bumblebee202111.doubean.ui.model.UiMessage
 
 sealed interface RankListUiState {

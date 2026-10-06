@@ -16,8 +16,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.feature.subjects.SubjectModulesUiState
 import com.github.bumblebee202111.doubean.feature.subjects.common.RankLists
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectUnions
-import com.github.bumblebee202111.doubean.model.subjects.SubjectModule
-import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
+import com.github.bumblebee202111.doubean.model.subject.SubjectModule
+import com.github.bumblebee202111.doubean.model.subject.SubjectType
 import com.github.bumblebee202111.doubean.ui.component.SectionErrorWithRetry
 
 @Composable

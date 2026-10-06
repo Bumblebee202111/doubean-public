@@ -22,8 +22,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.shared.MaxTopicNotificationsPerFetchTextField
 import com.github.bumblebee202111.doubean.feature.groups.shared.SortTopicsByOption
-import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
-import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
+import com.github.bumblebee202111.doubean.model.group.GroupNotificationPreferences
+import com.github.bumblebee202111.doubean.model.group.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.ClickablePreferenceItem
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton

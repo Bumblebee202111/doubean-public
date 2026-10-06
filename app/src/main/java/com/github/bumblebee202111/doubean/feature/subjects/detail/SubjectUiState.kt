@@ -1,13 +1,13 @@
 package com.github.bumblebee202111.doubean.feature.subjects.detail
 
 import com.github.bumblebee202111.doubean.feature.subjects.common.InterestSortType
-import com.github.bumblebee202111.doubean.feature.subjects.model.BookVersions
-import com.github.bumblebee202111.doubean.feature.subjects.model.CreditList
-import com.github.bumblebee202111.doubean.feature.subjects.model.RecommendSubject
-import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectDetail
-import com.github.bumblebee202111.doubean.feature.subjects.model.SubjectReviewList
 import com.github.bumblebee202111.doubean.model.PhotoList
-import com.github.bumblebee202111.doubean.shared.subject.model.SubjectInterestWithUserList
+import com.github.bumblebee202111.doubean.model.subject.BookVersions
+import com.github.bumblebee202111.doubean.model.subject.CreditList
+import com.github.bumblebee202111.doubean.model.subject.RecommendSubject
+import com.github.bumblebee202111.doubean.model.subject.SubjectDetail
+import com.github.bumblebee202111.doubean.model.subject.SubjectInterestWithUserList
+import com.github.bumblebee202111.doubean.model.subject.SubjectReviewList
 import com.github.bumblebee202111.doubean.ui.model.UiMessage
 
 sealed interface SubjectUiState {

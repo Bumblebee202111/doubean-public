@@ -35,10 +35,10 @@ import androidx.paging.compose.itemKey
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.common.MySubjectItem
 import com.github.bumblebee202111.doubean.feature.subjects.common.MySubjectItemMore
-import com.github.bumblebee202111.doubean.shared.subject.model.Subject
-import com.github.bumblebee202111.doubean.shared.subject.model.SubjectInterestStatus
-import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
-import com.github.bumblebee202111.doubean.shared.subject.model.SubjectWithInterest
+import com.github.bumblebee202111.doubean.model.subject.Subject
+import com.github.bumblebee202111.doubean.model.subject.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.model.subject.SubjectType
+import com.github.bumblebee202111.doubean.model.subject.SubjectWithInterest
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemImage
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar

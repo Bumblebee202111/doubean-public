@@ -2,10 +2,10 @@ package com.github.bumblebee202111.doubean.feature.doulists.createddoulists
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.bumblebee202111.doubean.data.auth.AuthRepository
+import com.github.bumblebee202111.doubean.data.userdoulist.UserDouListRepository
 import com.github.bumblebee202111.doubean.feature.doulists.userdoulists.UserDouListsUiState
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.shared.auth.data.AuthRepository
-import com.github.bumblebee202111.doubean.shared.userdoulist.UserDouListRepository
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.assisted.Assisted

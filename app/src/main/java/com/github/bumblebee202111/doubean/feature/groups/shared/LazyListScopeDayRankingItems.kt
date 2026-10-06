@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
+import com.github.bumblebee202111.doubean.model.group.GroupItemWithIntroInfo
 
 fun LazyListScope.dayRankingItems(
     items: List<GroupItemWithIntroInfo>,

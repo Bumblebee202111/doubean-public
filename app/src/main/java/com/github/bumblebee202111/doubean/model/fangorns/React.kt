@@ -1,6 +1,6 @@
 package com.github.bumblebee202111.doubean.model.fangorns
 
-import com.github.bumblebee202111.doubean.shared.user.model.User
+import com.github.bumblebee202111.doubean.model.user.User
 import java.time.LocalDateTime
 
 data class React(

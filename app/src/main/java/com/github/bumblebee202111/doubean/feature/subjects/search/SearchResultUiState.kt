@@ -1,8 +1,8 @@
 package com.github.bumblebee202111.doubean.feature.subjects.search
 
-import com.github.bumblebee202111.doubean.model.subjects.SearchResultSubjectItem
-import com.github.bumblebee202111.doubean.model.subjects.SubjectSubTag
-import com.github.bumblebee202111.doubean.model.subjects.SubjectsSearchType
+import com.github.bumblebee202111.doubean.model.subject.SearchResultSubjectItem
+import com.github.bumblebee202111.doubean.model.subject.SubjectSubTag
+import com.github.bumblebee202111.doubean.model.subject.SubjectsSearchType
 import com.github.bumblebee202111.doubean.ui.model.UiMessage
 
 data class SearchResultUiState(

@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
+import com.github.bumblebee202111.doubean.model.group.GroupItemWithIntroInfo
 
 @Composable
 fun SearchResultGroupItem(group: GroupItemWithIntroInfo?, onClick: () -> Unit) {

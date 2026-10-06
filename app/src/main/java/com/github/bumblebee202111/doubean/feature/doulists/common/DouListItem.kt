@@ -28,7 +28,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.shared.doulist.model.DouList
+import com.github.bumblebee202111.doubean.model.doulist.DouList
 
 @Composable
 fun DouListItem(

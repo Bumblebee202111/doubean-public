@@ -1,6 +1,6 @@
 package com.github.bumblebee202111.doubean.data.db.model
 
-import com.github.bumblebee202111.doubean.model.groups.SimpleGroup
+import com.github.bumblebee202111.doubean.model.group.SimpleGroup
 
 data class SimpleCachedGroupPartialEntity(
     val id: String,

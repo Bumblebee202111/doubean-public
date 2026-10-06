@@ -1,7 +1,7 @@
 package com.github.bumblebee202111.doubean.feature.doulists.doulist
 
-import com.github.bumblebee202111.doubean.shared.doulist.model.DouList
-import com.github.bumblebee202111.doubean.shared.doulist.model.DouListPostItem
+import com.github.bumblebee202111.doubean.model.doulist.DouList
+import com.github.bumblebee202111.doubean.model.doulist.DouListPostItem
 import com.github.bumblebee202111.doubean.ui.model.UiMessage
 
 data class DouListUiState(

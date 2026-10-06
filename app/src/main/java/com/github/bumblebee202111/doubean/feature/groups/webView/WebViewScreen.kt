@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.github.bumblebee202111.doubean.feature.groups.webView
+package com.github.bumblebee202111.doubean.feature.groups.webview
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api

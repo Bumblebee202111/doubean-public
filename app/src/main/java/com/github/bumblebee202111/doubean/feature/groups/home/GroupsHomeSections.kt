@@ -44,12 +44,12 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.core.theme.DoubeanTheme
-import com.github.bumblebee202111.doubean.feature.groups.model.PinnedTabItem
 import com.github.bumblebee202111.doubean.feature.groups.shared.GroupsSectionHeader
 import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItem
 import com.github.bumblebee202111.doubean.feature.groups.shared.TopicItemDisplayMode
 import com.github.bumblebee202111.doubean.feature.groups.shared.dayRankingItems
-import com.github.bumblebee202111.doubean.model.groups.SimpleGroup
+import com.github.bumblebee202111.doubean.model.group.PinnedTabItem
+import com.github.bumblebee202111.doubean.model.group.SimpleGroup
 import com.github.bumblebee202111.doubean.ui.component.InfoButton
 import com.github.bumblebee202111.doubean.ui.component.InfoDialog
 import com.github.bumblebee202111.doubean.ui.component.SectionErrorWithRetry

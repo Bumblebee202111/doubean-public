@@ -2,7 +2,7 @@ package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.github.bumblebee202111.doubean.model.groups.TopicItemWithGroup
+import com.github.bumblebee202111.doubean.model.group.TopicItemWithGroup
 
 data class PopulatedTopicNotificationItem(
     @Embedded

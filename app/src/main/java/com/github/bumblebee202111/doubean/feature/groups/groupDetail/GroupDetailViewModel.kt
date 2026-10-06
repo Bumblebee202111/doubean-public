@@ -2,12 +2,12 @@ package com.github.bumblebee202111.doubean.feature.groups.groupdetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.bumblebee202111.doubean.data.group.GroupRepository
+import com.github.bumblebee202111.doubean.data.group.UserGroupRepository
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
-import com.github.bumblebee202111.doubean.feature.groups.data.GroupRepository
-import com.github.bumblebee202111.doubean.feature.groups.data.UserGroupRepository
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.CachedAppResult
-import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
+import com.github.bumblebee202111.doubean.model.group.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage

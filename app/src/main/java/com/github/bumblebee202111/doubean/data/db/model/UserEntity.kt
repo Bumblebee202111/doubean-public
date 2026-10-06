@@ -2,7 +2,6 @@ package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.github.bumblebee202111.doubean.shared.user.model.User
 
 @Entity("users")
 data class UserEntity(
@@ -15,6 +14,3 @@ data class UserEntity(
     val url: String,
 )
 
-fun UserEntity.toUser() = User(
-    id = id, uid = uid, name = name, avatar = avatar, uri = uri, alt = url
-)

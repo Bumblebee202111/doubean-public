@@ -2,10 +2,10 @@ package com.github.bumblebee202111.doubean.model.common
 
 import com.github.bumblebee202111.doubean.model.Photo
 import com.github.bumblebee202111.doubean.model.SizedImage
-import com.github.bumblebee202111.doubean.model.statuses.SubjectStatusCard
-import com.github.bumblebee202111.doubean.shared.subject.model.Rating
-import com.github.bumblebee202111.doubean.shared.subject.model.SubjectWithInterest
-import com.github.bumblebee202111.doubean.shared.user.model.User
+import com.github.bumblebee202111.doubean.model.status.SubjectStatusCard
+import com.github.bumblebee202111.doubean.model.subject.Rating
+import com.github.bumblebee202111.doubean.model.subject.SubjectWithInterest
+import com.github.bumblebee202111.doubean.model.user.User
 
 sealed interface FeedContent {
     val type: String

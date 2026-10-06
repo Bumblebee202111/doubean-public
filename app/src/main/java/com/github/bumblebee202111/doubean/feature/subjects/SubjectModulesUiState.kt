@@ -1,6 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.subjects
 
-import com.github.bumblebee202111.doubean.model.subjects.SubjectModule
+import com.github.bumblebee202111.doubean.model.subject.SubjectModule
 import com.github.bumblebee202111.doubean.ui.model.UiMessage
 
 sealed interface SubjectModulesUiState {

@@ -16,8 +16,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.common.FeedItem
-import com.github.bumblebee202111.doubean.shared.doulist.model.DouListPostItem
-import com.github.bumblebee202111.doubean.shared.subject.model.MarkableSubject
+import com.github.bumblebee202111.doubean.model.doulist.DouListPostItem
+import com.github.bumblebee202111.doubean.model.subject.MarkableSubject
 
 fun LazyListScope.douListPostItems(
     items: List<DouListPostItem>,

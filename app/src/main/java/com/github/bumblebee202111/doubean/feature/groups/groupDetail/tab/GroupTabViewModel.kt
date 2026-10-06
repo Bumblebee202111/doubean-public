@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.data.group.GroupRepository
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
-import com.github.bumblebee202111.doubean.feature.groups.data.GroupRepository
-import com.github.bumblebee202111.doubean.model.groups.GroupNotificationPreferences
-import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
+import com.github.bumblebee202111.doubean.model.group.GroupNotificationPreferences
+import com.github.bumblebee202111.doubean.model.group.TopicSortBy
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.model.toUiMessage
 import com.github.bumblebee202111.doubean.ui.stateInUi

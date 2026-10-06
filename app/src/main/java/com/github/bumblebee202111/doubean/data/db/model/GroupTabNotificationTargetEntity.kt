@@ -3,7 +3,7 @@ package com.github.bumblebee202111.doubean.data.db.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
+import com.github.bumblebee202111.doubean.model.group.TopicSortBy
 
 @Entity("group_notification_tab_targets")
 data class GroupTabNotificationTargetEntity(

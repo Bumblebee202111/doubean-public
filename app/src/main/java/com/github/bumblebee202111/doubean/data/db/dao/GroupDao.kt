@@ -14,7 +14,7 @@ import com.github.bumblebee202111.doubean.data.db.model.GroupTagTopicItemEntity
 import com.github.bumblebee202111.doubean.data.db.model.GroupTopicTagEntity
 import com.github.bumblebee202111.doubean.data.db.model.PopulatedTopicItem
 import com.github.bumblebee202111.doubean.data.db.model.SimpleCachedGroupPartialEntity
-import com.github.bumblebee202111.doubean.model.groups.TopicSortBy
+import com.github.bumblebee202111.doubean.model.group.TopicSortBy
 import kotlinx.coroutines.flow.Flow
 
 

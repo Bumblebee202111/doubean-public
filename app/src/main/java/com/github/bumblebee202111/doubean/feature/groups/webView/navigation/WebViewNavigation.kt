@@ -1,8 +1,8 @@
-package com.github.bumblebee202111.doubean.feature.groups.webView.navigation
+package com.github.bumblebee202111.doubean.feature.groups.webview.navigation
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.github.bumblebee202111.doubean.feature.groups.webView.WebViewScreen
+import com.github.bumblebee202111.doubean.feature.groups.webview.WebViewScreen
 import com.github.bumblebee202111.doubean.navigation.Navigator
 import kotlinx.serialization.Serializable
 

@@ -3,7 +3,7 @@ package com.github.bumblebee202111.doubean.feature.notifications
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.github.bumblebee202111.doubean.notifications.data.NotificationRepository
+import com.github.bumblebee202111.doubean.data.notification.NotificationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

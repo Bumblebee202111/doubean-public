@@ -3,7 +3,7 @@ package com.github.bumblebee202111.doubean.feature.imageviewer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.imageviewer.data.ImageRepository
+import com.github.bumblebee202111.doubean.core.common.ImageSaver
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.model.toUiMessage
 import dagger.assisted.Assisted
@@ -14,14 +14,14 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = ImageViewerViewModel.Factory::class)
 class ImageViewerViewModel @AssistedInject constructor(
-    private val imageRepository: ImageRepository,
+    private val imageSaver: ImageSaver,
     private val snackbarManager: SnackbarManager,
     @Assisted val imageUrl: String,
 ) : ViewModel() {
 
     fun saveImage() {
         viewModelScope.launch {
-            imageRepository.saveImage(imageUrl)
+            imageSaver.saveImage(imageUrl)
                 .onSuccess { savedPath ->
                     snackbarManager.showMessage(
                         R.string.image_saved_to.toUiMessage(savedPath)

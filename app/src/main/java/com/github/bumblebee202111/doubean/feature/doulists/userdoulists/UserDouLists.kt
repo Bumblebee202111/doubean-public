@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.feature.doulists.common.DouListItem
-import com.github.bumblebee202111.doubean.shared.doulist.model.DouList
+import com.github.bumblebee202111.doubean.model.doulist.DouList
 
 @Composable
 fun UserDouLists(

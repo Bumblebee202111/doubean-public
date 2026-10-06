@@ -3,9 +3,9 @@ package com.github.bumblebee202111.doubean.ui.common.subject
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectSingleInterestButtonContent
-import com.github.bumblebee202111.doubean.shared.subject.model.SubjectInterest
-import com.github.bumblebee202111.doubean.shared.subject.model.SubjectInterestStatus
-import com.github.bumblebee202111.doubean.shared.subject.model.SubjectType
+import com.github.bumblebee202111.doubean.model.subject.SubjectInterest
+import com.github.bumblebee202111.doubean.model.subject.SubjectInterestStatus
+import com.github.bumblebee202111.doubean.model.subject.SubjectType
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTonalButton
 
 

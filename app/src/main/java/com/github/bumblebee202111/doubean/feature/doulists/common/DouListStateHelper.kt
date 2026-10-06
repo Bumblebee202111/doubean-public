@@ -2,8 +2,8 @@ package com.github.bumblebee202111.doubean.feature.doulists.common
 
 import com.github.bumblebee202111.doubean.model.common.FeedItem
 import com.github.bumblebee202111.doubean.model.common.SubjectFeedContent
-import com.github.bumblebee202111.doubean.shared.doulist.model.DouListPostItem
-import com.github.bumblebee202111.doubean.shared.subject.model.SubjectWithInterest
+import com.github.bumblebee202111.doubean.model.doulist.DouListPostItem
+import com.github.bumblebee202111.doubean.model.subject.SubjectWithInterest
 
 object DouListStateHelper {
     fun getUpdatedListWithNewInterest(

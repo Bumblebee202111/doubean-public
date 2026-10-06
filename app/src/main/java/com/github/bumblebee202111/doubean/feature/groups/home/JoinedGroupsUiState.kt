@@ -1,6 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.groups.home
 
-import com.github.bumblebee202111.doubean.model.groups.SimpleGroup
+import com.github.bumblebee202111.doubean.model.group.SimpleGroup
 import com.github.bumblebee202111.doubean.ui.model.UiMessage
 
 data class JoinedGroupsUiState(

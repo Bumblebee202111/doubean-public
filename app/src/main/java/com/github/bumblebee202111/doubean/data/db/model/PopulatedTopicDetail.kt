@@ -3,7 +3,8 @@ package com.github.bumblebee202111.doubean.data.db.model
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import com.github.bumblebee202111.doubean.feature.groups.model.TopicDetail
+import com.github.bumblebee202111.doubean.data.user.toUser
+import com.github.bumblebee202111.doubean.model.group.TopicDetail
 
 data class PopulatedTopicDetail(
     @Embedded

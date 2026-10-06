@@ -1,6 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.groups.search
 
-import com.github.bumblebee202111.doubean.model.groups.GroupItemWithIntroInfo
+import com.github.bumblebee202111.doubean.model.group.GroupItemWithIntroInfo
 import com.github.bumblebee202111.doubean.ui.model.UiMessage
 
 sealed interface DayRankingUiState {

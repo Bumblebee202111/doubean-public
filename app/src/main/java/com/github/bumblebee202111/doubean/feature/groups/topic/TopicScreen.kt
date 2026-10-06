@@ -47,12 +47,12 @@ import androidx.paging.awaitNotLoading
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.feature.groups.model.TopicComment
-import com.github.bumblebee202111.doubean.feature.groups.model.TopicCommentSortBy
-import com.github.bumblebee202111.doubean.feature.groups.model.TopicDetail
 import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.model.data
-import com.github.bumblebee202111.doubean.shared.doulist.model.ItemDouList
+import com.github.bumblebee202111.doubean.model.doulist.ItemDouList
+import com.github.bumblebee202111.doubean.model.group.TopicComment
+import com.github.bumblebee202111.doubean.model.group.TopicCommentSortBy
+import com.github.bumblebee202111.doubean.model.group.TopicDetail
 import com.github.bumblebee202111.doubean.ui.common.CollectDialogUiState
 import com.github.bumblebee202111.doubean.ui.common.CreateDouListDialog
 import com.github.bumblebee202111.doubean.ui.common.DouListDialog

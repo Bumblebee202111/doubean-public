@@ -3,7 +3,7 @@ package com.github.bumblebee202111.doubean.feature.groups.resharestatuses
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.github.bumblebee202111.doubean.feature.groups.data.GroupTopicRepository
+import com.github.bumblebee202111.doubean.data.group.GroupTopicRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

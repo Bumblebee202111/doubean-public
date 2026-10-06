@@ -7,7 +7,7 @@ Doubean is an unofficial Android app for Douban (Groups, Books, Movies, TVs).
 ## Tech Stack
 
 - **UI**: Kotlin, Compose Material 3, Navigation 3, Coil
-- **Architecture**: Pragmatic Vertical Slicing + Shared Core, MVVM (ViewModel, Flow, Paging)
+- **Architecture**: In flux (Vertical Slicing + Layered Data/Core), MVVM (ViewModel, Flow, Paging)
 - **Data**: Room, DataStore, Ktor, Kotlinx Serialization
 - **DI**: Hilt
 - **Other**: libsu (Root)
@@ -15,24 +15,20 @@ Doubean is an unofficial Android app for Douban (Groups, Books, Movies, TVs).
 ## Structure
 Source: `app/src/main/java/com/github/bumblebee202111/doubean`
 
-- `feature/`: Vertically sliced features. Each owns its specific `data` (Repositories, Sync Workers,
-  Mappers) and `ui` (Screens, ViewModels).
-- `data/`: Shared data layer. Contains global Room setup (`db`), DataStore (`prefs`), and
-  cross-feature Repositories (`repository/`).
-- `network/`: Anti-Corruption Layer acting as the "Douban SDK". Mirrors Douban's decompiled backend
-  models. **Do not vertically slice.**
-- `model/`: Shared domain models (ubiquitous language).
-- `ui/`: Generic, domain-agnostic UI components and theme. Shared UI logic/state handlers go in
-  `ui/common/`.
-- `navigation/`, `security/`, `coroutines/`, `util/`: Top-level foundational infrastructure.
+- `feature/`: Feature presentation (Screens, ViewModels, UI states, NavKeys). Isolated; no cross-feature imports.
+- `data/`: Data layer. Room (`db`), DataStore (`prefs`), and domain repositories/mappers (`data/<domain>/`).
+- `core/network/`: Internal "Douban SDK". Mirrors decompiled Douban APIs and DTOs for easy cross-referencing; do not vertically slice.
+- `core/`: Technical infrastructure (`core/common`, `core/theme`).
+- `model/`: Shared domain entities (`model/<domain>/`, singular).
+- `ui/`: Shared UI components, theme, and common presentation delegates.
+- `navigation/`, `security/`, `coroutines/`, `util/`: Top-level infrastructure.
 
 ## Workflow
 - **Env**: JDK 17+, Android SDK 35
 
 ## Guidelines
 
-- **Architecture**: Features are isolated. If a Repository is used by >1 feature, place it in
-  `data/repository/`. Otherwise, keep it in `feature/<name>/data/`.
+- **Architecture**: Features are isolated. Shared domain models belong in `model/<domain>/`. Repositories live in `data/<domain>/` (kept feature-local only if strictly screen-private).
 - **UI**: Compose only. Use `DoubeanTheme`. We use a slightly refined Material 3 style (crisper,
   less bubbly).
 - **Navigation**: Navigation 3. Use `@Serializable NavKey` for routes. Manage routing via `Navigator` and `NavDisplay`. Deep links are parsed manually into keys.

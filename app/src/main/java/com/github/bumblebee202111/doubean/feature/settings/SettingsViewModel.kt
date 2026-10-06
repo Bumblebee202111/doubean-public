@@ -2,8 +2,8 @@ package com.github.bumblebee202111.doubean.feature.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.bumblebee202111.doubean.data.auth.AuthRepository
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
-import com.github.bumblebee202111.doubean.shared.auth.data.AuthRepository
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

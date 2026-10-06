@@ -22,8 +22,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.github.bumblebee202111.doubean.model.subjects.SubjectModule
-import com.github.bumblebee202111.doubean.shared.subject.model.SubjectWithInterest
+import com.github.bumblebee202111.doubean.model.subject.SubjectModule
+import com.github.bumblebee202111.doubean.model.subject.SubjectWithInterest
 import kotlinx.coroutines.launch
 
 @Composable

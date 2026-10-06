@@ -2,7 +2,7 @@ package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.github.bumblebee202111.doubean.model.groups.SimpleGroupWithColor
+import com.github.bumblebee202111.doubean.model.group.SimpleGroupWithColor
 
 
 @Entity(tableName = "cached_groups")
