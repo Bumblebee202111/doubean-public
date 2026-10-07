@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.github.bumblebee202111.doubean.model.SizedImage
-import com.github.bumblebee202111.doubean.model.fangorns.ReactionType
+import com.github.bumblebee202111.doubean.model.group.ReactionType
 import java.time.LocalDateTime
 
 

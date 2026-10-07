@@ -2,9 +2,9 @@ package com.github.bumblebee202111.doubean.feature.subjects.movies
 
 import androidx.lifecycle.ViewModel
 import com.github.bumblebee202111.doubean.data.auth.AuthRepository
+import com.github.bumblebee202111.doubean.data.subject.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.feature.subjects.SubjectModulesUiState
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.model.subject.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.model.subject.SubjectType
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage

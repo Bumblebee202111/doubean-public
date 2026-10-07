@@ -56,7 +56,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.shared.SmallGroupAvatar
-import com.github.bumblebee202111.doubean.model.fangorns.ReactionType
+import com.github.bumblebee202111.doubean.model.group.ReactionType
 import com.github.bumblebee202111.doubean.model.group.TopicDetail
 import com.github.bumblebee202111.doubean.ui.component.DateTimeText
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage

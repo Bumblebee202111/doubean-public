@@ -12,8 +12,8 @@ import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigat
 import com.github.bumblebee202111.doubean.feature.groups.search.navigation.groupsSearchEntry
 import com.github.bumblebee202111.doubean.feature.groups.search.navigation.navigateToSearch
 import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.topicEntry
-import com.github.bumblebee202111.doubean.feature.groups.webview.navigation.navigateToWebView
-import com.github.bumblebee202111.doubean.feature.groups.webview.navigation.webViewEntry
+import com.github.bumblebee202111.doubean.feature.groups.topic.web.navigation.navigateToTopicWeb
+import com.github.bumblebee202111.doubean.feature.groups.topic.web.navigation.topicWebEntry
 import com.github.bumblebee202111.doubean.feature.imageviewer.navigation.imageViewerEntry
 import com.github.bumblebee202111.doubean.feature.imageviewer.navigation.navigateToImageViewer
 import com.github.bumblebee202111.doubean.feature.login.navigation.LoginNavKey
@@ -115,7 +115,7 @@ fun createDoubeanEntryProvider(
     )
     topicEntry(
         onBackClick = navigator::goBack,
-        onWebViewClick = navigator::navigateToWebView,
+        onWebViewClick = navigator::navigateToTopicWeb,
         onGroupClick = navigator::navigateToGroup,
         onReshareStatusesClick = navigator::navigateToReshareStatuses,
         onUserClick = navigator::navigateToUserProfile,
@@ -126,7 +126,7 @@ fun createDoubeanEntryProvider(
         onBackClick = navigator::goBack,
         onUserClick = navigator::navigateToUserProfile
     )
-    webViewEntry(onBackClick = navigator::goBack)
+    topicWebEntry(onBackClick = navigator::goBack)
     loginEntry(
         onPopBackStack = navigator::goBack,
         onOpenDeepLinkUrl = navigateToUri

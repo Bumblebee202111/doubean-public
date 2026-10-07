@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.model.fangorns
+package com.github.bumblebee202111.doubean.model.group
 
 import com.github.bumblebee202111.doubean.model.user.User
 import java.time.LocalDateTime

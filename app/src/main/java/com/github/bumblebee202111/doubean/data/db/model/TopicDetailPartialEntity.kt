@@ -2,7 +2,7 @@ package com.github.bumblebee202111.doubean.data.db.model
 
 import androidx.room.ColumnInfo
 import com.github.bumblebee202111.doubean.model.SizedImage
-import com.github.bumblebee202111.doubean.model.fangorns.ReactionType
+import com.github.bumblebee202111.doubean.model.group.ReactionType
 import java.time.LocalDateTime
 
 data class TopicDetailPartialEntity(

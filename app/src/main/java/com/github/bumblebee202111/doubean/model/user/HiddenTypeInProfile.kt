@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.model.fangorns
+package com.github.bumblebee202111.doubean.model.user
 
 enum class HiddenTypeInProfile {
     ABOUT,

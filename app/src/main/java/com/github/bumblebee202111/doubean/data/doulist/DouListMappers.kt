@@ -8,8 +8,8 @@ import com.github.bumblebee202111.doubean.core.network.model.doulists.NetworkIte
 import com.github.bumblebee202111.doubean.core.network.model.doulists.NetworkItemDouLists
 import com.github.bumblebee202111.doubean.core.network.model.doulists.NetworkMyCollectedItemDouList
 import com.github.bumblebee202111.doubean.core.network.model.fangorns.toColorScheme
-import com.github.bumblebee202111.doubean.core.network.model.fangorns.toUser
 import com.github.bumblebee202111.doubean.core.network.model.toNonNullRating
+import com.github.bumblebee202111.doubean.data.user.toUser
 import com.github.bumblebee202111.doubean.model.doulist.DouList
 import com.github.bumblebee202111.doubean.model.doulist.DouListItem
 import com.github.bumblebee202111.doubean.model.doulist.DouListPostItem

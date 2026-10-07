@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.data.model
+package com.github.bumblebee202111.doubean.model.common
 
 data class ColorScheme(
     val isDark: Boolean,

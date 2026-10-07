@@ -52,9 +52,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.fangorns.HiddenTypeInProfile
 import com.github.bumblebee202111.doubean.model.subject.MySubject
 import com.github.bumblebee202111.doubean.model.subject.SubjectType
+import com.github.bumblebee202111.doubean.model.user.HiddenTypeInProfile
 import com.github.bumblebee202111.doubean.model.user.ProfileCommunityContribution
 import com.github.bumblebee202111.doubean.model.user.ProfileStatItemTypes
 import com.github.bumblebee202111.doubean.model.user.UserDetail

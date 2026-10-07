@@ -5,9 +5,9 @@ package com.github.bumblebee202111.doubean.feature.subjects.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.search.SearchHistoryRepository
+import com.github.bumblebee202111.doubean.data.subject.SearchSubjectsRepository
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.search.SearchType
-import com.github.bumblebee202111.doubean.model.subject.SearchSubjectsRepository
 import com.github.bumblebee202111.doubean.model.subject.SubjectsSearchType
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.model.toUiMessage

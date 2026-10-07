@@ -1,6 +1,5 @@
 package com.github.bumblebee202111.doubean.model.doulist
 
-import com.github.bumblebee202111.doubean.data.model.BaseFeedableItem
 import com.github.bumblebee202111.doubean.model.user.User
 
 data class ItemDouList(
@@ -28,4 +27,4 @@ data class ItemDouList(
     val listType: String?,
     
     val isCollected: Boolean,
-) : BaseFeedableItem
+) : BaseFeedableDouListItem

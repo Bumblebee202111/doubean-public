@@ -1,7 +1,6 @@
 package com.github.bumblebee202111.doubean.model.doulist
 
-import com.github.bumblebee202111.doubean.data.model.BaseFeedableItem
-import com.github.bumblebee202111.doubean.data.model.ColorScheme
+import com.github.bumblebee202111.doubean.model.common.ColorScheme
 import com.github.bumblebee202111.doubean.model.user.User
 
 data class DouList(
@@ -33,4 +32,4 @@ data class DouList(
     val itemCount: Int,
     val isSysPrivate: Boolean,
     val listType: String,
-) : BaseFeedableItem
+) : BaseFeedableDouListItem

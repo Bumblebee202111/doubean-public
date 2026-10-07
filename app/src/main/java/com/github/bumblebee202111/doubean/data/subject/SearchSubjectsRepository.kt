@@ -1,10 +1,10 @@
-package com.github.bumblebee202111.doubean.model.subject
+package com.github.bumblebee202111.doubean.data.subject
 
 import com.github.bumblebee202111.doubean.core.network.api.SubjectApiService
 import com.github.bumblebee202111.doubean.core.network.util.makeApiCall
-import com.github.bumblebee202111.doubean.data.subject.toApiSubjectsSearchType
-import com.github.bumblebee202111.doubean.data.subject.toSubjectSearchResult
 import com.github.bumblebee202111.doubean.model.AppResult
+import com.github.bumblebee202111.doubean.model.subject.SubjectSearchResult
+import com.github.bumblebee202111.doubean.model.subject.SubjectsSearchType
 import javax.inject.Inject
 import javax.inject.Singleton
 

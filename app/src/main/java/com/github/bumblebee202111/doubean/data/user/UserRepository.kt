@@ -1,7 +1,6 @@
 package com.github.bumblebee202111.doubean.data.user
 
 import com.github.bumblebee202111.doubean.core.network.api.UserApiService
-import com.github.bumblebee202111.doubean.core.network.model.fangorns.toUserEntity
 import com.github.bumblebee202111.doubean.core.network.util.makeApiCall
 import com.github.bumblebee202111.doubean.data.db.AppDatabase
 import com.github.bumblebee202111.doubean.model.AppResult

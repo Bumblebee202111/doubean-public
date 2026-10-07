@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.auth.AuthRepository
 import com.github.bumblebee202111.doubean.data.doulist.DouListRepository
 import com.github.bumblebee202111.doubean.data.itemdoulist.ItemDouListRepository
+import com.github.bumblebee202111.doubean.data.subject.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.data.usersubject.UserSubjectRepository
 import com.github.bumblebee202111.doubean.feature.subjects.common.InterestSortType
 import com.github.bumblebee202111.doubean.model.AppResult
@@ -13,7 +14,6 @@ import com.github.bumblebee202111.doubean.model.doulist.ItemDouList
 import com.github.bumblebee202111.doubean.model.subject.BookDetail
 import com.github.bumblebee202111.doubean.model.subject.MovieDetail
 import com.github.bumblebee202111.doubean.model.subject.MusicDetail
-import com.github.bumblebee202111.doubean.model.subject.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.model.subject.SubjectInterest
 import com.github.bumblebee202111.doubean.model.subject.SubjectInterestStatus
 import com.github.bumblebee202111.doubean.model.subject.SubjectInterestWithUserList

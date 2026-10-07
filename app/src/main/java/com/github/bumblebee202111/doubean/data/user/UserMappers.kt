@@ -1,9 +1,10 @@
 package com.github.bumblebee202111.doubean.data.user
 
+import com.github.bumblebee202111.doubean.core.network.model.fangorns.NetworkUser
 import com.github.bumblebee202111.doubean.core.network.model.fangorns.NetworkUserDetail
 import com.github.bumblebee202111.doubean.core.network.model.fangorns.toProfileImage
 import com.github.bumblebee202111.doubean.data.db.model.UserEntity
-import com.github.bumblebee202111.doubean.model.fangorns.HiddenTypeInProfile
+import com.github.bumblebee202111.doubean.model.user.HiddenTypeInProfile
 import com.github.bumblebee202111.doubean.model.user.User
 import com.github.bumblebee202111.doubean.model.user.UserDetail
 
@@ -29,3 +30,10 @@ fun NetworkUserDetail.toUserDetail() = UserDetail(
 fun UserEntity.toUser() = User(
     id = id, uid = uid, name = name, avatar = avatar, uri = uri, alt = url
 )
+
+
+fun NetworkUser.toUserEntity() =
+    UserEntity(id = id, uid = uid, name = name, avatar = avatar, uri = uri, url = alt)
+
+fun NetworkUser.toUser() =
+    User(id = id, uid = uid, name = name, avatar = avatar, uri = uri, alt = alt)

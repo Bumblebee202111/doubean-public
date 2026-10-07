@@ -1,10 +1,9 @@
-package com.github.bumblebee202111.doubean.model.subject
+package com.github.bumblebee202111.doubean.data.subject
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.github.bumblebee202111.doubean.core.network.api.SubjectApiService
 import com.github.bumblebee202111.doubean.core.network.util.makeApiCall
-import com.github.bumblebee202111.doubean.data.subject.toSubjectCollection
 import javax.inject.Inject
 import javax.inject.Singleton
 

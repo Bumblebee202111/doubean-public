@@ -5,7 +5,6 @@ import com.github.bumblebee202111.doubean.core.network.model.NetworkSubjectColle
 import com.github.bumblebee202111.doubean.core.network.model.NetworkSubjectInterestStatus
 import com.github.bumblebee202111.doubean.core.network.model.NetworkSubjectType
 import com.github.bumblebee202111.doubean.core.network.model.fangorns.asEntityAndExternalModel
-import com.github.bumblebee202111.doubean.core.network.model.fangorns.toUser
 import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkCelebrity
 import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkCreditList
 import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkRecommendSubject
@@ -18,6 +17,7 @@ import com.github.bumblebee202111.doubean.core.network.model.toNonNullRating
 import com.github.bumblebee202111.doubean.core.network.model.toRating
 import com.github.bumblebee202111.doubean.core.network.model.toSubjectType
 import com.github.bumblebee202111.doubean.core.network.model.toSubjectWithRank
+import com.github.bumblebee202111.doubean.data.user.toUser
 import com.github.bumblebee202111.doubean.model.subject.Celebrity
 import com.github.bumblebee202111.doubean.model.subject.CreditList
 import com.github.bumblebee202111.doubean.model.subject.RecommendSubject

@@ -1,6 +1,6 @@
-package com.github.bumblebee202111.doubean.data.model
+package com.github.bumblebee202111.doubean.model.doulist
 
-interface BaseFeedableItem {
+interface BaseFeedableDouListItem {
     val id: String
     val title: String
     val uri: String

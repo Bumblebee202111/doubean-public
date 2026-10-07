@@ -1,7 +1,5 @@
 package com.github.bumblebee202111.doubean.model.common
 
-import com.github.bumblebee202111.doubean.model.fangorns.BaseShareObject
-
 interface BaseFeedableItem : BaseShareObject {
     val id: String
     val uri: String

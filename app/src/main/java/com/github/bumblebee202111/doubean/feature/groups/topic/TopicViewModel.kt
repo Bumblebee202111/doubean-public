@@ -17,11 +17,11 @@ import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.model.common.CollectType
 import com.github.bumblebee202111.doubean.model.data
 import com.github.bumblebee202111.doubean.model.doulist.ItemDouList
-import com.github.bumblebee202111.doubean.model.fangorns.ReactionType
 import com.github.bumblebee202111.doubean.model.group.Poll
 import com.github.bumblebee202111.doubean.model.group.PollId
 import com.github.bumblebee202111.doubean.model.group.Question
 import com.github.bumblebee202111.doubean.model.group.QuestionId
+import com.github.bumblebee202111.doubean.model.group.ReactionType
 import com.github.bumblebee202111.doubean.model.group.TopicCommentSortBy
 import com.github.bumblebee202111.doubean.model.group.TopicContentEntityId
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager

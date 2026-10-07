@@ -1,4 +1,6 @@
-package com.github.bumblebee202111.doubean.model.fangorns
+package com.github.bumblebee202111.doubean.model.user
+
+import com.github.bumblebee202111.doubean.model.common.AbstractImage
 
 data class ProfileImage(
     val color: String,

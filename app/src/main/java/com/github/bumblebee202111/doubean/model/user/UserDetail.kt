@@ -1,7 +1,5 @@
 package com.github.bumblebee202111.doubean.model.user
 
-import com.github.bumblebee202111.doubean.model.fangorns.HiddenTypeInProfile
-import com.github.bumblebee202111.doubean.model.fangorns.ProfileImage
 import java.time.LocalDateTime
 
 data class UserDetail(

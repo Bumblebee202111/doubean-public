@@ -1,4 +1,4 @@
-package com.github.bumblebee202111.doubean.model.subject
+package com.github.bumblebee202111.doubean.data.subject
 
 import com.github.bumblebee202111.doubean.core.network.api.SubjectApiService
 import com.github.bumblebee202111.doubean.core.network.model.NetworkSubjectModules
@@ -9,15 +9,15 @@ import com.github.bumblebee202111.doubean.core.network.model.toBook
 import com.github.bumblebee202111.doubean.core.network.model.toNetworkSubjectType
 import com.github.bumblebee202111.doubean.core.network.model.toSubjectModules
 import com.github.bumblebee202111.doubean.core.network.util.makeApiCall
-import com.github.bumblebee202111.doubean.data.subject.toBookDetail
-import com.github.bumblebee202111.doubean.data.subject.toCreditList
-import com.github.bumblebee202111.doubean.data.subject.toMovieDetail
-import com.github.bumblebee202111.doubean.data.subject.toMusicDetail
-import com.github.bumblebee202111.doubean.data.subject.toRecommendSubject
-import com.github.bumblebee202111.doubean.data.subject.toSubjectReviewList
-import com.github.bumblebee202111.doubean.data.subject.toTvDetail
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.PhotoList
+import com.github.bumblebee202111.doubean.model.subject.BookVersions
+import com.github.bumblebee202111.doubean.model.subject.CreditList
+import com.github.bumblebee202111.doubean.model.subject.RecommendSubject
+import com.github.bumblebee202111.doubean.model.subject.SubjectDetail
+import com.github.bumblebee202111.doubean.model.subject.SubjectModule
+import com.github.bumblebee202111.doubean.model.subject.SubjectReviewList
+import com.github.bumblebee202111.doubean.model.subject.SubjectType
 import javax.inject.Inject
 import javax.inject.Singleton
 

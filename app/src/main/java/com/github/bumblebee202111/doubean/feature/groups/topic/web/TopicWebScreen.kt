@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.github.bumblebee202111.doubean.feature.groups.webview
+package com.github.bumblebee202111.doubean.feature.groups.topic.web
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,7 +25,7 @@ import com.google.accompanist.web.rememberWebViewState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WebViewScreen(url: String, onBackClick: () -> Unit) {
+fun TopicWebScreen(url: String, onBackClick: () -> Unit) {
     val webViewState = rememberWebViewState(url)
     val navigator = rememberWebViewNavigator()
 

@@ -6,7 +6,7 @@ import com.github.bumblebee202111.doubean.data.auth.AuthRepository
 import com.github.bumblebee202111.doubean.data.user.UserRepository
 import com.github.bumblebee202111.doubean.data.usersubject.UserSubjectRepository
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.model.fangorns.HiddenTypeInProfile
+import com.github.bumblebee202111.doubean.model.user.HiddenTypeInProfile
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.model.toUiMessage
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
