@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+### Version 0.14.0-beta1
+
+- 🔗 Improved support for opening Douban links in-app.
+- 🛠️ Major under-the-hood codebase refactoring and navigation update.
+
 ## Version 0.13.2
 
 - Fixed an error that prevented loading details for subjects with no credit
