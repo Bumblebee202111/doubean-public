@@ -71,7 +71,6 @@ import java.time.LocalDateTime
 fun TopicHeader(
     topic: TopicDetail,
     shouldShowPhotoList: Boolean?,
-    contentHtml: String?,
     isLoggedIn: Boolean,
     onImageClick: (String) -> Unit,
     onGroupClick: (String, String?) -> Unit,
@@ -177,10 +176,9 @@ fun TopicHeader(
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
-        contentHtml?.let {
+        if (!topic.content.isNullOrEmpty()) {
             ContentWebView(
                 topic = topic,
-                html = it,
                 onImageClick = onImageClick,
                 displayInvalidImageUrl = displayInvalidImageUrl,
                 onOpenDeepLinkUrl = onOpenDeepLinkUrl

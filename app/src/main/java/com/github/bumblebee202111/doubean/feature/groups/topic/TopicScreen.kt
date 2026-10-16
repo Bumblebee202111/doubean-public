@@ -78,7 +78,6 @@ fun TopicScreen(
     val popularComments: List<TopicComment> by viewModel.popularComments.collectAsStateWithLifecycle()
     val allCommentLazyPagingItems = viewModel.allComments.collectAsLazyPagingItems()
     val shouldShowPhotoList by viewModel.shouldShowPhotoList.collectAsStateWithLifecycle()
-    val contentHtml by viewModel.contentHtml.collectAsStateWithLifecycle()
     val commentSortBy by viewModel.commentsSortBy.collectAsStateWithLifecycle()
     val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
     val shouldShowSpinner by viewModel.shouldShowSpinner.collectAsStateWithLifecycle()
@@ -91,7 +90,6 @@ fun TopicScreen(
         popularComments = popularComments,
         allCommentLazyPagingItems = allCommentLazyPagingItems,
         shouldShowPhotoList = shouldShowPhotoList,
-        contentHtml = contentHtml,
         commentSortBy = commentSortBy,
         isLoggedIn = isLoggedIn,
         shouldShowSpinner = shouldShowSpinner,
@@ -133,7 +131,6 @@ fun TopicScreen(
     popularComments: List<TopicComment>,
     allCommentLazyPagingItems: LazyPagingItems<TopicComment>,
     shouldShowPhotoList: Boolean?,
-    contentHtml: String?,
     commentSortBy: TopicCommentSortBy,
     isLoggedIn: Boolean,
     shouldShowSpinner: Boolean,
@@ -232,48 +229,46 @@ fun TopicScreen(
 
             is CachedAppResult.Success -> {
                 val topic = topicResult.data
-                if (contentHtml != null) {
-                    PullToRefreshBox(
-                        isRefreshing = isRefreshingComments,
-                        onRefresh = onRefresh,
-                        modifier = Modifier
-                            .padding(
-                                top = innerPadding.calculateTopPadding(),
-                                start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
-                                end = innerPadding.calculateEndPadding(LocalLayoutDirection.current)
-                            )
-                            .fillMaxSize()
+                PullToRefreshBox(
+                    isRefreshing = isRefreshingComments,
+                    onRefresh = onRefresh,
+                    modifier = Modifier
+                        .padding(
+                            top = innerPadding.calculateTopPadding(),
+                            start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
+                            end = innerPadding.calculateEndPadding(LocalLayoutDirection.current)
+                        )
+                        .fillMaxSize()
+                ) {
+                    LazyColumn(
+                        contentPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding()),
+                        state = listState,
+                        modifier = Modifier.fillMaxSize()
                     ) {
-                        LazyColumn(
-                            contentPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding()),
-                            state = listState,
-                            modifier = Modifier.fillMaxSize()
-                        ) {
 
-                            item(key = "TopicHeader", contentType = "TopicHeader") {
-                                val pinnableContainer = LocalPinnableContainer.current
-                                DisposableEffect(pinnableContainer) {
-                                    val pinnedHandle = pinnableContainer?.pin()
-                                    onDispose {
-                                        pinnedHandle?.release()
-                                    }
+                        item(key = "TopicHeader", contentType = "TopicHeader") {
+                            val pinnableContainer = LocalPinnableContainer.current
+                            DisposableEffect(pinnableContainer) {
+                                val pinnedHandle = pinnableContainer?.pin()
+                                onDispose {
+                                    pinnedHandle?.release()
                                 }
-
-                                TopicHeader(
-                                    topic = topic,
-                                    shouldShowPhotoList = shouldShowPhotoList,
-                                    contentHtml = contentHtml,
-                                    isLoggedIn = isLoggedIn,
-                                    onImageClick = onImageClick,
-                                    onGroupClick = onGroupClick,
-                                    onUserClick = onUserClick,
-                                    onReshareStatusesClick = onReshareStatusesClick,
-                                    onOpenDeepLinkUrl = onOpenDeepLinkUrl,
-                                    displayInvalidImageUrl = displayInvalidImageUrl,
-                                    onReact = onReact,
-                                    onCollectActionInitiated = onCollectClick
-                                )
                             }
+
+                            TopicHeader(
+                                topic = topic,
+                                shouldShowPhotoList = shouldShowPhotoList,
+                                isLoggedIn = isLoggedIn,
+                                onImageClick = onImageClick,
+                                onGroupClick = onGroupClick,
+                                onUserClick = onUserClick,
+                                onReshareStatusesClick = onReshareStatusesClick,
+                                onOpenDeepLinkUrl = onOpenDeepLinkUrl,
+                                displayInvalidImageUrl = displayInvalidImageUrl,
+                                onReact = onReact,
+                                onCollectActionInitiated = onCollectClick
+                            )
+                        }
 
                             item(
                                 key = "CommentActions",
@@ -327,7 +322,6 @@ fun TopicScreen(
                 }
             }
         }
-    }
 
     val commentCount = remember(
         commentSortBy,

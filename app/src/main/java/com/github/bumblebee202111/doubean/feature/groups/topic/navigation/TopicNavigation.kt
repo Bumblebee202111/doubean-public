@@ -6,13 +6,11 @@ import androidx.navigation3.runtime.NavKey
 import com.github.bumblebee202111.doubean.feature.groups.topic.TopicScreen
 import com.github.bumblebee202111.doubean.feature.groups.topic.TopicViewModel
 import com.github.bumblebee202111.doubean.navigation.Navigator
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class TopicNavKey(
     val topicId: String,
-    @SerialName("_spm_id")
     val spmId: String? = null,
 ) : NavKey
 
