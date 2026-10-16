@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+### Version 0.14.0-beta2
+
+- **Topics**: Switched post rendering to the dynamic hybrid web engine, improving layout fidelity
+  for polls and rich media.
+
 ### Version 0.14.0-beta1
 
 - 🔗 Improved support for opening Douban links in-app.
