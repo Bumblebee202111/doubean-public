@@ -175,7 +175,7 @@ private fun CaptchaWebView(
         contentAlignment = Alignment.Center
     ) {
         RexxarWebView(
-            filename = "",
+            filename = "r/a/c.html",
             initialParams = mapOf(
                 "" to jCaptcha.touchCapUrl,
                 "" to jCaptcha.tcAppId,
