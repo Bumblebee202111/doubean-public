@@ -44,6 +44,7 @@ fun SubjectScreen(
     onImageClick: (url: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
+    onReviewClick: (reviewId: String) -> Unit,
     viewModel: SubjectViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -60,6 +61,7 @@ fun SubjectScreen(
         onImageClick = onImageClick,
         onUserClick = onUserClick,
         onSubjectClick = onSubjectClick,
+        onReviewClick = onReviewClick,
         onRecommendSubjectClick = rememberRecommendSubjectClickHandler(
             onSubjectClick = onSubjectClick
         ),
@@ -85,6 +87,7 @@ fun SubjectScreen(
     onImageClick: (url: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
+    onReviewClick: (reviewId: String) -> Unit,
     onRecommendSubjectClick: (subject: RecommendSubject) -> Unit,
     onCollectClick: () -> Unit,
     onDismissCollectDialog: () -> Unit,
@@ -119,6 +122,7 @@ fun SubjectScreen(
                 SubjectReviewsSheetContent(
                     subjectType = uiState.subject.type,
                     reviews = uiState.reviews,
+                    onReviewClick = onReviewClick,
                     onUserClick = onUserClick
                 )
             }

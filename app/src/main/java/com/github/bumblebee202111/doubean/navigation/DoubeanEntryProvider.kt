@@ -35,6 +35,8 @@ import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.
 import com.github.bumblebee202111.doubean.feature.subjects.navigation.subjectsEntry
 import com.github.bumblebee202111.doubean.feature.subjects.ranklist.navigation.navigateToRankList
 import com.github.bumblebee202111.doubean.feature.subjects.ranklist.navigation.rankListEntry
+import com.github.bumblebee202111.doubean.feature.subjects.review.navigation.navigateToReview
+import com.github.bumblebee202111.doubean.feature.subjects.review.navigation.reviewEntry
 import com.github.bumblebee202111.doubean.feature.subjects.search.navigation.navigateToSearchSubjects
 import com.github.bumblebee202111.doubean.feature.subjects.search.navigation.searchSubjectsEntry
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.navigateToUserProfile
@@ -160,7 +162,14 @@ fun createDoubeanEntryProvider(
         onLoginClick = navigator::navigateToLogin,
         onImageClick = navigator::navigateToImageViewer,
         onUserClick = navigator::navigateToUserProfile,
-        onSubjectClick = navigateToSubject
+        onSubjectClick = navigateToSubject,
+        onReviewClick = navigator::navigateToReview
+    )
+    reviewEntry(
+        onBackClick = navigator::goBack,
+        onWebViewClick = navigator::navigateToTopicWeb,
+        onImageClick = navigator::navigateToImageViewer,
+        onOpenDeepLinkUrl = navigateToUri
     )
     rankListEntry(
         onBackClick = navigator::goBack,

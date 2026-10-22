@@ -28,11 +28,13 @@ fun SubjectScaffold(
 fun SubjectReviewsSheetContent(
     subjectType: SubjectType,
     reviews: SubjectReviewList,
+    onReviewClick: (reviewId: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
 ) {
     SubjectInfoReviewsModuleItemContent(
         subjectType = subjectType,
         reviews = reviews,
+        onReviewClick = onReviewClick,
         onUserClick = onUserClick
     )
 }

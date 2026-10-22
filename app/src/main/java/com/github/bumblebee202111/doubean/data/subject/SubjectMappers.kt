@@ -4,10 +4,12 @@ import com.github.bumblebee202111.doubean.core.network.model.NetworkSubjectColle
 import com.github.bumblebee202111.doubean.core.network.model.NetworkSubjectCollectionWithItems
 import com.github.bumblebee202111.doubean.core.network.model.NetworkSubjectInterestStatus
 import com.github.bumblebee202111.doubean.core.network.model.NetworkSubjectType
+import com.github.bumblebee202111.doubean.core.network.model.fangorns.NetworkSizedPhoto
 import com.github.bumblebee202111.doubean.core.network.model.fangorns.asEntityAndExternalModel
 import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkCelebrity
 import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkCreditList
 import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkRecommendSubject
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkReviewDetail
 import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkSubjectReview
 import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkSubjectReviewList
 import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkVendor
@@ -21,6 +23,8 @@ import com.github.bumblebee202111.doubean.data.user.toUser
 import com.github.bumblebee202111.doubean.model.subject.Celebrity
 import com.github.bumblebee202111.doubean.model.subject.CreditList
 import com.github.bumblebee202111.doubean.model.subject.RecommendSubject
+import com.github.bumblebee202111.doubean.model.subject.ReviewDetail
+import com.github.bumblebee202111.doubean.model.subject.ReviewSubject
 import com.github.bumblebee202111.doubean.model.subject.SubjectCollection
 import com.github.bumblebee202111.doubean.model.subject.SubjectCollectionItem
 import com.github.bumblebee202111.doubean.model.subject.SubjectInterestStatus
@@ -98,6 +102,51 @@ fun NetworkSubjectReviewList.toSubjectReviewList() = SubjectReviewList(
     start = start,
     total = total,
     reviews = reviews.map(NetworkSubjectReview::toSubjectReview)
+)
+
+fun NetworkReviewDetail.toReviewDetail() = ReviewDetail(
+    id = id,
+    title = title,
+    abstract = abstract,
+    content = content,
+    rtype = rtype,
+    typeName = typeName,
+    uri = uri,
+    url = url,
+    sharingUrl = sharingUrl,
+    createTime = createTime,
+    editTime = editTime,
+    ipLocation = ipLocation,
+    updatedIpLocation = updatedIpLocation,
+    activity = activity,
+    rating = rating?.toNonNullRating(),
+    user = user.toUser(),
+    photos = photos.map(NetworkSizedPhoto::asEntityAndExternalModel),
+    subject = subject?.toReviewSubject(),
+    usefulCount = usefulCount,
+    uselessCount = uselessCount,
+    reactionsCount = reactionsCount,
+    reactionType = reactionType,
+    commentsCount = commentsCount,
+    resharesCount = resharesCount,
+    collectionsCount = collectionsCount,
+    readCount = readCount,
+    isCollected = isCollected,
+    spoiler = spoiler,
+    isOriginal = isOriginal,
+    isBookJuryReview = isBookJuryReview,
+    totalCntForAuthor = totalCntForAuthor,
+)
+
+fun NetworkReviewDetail.Subject.toReviewSubject() = ReviewSubject(
+    id = id,
+    title = title,
+    type = SubjectType.fromString(type),
+    rawType = type,
+    uri = uri,
+    url = url,
+    coverUrl = coverUrl,
+    cardSubtitle = cardSubtitle,
 )
 
 fun NetworkRecommendSubject.toRecommendSubject(): RecommendSubject {

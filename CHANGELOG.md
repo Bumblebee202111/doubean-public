@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+### Version 0.14.0-beta3
+
+- **Subjects**: Added in-app review reader for full movie, book, and music
+  reviews (https://github.com/Bumblebee202111/doubean-public/issues/46).
+
 ### Version 0.14.0-beta2
 
 - **Topics**: Switched post rendering to the dynamic hybrid web engine, improving layout fidelity

@@ -42,7 +42,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -74,7 +73,6 @@ import com.github.bumblebee202111.doubean.ui.component.ListItemCount
 import com.github.bumblebee202111.doubean.ui.component.ListItemImages
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
 import com.github.bumblebee202111.doubean.util.DateTimeStyle
-import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.toRelativeString
 import java.time.LocalDateTime
 
@@ -507,13 +505,13 @@ private fun SubjectInfoCelebrity(celebrity: Celebrity) {
 private fun SubjectReviewCard(
     review: SubjectReview,
     modifier: Modifier = Modifier,
+    onReviewClick: (reviewId: String) -> Unit = {},
     onUserClick: (userId: String) -> Unit,
 ) {
-    val context = LocalContext.current
     Card(
         modifier = modifier,
         onClick = {
-            OpenInUtils.openInDouban(context = context, uri = review.uri)
+            onReviewClick(review.id)
         }
     ) {
         Column(Modifier.padding(16.dp)) {
@@ -673,6 +671,7 @@ fun SubjectInfoReviewsModuleItemContent(
     subjectType: SubjectType,
     reviews: SubjectReviewList,
     modifier: Modifier = Modifier,
+    onReviewClick: (reviewId: String) -> Unit = {},
     onUserClick: (userId: String) -> Unit,
 ) {
     val titleResId = subjectType.reviewTitleResId ?: throw IllegalArgumentException()
@@ -684,7 +683,11 @@ fun SubjectInfoReviewsModuleItemContent(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(items = reviews.reviews, key = { it.id }) { review ->
-                    SubjectReviewCard(review = review, onUserClick = onUserClick)
+                    SubjectReviewCard(
+                        review = review,
+                        onReviewClick = onReviewClick,
+                        onUserClick = onUserClick
+                    )
                 }
             }
         },

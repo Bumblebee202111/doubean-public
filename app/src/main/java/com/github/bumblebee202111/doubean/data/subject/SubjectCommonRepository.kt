@@ -4,6 +4,7 @@ import com.github.bumblebee202111.doubean.core.network.api.SubjectApiService
 import com.github.bumblebee202111.doubean.core.network.model.NetworkSubjectModules
 import com.github.bumblebee202111.doubean.core.network.model.fangorns.toPhotoList
 import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkRecommend
+import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkReviewDetail
 import com.github.bumblebee202111.doubean.core.network.model.subject.NetworkSubjectReviewList
 import com.github.bumblebee202111.doubean.core.network.model.toBook
 import com.github.bumblebee202111.doubean.core.network.model.toNetworkSubjectType
@@ -14,6 +15,7 @@ import com.github.bumblebee202111.doubean.model.PhotoList
 import com.github.bumblebee202111.doubean.model.subject.BookVersions
 import com.github.bumblebee202111.doubean.model.subject.CreditList
 import com.github.bumblebee202111.doubean.model.subject.RecommendSubject
+import com.github.bumblebee202111.doubean.model.subject.ReviewDetail
 import com.github.bumblebee202111.doubean.model.subject.SubjectDetail
 import com.github.bumblebee202111.doubean.model.subject.SubjectModule
 import com.github.bumblebee202111.doubean.model.subject.SubjectReviewList
@@ -128,5 +130,11 @@ class SubjectCommonRepository @Inject constructor(private val service: SubjectAp
                     versions = response.books.map { it.toBook() }
                 )
             }
+        )
+
+    suspend fun getReview(reviewId: String): AppResult<ReviewDetail> =
+        makeApiCall(
+            apiCall = { service.getReview(reviewId) },
+            mapSuccess = NetworkReviewDetail::toReviewDetail
         )
 }
