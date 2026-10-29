@@ -21,8 +21,8 @@ android {
         applicationId = "com.github.bumblebee202111.doubean"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 140003
-        versionName = "0.14.0-beta3"
+        versionCode = 140004
+        versionName = "0.14.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
