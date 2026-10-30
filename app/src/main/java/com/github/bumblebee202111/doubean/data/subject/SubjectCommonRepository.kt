@@ -14,6 +14,7 @@ import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.PhotoList
 import com.github.bumblebee202111.doubean.model.subject.BookVersions
 import com.github.bumblebee202111.doubean.model.subject.CreditList
+import com.github.bumblebee202111.doubean.model.subject.ElessarSubject
 import com.github.bumblebee202111.doubean.model.subject.RecommendSubject
 import com.github.bumblebee202111.doubean.model.subject.ReviewDetail
 import com.github.bumblebee202111.doubean.model.subject.SubjectDetail
@@ -136,5 +137,11 @@ class SubjectCommonRepository @Inject constructor(private val service: SubjectAp
         makeApiCall(
             apiCall = { service.getReview(reviewId) },
             mapSuccess = NetworkReviewDetail::toReviewDetail
+        )
+
+    suspend fun getElessarSubject(subjectId: String): AppResult<ElessarSubject> =
+        makeApiCall(
+            apiCall = { service.getElessarSubject(subjectId) },
+            mapSuccess = { it.toElessarSubject() }
         )
 }

@@ -44,6 +44,7 @@ fun SubjectScreen(
     onImageClick: (url: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
+    onCelebrityClick: (celebrityId: String) -> Unit,
     onReviewClick: (reviewId: String) -> Unit,
     viewModel: SubjectViewModel = hiltViewModel(),
 ) {
@@ -61,6 +62,7 @@ fun SubjectScreen(
         onImageClick = onImageClick,
         onUserClick = onUserClick,
         onSubjectClick = onSubjectClick,
+        onCelebrityClick = onCelebrityClick,
         onReviewClick = onReviewClick,
         onRecommendSubjectClick = rememberRecommendSubjectClickHandler(
             onSubjectClick = onSubjectClick
@@ -87,6 +89,7 @@ fun SubjectScreen(
     onImageClick: (url: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
+    onCelebrityClick: (celebrityId: String) -> Unit,
     onReviewClick: (reviewId: String) -> Unit,
     onRecommendSubjectClick: (subject: RecommendSubject) -> Unit,
     onCollectClick: () -> Unit,
@@ -155,7 +158,12 @@ fun SubjectScreen(
 
                         when (subject) {
                             is MovieDetail -> {
-                                creditList?.let { subjectInfoCelebritiesModuleItem(it) }
+                                creditList?.let {
+                                    subjectInfoCelebritiesModuleItem(
+                                        creditList = it,
+                                        onCelebrityClick = onCelebrityClick
+                                    )
+                                }
                                 photos?.let {
                                     subjectInfoTrailersModuleItem(
                                         trailers = subject.trailers,
@@ -172,7 +180,12 @@ fun SubjectScreen(
                             }
 
                             is TvDetail -> {
-                                creditList?.let { subjectInfoCelebritiesModuleItem(it) }
+                                creditList?.let {
+                                    subjectInfoCelebritiesModuleItem(
+                                        creditList = it,
+                                        onCelebrityClick = onCelebrityClick
+                                    )
+                                }
                                 photos?.let {
                                     subjectInfoTrailersModuleItem(
                                         trailers = subject.trailers,

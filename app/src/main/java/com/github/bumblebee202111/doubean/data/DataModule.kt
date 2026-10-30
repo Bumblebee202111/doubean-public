@@ -11,6 +11,7 @@ import com.github.bumblebee202111.doubean.core.network.model.status.NetworkStatu
 import com.github.bumblebee202111.doubean.core.network.model.status.NetworkSubjectStatusCard
 import com.github.bumblebee202111.doubean.core.network.model.status.NetworkUnknownStatusCard
 import com.github.bumblebee202111.doubean.core.network.model.status.NetworkUnsupportedSubjectStatusCard
+import com.github.bumblebee202111.doubean.core.network.model.subject.elessar.NetworkElessarModule
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.Companion.dataStore
 import dagger.Module
@@ -59,6 +60,9 @@ internal object DataModule {
                 }
                 polymorphicDefaultDeserializer(NetworkSubjectModule::class) {
                     NetworkSubjectModule.SubjectOtherModule.serializer()
+                }
+                polymorphicDefaultDeserializer(NetworkElessarModule::class) {
+                    NetworkElessarModule.OtherModule.serializer()
                 }
                 polymorphicDefaultDeserializer(NetworkFeedContent.Subject.Subject::class) {
                     NetworkFeedContent.Subject.UnknownSubject.serializer()

@@ -132,6 +132,7 @@ fun LazyListScope.subjectInfoSongsModuleItem(songs: List<String>) {
 
 fun LazyListScope.subjectInfoCelebritiesModuleItem(
     creditList: CreditList,
+    onCelebrityClick: (uri: String) -> Unit = {},
 ) {
     if (creditList.total == 0) return
 
@@ -147,7 +148,10 @@ fun LazyListScope.subjectInfoCelebritiesModuleItem(
                     items = creditList.items,
                     key = { "${it.id}_${it.character}" }
                 ) { celebrity ->
-                    SubjectInfoCelebrity(celebrity = celebrity)
+                    SubjectInfoCelebrity(
+                        celebrity = celebrity,
+                        onClick = { onCelebrityClick(celebrity.uri) }
+                    )
                 }
             }
         },
@@ -469,9 +473,15 @@ private fun InterestItem(
 }
 
 @Composable
-private fun SubjectInfoCelebrity(celebrity: Celebrity) {
+private fun SubjectInfoCelebrity(
+    celebrity: Celebrity,
+    onClick: () -> Unit,
+) {
     Column(
-        modifier = Modifier.width(80.dp),
+        modifier = Modifier
+            .width(80.dp)
+            .clip(MaterialTheme.shapes.small)
+            .clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AsyncImage(

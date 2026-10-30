@@ -13,6 +13,7 @@ import com.github.bumblebee202111.doubean.feature.groups.home.navigation.GroupsH
 import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.TopicNavKey
 import com.github.bumblebee202111.doubean.feature.login.navigation.VerifyPhoneNavKey
 import com.github.bumblebee202111.doubean.feature.subjects.detail.navigation.SubjectDetailNavKey
+import com.github.bumblebee202111.doubean.feature.subjects.elessar.navigation.ElessarSubjectNavKey
 import com.github.bumblebee202111.doubean.feature.subjects.ranklist.navigation.RankListNavKey
 import com.github.bumblebee202111.doubean.feature.subjects.review.navigation.ReviewNavKey
 import com.github.bumblebee202111.doubean.feature.userprofile.navigation.UserProfileNavKey
@@ -148,6 +149,28 @@ private val doubeanDeepLinkMatchers: List<DeepLinkMatcher<NavKey, *>> = listOf(
     
     UriDeepLinkMatcher(
         "douban:
+        serializer<ElessarSubjectNavKey>()
+    ),
+    UriDeepLinkMatcher(
+        "https:
+        serializer<ElessarSubjectNavKey>()
+    ),
+    UriDeepLinkMatcher(
+        "https:
+        serializer<ElessarSubjectNavKey>()
+    ),
+    UriDeepLinkMatcher(
+        "https:
+        serializer<ElessarSubjectNavKey>()
+    ),
+    UriDeepLinkMatcher(
+        "https:
+        serializer<ElessarSubjectNavKey>()
+    ),
+
+    
+    UriDeepLinkMatcher(
+        "douban:
         serializer<VerifyPhoneNavKey>()
     )
 )
@@ -162,7 +185,7 @@ fun String.toNavKeyOrNull(): NavKey? {
     
     val uri = unwrapDoubanDispatchUri(rawUri) ?: rawUri
 
-    matchSubjectDetailNavKey(uri)?.let { return it }
+    matchSubjectOrElessarNavKey(uri)?.let { return it }
 
     val request = DeepLinkRequest(uri)
     val matchResult = doubeanDeepLinkMatchers.mapNotNull { matcher ->
@@ -177,21 +200,56 @@ private fun unwrapDoubanDispatchUri(uri: Uri): Uri? {
         uri.path?.trimEnd('/') == "/doubanapp/dispatch"
     ) {
         val target = uri.getQueryParameter("uri")?.takeIf { it.isNotBlank() } ?: return null
-        return when {
+        val targetUri = when {
             target.startsWith("douban:
             target.startsWith("/") -> "douban:
             else -> "douban:
         }
+        if (targetUri.pathSegments.firstOrNull() == "subject" &&
+            targetUri.getQueryParameter("subtype") == null
+        ) {
+            val fallback = uri.getQueryParameter("fallback")?.takeIf { it.isNotBlank() }
+            if (fallback != null) {
+                return fallback.toUri()
+            }
+        }
+        return targetUri
     }
     return null
 }
 
-private fun matchSubjectDetailNavKey(uri: Uri): SubjectDetailNavKey? {
+
+private fun matchSubjectOrElessarNavKey(uri: Uri): NavKey? {
     val segments = uri.pathSegments
     val scheme = uri.scheme
     val host = uri.host
 
     return when {
+        
+        scheme == "douban" && host == "douban.com" &&
+                segments.size == 2 && (segments[0] == "celebrity" || segments[0] == "author") -> {
+            val subjectId = uri.getQueryParameter("subject_id")
+                ?.takeIf { it.isNotBlank() && it.all(Char::isDigit) }
+                ?: return null
+            ElessarSubjectNavKey(subjectId = subjectId)
+        }
+
+        
+        scheme == "douban" && host == "douban.com" &&
+                segments.size == 2 && segments[0] == "subject" -> {
+            val id = segments[1]
+            val subType = uri.getQueryParameter("subtype") ?: return null
+            if (!id.all(Char::isDigit)) return null
+            if (subType == "person") {
+                ElessarSubjectNavKey(subjectId = id)
+            } else {
+                val type = SubjectType.fromString(subType)
+                if (type != SubjectType.UNSUPPORTED) {
+                    SubjectDetailNavKey(id = id, type = type)
+                } else null
+            }
+        }
+
         
         scheme == "douban" && host == "douban.com" && segments.size == 2 -> {
             val type = SubjectType.fromString(segments[0])

@@ -10,4 +10,6 @@ data class Celebrity(
     val name: String,
     val character: String,
     val avatarUrl: String,
+    val uri: String,
+    val url: String,
 )

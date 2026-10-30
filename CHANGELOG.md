@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+### Features
+
+- **Subjects**: Support viewing celebrity/personage details (bio, representative works, photos, and
+  collaborators) from movie/TV credits and deep
+  links ([#49](https://github.com/Bumblebee202111/doubean-public/issues/49))
+
 ## Version 0.14.0
 
 - Improved loading performance and memory management for topic and review content views.

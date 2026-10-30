@@ -1,9 +1,6 @@
 package com.github.bumblebee202111.doubean.navigation
 
 import androidx.navigation3.runtime.entryProvider
-import com.github.bumblebee202111.doubean.feature.doulists.createddoulists.navigation.createdDouListsEntry
-import com.github.bumblebee202111.doubean.feature.doulists.doulist.navigation.douListEntry
-import com.github.bumblebee202111.doubean.feature.doulists.doulist.navigation.navigateToDouList
 import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.groupDetailEntry
 import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.navigateToGroup
 import com.github.bumblebee202111.doubean.feature.groups.home.navigation.groupsHomeEntry
@@ -20,7 +17,6 @@ import com.github.bumblebee202111.doubean.feature.login.navigation.LoginNavKey
 import com.github.bumblebee202111.doubean.feature.login.navigation.loginEntry
 import com.github.bumblebee202111.doubean.feature.login.navigation.navigateToLogin
 import com.github.bumblebee202111.doubean.feature.login.navigation.verifyPhoneEntry
-import com.github.bumblebee202111.doubean.feature.mydoulists.navigation.myDouListsEntry
 import com.github.bumblebee202111.doubean.feature.notifications.navigation.navigateToNotifications
 import com.github.bumblebee202111.doubean.feature.notifications.navigation.notificationsEntry
 import com.github.bumblebee202111.doubean.feature.settings.navigation.groupDefaultNotificationsPreferencesSettingsEntry
@@ -30,11 +26,11 @@ import com.github.bumblebee202111.doubean.feature.settings.navigation.settingsEn
 import com.github.bumblebee202111.doubean.feature.statuses.navigation.statusesEntry
 import com.github.bumblebee202111.doubean.feature.subjects.detail.navigation.navigateToSubjectDetail
 import com.github.bumblebee202111.doubean.feature.subjects.detail.navigation.subjectDetailEntry
+import com.github.bumblebee202111.doubean.feature.subjects.elessar.navigation.elessarSubjectEntry
 import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.interestsEntry
 import com.github.bumblebee202111.doubean.feature.subjects.interests.navigation.navigateToInterests
 import com.github.bumblebee202111.doubean.feature.subjects.navigation.subjectsEntry
 import com.github.bumblebee202111.doubean.feature.subjects.ranklist.navigation.navigateToRankList
-import com.github.bumblebee202111.doubean.feature.subjects.ranklist.navigation.rankListEntry
 import com.github.bumblebee202111.doubean.feature.subjects.review.navigation.navigateToReview
 import com.github.bumblebee202111.doubean.feature.subjects.review.navigation.reviewEntry
 import com.github.bumblebee202111.doubean.feature.subjects.search.navigation.navigateToSearchSubjects
@@ -163,35 +159,18 @@ fun createDoubeanEntryProvider(
         onImageClick = navigator::navigateToImageViewer,
         onUserClick = navigator::navigateToUserProfile,
         onSubjectClick = navigateToSubject,
+        onCelebrityClick = { navigateToUri(it) },
         onReviewClick = navigator::navigateToReview
+    )
+    elessarSubjectEntry(
+        onBackClick = navigator::goBack,
+        onImageClick = navigator::navigateToImageViewer,
+        onOpenDeepLinkUrl = navigateToUri
     )
     reviewEntry(
         onBackClick = navigator::goBack,
         onWebViewClick = navigator::navigateToTopicWeb,
         onImageClick = navigator::navigateToImageViewer,
         onOpenDeepLinkUrl = navigateToUri
-    )
-    rankListEntry(
-        onBackClick = navigator::goBack,
-        onSubjectClick = navigateToSubject
-    )
-    createdDouListsEntry(
-        onBackClick = navigator::goBack,
-        onDouListClick = navigator::navigateToDouList
-    )
-    douListEntry(
-        onBackClick = navigator::goBack,
-        onOpenDeepLinkUrl = { navigateToUri(it) },
-        onSubjectClick = navigateToSubject,
-        onUserClick = navigator::navigateToUserProfile,
-        onImageClick = navigator::navigateToImageViewer
-    )
-    myDouListsEntry(
-        onBackClick = navigator::goBack,
-        onOpenDeepLinkUrl = { navigateToUri(it) },
-        onSubjectClick = navigateToSubject,
-        onUserClick = navigator::navigateToUserProfile,
-        onImageClick = navigator::navigateToImageViewer,
-        onDouListClick = navigator::navigateToDouList
     )
 }

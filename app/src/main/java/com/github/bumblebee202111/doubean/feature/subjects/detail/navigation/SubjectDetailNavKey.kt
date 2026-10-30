@@ -18,6 +18,7 @@ fun EntryProviderScope<NavKey>.subjectDetailEntry(
     onImageClick: (url: String) -> Unit,
     onUserClick: (userId: String) -> Unit,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
+    onCelebrityClick: (celebrityId: String) -> Unit,
     onReviewClick: (reviewId: String) -> Unit,
 ) {
     entry<SubjectDetailNavKey> { key ->
@@ -27,6 +28,7 @@ fun EntryProviderScope<NavKey>.subjectDetailEntry(
             onImageClick = onImageClick,
             onUserClick = onUserClick,
             onSubjectClick = onSubjectClick,
+            onCelebrityClick = onCelebrityClick,
             onReviewClick = onReviewClick,
             viewModel = hiltViewModel<SubjectViewModel, SubjectViewModel.Factory>(
                 creationCallback = { factory ->
