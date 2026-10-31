@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+## Version 0.14.3
+
+- Fixed phone verification screen not opening during password
+  login ([#51](https://github.com/Bumblebee202111/doubean-public/issues/51))
+
 ## Version 0.14.2
 
 ### Bug Fixes
