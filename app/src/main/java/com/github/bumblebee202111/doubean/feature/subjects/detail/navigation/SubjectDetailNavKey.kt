@@ -20,6 +20,7 @@ fun EntryProviderScope<NavKey>.subjectDetailEntry(
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onCelebrityClick: (celebrityId: String) -> Unit,
     onReviewClick: (reviewId: String) -> Unit,
+    onOpenDeepLinkUrl: (uri: String) -> Boolean = { false },
 ) {
     entry<SubjectDetailNavKey> { key ->
         SubjectScreen(
@@ -30,6 +31,7 @@ fun EntryProviderScope<NavKey>.subjectDetailEntry(
             onSubjectClick = onSubjectClick,
             onCelebrityClick = onCelebrityClick,
             onReviewClick = onReviewClick,
+            onOpenDeepLinkUrl = onOpenDeepLinkUrl,
             viewModel = hiltViewModel<SubjectViewModel, SubjectViewModel.Factory>(
                 creationCallback = { factory ->
                     factory.create(key.id, key.type)

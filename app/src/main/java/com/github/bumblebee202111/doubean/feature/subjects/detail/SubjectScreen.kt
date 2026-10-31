@@ -2,8 +2,14 @@ package com.github.bumblebee202111.doubean.feature.subjects.detail
 
 import android.content.Intent
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -46,6 +52,7 @@ fun SubjectScreen(
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onCelebrityClick: (celebrityId: String) -> Unit,
     onReviewClick: (reviewId: String) -> Unit,
+    onOpenDeepLinkUrl: (uri: String) -> Boolean = { false },
     viewModel: SubjectViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -64,6 +71,7 @@ fun SubjectScreen(
         onSubjectClick = onSubjectClick,
         onCelebrityClick = onCelebrityClick,
         onReviewClick = onReviewClick,
+        onOpenDeepLinkUrl = onOpenDeepLinkUrl,
         onRecommendSubjectClick = rememberRecommendSubjectClickHandler(
             onSubjectClick = onSubjectClick
         ),
@@ -78,6 +86,7 @@ fun SubjectScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SubjectScreen(
     uiState: SubjectUiState,
@@ -91,6 +100,7 @@ fun SubjectScreen(
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
     onCelebrityClick: (celebrityId: String) -> Unit,
     onReviewClick: (reviewId: String) -> Unit,
+    onOpenDeepLinkUrl: (uri: String) -> Boolean = { false },
     onRecommendSubjectClick: (subject: RecommendSubject) -> Unit,
     onCollectClick: () -> Unit,
     onDismissCollectDialog: () -> Unit,
@@ -101,6 +111,27 @@ fun SubjectScreen(
     onToggleInterestSort: (InterestSortType) -> Unit,
     onRetryClick: () -> Unit,
 ) {
+    var showSubjectInfoSheet by rememberSaveable { mutableStateOf(false) }
+
+    if (showSubjectInfoSheet && uiState is SubjectUiState.Success) {
+        ModalBottomSheet(
+            onDismissRequest = { showSubjectInfoSheet = false },
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        ) {
+            SubjectInfoContentWebView(
+                subjectType = uiState.subject.type,
+                subjectId = uiState.subject.id,
+                onOpenDeepLinkUrl = { uri ->
+                    val handled = onOpenDeepLinkUrl(uri)
+                    if (handled) {
+                        showSubjectInfoSheet = false
+                    }
+                    handled
+                }
+            )
+        }
+    }
+
     collectDialogUiState?.let { state ->
         DouListDialog(
             uiState = state,
@@ -151,7 +182,8 @@ fun SubjectScreen(
                                 isLoggedIn = isLoggedIn,
                                 onLoginClick = onLoginClick,
                                 onUpdateStatus = onUpdateStatus,
-                                onImageClick = onImageClick
+                                onImageClick = onImageClick,
+                                onMetaInfoClick = { showSubjectInfoSheet = true }
                             )
                         }
                         subjectInfoIntroModuleItem(intro = subject.intro)

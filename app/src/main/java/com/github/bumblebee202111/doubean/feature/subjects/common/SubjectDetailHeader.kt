@@ -11,20 +11,30 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.PlayCircle
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.subject.Rating
@@ -42,6 +52,7 @@ fun SubjectDetailHeader(
     onLoginClick: () -> Unit,
     onUpdateStatus: (newStatus: SubjectInterestStatus, rating: Int?) -> Unit,
     onImageClick: (url: String) -> Unit,
+    onMetaInfoClick: () -> Unit = {},
 ) {
     Row(
         modifier = modifier
@@ -71,7 +82,7 @@ fun SubjectDetailHeader(
 
             SubjectRatingBar(rating = subject.rating, size = SubjectRatingBarSize.Expanded)
 
-            MetaInfoText(subject = subject)
+            MetaInfoText(subject = subject, onClick = onMetaInfoClick)
             VendorsSection(subject = subject)
 
             if (isLoggedIn) {
@@ -138,11 +149,51 @@ private fun MyPersonalRating(subject: SubjectDetail) {
     }
 }
 
+private const val META_INFO_ARROW_ID = "meta_info_arrow"
+
 @Composable
-private fun MetaInfoText(subject: SubjectDetail) {
+private fun MetaInfoText(
+    subject: SubjectDetail,
+    onClick: () -> Unit,
+) {
+    val metaInfo = subject.displayMetaInfo
+    if (metaInfo.isBlank()) return
+
+    val annotatedText = remember(metaInfo) {
+        buildAnnotatedString {
+            append(metaInfo)
+            append(" ")
+            appendInlineContent(META_INFO_ARROW_ID, "[>]")
+        }
+    }
+    val inlineContent = remember {
+        mapOf(
+            META_INFO_ARROW_ID to InlineTextContent(
+                Placeholder(
+                    width = 14.sp,
+                    height = 14.sp,
+                    placeholderVerticalAlign = PlaceholderVerticalAlign.Center
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = LocalContentColor.current.copy(alpha = 0.6f)
+                )
+            }
+        )
+    }
+
     Text(
-        text = subject.displayMetaInfo,
+        text = annotatedText,
+        inlineContent = inlineContent,
         style = MaterialTheme.typography.bodySmall,
+        maxLines = 3,
+        overflow = TextOverflow.Ellipsis,
+        modifier = Modifier
+            .clip(MaterialTheme.shapes.extraSmall)
+            .clickable(onClick = onClick)
+            .padding(vertical = 2.dp)
     )
 }
 

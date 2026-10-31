@@ -15,6 +15,7 @@ data class BookDetail(
     override val vendors: List<Vendor> = emptyList(),
     val pubdate: List<String>,
     val author: List<String>,
+    val translator: List<String> = emptyList(),
     val subtitle: String?,
     val producers: List<String>,
     val press: List<String>,
@@ -32,6 +33,8 @@ data class BookDetail(
     override val displayMetaInfo: String
         get() = buildList {
             author.firstOrNull()?.let { add(it + if (author.size > 1) " 等" else "") }
+            translator.firstOrNull()
+                ?.let { add(it + (if (translator.size > 1) " 等" else "") + " 译") }
             press.firstOrNull()?.let { add(it) }
             producers.firstOrNull()?.let { add(it) }
             pubdate.firstOrNull()?.let { add("${it}出版") }

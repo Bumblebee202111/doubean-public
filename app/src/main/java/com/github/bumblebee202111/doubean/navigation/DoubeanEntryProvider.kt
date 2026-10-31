@@ -165,7 +165,8 @@ fun createDoubeanEntryProvider(
         onUserClick = navigator::navigateToUserProfile,
         onSubjectClick = navigateToSubject,
         onCelebrityClick = { navigateToUri(it) },
-        onReviewClick = navigator::navigateToReview
+        onReviewClick = navigator::navigateToReview,
+        onOpenDeepLinkUrl = navigateToUri
     )
     elessarSubjectEntry(
         onBackClick = navigator::goBack,

@@ -85,6 +85,7 @@ fun NetworkBookDetail.toBookDetail() = BookDetail(
     isReleased = isReleased,
     pubdate = pubdate,
     author = author,
+    translator = translator,
     subtitle = bookSubtitle.takeIf(String::isNotEmpty),
     producers = producers,
     press = press,
