@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+## Version 0.14.2
+
+### Bug Fixes
+
+- Fixed a crash when opening rank lists or
+  DouLists ([#52](https://github.com/Bumblebee202111/doubean-public/issues/52))
+
+## Version 0.14.1
+
 ### Features
 
 - **Subjects**: Support viewing celebrity/personage details (bio, representative works, photos, and
