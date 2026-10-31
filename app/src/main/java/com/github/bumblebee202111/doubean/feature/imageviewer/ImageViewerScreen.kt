@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
@@ -24,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
@@ -35,7 +33,6 @@ import androidx.compose.ui.unit.IntSize
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.ui.common.ScopedDarkSystemBars
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -65,8 +62,6 @@ fun ImageViewerScreen(
     navigateUp: () -> Unit,
     onSave: () -> Unit,
 ) {
-    ScopedDarkSystemBars()
-
     val haptics = LocalHapticFeedback.current
     val scope = rememberCoroutineScope()
 
@@ -103,7 +98,6 @@ fun ImageViewerScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
             .onSizeChanged { size = it }
             .pointerInput(Unit) {
                 detectTapGestures(
@@ -164,11 +158,10 @@ fun ImageViewerScreen(
         )
 
         when (painterState) {
-            is AsyncImagePainter.State.Loading -> CircularProgressIndicator(color = Color.White)
+            is AsyncImagePainter.State.Loading -> CircularProgressIndicator()
             is AsyncImagePainter.State.Error -> Text(
                 text = stringResource(R.string.failed_to_load_image),
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.White.copy(alpha = 0.87f)
+                color = MaterialTheme.colorScheme.error
             )
 
             else -> Unit

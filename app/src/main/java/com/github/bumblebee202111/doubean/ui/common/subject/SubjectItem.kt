@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectRatingBar
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectRatingBarSize
+import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectRoundedCornerShape
 import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectTypeLabel
 import com.github.bumblebee202111.doubean.model.subject.Book
 import com.github.bumblebee202111.doubean.model.subject.Rating
@@ -137,7 +138,7 @@ fun SubjectItemImage(url: String) {
         contentDescription = null,
         modifier = Modifier
             .width(50.dp)
-            .clip(MaterialTheme.shapes.extraSmall),
+            .clip(SubjectRoundedCornerShape),
         contentScale = ContentScale.FillWidth
     )
 }

@@ -12,8 +12,8 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,8 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.core.theme.DoubeanTheme
-import com.github.bumblebee202111.doubean.ui.component.DoubeanTextButton
+import com.github.bumblebee202111.doubean.core.theme.RatingActiveColor
+import com.github.bumblebee202111.doubean.core.theme.RatingInactiveColor
 
 @Composable
 fun SubjectRatingDialog(
@@ -51,11 +51,7 @@ fun SubjectRatingDialog(
                     Icon(
                         imageVector = if (isSelected) Icons.Filled.Star else Icons.Outlined.Star,
                         contentDescription = null,
-                        tint = if (isSelected) {
-                            DoubeanTheme.extendedColors.ratingStar
-                        } else {
-                            MaterialTheme.colorScheme.outlineVariant
-                        },
+                        tint = if (isSelected) RatingActiveColor else RatingInactiveColor.copy(alpha = 0.4f),
                         modifier = Modifier
                             .size(48.dp)
                             .clickable(
@@ -70,14 +66,15 @@ fun SubjectRatingDialog(
             }
         },
         confirmButton = {
-            DoubeanTextButton(onClick = { onConfirm(if (rating > 0) rating else null) }) {
+            TextButton(onClick = { onConfirm(if (rating > 0) rating else null) }) {
                 Text(stringResource(R.string.action_save))
             }
         },
         dismissButton = {
-            DoubeanTextButton(onClick = onDismissRequest) {
+            TextButton(onClick = onDismissRequest) {
                 Text(stringResource(R.string.action_cancel))
             }
         }
     )
 }
+

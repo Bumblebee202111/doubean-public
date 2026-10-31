@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Reply
 import androidx.compose.material.icons.filled.PlayArrow
@@ -41,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -220,7 +222,7 @@ fun LazyListScope.subjectInfoInterestsModuleItem(
         Surface(
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 16.dp)
-                .clip(MaterialTheme.shapes.medium),
+                .clip(RoundedCornerShape(size = 16.dp)),
             color = MaterialTheme.colorScheme.surfaceVariant
         ) {
             SubjectModuleContainer(
@@ -255,7 +257,7 @@ fun LazyListScope.subjectInfoBookSeriesModuleItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp)
-                .clip(MaterialTheme.shapes.small)
+                .clip(RoundedCornerShape(8.dp))
                 .clickable(onClick = onClick),
             color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
         ) {
@@ -559,7 +561,7 @@ private fun ReviewHeader(
     ) {
         UserProfileImage(
             url = review.user.avatar,
-            size = 16.dp,
+            size = dimensionResource(R.dimen.icon_size_extra_small),
             onClick = { onUserClick(review.user.id) }
         )
         Spacer(modifier = Modifier.size(4.dp))

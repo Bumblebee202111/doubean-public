@@ -3,6 +3,7 @@ package com.github.bumblebee202111.doubean.feature.userprofile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,6 +25,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
@@ -33,6 +35,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TwoRowsTopAppBar
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,25 +58,22 @@ import com.github.bumblebee202111.doubean.model.user.HiddenTypeInProfile
 import com.github.bumblebee202111.doubean.model.user.ProfileCommunityContribution
 import com.github.bumblebee202111.doubean.model.user.ProfileStatItemTypes
 import com.github.bumblebee202111.doubean.model.user.UserDetail
-import com.github.bumblebee202111.doubean.ui.common.headerWashBackground
-import com.github.bumblebee202111.doubean.ui.common.rememberHeaderWashColor
+import com.github.bumblebee202111.doubean.ui.common.ApplyStatusBarIconAppearance
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanButton
 import com.github.bumblebee202111.doubean.ui.component.FullScreenCenteredContent
 import com.github.bumblebee202111.doubean.ui.component.FullScreenErrorWithRetry
 import com.github.bumblebee202111.doubean.ui.component.FullScreenLoadingIndicator
-import com.github.bumblebee202111.doubean.ui.component.MenuButton
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
 import com.github.bumblebee202111.doubean.ui.component.doubeanExpandedTopBarContentPadding
-import com.github.bumblebee202111.doubean.ui.component.doubeanTopAppBarHeight
 import com.github.bumblebee202111.doubean.util.DateTimeStyle
+import com.github.bumblebee202111.doubean.util.toColorOrPrimary
 import com.github.bumblebee202111.doubean.util.toRelativeString
 
 
 @Composable
 fun UserProfileScreen(
     onStatItemUriClick: (uri: String) -> Boolean,
-    onMenuClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
@@ -83,7 +83,6 @@ fun UserProfileScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     UserProfileScreen(
         uiState = uiState,
-        onMenuClick = onMenuClick,
         onBackClick = onBackClick,
         onSettingsClick = onSettingsClick,
         onLoginClick = onLoginClick,
@@ -98,7 +97,6 @@ fun UserProfileScreen(
 @Composable
 fun UserProfileScreen(
     uiState: UserProfileUiState,
-    onMenuClick: () -> Unit,
     onBackClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onLoginClick: () -> Unit,
@@ -110,6 +108,18 @@ fun UserProfileScreen(
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
+    val isConsideredCollapsed = scrollBehavior.state.collapsedFraction > 0.5f
+
+    val isAppInDarkTheme = isSystemInDarkTheme()
+
+    val useLightIcons: Boolean = if (isAppInDarkTheme) {
+        true
+    } else {
+        !isConsideredCollapsed
+    }
+
+    ApplyStatusBarIconAppearance(useLightIcons = useLightIcons)
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -118,7 +128,7 @@ fun UserProfileScreen(
             UserProfileTopAppBar(
                 uiState = uiState,
                 scrollBehavior = scrollBehavior,
-                onMenuClick = onMenuClick,
+                isConsideredCollapsed = isConsideredCollapsed,
                 onBackClick = onBackClick,
                 onSettingsClick = onSettingsClick,
                 onHiddenTypeClick = onHiddenTypeClick,
@@ -142,42 +152,38 @@ fun UserProfileScreen(
 private fun UserProfileTopAppBar(
     uiState: UserProfileUiState,
     scrollBehavior: TopAppBarScrollBehavior,
-    onMenuClick: () -> Unit,
+    isConsideredCollapsed: Boolean,
     onBackClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onHiddenTypeClick: (String) -> Unit,
     onStatItemUriClick: (uri: String) -> Boolean,
 ) {
     val user = uiState.user
-    val washColor = if (user != null) {
-        rememberHeaderWashColor(user.profileBanner.color)
-    } else {
-        Color.Transparent
-    }
-    val surfaceColor = MaterialTheme.colorScheme.surface
-    val scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer
 
+    val collapsedContainerColor = MaterialTheme.colorScheme.surface
+    val collapsedContentColor = MaterialTheme.colorScheme.onSurface
+
+    val expandedContainerColor = user?.profileBanner?.color.toColorOrPrimary()
+    val expandedContentColor = Color.White
+
+    val currentAppBarEffectiveIconColor =
+        if (isConsideredCollapsed) collapsedContentColor else expandedContentColor
     TwoRowsTopAppBar(
-        modifier = Modifier.headerWashBackground(
-            washColor = washColor,
-            surfaceColor = surfaceColor,
-            collapsedFraction = { scrollBehavior.state.collapsedFraction },
-        ),
         title = { expanded ->
             if (user != null) {
                 TopAppBarTitleContent(
                     isExpanded = expanded,
                     user = user,
                     communityContribution = uiState.communityContribution,
+                    expandedContentColor = expandedContentColor,
+                    collapsedContentColor = collapsedContentColor,
                     onHiddenTypeClick = onHiddenTypeClick,
                     onStatItemUriClick = onStatItemUriClick
                 )
             }
         },
         navigationIcon = {
-            if (uiState.isTargetingCurrentUser) {
-                MenuButton(onClick = onMenuClick)
-            } else {
+            if (!uiState.isTargetingCurrentUser) {
                 BackButton(onClick = onBackClick)
             }
         },
@@ -189,13 +195,12 @@ private fun UserProfileTopAppBar(
             }
         },
         scrollBehavior = scrollBehavior,
-        collapsedHeight = doubeanTopAppBarHeight,
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = scrolledContainerColor.copy(alpha = 0f),
-            scrolledContainerColor = scrolledContainerColor,
-            navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-            actionIconContentColor = MaterialTheme.colorScheme.onSurface,
+            containerColor = expandedContainerColor,
+            scrolledContainerColor = collapsedContainerColor,
+            navigationIconContentColor = currentAppBarEffectiveIconColor,
+            titleContentColor = expandedContentColor,
+            actionIconContentColor = currentAppBarEffectiveIconColor
         )
     )
 }
@@ -203,23 +208,33 @@ private fun UserProfileTopAppBar(
 @Composable
 private fun TopAppBarTitleContent(
     isExpanded: Boolean,
-    user: UserDetail,
+    user: UserDetail?,
     communityContribution: ProfileCommunityContribution?,
+    expandedContentColor: Color,
+    collapsedContentColor: Color,
     onHiddenTypeClick: (String) -> Unit,
     onStatItemUriClick: (uri: String) -> Boolean,
 ) {
+    if (user == null) {
+        return
+    }
+
     if (isExpanded) {
-        UserInfo(
-            user = user,
-            communityContribution = communityContribution,
-            onHiddenTypeClick = onHiddenTypeClick,
-            onStatItemUriClick = onStatItemUriClick
-        )
+        CompositionLocalProvider(LocalContentColor provides expandedContentColor) {
+            UserInfo(
+                user = user,
+                communityContribution = communityContribution,
+                onHiddenTypeClick = onHiddenTypeClick,
+                onStatItemUriClick = onStatItemUriClick
+            )
+        }
     } else {
         Text(
             text = user.name,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
+            fontWeight = FontWeight.Bold,
+            color = collapsedContentColor
         )
     }
 }
@@ -515,7 +530,6 @@ private fun UserInfoText(
         text = text,
         overflow = TextOverflow.Ellipsis,
         maxLines = maxLines,
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        style = MaterialTheme.typography.bodySmall
     )
 }

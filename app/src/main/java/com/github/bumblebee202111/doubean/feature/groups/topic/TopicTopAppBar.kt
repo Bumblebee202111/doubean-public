@@ -15,10 +15,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.feature.groups.shared.groupTopAppBarColor
 import com.github.bumblebee202111.doubean.model.group.TopicDetail
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
 import com.github.bumblebee202111.doubean.ui.component.MoreButton
+import com.github.bumblebee202111.doubean.util.toColorOrPrimary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,6 +34,7 @@ fun TopicTopAppBar(
 ) {
     var appBarMenuExpanded by rememberSaveable { mutableStateOf(false) }
     var viewInMenuExpanded by rememberSaveable { mutableStateOf(false) }
+    val groupColor = topic?.group?.color.toColorOrPrimary()
 
     DoubeanTopAppBar(
         title = {
@@ -97,5 +100,6 @@ fun TopicTopAppBar(
 
             }
         },
+        colors = groupTopAppBarColor(groupColor)
     )
 }

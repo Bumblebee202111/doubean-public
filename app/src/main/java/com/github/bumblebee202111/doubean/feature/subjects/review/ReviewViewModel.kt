@@ -52,7 +52,9 @@ class ReviewViewModel @AssistedInject constructor(
                 }
 
                 is AppResult.Error -> {
-                    _uiState.value = ReviewUiState.Error(result.error.asUiMessage())
+                    val uiMessage = result.error.asUiMessage()
+                    snackbarManager.showMessage(uiMessage)
+                    _uiState.value = ReviewUiState.Error(uiMessage)
                 }
             }
         }

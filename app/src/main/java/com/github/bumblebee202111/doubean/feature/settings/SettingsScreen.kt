@@ -1,7 +1,6 @@
 package com.github.bumblebee202111.doubean.feature.settings
 
 import android.content.Context
-import android.os.Build
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,7 +29,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.BuildConfig
 import com.github.bumblebee202111.doubean.R
-import com.github.bumblebee202111.doubean.model.theme.ThemeMode
 import com.github.bumblebee202111.doubean.navigation.TopLevelDestination
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.ClickablePreferenceItem
@@ -51,23 +49,17 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val enableNotifications by viewModel.enableNotifications.collectAsStateWithLifecycle()
-    val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
-    val useDynamicColor by viewModel.useDynamicColor.collectAsStateWithLifecycle()
     val startupTab by viewModel.startupTab.collectAsStateWithLifecycle()
     val visibleTabs by viewModel.visibleTabs.collectAsStateWithLifecycle()
     val autoImportSessionAtStartup by viewModel.autoImportSessionAtStartup.collectAsStateWithLifecycle()
     val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
     SettingsScreen(
         enableNotifications = enableNotifications,
-        themeMode = themeMode,
-        useDynamicColor = useDynamicColor,
         startupTab = startupTab,
         visibleTabs = visibleTabs,
         autoImportSessionAtStartup = autoImportSessionAtStartup,
         isLoggedIn = isLoggedIn,
         onBackClick = onBackClick,
-        setThemeMode = viewModel::setThemeMode,
-        toggleUseDynamicColor = viewModel::toggleUseDynamicColor,
         setStartupTab = viewModel::setStartupTab,
         setVisibleTabs = viewModel::setVisibleTabs,
         toggleEnableNotifications = viewModel::toggleEnableNotifications,
@@ -82,15 +74,11 @@ fun SettingsScreen(
 @Composable
 fun SettingsScreen(
     enableNotifications: Boolean?,
-    themeMode: ThemeMode?,
-    useDynamicColor: Boolean?,
     startupTab: String?,
     visibleTabs: Set<String>?,
     autoImportSessionAtStartup: Boolean?,
     isLoggedIn: Boolean?,
     onBackClick: () -> Unit,
-    setThemeMode: (ThemeMode) -> Unit,
-    toggleUseDynamicColor: () -> Unit,
     setStartupTab: (String) -> Unit,
     setVisibleTabs: (Set<String>) -> Unit,
     toggleEnableNotifications: () -> Unit,
@@ -100,7 +88,6 @@ fun SettingsScreen(
     onLoginClick: () -> Unit,
 ) {
     var showNotificationInfoDialog by remember { mutableStateOf(false) }
-    var showThemeModeDialog by remember { mutableStateOf(false) }
     var showStartupTabDialog by remember { mutableStateOf(false) }
     var showVisibleTabsDialog by remember { mutableStateOf(false) }
 
@@ -113,40 +100,6 @@ fun SettingsScreen(
     }
 
     
-    if (showThemeModeDialog && themeMode != null) {
-        AlertDialog(
-            onDismissRequest = { showThemeModeDialog = false },
-            title = { Text(stringResource(R.string.pref_title_theme_mode)) },
-            text = {
-                Column {
-                    ThemeMode.entries.forEach { mode ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    setThemeMode(mode)
-                                    showThemeModeDialog = false
-                                }
-                                .padding(vertical = 12.dp)
-                        ) {
-                            RadioButton(selected = mode == themeMode, onClick = null)
-                            Text(
-                                stringResource(mode.labelResId()),
-                                modifier = Modifier.padding(start = 16.dp)
-                            )
-                        }
-                    }
-                }
-            },
-            confirmButton = {
-                DoubeanTextButton(onClick = {
-                    showThemeModeDialog = false
-                }) { Text(stringResource(R.string.action_cancel)) }
-            }
-        )
-    }
-
     if (showStartupTabDialog && startupTab != null && visibleTabs != null) {
         val availableTabs = TopLevelDestination.entries.filter { it.name in visibleTabs }
         AlertDialog(
@@ -183,7 +136,7 @@ fun SettingsScreen(
     }
 
     if (showVisibleTabsDialog && visibleTabs != null) {
-        var selectedTabs by remember(visibleTabs) { mutableStateOf(visibleTabs) }
+        var selectedTabs by remember { mutableStateOf(visibleTabs) }
         AlertDialog(
             onDismissRequest = { showVisibleTabsDialog = false },
             title = { Text(stringResource(R.string.pref_title_visible_tabs)) },
@@ -242,34 +195,6 @@ fun SettingsScreen(
     ) { innerPadding ->
         val context = LocalContext.current
         LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = innerPadding) {
-
-            
-            item {
-                PreferenceCategoryHeader(title = stringResource(R.string.pref_cat_title_appearance))
-            }
-            if (themeMode != null) {
-                item {
-                    ClickablePreferenceItem(
-                        title = stringResource(R.string.pref_title_theme_mode),
-                        summary = stringResource(themeMode.labelResId()),
-                        onClick = { showThemeModeDialog = true }
-                    )
-                }
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && useDynamicColor != null) {
-                item {
-                    SwitchPreferenceItem(
-                        title = stringResource(R.string.pref_title_dynamic_color),
-                        summary = stringResource(R.string.pref_summary_dynamic_color),
-                        checked = useDynamicColor,
-                        onCheckedChange = { toggleUseDynamicColor() }
-                    )
-                }
-            }
-
-            item {
-                PreferenceDivider()
-            }
 
             
             item {
@@ -425,10 +350,4 @@ fun SettingsScreen(
 
 private fun checkNotificationPermission(context: Context): Boolean {
     return NotificationManagerCompat.from(context).areNotificationsEnabled()
-}
-
-private fun ThemeMode.labelResId(): Int = when (this) {
-    ThemeMode.SYSTEM -> R.string.theme_mode_system
-    ThemeMode.LIGHT -> R.string.theme_mode_light
-    ThemeMode.DARK -> R.string.theme_mode_dark
 }

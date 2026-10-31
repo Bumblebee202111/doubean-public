@@ -21,14 +21,11 @@ import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.Preferenc
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_LAST_REFRESH_TIME
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_RECEIVE_NOTIFICATIONS
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_REFRESH_TOKEN
-import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_THEME_MODE
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_TIMELINE_LAST_VISIT_ID
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_UDID
-import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.PreferencesKeys.PREF_USE_DYNAMIC_COLOR
 import com.github.bumblebee202111.doubean.model.auth.DoubanPrefCurrentAccountInfo
 import com.github.bumblebee202111.doubean.model.group.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.group.TopicSortBy
-import com.github.bumblebee202111.doubean.model.theme.ThemeMode
 import com.github.bumblebee202111.doubean.navigation.TopLevelDestination
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -49,8 +46,6 @@ class PreferenceStorage(
 
     object PreferencesKeys {
         val PREF_RECEIVE_NOTIFICATIONS = booleanPreferencesKey("pref_receive_notifications")
-        val PREF_THEME_MODE = stringPreferencesKey("pref_theme_mode")
-        val PREF_USE_DYNAMIC_COLOR = booleanPreferencesKey("pref_use_dynamic_color")
         val PREF_STARTUP_TAB = stringPreferencesKey("pref_startup_tab")
         val PREF_VISIBLE_TABS = stringSetPreferencesKey("pref_visible_tabs")
         val PREF_AUTO_IMPORT_SESSION_AT_STARTUP =
@@ -89,24 +84,6 @@ class PreferenceStorage(
 
     val preferToReceiveNotifications = dataStore.data.map {
         it[PREF_RECEIVE_NOTIFICATIONS] ?: false
-    }
-
-    val themeMode: Flow<ThemeMode> = dataStore.data.map { preferences ->
-        preferences[PREF_THEME_MODE]?.let { stored ->
-            runCatching { ThemeMode.valueOf(stored) }.getOrNull()
-        } ?: ThemeMode.SYSTEM
-    }
-
-    suspend fun setThemeMode(mode: ThemeMode) {
-        dataStore.edit { it[PREF_THEME_MODE] = mode.name }
-    }
-
-    val useDynamicColor: Flow<Boolean> = dataStore.data.map {
-        it[PREF_USE_DYNAMIC_COLOR] ?: false
-    }
-
-    suspend fun setUseDynamicColor(useDynamicColor: Boolean) {
-        dataStore.edit { it[PREF_USE_DYNAMIC_COLOR] = useDynamicColor }
     }
 
     val startupTab = dataStore.data.map {

@@ -3,14 +3,14 @@ package com.github.bumblebee202111.doubean.data
 import android.content.Context
 import com.github.bumblebee202111.doubean.core.network.model.NetworkSubject
 import com.github.bumblebee202111.doubean.core.network.model.NetworkSubjectModule
-import com.github.bumblebee202111.doubean.core.network.model.NetworkSubjectWithInterest
-import com.github.bumblebee202111.doubean.core.network.model.NetworkSubjectWithRank
 import com.github.bumblebee202111.doubean.core.network.model.NetworkSubjectWithRankAndInterest
 import com.github.bumblebee202111.doubean.core.network.model.NetworkUnknownSubject
-import com.github.bumblebee202111.doubean.core.network.model.NetworkUnknownSubjectWithInterest
-import com.github.bumblebee202111.doubean.core.network.model.NetworkUnknownSubjectWithRank
 import com.github.bumblebee202111.doubean.core.network.model.NetworkUnknownSubjectWithRankAndInterest
 import com.github.bumblebee202111.doubean.core.network.model.common.NetworkFeedContent
+import com.github.bumblebee202111.doubean.core.network.model.status.NetworkStatusCard
+import com.github.bumblebee202111.doubean.core.network.model.status.NetworkSubjectStatusCard
+import com.github.bumblebee202111.doubean.core.network.model.status.NetworkUnknownStatusCard
+import com.github.bumblebee202111.doubean.core.network.model.status.NetworkUnsupportedSubjectStatusCard
 import com.github.bumblebee202111.doubean.core.network.model.subject.elessar.NetworkElessarModule
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage.Companion.dataStore
@@ -36,6 +36,14 @@ internal object DataModule {
             explicitNulls = false
             serializersModule += SerializersModule {
                 polymorphicDefaultDeserializer(
+                    NetworkStatusCard::class
+                ) {
+                    NetworkUnknownStatusCard.serializer()
+                }
+                polymorphicDefaultDeserializer(NetworkSubjectStatusCard::class) {
+                    NetworkUnsupportedSubjectStatusCard.serializer()
+                }
+                polymorphicDefaultDeserializer(
                     NetworkFeedContent::class
                 ) {
                     NetworkFeedContent.Unknown.serializer()
@@ -44,16 +52,6 @@ internal object DataModule {
                     NetworkSubject::class
                 ) {
                     NetworkUnknownSubject.serializer()
-                }
-                polymorphicDefaultDeserializer(
-                    NetworkSubjectWithInterest::class
-                ) {
-                    NetworkUnknownSubjectWithInterest.serializer()
-                }
-                polymorphicDefaultDeserializer(
-                    NetworkSubjectWithRank::class
-                ) {
-                    NetworkUnknownSubjectWithRank.serializer()
                 }
                 polymorphicDefaultDeserializer(
                     NetworkSubjectWithRankAndInterest::class

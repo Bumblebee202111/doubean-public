@@ -45,6 +45,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.common.SimpleSubjectItemContent
+import com.github.bumblebee202111.doubean.feature.subjects.common.SubjectRoundedCornerShape
 import com.github.bumblebee202111.doubean.model.Photo
 import com.github.bumblebee202111.doubean.model.subject.ElessarBaseSubject
 import com.github.bumblebee202111.doubean.model.subject.ElessarModule
@@ -251,7 +252,7 @@ private fun ElessarSubjectHeaderView(
             modifier = Modifier
                 .width(80.dp)
                 .height(112.dp)
-                .clip(MaterialTheme.shapes.extraSmall)
+                .clip(SubjectRoundedCornerShape)
                 .then(
                     if (fullAvatarUrl.isNotBlank()) {
                         Modifier.clickable { onImageClick(fullAvatarUrl) }

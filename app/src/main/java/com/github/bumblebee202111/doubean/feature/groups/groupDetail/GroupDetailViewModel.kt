@@ -65,9 +65,11 @@ class GroupDetailViewModel @AssistedInject constructor(
                     notificationPreferences ?: defaultNotificationPreferences
                 when (groupDetailResult) {
                     is CachedAppResult.Error -> {
+                        val errorMessage = groupDetailResult.error.asUiMessage()
+                        snackBarManager.showMessage(errorMessage)
                         GroupDetailUiState(
                             notificationPreferences = uiNotificationPreferences,
-                            errorMessage = groupDetailResult.error.asUiMessage(),
+                            errorMessage = errorMessage,
                             cachedGroup = groupDetailResult.cache
                         )
                     }
@@ -102,7 +104,11 @@ class GroupDetailViewModel @AssistedInject constructor(
         viewModelScope.launch {
             when (val result = userGroupRepository.subscribeGroup(groupId)) {
                 is AppResult.Error -> {
-                    snackBarManager.showMessage(result.error.asUiMessage())
+                    val errorMessage = result.error.asUiMessage()
+                    snackBarManager.showMessage(errorMessage)
+                    _uiState.update { prevState ->
+                        prevState.copy(errorMessage = errorMessage)
+                    }
                 }
 
                 is AppResult.Success -> {
@@ -122,7 +128,11 @@ class GroupDetailViewModel @AssistedInject constructor(
         viewModelScope.launch {
             when (val result = userGroupRepository.unsubscribeGroup(groupId)) {
                 is AppResult.Error -> {
-                    snackBarManager.showMessage(result.error.asUiMessage())
+                    val errorMessage = result.error.asUiMessage()
+                    snackBarManager.showMessage(errorMessage)
+                    _uiState.update { prevState ->
+                        prevState.copy(errorMessage = errorMessage)
+                    }
                 }
 
                 is AppResult.Success -> {

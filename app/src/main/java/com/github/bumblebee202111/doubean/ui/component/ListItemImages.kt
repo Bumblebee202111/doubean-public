@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,8 +25,7 @@ fun ListItemImages(
 ) {
     if (images.isEmpty()) return
 
-    val singleImageShape = MaterialTheme.shapes.small
-    val gridShape = MaterialTheme.shapes.medium
+    val imageShape = RoundedCornerShape(8.dp)
 
     if (images.size == 1) {
         BoxWithConstraints {
@@ -50,16 +49,19 @@ fun ListItemImages(
                 modifier = Modifier
                     .width(displayWidth.coerceAtMost(this.maxWidth))
                     .height(displayHeight.coerceAtMost(this.maxHeight))
-                    .clip(singleImageShape)
+                    .clip(imageShape)
                     .clickable { onImageClick(image) }
             )
         }
+
+
     } else {
         Row(
             modifier = modifier
-                .clip(gridShape),
+                .clip(RoundedCornerShape(12.dp)),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
+
             images.take(3).forEach { image ->
                 AsyncImage(
                     model = image.normal.url,
@@ -72,5 +74,6 @@ fun ListItemImages(
                 )
             }
         }
+
     }
 }

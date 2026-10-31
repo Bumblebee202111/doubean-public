@@ -1,10 +1,14 @@
 package com.github.bumblebee202111.doubean.feature.subjects.common
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -18,7 +22,6 @@ import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItem
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemBasicContent
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemRank
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectSimpleInterestButton
-import com.github.bumblebee202111.doubean.ui.component.PagingAppendFooter
 import com.github.bumblebee202111.doubean.ui.component.SectionErrorWithRetry
 import com.github.bumblebee202111.doubean.ui.util.toUiMessage
 import com.github.bumblebee202111.doubean.util.OpenInUtils
@@ -87,9 +90,26 @@ fun LazyListScope.rankList(
     }
 
     item(key = "rank_list_append_state") {
-        PagingAppendFooter(
-            loadState = subjectCollectionItems.loadState.append,
-            onRetryClick = { subjectCollectionItems.retry() }
-        )
+        when (val appendState = subjectCollectionItems.loadState.append) {
+            is LoadState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            is LoadState.Error -> {
+                SectionErrorWithRetry(
+                    message = appendState.toUiMessage().getString(),
+                    onRetryClick = { subjectCollectionItems.retry() }
+                )
+            }
+
+            else -> {}
+        }
     }
 }

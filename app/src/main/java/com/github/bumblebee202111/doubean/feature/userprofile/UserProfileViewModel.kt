@@ -116,13 +116,15 @@ class UserProfileViewModel @AssistedInject constructor(
                 }
 
                 is AppResult.Error -> {
+                    val errorMessage = userResult.error.asUiMessage()
+                    snackbarManager.showMessage(errorMessage)
                     _uiState.update {
                         it.copy(
                             isLoading = false,
                             user = if (_uiState.value.user?.id == userIdToFetch) _uiState.value.user else null,
                             communityContribution = null,
                             profileSubjects = null,
-                            errorMessage = userResult.error.asUiMessage()
+                            errorMessage = errorMessage
                         )
                     }
                 }

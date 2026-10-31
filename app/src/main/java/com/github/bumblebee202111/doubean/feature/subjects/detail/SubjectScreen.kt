@@ -4,9 +4,7 @@ import android.content.Intent
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetValue
-import androidx.compose.material3.rememberBottomSheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -118,10 +116,7 @@ fun SubjectScreen(
     if (showSubjectInfoSheet && uiState is SubjectUiState.Success) {
         ModalBottomSheet(
             onDismissRequest = { showSubjectInfoSheet = false },
-            sheetState = rememberBottomSheetState(
-                initialValue = SheetValue.Hidden,
-                enabledValues = setOf(SheetValue.Hidden, SheetValue.Expanded),
-            )
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         ) {
             SubjectInfoContentWebView(
                 subjectType = uiState.subject.type,
@@ -155,30 +150,30 @@ fun SubjectScreen(
 
     val context = LocalContext.current
 
-    val topBar: @Composable () -> Unit = {
-        SubjectTopBar(
-            subjectType = (uiState as? SubjectUiState.Success)?.subject?.type
-                ?: SubjectType.UNSUPPORTED,
-            subject = (uiState as? SubjectUiState.Success)?.subject,
-            isLoggedIn = (uiState as? SubjectUiState.Success)?.isLoggedIn == true,
-            onBackClick = onBackClick,
-            onCollectClick = onCollectClick
-        )
-    }
-
-    when (uiState) {
-        is SubjectUiState.Success -> {
-            SubjectScaffold(
-                reviewsSheetContent = {
-                    SubjectReviewsSheetContent(
-                        subjectType = uiState.subject.type,
-                        reviews = uiState.reviews,
-                        onReviewClick = onReviewClick,
-                        onUserClick = onUserClick
-                    )
-                },
-                topBar = topBar
-            ) { innerPadding ->
+    SubjectScaffold(
+        reviewsSheetContent = {
+            if (uiState is SubjectUiState.Success) {
+                SubjectReviewsSheetContent(
+                    subjectType = uiState.subject.type,
+                    reviews = uiState.reviews,
+                    onReviewClick = onReviewClick,
+                    onUserClick = onUserClick
+                )
+            }
+        },
+        topBar = {
+            SubjectTopBar(
+                subjectType = (uiState as? SubjectUiState.Success)?.subject?.type
+                    ?: SubjectType.UNSUPPORTED,
+                subject = (uiState as? SubjectUiState.Success)?.subject,
+                isLoggedIn = (uiState as? SubjectUiState.Success)?.isLoggedIn == true,
+                onBackClick = onBackClick,
+                onCollectClick = onCollectClick
+            )
+        }
+    ) { innerPadding ->
+        when (uiState) {
+            is SubjectUiState.Success -> {
                 LazyColumn(contentPadding = innerPadding) {
                     with(uiState) {
                         item {
@@ -285,16 +280,12 @@ fun SubjectScreen(
                     }
                 }
             }
-        }
 
-        is SubjectUiState.Loading -> {
-            Scaffold(topBar = topBar) { innerPadding ->
+            is SubjectUiState.Loading -> {
                 FullScreenLoadingIndicator(contentPadding = innerPadding)
             }
-        }
 
-        is SubjectUiState.Error -> {
-            Scaffold(topBar = topBar) { innerPadding ->
+            is SubjectUiState.Error -> {
                 FullScreenErrorWithRetry(
                     message = uiState.message.getString(),
                     onRetryClick = onRetryClick,

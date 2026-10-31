@@ -10,11 +10,7 @@ plugins {
 }
 
 android {
-    compileSdk {
-        version = release(libs.versions.compileSdk.get().toInt()) {
-            minorApiLevel = libs.versions.compileSdkMinor.get().toInt()
-        }
-    }
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     buildFeatures {
         buildConfig = true
@@ -46,7 +42,6 @@ android {
         }
         debug {
             isDebuggable = true
-            versionNameSuffix = "-dev"
         }
     }
     compileOptions {

@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -260,7 +261,7 @@ fun LazyListScope.pinnedTabs(
                             Icon(
                                 imageVector = Icons.Filled.Tab,
                                 contentDescription = null,
-                                modifier = Modifier.size(16.dp),
+                                modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size_extra_small)),
                             )
                             Text(
                                 text = tab.tabName,

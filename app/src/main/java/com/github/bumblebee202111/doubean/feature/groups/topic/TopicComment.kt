@@ -35,7 +35,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.shared.TopicActivityItemUserProfileImage
-import com.github.bumblebee202111.doubean.feature.groups.shared.rememberGroupAccentColor
 import com.github.bumblebee202111.doubean.model.SizedImage
 import com.github.bumblebee202111.doubean.model.SizedPhoto
 import com.github.bumblebee202111.doubean.model.group.TopicComment
@@ -47,6 +46,7 @@ import com.github.bumblebee202111.doubean.ui.component.ListItemCount
 import com.github.bumblebee202111.doubean.ui.component.ListItemImages
 import com.github.bumblebee202111.doubean.ui.component.UserProfileImage
 import com.github.bumblebee202111.doubean.util.DateTimeStyle
+import com.github.bumblebee202111.doubean.util.toColorOrPrimary
 import com.github.bumblebee202111.doubean.util.toRelativeString
 import java.time.LocalDateTime
 
@@ -67,7 +67,7 @@ fun TopicComment(
         )
     }
 
-    val groupThemeColor = rememberGroupAccentColor(topic.group?.color)
+    val groupThemeColor = topic.group?.color.toColorOrPrimary()
     val isOp = remember(comment.author.id, topic.author.id) {
         comment.author.id == topic.author.id
     }

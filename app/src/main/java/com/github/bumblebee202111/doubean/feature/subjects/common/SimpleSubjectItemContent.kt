@@ -48,7 +48,7 @@ fun SimpleSubjectItemContent(
         AsyncImage(
             model = imageUrl,
             contentDescription = null,
-            modifier = imageModifier.clip(MaterialTheme.shapes.extraSmall),
+            modifier = imageModifier.clip(SubjectRoundedCornerShape),
             contentScale = ContentScale.FillBounds
         )
         Text(

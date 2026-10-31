@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.auth.AuthRepository
 import com.github.bumblebee202111.doubean.data.prefs.PreferenceStorage
-import com.github.bumblebee202111.doubean.model.theme.ThemeMode
 import com.github.bumblebee202111.doubean.ui.stateInUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -18,8 +17,6 @@ class SettingsViewModel @Inject constructor(
     ViewModel() {
     val enableNotifications =
         preferenceStorage.preferToReceiveNotifications.stateInUi()
-    val themeMode = preferenceStorage.themeMode.stateInUi()
-    val useDynamicColor = preferenceStorage.useDynamicColor.stateInUi()
     val startupTab = preferenceStorage.startupTab.stateInUi()
     val visibleTabs = preferenceStorage.visibleTabs.stateInUi()
     val autoImportSessionAtStartup =
@@ -30,15 +27,6 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             preferenceStorage.preferToReceiveNotifications(!enableNotifications.value!!)
         }
-    }
-
-    fun setThemeMode(mode: ThemeMode) {
-        viewModelScope.launch { preferenceStorage.setThemeMode(mode) }
-    }
-
-    fun toggleUseDynamicColor() {
-        val current = useDynamicColor.value ?: return
-        viewModelScope.launch { preferenceStorage.setUseDynamicColor(!current) }
     }
 
     fun setStartupTab(tabName: String) {

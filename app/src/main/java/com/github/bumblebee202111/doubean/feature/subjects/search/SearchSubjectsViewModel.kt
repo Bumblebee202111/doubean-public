@@ -65,9 +65,11 @@ class SearchSubjectsViewModel @Inject constructor(
             val result = repository.searchSubjects(query = trimmedQuery)
             _uiState.value = when (result) {
                 is AppResult.Error -> {
+                    val errorMessage = result.error.asUiMessage()
+                    snackbarManager.showMessage(errorMessage)
                     _uiState.value.copy(
                         isLoading = false,
-                        errorMessage = result.error.asUiMessage()
+                        errorMessage = errorMessage
                     )
                 }
 
@@ -118,9 +120,11 @@ class SearchSubjectsViewModel @Inject constructor(
             )
             _uiState.value = when (result) {
                 is AppResult.Error -> {
+                    val errorMessage = result.error.asUiMessage()
+                    snackbarManager.showMessage(errorMessage)
                     _uiState.value.copy(
                         isLoading = false,
-                        errorMessage = result.error.asUiMessage()
+                        errorMessage = errorMessage
                     )
                 }
 

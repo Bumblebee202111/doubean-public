@@ -25,22 +25,6 @@ fun FullScreenLoadingIndicator(
 }
 
 @Composable
-fun FullScreenEmpty(
-    message: String,
-    contentPadding: PaddingValues,
-) {
-    FullScreenCenteredContent(contentPadding = contentPadding) {
-        Text(
-            text = message,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
-    }
-}
-
-@Composable
 fun FullScreenErrorWithRetry(
     message: String,
     contentPadding: PaddingValues,

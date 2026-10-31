@@ -18,7 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -26,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
 import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.subject.Subject
@@ -33,7 +33,6 @@ import com.github.bumblebee202111.doubean.model.subject.SubjectCollectionItem
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItem
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemBasicContent
 import com.github.bumblebee202111.doubean.ui.common.subject.SubjectItemRank
-import com.github.bumblebee202111.doubean.util.parseHexColorOrNull
 
 @Composable
 fun RankLists(
@@ -82,12 +81,8 @@ private fun RankListItem(
                 CompositionLocalProvider(
                     value = LocalContentColor provides Color.White
                 ) {
-                    val fallbackBgColor = MaterialTheme.colorScheme.scrim
                     val primaryColorDark =
-                        remember(rankList.colorScheme.primaryColorDark, fallbackBgColor) {
-                            parseHexColorOrNull(rankList.colorScheme.primaryColorDark)
-                                ?: fallbackBgColor
-                        }
+                        Color(rankList.colorScheme.primaryColorDark.toColorInt())
                     Text(
                         text = rankList.name,
                         modifier = Modifier

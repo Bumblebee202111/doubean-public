@@ -36,6 +36,7 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.login.navigation.navigateToLogin
 import com.github.bumblebee202111.doubean.feature.mydoulists.navigation.navigateToMyDouLists
 import com.github.bumblebee202111.doubean.feature.settings.navigation.navigateToSettings
+import com.github.bumblebee202111.doubean.feature.userprofile.navigation.navigateToUserProfile
 import com.github.bumblebee202111.doubean.model.user.User
 import com.github.bumblebee202111.doubean.navigation.BottomNavSceneStrategy
 import com.github.bumblebee202111.doubean.navigation.NavigationState
@@ -108,7 +109,7 @@ fun MainNavScreen(
                 onHeaderClick = {
                     scope.launch { drawerState.close() }
                     if (currentUser != null) {
-                        navigator.navigate(TopLevelDestination.Me.route as NavKey)
+                        navigator.navigateToUserProfile(currentUser.uid)
                     } else {
                         navigator.navigateToLogin()
                     }

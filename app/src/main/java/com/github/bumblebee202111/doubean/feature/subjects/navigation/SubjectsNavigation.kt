@@ -10,14 +10,14 @@ import kotlinx.serialization.Serializable
 data object SubjectsNavKey : NavKey
 
 fun EntryProviderScope<NavKey>.subjectsEntry(
-    onMenuClick: () -> Unit,
+    onAvatarClick: () -> Unit,
     onSearchClick: () -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
 ) {
     entry<SubjectsNavKey> {
         SubjectsScreen(
-            onMenuClick = onMenuClick,
+            onAvatarClick = onAvatarClick,
             onSearchClick = onSearchClick,
             onRankListClick = onRankListClick,
             onSubjectClick = onSubjectClick

@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
@@ -47,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -105,7 +107,7 @@ fun TopicHeader(
         ) {
             UserProfileImage(
                 url = topic.author.avatar,
-                size = 40.dp,
+                size = dimensionResource(id = R.dimen.icon_size_large),
                 onClick = { onUserClick(topic.author.id) }
             )
             Spacer(Modifier.width(8.dp))
@@ -128,7 +130,7 @@ fun TopicHeader(
                             text = " · $it",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(start = 4.dp)
+                            modifier = Modifier.padding(start = dimensionResource(R.dimen.margin_extra_small))
                         )
                     }
                 }
@@ -150,7 +152,7 @@ fun TopicHeader(
                             contentDescription = null,
                             modifier = Modifier
                                 .height(320.dp)
-                                .clip(MaterialTheme.shapes.small)
+                                .clip(RoundedCornerShape(8.dp))
                                 .clickable {
                                     onImageClick(image.large.url)
                                 },

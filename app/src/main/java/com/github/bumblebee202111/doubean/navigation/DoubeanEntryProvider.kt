@@ -46,7 +46,7 @@ import com.github.bumblebee202111.doubean.model.subject.SubjectType
 
 fun createDoubeanEntryProvider(
     navigator: Navigator,
-    onMenuClick: () -> Unit,
+    onAvatarClick: () -> Unit,
 ) = entryProvider {
 
     val navigateToUri = { uriString: String ->
@@ -70,21 +70,21 @@ fun createDoubeanEntryProvider(
 
     
     statusesEntry(
-        onMenuClick = onMenuClick,
+        onAvatarClick = onAvatarClick,
         onUserClick = navigator::navigateToUserProfile,
         onImageClick = navigator::navigateToImageViewer,
         onOpenDeepLinkUrl = navigateToUri
     )
 
     subjectsEntry(
-        onMenuClick = onMenuClick,
+        onAvatarClick = onAvatarClick,
         onSearchClick = navigator::navigateToSearchSubjects,
         onRankListClick = navigator::navigateToRankList,
         onSubjectClick = navigateToSubject
     )
 
     groupsHomeEntry(
-        onMenuClick = onMenuClick,
+        onAvatarClick = onAvatarClick,
         onSearchClick = navigator::navigateToSearch,
         onNotificationsClick = navigator::navigateToNotifications,
         onGroupClick = navigator::navigateToGroup,
@@ -93,7 +93,6 @@ fun createDoubeanEntryProvider(
 
     
     userProfileEntry(
-        onMenuClick = onMenuClick,
         onBackClick = navigator::goBack,
         onSettingsClick = navigator::navigateToSettings,
         onLoginClick = navigator::navigateToLogin,

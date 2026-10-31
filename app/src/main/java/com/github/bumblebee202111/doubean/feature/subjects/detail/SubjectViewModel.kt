@@ -99,7 +99,9 @@ class SubjectViewModel @AssistedInject constructor(
 
             val detailResult = detailResultDeferred.await()
             if (detailResult is AppResult.Error) {
-                _uiState.value = SubjectUiState.Error(detailResult.error.asUiMessage())
+                val uiMessage = detailResult.error.asUiMessage()
+                snackbarManager.showMessage(uiMessage)
+                _uiState.value = SubjectUiState.Error(uiMessage)
                 return@launch
             }
 
@@ -142,7 +144,9 @@ class SubjectViewModel @AssistedInject constructor(
             val firstError = results.filterIsInstance<AppResult.Error>().firstOrNull()
 
             if (firstError != null) {
-                _uiState.value = SubjectUiState.Error(firstError.error.asUiMessage())
+                val uiMessage = firstError.error.asUiMessage()
+                snackbarManager.showMessage(uiMessage)
+                _uiState.value = SubjectUiState.Error(uiMessage)
             } else {
                 _uiState.value = SubjectUiState.Success(
                     subject = subject,

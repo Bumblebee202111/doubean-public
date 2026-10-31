@@ -229,7 +229,7 @@ fun NetworkExtra.toElessarExtra(): ElessarExtra = ElessarExtra(
     info = info?.mapNotNull { pair ->
         if (pair.size >= 2) pair[0] to pair[1] else null
     } ?: emptyList(),
-    rating = ratingGroup?.rating.toRating(ratingGroup?.nullRatingReason ?: ""),
+    rating = (ratingGroup?.rating to (ratingGroup?.nullRatingReason ?: "")).toRating(),
     shortInfo = shortInfo,
     year = year,
 )

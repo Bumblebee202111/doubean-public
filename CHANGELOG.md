@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+## Version 0.14.4
+
+- Support viewing full subject metadata sheet (e.g., book publication info) by tapping the header
+  info summary (https://github.com/Bumblebee202111/doubean-public/issues/29)
+
 ## Version 0.14.3
 
 - Fixed phone verification screen not opening during password
