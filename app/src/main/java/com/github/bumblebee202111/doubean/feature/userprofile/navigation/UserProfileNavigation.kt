@@ -15,6 +15,7 @@ data class UserProfileNavKey(val userId: String? = null) : NavKey
 fun EntryProviderScope<NavKey>.userProfileEntry(
     onStatItemUriClick: (uri: String) -> Boolean,
     onSubjectStatusClick: (userId: String, subjectType: SubjectType) -> Unit,
+    onMenuClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
     onLoginClick: () -> Unit = {},
@@ -23,6 +24,7 @@ fun EntryProviderScope<NavKey>.userProfileEntry(
         UserProfileScreen(
             onStatItemUriClick = onStatItemUriClick,
             onSubjectStatusClick = onSubjectStatusClick,
+            onMenuClick = onMenuClick,
             onBackClick = onBackClick,
             onSettingsClick = onSettingsClick,
             onLoginClick = onLoginClick,

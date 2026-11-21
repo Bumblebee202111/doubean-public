@@ -23,47 +23,24 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.subjects.books.BooksScreen
 import com.github.bumblebee202111.doubean.feature.subjects.movies.MoviesScreen
 import com.github.bumblebee202111.doubean.feature.subjects.music.MusicScreen
 import com.github.bumblebee202111.doubean.feature.subjects.tvs.TvsScreen
 import com.github.bumblebee202111.doubean.model.subject.SubjectType
-import com.github.bumblebee202111.doubean.model.user.User
-import com.github.bumblebee202111.doubean.ui.common.AppBarNavigationAvatar
 import com.github.bumblebee202111.doubean.ui.component.DoubeanTopAppBar
+import com.github.bumblebee202111.doubean.ui.component.MenuButton
 import kotlinx.coroutines.launch
 
 @Composable
 fun SubjectsScreen(
-    onAvatarClick: () -> Unit,
-    onSearchClick: () -> Unit,
-    onRankListClick: (collectionId: String) -> Unit,
-    onSubjectClick: (id: String, type: SubjectType) -> Unit,
-    viewModel: SubjectsViewModel = hiltViewModel(),
-) {
-    val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
-    SubjectsScreen(
-        currentUser = currentUser,
-        onAvatarClick = onAvatarClick,
-        onSearchClick = onSearchClick,
-        onRankListClick = onRankListClick,
-        onSubjectClick = onSubjectClick
-    )
-}
-
-@Composable
-fun SubjectsScreen(
-    currentUser: User?,
-    onAvatarClick: () -> Unit,
+    onMenuClick: () -> Unit,
     onSearchClick: () -> Unit,
     onRankListClick: (collectionId: String) -> Unit,
     onSubjectClick: (id: String, type: SubjectType) -> Unit,
@@ -71,8 +48,7 @@ fun SubjectsScreen(
     Scaffold(
         topBar = {
             SubjectsAppBar(
-                currentUser = currentUser,
-                onAvatarClick = onAvatarClick,
+                onMenuClick = onMenuClick,
                 onSearchClick = onSearchClick
             )
         }
@@ -101,18 +77,14 @@ fun SubjectsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SubjectsAppBar(
-    currentUser: User?,
-    onAvatarClick: () -> Unit,
+    onMenuClick: () -> Unit,
     onSearchClick: () -> Unit,
 ) {
     DoubeanTopAppBar(
         navigationIcon = {
-            AppBarNavigationAvatar(
-                currentUser = currentUser,
-                onAvatarClick = onAvatarClick
-            )
+            MenuButton(onClick = onMenuClick)
         },
-        title = {},
+        titleResId = R.string.title_subjects,
         actions = {
             IconButton(onClick = onSearchClick) {
                 Icon(

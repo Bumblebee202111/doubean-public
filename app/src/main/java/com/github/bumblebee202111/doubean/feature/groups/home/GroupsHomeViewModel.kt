@@ -5,7 +5,6 @@ import com.github.bumblebee202111.doubean.data.auth.AuthRepository
 import com.github.bumblebee202111.doubean.data.group.GroupRepository
 import com.github.bumblebee202111.doubean.data.group.GroupTopicRepository
 import com.github.bumblebee202111.doubean.data.group.UserGroupRepository
-import com.github.bumblebee202111.doubean.domain.usecase.ObserveCurrentUserUseCase
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
@@ -30,12 +29,8 @@ class GroupsHomeViewModel @Inject constructor(
     userGroupRepository: UserGroupRepository,
     topicRepository: GroupTopicRepository,
     authRepository: AuthRepository,
-    observeCurrentUserUseCase: ObserveCurrentUserUseCase,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val currentUser = observeCurrentUserUseCase().stateInUi()
 
     private val joinedGroupsRetryTrigger = MutableStateFlow(0)
     val joinedGroupsUiState = combine(

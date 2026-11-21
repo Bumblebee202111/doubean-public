@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -90,6 +91,21 @@ fun DoubeanTopAppBar(
         colors = colors,
         scrollBehavior = scrollBehavior,
     )
+}
+
+@Composable
+fun MenuButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    tint: Color = LocalContentColor.current,
+) {
+    IconButton(onClick = onClick, modifier = modifier) {
+        Icon(
+            imageVector = Icons.Filled.Menu,
+            contentDescription = "Menu",
+            tint = tint
+        )
+    }
 }
 
 @Composable

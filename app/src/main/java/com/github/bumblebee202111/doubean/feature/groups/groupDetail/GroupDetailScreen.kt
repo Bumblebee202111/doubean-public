@@ -1,6 +1,5 @@
 package com.github.bumblebee202111.doubean.feature.groups.groupdetail
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,14 +18,13 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.NotificationAdd
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedIconButton
@@ -59,11 +57,13 @@ import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.feature.groups.groupdetail.tab.GroupTab
 import com.github.bumblebee202111.doubean.feature.groups.shared.GroupNotificationPreferencesDialog
 import com.github.bumblebee202111.doubean.feature.groups.shared.LargeGroupAvatar
-import com.github.bumblebee202111.doubean.feature.groups.shared.groupTopAppBarColor
+import com.github.bumblebee202111.doubean.feature.groups.shared.rememberGroupAccentColor
 import com.github.bumblebee202111.doubean.model.group.GroupDetail
 import com.github.bumblebee202111.doubean.model.group.GroupMemberRole
 import com.github.bumblebee202111.doubean.model.group.GroupNotificationPreferences
 import com.github.bumblebee202111.doubean.model.group.GroupTab
+import com.github.bumblebee202111.doubean.ui.common.headerWashBackground
+import com.github.bumblebee202111.doubean.ui.common.rememberHeaderWashColor
 import com.github.bumblebee202111.doubean.ui.component.BackButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanButton
 import com.github.bumblebee202111.doubean.ui.component.DoubeanOutlinedButton
@@ -75,7 +75,6 @@ import com.github.bumblebee202111.doubean.ui.component.doubeanExpandedTopBarCont
 import com.github.bumblebee202111.doubean.ui.component.doubeanTopAppBarHeight
 import com.github.bumblebee202111.doubean.util.OpenInUtils
 import com.github.bumblebee202111.doubean.util.ShareUtil
-import com.github.bumblebee202111.doubean.util.toColorOrPrimary
 import kotlinx.coroutines.launch
 
 
@@ -253,8 +252,20 @@ fun GroupDetailTopBar(
     val group = uiState.group
     val cachedGroup = uiState.cachedGroup
     val notificationPreferences = uiState.notificationPreferences
-    val groupColor = (group?.color ?: cachedGroup?.color).toColorOrPrimary()
+    val rawGroupColor = group?.color ?: cachedGroup?.color
+    val washColor = if (rawGroupColor != null) {
+        rememberHeaderWashColor(rawGroupColor)
+    } else {
+        Color.Transparent
+    }
+    val surfaceColor = MaterialTheme.colorScheme.surface
+
     TwoRowsTopAppBar(
+        modifier = Modifier.headerWashBackground(
+            washColor = washColor,
+            surfaceColor = surfaceColor,
+            collapsedFraction = { scrollBehavior.state.collapsedFraction },
+        ),
         title = { expanded ->
             if (expanded) {
                 Column(modifier = Modifier.padding(doubeanExpandedTopBarContentPadding)) {
@@ -270,11 +281,12 @@ fun GroupDetailTopBar(
                             Text(
                                 text = group?.let { it.memberCount.toString() + it.memberName }
                                     ?: "",
-                                style = MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
 
                         }
-                        Row {
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             group?.apply {
                                 val memberRole = memberRole
                                 val isSubscribed = isSubscribed
@@ -285,7 +297,6 @@ fun GroupDetailTopBar(
                                     )
                                 ) { 
                                     GroupNotificationsButton(
-                                        groupColor = groupColor,
                                         notificationsEnabled = notificationPreferences?.notificationsEnabled == true,
                                         onOpenPreferencesDialog = showNotificationsPrefDialog
                                     )
@@ -299,29 +310,13 @@ fun GroupDetailTopBar(
                                         GroupMemberRole.MEMBER_INVITED_WAIT_FOR_ADMIN,
                                         GroupMemberRole.MEMBER_REQUESTED_WAIT_FOR_ADMIN
                                     ) -> {
-                                        DoubeanButton(
-                                            onClick = subscribeGroup,
-                                            colors = ButtonDefaults.buttonColors().copy(
-                                                contentColor = groupColor,
-                                                containerColor = Color.White
-                                            )
-                                        ) {
+                                        DoubeanButton(onClick = subscribeGroup) {
                                             Text(text = stringResource(id = R.string.subscribe))
                                         }
                                     }
 
                                     isSubscriptionEnabled && isSubscribed == true -> {
-                                        DoubeanOutlinedButton(
-                                            onClick = unsubscribeGroup,
-                                            colors = ButtonDefaults.outlinedButtonColors(
-                                                contentColor = Color.White,
-                                                containerColor = groupColor
-                                            ),
-                                            border = BorderStroke(
-                                                width = 1.dp,
-                                                color = Color.White
-                                            )
-                                        ) {
+                                        DoubeanOutlinedButton(onClick = unsubscribeGroup) {
                                             Text(text = stringResource(id = R.string.subscribed))
                                         }
                                     }
@@ -332,10 +327,6 @@ fun GroupDetailTopBar(
                                     ) -> {
                                         DoubeanTextButton(
                                             onClick = {},
-                                            colors = ButtonDefaults.textButtonColors().copy(
-                                                disabledContentColor = Color.White,
-                                                disabledContainerColor = groupColor
-                                            ),
                                             enabled = false
                                         ) {
                                             Text(text = stringResource(id = R.string.joined))
@@ -358,20 +349,24 @@ fun GroupDetailTopBar(
                             text = group?.description ?: "",
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.weight(1f)
                         )
                         Icon(
                             imageVector = Icons.Default.ChevronRight,
                             contentDescription = null,
-                            modifier = Modifier.size(24.dp)
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }
             } else {
-                Column {
-                    Text(text = group?.name ?: "")
-                }
+                Text(
+                    text = group?.name ?: "",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
         },
         navigationIcon = {
@@ -425,7 +420,13 @@ fun GroupDetailTopBar(
         },
         scrollBehavior = scrollBehavior,
         collapsedHeight = doubeanTopAppBarHeight,
-        colors = groupTopAppBarColor(groupColor)
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = surfaceColor.copy(alpha = 0f),
+            scrolledContainerColor = surfaceColor,
+            navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            actionIconContentColor = MaterialTheme.colorScheme.onSurface,
+        )
     )
 }
 
@@ -438,19 +439,26 @@ fun GroupTabRow(
     modifier: Modifier = Modifier,
 ) {
     val selectedTabIndex = pagerState.currentPage
+    val indicatorColor = rememberGroupAccentColor(groupColor)
     PrimaryScrollableTabRow(
         selectedTabIndex = selectedTabIndex,
         modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.surface,
         edgePadding = 0.dp,
         indicator = {
             val indicatorModifier =
                 Modifier.tabIndicatorOffset(selectedTabIndex)
             TabRowDefaults.SecondaryIndicator(
-                color = groupColor.toColorOrPrimary(),
+                color = indicatorColor,
                 modifier = indicatorModifier
             )
         },
-        divider = {},
+        divider = {
+            HorizontalDivider(
+                thickness = 0.5.dp,
+                color = MaterialTheme.colorScheme.outlineVariant,
+            )
+        },
         minTabWidth = 0.dp
     ) {
         val coroutineScope = rememberCoroutineScope()
@@ -526,16 +534,11 @@ fun GroupPager(
 
 @Composable
 private fun GroupNotificationsButton(
-    groupColor: Color,
     notificationsEnabled: Boolean,
     onOpenPreferencesDialog: () -> Unit,
 ) {
     OutlinedIconButton(
         onClick = onOpenPreferencesDialog,
-        colors = IconButtonDefaults.outlinedIconButtonColors(
-            contentColor = Color.White,
-            containerColor = groupColor
-        )
     ) {
         Icon(
             imageVector = if (notificationsEnabled) {
@@ -543,7 +546,12 @@ private fun GroupNotificationsButton(
             } else {
                 Icons.Filled.NotificationAdd
             },
-            contentDescription = null
+            contentDescription = null,
+            tint = if (notificationsEnabled) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            }
         )
     }
 }

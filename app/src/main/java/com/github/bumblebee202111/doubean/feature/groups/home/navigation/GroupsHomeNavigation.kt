@@ -9,14 +9,14 @@ import kotlinx.serialization.Serializable
 data object GroupsHomeNavKey : NavKey
 
 fun EntryProviderScope<NavKey>.groupsHomeEntry(
-    onAvatarClick: () -> Unit,
+    onMenuClick: () -> Unit,
     onSearchClick: () -> Unit,
     onNotificationsClick: () -> Unit,
     onGroupClick: (groupId: String, tabId: String?) -> Unit,
     onTopicClick: (uri: String) -> Unit,
 ) = entry<GroupsHomeNavKey> {
     GroupsHomeScreen(
-        onAvatarClick = onAvatarClick,
+        onMenuClick = onMenuClick,
         onSearchClick = onSearchClick,
         onNotificationsClick = onNotificationsClick,
         onGroupClick = onGroupClick,
