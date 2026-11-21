@@ -3,7 +3,6 @@ package com.github.bumblebee202111.doubean.feature.userprofile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -52,6 +51,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.github.bumblebee202111.doubean.R
+import com.github.bumblebee202111.doubean.core.theme.DoubeanTheme
 import com.github.bumblebee202111.doubean.model.subject.MySubject
 import com.github.bumblebee202111.doubean.model.subject.SubjectType
 import com.github.bumblebee202111.doubean.model.user.HiddenTypeInProfile
@@ -110,7 +110,7 @@ fun UserProfileScreen(
 
     val isConsideredCollapsed = scrollBehavior.state.collapsedFraction > 0.5f
 
-    val isAppInDarkTheme = isSystemInDarkTheme()
+    val isAppInDarkTheme = DoubeanTheme.isDark
 
     val useLightIcons: Boolean = if (isAppInDarkTheme) {
         true

@@ -46,6 +46,7 @@ android {
         }
         debug {
             isDebuggable = true
+            versionNameSuffix = "-dev"
         }
     }
     compileOptions {

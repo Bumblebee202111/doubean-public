@@ -35,6 +35,8 @@ class MainActivityViewModel @Inject constructor(
 
     val startupTab = preferenceStorage.startupTab.stateInUi()
     val visibleTabs = preferenceStorage.visibleTabs.stateInUi()
+    val themeMode = preferenceStorage.themeMode.stateInUi()
+    val useDynamicColor = preferenceStorage.useDynamicColor.stateInUi()
 
     val autoImportSessionAtStartup =
         preferenceStorage.preferToAutoImportSessionAtStartup.stateInUi()

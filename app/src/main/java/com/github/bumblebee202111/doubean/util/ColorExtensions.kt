@@ -4,29 +4,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-fun String.toColor(): Color {
+fun parseHexColorOrNull(raw: String?): Color? {
+    val clean = raw?.trim()?.trimStart('#') ?: return null
+    val normalized = when (clean.length) {
+        6 -> "FF$clean"
+        8 -> clean
+        else -> return null
+    }
+    val colorLong = normalized.toLongOrNull(16) ?: return null
+    return Color(colorLong)
+}
 
-    var colorStr = this.replaceFirstChar { if (it == '#') "" else it.toString() }
-
-    require(colorStr.length == 6 || colorStr.length == 8) {
+@Deprecated("Use parseHexColorOrNull instead")
+fun String.toColor(): Color =
+    requireNotNull(parseHexColorOrNull(this)) {
         "Invalid hex color: $this. Use #RRGGBB or #AARRGGBB."
     }
-    
-    if (colorStr.length == 6) {
-        colorStr = "FF$colorStr"
-    }
 
-    return Color(colorStr.toLong(16))
-}
-
+@Deprecated("Use feature or ui/common color helpers instead")
 @Composable
-fun String?.toColorOrPrimary(): Color {
-    return this?.let { hexString ->
-        try {
-            hexString.toColor()
-        } catch (e: IllegalArgumentException) {
-            MaterialTheme.colorScheme.primary
-        }
-    } ?: MaterialTheme.colorScheme.primary
-}
-
+fun String?.toColorOrPrimary(): Color =
+    parseHexColorOrNull(this) ?: MaterialTheme.colorScheme.primary

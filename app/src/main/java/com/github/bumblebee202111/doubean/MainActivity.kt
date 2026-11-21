@@ -9,6 +9,8 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -24,6 +26,7 @@ import com.github.bumblebee202111.doubean.core.theme.DoubeanTheme
 import com.github.bumblebee202111.doubean.data.auth.AuthRepository
 import com.github.bumblebee202111.doubean.feature.groups.workers.TopicNotificationsWorker
 import com.github.bumblebee202111.doubean.feature.groups.workers.TopicNotificationsWorker.Companion.WORK_NAME
+import com.github.bumblebee202111.doubean.model.theme.ThemeMode
 import com.github.bumblebee202111.doubean.navigation.TopLevelDestination
 import com.github.bumblebee202111.doubean.navigation.toNavKeyOrNull
 import com.github.bumblebee202111.doubean.ui.DoubeanApp
@@ -65,11 +68,37 @@ class MainActivity : ComponentActivity() {
         pendingDeepLinkKey = intent.data?.toString()?.toNavKeyOrNull()
 
         setContent {
-            DoubeanTheme {
-                val startupTabName by viewModel.startupTab.collectAsStateWithLifecycle()
-                val visibleTabNames by viewModel.visibleTabs.collectAsStateWithLifecycle()
-                val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
-                if (startupTabName != null && visibleTabNames != null) {
+            val startupTabName by viewModel.startupTab.collectAsStateWithLifecycle()
+            val visibleTabNames by viewModel.visibleTabs.collectAsStateWithLifecycle()
+            val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
+            val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
+            val useDynamicColor by viewModel.useDynamicColor.collectAsStateWithLifecycle()
+
+            if (startupTabName != null && visibleTabNames != null && themeMode != null && useDynamicColor != null) {
+                val systemDarkTheme = isSystemInDarkTheme()
+                val darkTheme = when (themeMode!!) {
+                    ThemeMode.SYSTEM -> systemDarkTheme
+                    ThemeMode.LIGHT -> false
+                    ThemeMode.DARK -> true
+                }
+
+                DisposableEffect(darkTheme) {
+                    val barStyle = if (darkTheme) {
+                        SystemBarStyle.dark(Color.TRANSPARENT)
+                    } else {
+                        SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+                    }
+                    enableEdgeToEdge(
+                        statusBarStyle = barStyle,
+                        navigationBarStyle = barStyle,
+                    )
+                    onDispose {}
+                }
+
+                DoubeanTheme(
+                    themeMode = themeMode!!,
+                    dynamicColor = useDynamicColor!!,
+                ) {
                     val topLevelDestinations =
                         TopLevelDestination.entries.filter { it.name in visibleTabNames!! }
 
