@@ -8,11 +8,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSliderState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.github.bumblebee202111.doubean.R
+import kotlin.math.roundToInt
 
 @Composable
 fun JumpToCommentOfIndexDialog(
@@ -58,12 +56,12 @@ fun JumpToCommentOfIndexSlider(
     maxCommentIndex: Int,
     onTargetCommentIndexConfirmed: (newCommentIndex: Int) -> Unit,
 ) {
-    var sliderPosition by rememberSaveable(initialCommentIndex) {
-        mutableFloatStateOf(
-            initialCommentIndex.toFloat()
-        )
-    }
     val steps = (maxCommentIndex - 1).coerceAtLeast(0)
+    val sliderState = rememberSliderState(
+        value = initialCommentIndex.toFloat(),
+        steps = steps,
+        trackRange = 0f..maxCommentIndex.toFloat(),
+    )
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
             text = stringResource(R.string.jump_to_comment),
@@ -73,16 +71,14 @@ fun JumpToCommentOfIndexSlider(
                 .align(Alignment.CenterHorizontally)
         )
         Slider(
-            value = sliderPosition,
-            onValueChange = { sliderPosition = it },
-            steps = steps,
-            valueRange = 0f..maxCommentIndex.toFloat(),
+            state = sliderState,
+            onValueChange = { sliderState.value = it },
             onValueChangeFinished = {
-                onTargetCommentIndexConfirmed(sliderPosition.toInt())
+                onTargetCommentIndexConfirmed(sliderState.value.roundToInt())
             },
         )
         Text(
-            text = "${sliderPosition.toInt() + 1} / ${maxCommentIndex + 1}",
+            text = "${sliderState.value.roundToInt() + 1} / ${maxCommentIndex + 1}",
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium

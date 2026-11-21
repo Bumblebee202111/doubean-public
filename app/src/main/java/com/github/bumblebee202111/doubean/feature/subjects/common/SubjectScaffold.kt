@@ -4,6 +4,9 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import com.github.bumblebee202111.doubean.model.subject.SubjectReviewList
@@ -16,7 +19,15 @@ fun SubjectScaffold(
     topBar: @Composable () -> Unit,
     content: @Composable (PaddingValues) -> Unit,
 ) {
+    val bottomSheetState = rememberBottomSheetState(
+        initialValue = SheetValue.PartiallyExpanded,
+        enabledValues = setOf(SheetValue.PartiallyExpanded, SheetValue.Expanded),
+    )
+    val scaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = bottomSheetState,
+    )
     BottomSheetScaffold(
+        scaffoldState = scaffoldState,
         sheetContent = reviewsSheetContent,
         sheetPeekHeight = 128.dp,
         topBar = topBar,
