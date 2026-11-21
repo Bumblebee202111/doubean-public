@@ -49,11 +49,14 @@ class GroupsHomeViewModel @Inject constructor(
                     when (result) {
                         is CachedAppResult.Error -> {
                             val errorMessage = result.error.asUiMessage()
-                            snackbarManager.showMessage(errorMessage)
+                            val hasCache = !result.cache.isNullOrEmpty()
+                            if (hasCache) {
+                                snackbarManager.showMessage(errorMessage)
+                            }
                             JoinedGroupsUiState(
                                 isLoading = false,
                                 groups = result.cache,
-                                errorMessage = errorMessage
+                                errorMessage = if (hasCache) null else errorMessage
                             )
                         }
 
@@ -88,9 +91,7 @@ class GroupsHomeViewModel @Inject constructor(
                 emit(DayRankingUiState.Loading)
                 when (val result = groupRepository.getDayRanking()) {
                     is AppResult.Error -> {
-                        val errorMessage = result.error.asUiMessage()
-                        snackbarManager.showMessage(errorMessage)
-                        emit(DayRankingUiState.Error(errorMessage = errorMessage))
+                        emit(DayRankingUiState.Error(errorMessage = result.error.asUiMessage()))
                     }
 
                     is AppResult.Success -> {
@@ -117,11 +118,14 @@ class GroupsHomeViewModel @Inject constructor(
 
                         is CachedAppResult.Error -> {
                             val errorMessage = result.error.asUiMessage()
-                            snackbarManager.showMessage(errorMessage)
+                            val hasCache = !result.cache.isNullOrEmpty()
+                            if (hasCache) {
+                                snackbarManager.showMessage(errorMessage)
+                            }
                             RecentTopicsFeedUiState(
                                 isLoading = false,
                                 topics = result.cache,
-                                errorMessage = errorMessage
+                                errorMessage = if (hasCache) null else errorMessage
                             )
                         }
 

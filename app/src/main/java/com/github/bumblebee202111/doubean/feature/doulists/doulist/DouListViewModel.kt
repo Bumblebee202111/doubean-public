@@ -49,7 +49,7 @@ class DouListViewModel @AssistedInject constructor(
 
     fun fetchDouListDetails() {
         viewModelScope.launch {
-            _uiState.update { it.copy() }
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
             val loggedInUserId = authRepository.loggedInUserId.first()
 
@@ -66,7 +66,6 @@ class DouListViewModel @AssistedInject constructor(
                 is AppResult.Error -> {
                     errorOccurred = true
                     finalErrorMessage = result.error.asUiMessage()
-                    snackbarManager.showMessage(finalErrorMessage)
                 }
             }
 
@@ -79,18 +78,23 @@ class DouListViewModel @AssistedInject constructor(
                     is AppResult.Error -> {
                         errorOccurred = true
                         finalErrorMessage = result.error.asUiMessage()
-                        snackbarManager.showMessage(finalErrorMessage)
                     }
                 }
             }
 
+            val resolvedDouList = listDetail ?: _uiState.value.douList
+            if (errorOccurred && resolvedDouList != null && finalErrorMessage != null) {
+                snackbarManager.showMessage(finalErrorMessage)
+            }
+
             _uiState.update {
-                val isOwner = (listDetail?.owner?.id == loggedInUserId) && (loggedInUserId != null)
+                val isOwner =
+                    (resolvedDouList?.owner?.id == loggedInUserId) && (loggedInUserId != null)
                 it.copy(
-                    douList = listDetail ?: it.douList,
+                    douList = resolvedDouList,
                     items = if (!errorOccurred) listItems else it.items,
                     isLoading = false,
-                    errorMessage = if (errorOccurred) finalErrorMessage else null,
+                    errorMessage = if (errorOccurred && resolvedDouList == null) finalErrorMessage else null,
                     isOwner = isOwner
                 )
             }

@@ -59,10 +59,8 @@ class MyCollectedItemsViewModel @Inject constructor(
                 }
 
                 is AppResult.Error -> {
-                    val errorMessage = result.error.asUiMessage()
-                    snackbarManager.showMessage(errorMessage)
                     _uiState.update {
-                        it.copy(isLoading = false, errorMessage = errorMessage)
+                        it.copy(isLoading = false, errorMessage = result.error.asUiMessage())
                     }
                 }
             }

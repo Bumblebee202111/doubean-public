@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bumblebee202111.doubean.data.subject.SubjectCommonRepository
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -20,7 +19,6 @@ import kotlinx.coroutines.launch
 @HiltViewModel(assistedFactory = ElessarSubjectViewModel.Factory::class)
 class ElessarSubjectViewModel @AssistedInject constructor(
     private val subjectCommonRepository: SubjectCommonRepository,
-    private val snackbarManager: SnackbarManager,
     @Assisted val subjectId: String,
 ) : ViewModel() {
 
@@ -44,9 +42,7 @@ class ElessarSubjectViewModel @AssistedInject constructor(
                 }
 
                 is AppResult.Error -> {
-                    val uiMessage = result.error.asUiMessage()
-                    snackbarManager.showMessage(uiMessage)
-                    _uiState.value = ElessarSubjectUiState.Error(uiMessage)
+                    _uiState.value = ElessarSubjectUiState.Error(result.error.asUiMessage())
                 }
             }
         }
