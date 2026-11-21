@@ -148,7 +148,42 @@ fun SettingsScreen(
     }
 
     if (showStartupTabDialog && startupTab != null && visibleTabs != null) {
-        var selectedTabs by remember { mutableStateOf(visibleTabs) }
+        val availableTabs = TopLevelDestination.entries.filter { it.name in visibleTabs }
+        AlertDialog(
+            onDismissRequest = { showStartupTabDialog = false },
+            title = { Text(stringResource(R.string.pref_title_startup_tab)) },
+            text = {
+                Column {
+                    availableTabs.forEach { tab ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    setStartupTab(tab.name)
+                                    showStartupTabDialog = false
+                                }
+                                .padding(vertical = 12.dp)
+                        ) {
+                            RadioButton(selected = tab.name == startupTab, onClick = null)
+                            Text(
+                                stringResource(tab.labelResId),
+                                modifier = Modifier.padding(start = 16.dp)
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                DoubeanTextButton(onClick = {
+                    showStartupTabDialog = false
+                }) { Text(stringResource(R.string.action_cancel)) }
+            }
+        )
+    }
+
+    if (showVisibleTabsDialog && visibleTabs != null) {
+        var selectedTabs by remember(visibleTabs) { mutableStateOf(visibleTabs) }
         AlertDialog(
             onDismissRequest = { showVisibleTabsDialog = false },
             title = { Text(stringResource(R.string.pref_title_visible_tabs)) },
