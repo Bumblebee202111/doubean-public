@@ -21,7 +21,7 @@ import com.github.bumblebee202111.doubean.model.subject.TvDetail
 
 fun NetworkMovieDetail.toMovieDetail() = MovieDetail(
     id = id,
-    rating = Pair(rating, nullRatingReason).toRating(),
+    rating = rating.toRating(nullRatingReason),
     cardSubtitle = cardSubtitle,
     title = title,
     coverUrl = coverUrl,
@@ -43,7 +43,7 @@ fun NetworkMovieDetail.toMovieDetail() = MovieDetail(
 
 fun NetworkTvDetail.toTvDetail() = TvDetail(
     id = id,
-    rating = Pair(rating, nullRatingReason).toRating(),
+    rating = rating.toRating(nullRatingReason),
     cardSubtitle = cardSubtitle,
     title = title,
     coverUrl = coverUrl,
@@ -75,7 +75,7 @@ fun NetworkBookSeries.toBookSeries() = BookSeries(
 
 fun NetworkBookDetail.toBookDetail() = BookDetail(
     id = id,
-    rating = Pair(rating, nullRatingReason).toRating(),
+    rating = rating.toRating(nullRatingReason),
     cardSubtitle = cardSubtitle,
     title = title,
     coverUrl = coverUrl,
@@ -95,7 +95,7 @@ fun NetworkBookDetail.toBookDetail() = BookDetail(
 
 fun NetworkMusicDetail.toMusicDetail() = MusicDetail(
     id = id,
-    rating = Pair(rating, nullRatingReason).toRating(),
+    rating = rating.toRating(nullRatingReason),
     cardSubtitle = cardSubtitle,
     title = title,
     coverUrl = coverUrl,
