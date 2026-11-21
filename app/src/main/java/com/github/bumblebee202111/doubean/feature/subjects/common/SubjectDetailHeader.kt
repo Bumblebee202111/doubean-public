@@ -66,7 +66,7 @@ fun SubjectDetailHeader(
             contentDescription = null,
             modifier = Modifier
                 .size(width = 100.dp, height = 140.dp)
-                .clip(SubjectRoundedCornerShape)
+                .clip(MaterialTheme.shapes.extraSmall)
                 .clickable { onImageClick(subject.coverUrl) },
             contentScale = ContentScale.FillBounds
         )

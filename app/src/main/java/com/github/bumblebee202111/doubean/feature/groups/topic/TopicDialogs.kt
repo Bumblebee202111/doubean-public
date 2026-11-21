@@ -3,7 +3,6 @@ package com.github.bumblebee202111.doubean.feature.groups.topic
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -36,7 +35,7 @@ fun JumpToCommentOfIndexDialog(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            shape = RoundedCornerShape(16.dp),
+            shape = MaterialTheme.shapes.large,
         ) {
             JumpToCommentOfIndexSlider(
                 initialCommentIndex = currentCommentIndex,

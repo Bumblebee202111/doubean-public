@@ -99,12 +99,12 @@ internal val LocalDoubeanDarkTheme = staticCompositionLocalOf { false }
 private val DoubeanShapes = Shapes(
     extraSmall = RoundedCornerShape(4.dp),
     small = RoundedCornerShape(8.dp),
-    medium = RoundedCornerShape(10.dp),
-    large = RoundedCornerShape(14.dp),
+    medium = RoundedCornerShape(12.dp),
+    large = RoundedCornerShape(16.dp),
     extraLarge = RoundedCornerShape(20.dp),
     largeIncreased = RoundedCornerShape(16.dp),
     extraLargeIncreased = RoundedCornerShape(24.dp),
-    extraExtraLarge = RoundedCornerShape(32.dp),
+    extraExtraLarge = RoundedCornerShape(28.dp),
 )
 
 object DoubeanTheme {

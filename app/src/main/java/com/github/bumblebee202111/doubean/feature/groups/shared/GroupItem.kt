@@ -17,11 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.github.bumblebee202111.doubean.R
 import com.github.bumblebee202111.doubean.model.group.GroupItemWithIntroInfo
 
 @Composable
@@ -64,7 +62,7 @@ fun DayRankingGroupItem(
                 color = Color.White
             )
         }
-        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.margin_normal)))
+        Spacer(modifier = Modifier.width(16.dp))
         GroupItemContent(
             avatarUrl = group.avatar,
             name = group.name,
@@ -87,7 +85,7 @@ fun GroupItemContent(
         modifier = Modifier.fillMaxWidth()
     ) {
         LargeGroupAvatar(avatarUrl = avatarUrl)
-        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.margin_small)))
+        Spacer(modifier = Modifier.width(8.dp))
         Column {
             Text(
                 text = name ?: "",
@@ -96,13 +94,13 @@ fun GroupItemContent(
                 maxLines = 1,
                 style = MaterialTheme.typography.titleMedium
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.margin_extra_small)))
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = (memberCount?.toString() ?: "") + (memberName ?: ""),
                 fontWeight = FontWeight.Light,
                 style = MaterialTheme.typography.bodyMedium
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.margin_extra_small)))
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = descAbstract ?: "",
                 overflow = TextOverflow.Ellipsis,
