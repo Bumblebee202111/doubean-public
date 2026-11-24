@@ -8,7 +8,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -18,15 +17,10 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation3.runtime.NavKey
-import com.github.bumblebee202111.doubean.feature.groups.groupdetail.navigation.GroupDetailNavKey
-import com.github.bumblebee202111.doubean.feature.groups.resharestatuses.navigation.ReshareStatusesNavKey
-import com.github.bumblebee202111.doubean.feature.groups.topic.navigation.TopicNavKey
-import com.github.bumblebee202111.doubean.feature.userprofile.navigation.UserProfileNavKey
 import com.github.bumblebee202111.doubean.model.user.User
 import com.github.bumblebee202111.doubean.navigation.Navigator
 import com.github.bumblebee202111.doubean.navigation.TopLevelDestination
 import com.github.bumblebee202111.doubean.navigation.rememberNavigationState
-import com.github.bumblebee202111.doubean.ui.common.ApplyStatusBarIconAppearance
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 
 @Composable
@@ -50,24 +44,6 @@ fun DoubeanApp(
     )
 
     val navigator = remember { Navigator(navigationState) }
-
-    val currentKey by remember {
-        derivedStateOf {
-            val currentStack = navigationState.backStacks[navigationState.topLevelRoute]
-            currentStack?.lastOrNull() ?: navigationState.topLevelRoute
-        }
-    }
-
-    val useLightIcons = remember(currentKey) {
-        val needsLightIcons = currentKey is GroupDetailNavKey ||
-                currentKey is TopicNavKey ||
-                currentKey is ReshareStatusesNavKey ||
-                currentKey is UserProfileNavKey
-
-        if (needsLightIcons) true else null
-    }
-
-    ApplyStatusBarIconAppearance(useLightIcons = useLightIcons)
 
     val currentMessage by snackbarManager.currentMessage.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current

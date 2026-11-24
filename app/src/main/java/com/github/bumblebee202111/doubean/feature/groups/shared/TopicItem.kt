@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Comment
 import androidx.compose.material.icons.filled.MoreVert
@@ -26,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -96,7 +94,7 @@ fun TopicItem(
                         TopicItemDisplayMode.SHOW_AUTHOR -> {
                             UserProfileImage(
                                 url = topic.author.avatar,
-                                size = dimensionResource(id = R.dimen.icon_size_extra_small),
+                                size = 16.dp,
                                 onClick = {
                                     onAuthorClick(topic.author.id)
                                 }
@@ -108,7 +106,7 @@ fun TopicItem(
                         }
                     }
 
-                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.margin_small)))
+                    Spacer(modifier = Modifier.width(8.dp))
 
                     Text(
                         text = when (displayMode) {
@@ -138,12 +136,12 @@ fun TopicItem(
                         text = topic.createTime.toRelativeString(style = DateTimeStyle.ABBREVIATED)
                     )
                 }
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.margin_small)))
+                Spacer(modifier = Modifier.height(8.dp))
                 val topicAndTagText = topic.tag?.let { tag ->
                     buildGroupTopicAndTagText(tag.name, topic.title)
                 } ?: topic.title
                 Text(text = topicAndTagText, style = MaterialTheme.typography.bodyLarge)
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.margin_small)))
+                Spacer(modifier = Modifier.height(8.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     ListItemCount(
                         iconVector = Icons.AutoMirrored.Outlined.Comment,
@@ -179,7 +177,7 @@ fun TopicItem(
                     modifier = Modifier
                         .padding(vertical = 12.dp)
                         .size(80.dp)
-                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_normal))),
+                        .clip(MaterialTheme.shapes.small),
                     alignment = Alignment.Center,
                     contentScale = ContentScale.Crop,
                 )

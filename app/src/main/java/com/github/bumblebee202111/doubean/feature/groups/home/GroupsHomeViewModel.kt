@@ -5,7 +5,6 @@ import com.github.bumblebee202111.doubean.data.auth.AuthRepository
 import com.github.bumblebee202111.doubean.data.group.GroupRepository
 import com.github.bumblebee202111.doubean.data.group.GroupTopicRepository
 import com.github.bumblebee202111.doubean.data.group.UserGroupRepository
-import com.github.bumblebee202111.doubean.domain.usecase.ObserveCurrentUserUseCase
 import com.github.bumblebee202111.doubean.model.AppResult
 import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
@@ -30,12 +29,8 @@ class GroupsHomeViewModel @Inject constructor(
     userGroupRepository: UserGroupRepository,
     topicRepository: GroupTopicRepository,
     authRepository: AuthRepository,
-    observeCurrentUserUseCase: ObserveCurrentUserUseCase,
     private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val currentUser = observeCurrentUserUseCase().stateInUi()
 
     private val joinedGroupsRetryTrigger = MutableStateFlow(0)
     val joinedGroupsUiState = combine(
@@ -49,11 +44,14 @@ class GroupsHomeViewModel @Inject constructor(
                     when (result) {
                         is CachedAppResult.Error -> {
                             val errorMessage = result.error.asUiMessage()
-                            snackbarManager.showMessage(errorMessage)
+                            val hasCache = !result.cache.isNullOrEmpty()
+                            if (hasCache) {
+                                snackbarManager.showMessage(errorMessage)
+                            }
                             JoinedGroupsUiState(
                                 isLoading = false,
                                 groups = result.cache,
-                                errorMessage = errorMessage
+                                errorMessage = if (hasCache) null else errorMessage
                             )
                         }
 
@@ -88,9 +86,7 @@ class GroupsHomeViewModel @Inject constructor(
                 emit(DayRankingUiState.Loading)
                 when (val result = groupRepository.getDayRanking()) {
                     is AppResult.Error -> {
-                        val errorMessage = result.error.asUiMessage()
-                        snackbarManager.showMessage(errorMessage)
-                        emit(DayRankingUiState.Error(errorMessage = errorMessage))
+                        emit(DayRankingUiState.Error(errorMessage = result.error.asUiMessage()))
                     }
 
                     is AppResult.Success -> {
@@ -117,11 +113,14 @@ class GroupsHomeViewModel @Inject constructor(
 
                         is CachedAppResult.Error -> {
                             val errorMessage = result.error.asUiMessage()
-                            snackbarManager.showMessage(errorMessage)
+                            val hasCache = !result.cache.isNullOrEmpty()
+                            if (hasCache) {
+                                snackbarManager.showMessage(errorMessage)
+                            }
                             RecentTopicsFeedUiState(
                                 isLoading = false,
                                 topics = result.cache,
-                                errorMessage = errorMessage
+                                errorMessage = if (hasCache) null else errorMessage
                             )
                         }
 

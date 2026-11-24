@@ -6,7 +6,6 @@ import com.github.bumblebee202111.doubean.data.auth.AuthRepository
 import com.github.bumblebee202111.doubean.data.userdoulist.UserDouListRepository
 import com.github.bumblebee202111.doubean.feature.doulists.userdoulists.UserDouListsUiState
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -22,7 +21,6 @@ import kotlinx.coroutines.launch
 class CreatedDouListsViewModel @AssistedInject constructor(
     private val userDouListRepository: UserDouListRepository,
     private val authRepository: AuthRepository,
-    private val snackbarManager: SnackbarManager,
     @Assisted val userId: String,
 ) : ViewModel() {
 
@@ -48,10 +46,7 @@ class CreatedDouListsViewModel @AssistedInject constructor(
                 }
 
                 is AppResult.Error -> {
-                    val uiMessage = result.error.asUiMessage()
-
-                    snackbarManager.showMessage(uiMessage)
-                    _uiState.value = UserDouListsUiState.Error(uiMessage)
+                    _uiState.value = UserDouListsUiState.Error(result.error.asUiMessage())
                 }
             }
         }

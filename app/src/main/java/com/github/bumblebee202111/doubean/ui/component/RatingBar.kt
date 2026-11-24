@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,8 +15,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.bumblebee202111.doubean.core.theme.RatingActiveColor
-import com.github.bumblebee202111.doubean.core.theme.RatingInactiveColor
+import com.github.bumblebee202111.doubean.core.theme.DoubeanTheme
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -35,12 +35,10 @@ fun DoubeanRatingBar(
     rating: Float,
     modifier: Modifier = Modifier,
     size: DoubeanRatingBarSize = DoubeanRatingBarSize.Small,
-    activeColor: Color = RatingActiveColor,
-    inactiveColor: Color = RatingInactiveColor,
+    activeColor: Color = DoubeanTheme.extendedColors.ratingStar,
+    inactiveColor: Color = MaterialTheme.colorScheme.outlineVariant,
 ) {
     val clampedRating = rating.coerceIn(0f, 5f)
-    val activeColor = Color(0xFFFFC107)
-    val inactiveColor = Color(0xFF9E9E9E)
 
     Row(modifier) {
         repeat(5) { index ->

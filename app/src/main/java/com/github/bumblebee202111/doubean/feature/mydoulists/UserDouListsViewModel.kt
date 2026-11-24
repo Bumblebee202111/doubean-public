@@ -7,7 +7,6 @@ import com.github.bumblebee202111.doubean.data.auth.AuthRepository
 import com.github.bumblebee202111.doubean.data.userdoulist.UserDouListRepository
 import com.github.bumblebee202111.doubean.feature.doulists.userdoulists.UserDouListsUiState
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.ui.common.SnackbarManager
 import com.github.bumblebee202111.doubean.ui.model.toUiMessage
 import com.github.bumblebee202111.doubean.ui.util.asUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +21,6 @@ import javax.inject.Inject
 class UserDouListsViewModel @Inject constructor(
     private val userDouListRepository: UserDouListRepository,
     private val authRepository: AuthRepository,
-    private val snackbarManager: SnackbarManager,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UserDouListsUiState>(UserDouListsUiState.Loading)
@@ -53,10 +51,7 @@ class UserDouListsViewModel @Inject constructor(
                 }
 
                 is AppResult.Error -> {
-                    val uiMessage = result.error.asUiMessage()
-
-                    snackbarManager.showMessage(uiMessage)
-                    _uiState.value = UserDouListsUiState.Error(uiMessage)
+                    _uiState.value = UserDouListsUiState.Error(result.error.asUiMessage())
                 }
             }
         }

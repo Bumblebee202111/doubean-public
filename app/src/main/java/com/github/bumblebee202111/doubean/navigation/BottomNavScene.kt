@@ -2,7 +2,10 @@ package com.github.bumblebee202111.doubean.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ShortNavigationBar
 import androidx.compose.material3.ShortNavigationBarItem
@@ -29,19 +32,32 @@ class BottomNavScene(
     override val entries: List<NavEntry<NavKey>> = listOf(entry)
 
     override val content: @Composable () -> Unit = {
+        val showBottomBar = topLevelDestinations.size > 1
         Column(modifier = Modifier.fillMaxSize()) {
-            Box(modifier = Modifier.weight(1f)) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .then(
+                        if (showBottomBar) {
+                            Modifier.consumeWindowInsets(WindowInsets.navigationBars)
+                        } else {
+                            Modifier
+                        }
+                    )
+            ) {
                 entry.Content()
             }
 
-            ShortNavigationBar {
-                topLevelDestinations.forEach { destination ->
-                    ShortNavigationBarItem(
-                        icon = { Icon(destination.iconVector, contentDescription = null) },
-                        label = { Text(stringResource(destination.labelResId)) },
-                        selected = destination.route == navigator.state.topLevelRoute,
-                        onClick = { navigator.navigate(destination.route as NavKey) }
-                    )
+            if (showBottomBar) {
+                ShortNavigationBar {
+                    topLevelDestinations.forEach { destination ->
+                        ShortNavigationBarItem(
+                            icon = { Icon(destination.iconVector, contentDescription = null) },
+                            label = { Text(stringResource(destination.labelResId)) },
+                            selected = destination.route == navigator.state.topLevelRoute,
+                            onClick = { navigator.navigate(destination.route as NavKey) }
+                        )
+                    }
                 }
             }
         }

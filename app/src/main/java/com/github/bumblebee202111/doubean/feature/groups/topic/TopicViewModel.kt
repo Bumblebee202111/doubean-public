@@ -10,7 +10,6 @@ import com.github.bumblebee202111.doubean.data.doulist.DouListRepository
 import com.github.bumblebee202111.doubean.data.group.GroupTopicRepository
 import com.github.bumblebee202111.doubean.data.itemdoulist.ItemDouListRepository
 import com.github.bumblebee202111.doubean.model.AppResult
-import com.github.bumblebee202111.doubean.model.CachedAppResult
 import com.github.bumblebee202111.doubean.model.common.CollectType
 import com.github.bumblebee202111.doubean.model.data
 import com.github.bumblebee202111.doubean.model.doulist.ItemDouList
@@ -30,7 +29,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = TopicViewModel.Factory::class)
@@ -71,11 +69,7 @@ class TopicViewModel @AssistedInject constructor(
         topicRepository.getTopic(topicId, spmId)
     }.stateInUi()
 
-    val topic = topicResult.onEach { result ->
-        if (result is CachedAppResult.Error) {
-            snackbarManager.showMessage(result.error.asUiMessage())
-        }
-    }.map {
+    val topic = topicResult.map {
         it?.data
     }.stateInUi()
 

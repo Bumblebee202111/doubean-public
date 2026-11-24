@@ -29,10 +29,9 @@ Source: `app/src/main/java/com/github/bumblebee202111/doubean`
 ## Guidelines
 
 - **Architecture**: Features are isolated. Shared domain models belong in `model/<domain>/`. Repositories live in `data/<domain>/` (kept feature-local only if strictly screen-private).
-- **UI**: Compose only. Use `DoubeanTheme`. We use a slightly refined Material 3 style (crisper,
-  less bubbly).
+- **UI**: Compose only (`DoubeanTheme`). Utilitarian editorial M3 + selective M3E: neutral tonal surfaces, crisp 4dp-grid shapes, CJK-tuned typography.
 - **Navigation**: Navigation 3. Use `@Serializable NavKey` for routes. Manage routing via `Navigator` and `NavDisplay`. Deep links are parsed manually into keys.
-- **Net**: Ktor. Errors via `SnackbarManager`.
+- **Net**: Ktor. Errors via `SnackbarManager`. Keep network DTOs strictly faithful to each endpoint's actual response schema—prefer separate DTOs over merging across schema differences or adding artificial nullability/fallbacks.
 - **Naming**: Match API or decompiled field names where applicable.
 - **Root**: Optional via `libsu`.
 - **Deps**: `gradle/libs.versions.toml`.
