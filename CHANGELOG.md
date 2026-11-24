@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+## Version 0.15.0-beta.1
+
+- **Appearance**: Added Light / Dark / System theme toggle and Dynamic Color support (Android 12+)
+  in Settings.
+- **UI & Typography**: Refreshed design with Material 3 `1.5.0`, CJK-tuned typography, unified
+  shapes, and button press morphing.
+- **Navigation & Headers**: Unified top app bars and drawer access across tabs; redesigned Group and
+  Profile headers with adaptive tonal surfaces.
+- **Feedback & Viewer**: Removed duplicate error snackbars, unified paging footers, and updated
+  Image Viewer with a black backdrop.
+- **Fixes**: Fixed Subject Detail reviews sheet expanding to full screen by default.
+
 ## Version 0.14.4
 
 - Support viewing full subject metadata sheet (e.g., book publication info) by tapping the header
